@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.example.music.config.SwipeItemLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/dp_72"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_70"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:background="@color/colorPrimaryDark"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.xuexiang.xui.widget.imageview.RadiusImageView
+            android:id="@+id/musicsrc"
+            android:layout_width="@dimen/dp_50"
+            android:layout_height="@dimen/dp_50"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:scaleType="centerCrop"
+            android:src="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:riv_border_width="0dp"
+            app:riv_corner_radius="@dimen/dp_10"
+            app:riv_is_circle="false" />
+
+        <TextView
+            android:id="@+id/musicname"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/musicsrc"
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_toEndOf="@+id/musicsrc"
+            android:text=""
+            android:textColor="@color/black"
+            android:textSize="@dimen/sp_16" />
+
+        <TextView
+            android:id="@+id/singer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignStart="@+id/musicname"
+            android:layout_alignBottom="@+id/musicsrc"
+            android:gravity="center_vertical"
+            android:text=""
+            android:textColor="#8a8a8a"
+            android:textSize="@dimen/sp_14" />
+
+        <ImageView
+            android:id="@+id/source"
+            android:layout_width="@dimen/dp_20"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:layout_toStartOf="@+id/more"
+            android:src="@drawable/wangyiyun" />
+
+        <ImageView
+            android:id="@+id/more"
+            android:layout_width="@dimen/dp_30"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:src="@drawable/more" />
+
+
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/delete"
+            android:text="删除"
+            android:textColor="#ffffff"
+            android:textSize="16sp"
+            android:background="@color/red"
+            android:layout_width="100dp"
+            android:layout_height="match_parent" />
+
+    </LinearLayout>
+
+</com.example.music.config.SwipeItemLayout>
