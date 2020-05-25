@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.bean.Music
+import kotlinx.android.synthetic.main.frag_player_coverview.*
 
 
 /**
@@ -20,7 +21,7 @@ import com.example.music.bean.Music
  * 邮箱：643872807@qq.com
  * 版本：2.5
  */
-class BottomMusicAdapter(val datas: List<Music>, val context: Context) : RecyclerView.Adapter<BottomMusicAdapter.InnerHolder>() {
+class BottomMusicAdapter(val datas: MutableList<Music>, val context: Context) : RecyclerView.Adapter<BottomMusicAdapter.InnerHolder>() {
 
     private var itemClickListener: IKotlinItemClickListener? = null
     /**
@@ -71,12 +72,12 @@ class BottomMusicAdapter(val datas: List<Music>, val context: Context) : Recycle
 
 
     fun add(item: Music) {
-        datas.toMutableList().add(item)
+        datas.add(item)
         notifyItemInserted(datas.size)
     }
 
     fun remove(position: Int) {
-        datas.toMutableList().removeAt(position)
+        datas.removeAt(position)
         notifyItemRemoved(position)
     }
 

@@ -47,4 +47,11 @@
         <attr name="text" format="string" />
         <attr name="text_size" format="dimension" />
     </declare-styleable>
+
+        <declare-styleable name="SwipeItemLayout.Layout">
+            <attr name="layout_itemType">
+                <flag name="main" value="0x01"/>
+                <flag name="menu" value="0x02"/>
+            </attr>
+        </declare-styleable>
 </resources>

@@ -70,9 +70,6 @@ dependencies {
     //音乐播放
     implementation 'ywl.ywl5320:libmusic:1.2.6'
 
-    //Gson
-    implementation 'com.google.code.gson:gson:2.8.6'
-
     //xui
     implementation 'com.github.xuexiangjys:XUI:1.1.3'
     implementation 'androidx.appcompat:appcompat:1.1.0'
@@ -86,8 +83,8 @@ dependencies {
     //毛玻璃
     implementation 'io.alterac.blurkit:blurkit:1.1.1'
 
-    //recyclerview
-    implementation 'com.github.jdsjlzx:LRecyclerView:1.5.4.3'
+    //侧滑
+    implementation 'com.github.mcxtzhang:SwipeDelMenuLayout:V1.3.0'
 }
 
 greendao {

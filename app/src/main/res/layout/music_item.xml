@@ -1,19 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.example.music.config.SwipeItemLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.mcxtzhang.swipemenulib.SwipeMenuLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/dp_72"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    android:layout_height="@dimen/dp_70">
 
     <RelativeLayout
+        android:id="@+id/main"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_70"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentEnd="true"
-        android:background="@color/colorPrimaryDark"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="match_parent"
+        android:descendantFocusability="blocksDescendants">
 
         <com.xuexiang.xui.widget.imageview.RadiusImageView
             android:id="@+id/musicsrc"
@@ -43,7 +38,7 @@
             android:layout_marginStart="@dimen/dp_10"
             android:layout_toEndOf="@+id/musicsrc"
             android:text=""
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textSize="@dimen/sp_16" />
 
         <TextView
@@ -54,7 +49,7 @@
             android:layout_alignBottom="@+id/musicsrc"
             android:gravity="center_vertical"
             android:text=""
-            android:textColor="#8a8a8a"
+            android:textColor="@color/gray"
             android:textSize="@dimen/sp_14" />
 
         <ImageView
@@ -80,20 +75,14 @@
 
     </RelativeLayout>
 
+    <Button
+        android:id="@+id/delete"
+        android:layout_width="@dimen/dp_100"
+        android:layout_height="match_parent"
+        android:background="@color/red"
+        android:text="@string/delete"
+        android:textColor="#ffffff"
+        android:focusable="false"
+        android:textSize="@dimen/sp_16" />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent">
-
-        <Button
-            android:id="@+id/delete"
-            android:text="删除"
-            android:textColor="#ffffff"
-            android:textSize="16sp"
-            android:background="@color/red"
-            android:layout_width="100dp"
-            android:layout_height="match_parent" />
-
-    </LinearLayout>
-
-</com.example.music.config.SwipeItemLayout>
+</com.mcxtzhang.swipemenulib.SwipeMenuLayout>

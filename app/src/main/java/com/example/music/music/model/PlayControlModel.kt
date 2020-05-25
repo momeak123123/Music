@@ -10,7 +10,8 @@ import mvp.ljb.kt.model.BaseModel
  * @Description input description
  **/
  class PlayControlModel : BaseModel(), PlayControlContract.IModel {
-    val Datas = mutableListOf<Music>()
+     val Datas = mutableListOf<Music>()
+
     override fun getPlayList(): MutableList<Music> {
         Datas.clear()
         for (i in 1..3) {

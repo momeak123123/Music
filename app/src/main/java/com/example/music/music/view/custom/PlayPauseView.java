@@ -39,9 +39,11 @@ public class PlayPauseView extends View {
     private RectF mRingRect;
     private RectF mProgressRect;
     private boolean isPlaying;
-    private boolean isLoading;
+    private static boolean isLoading;
     private boolean hasProgress;
-    private float startAngle, sweepAngle, newAngle;
+    private static float startAngle;
+    private static float sweepAngle;
+    private float newAngle;
     private float mRectWidth;  //圆内矩形宽度
     private float mRectHeight; //圆内矩形高度
     private int mRectLT;  //矩形左侧上侧坐标
@@ -294,7 +296,7 @@ public class PlayPauseView extends View {
     /**
      * 开始Loading
      */
-    public void startLoading() {
+    public  void startLoading() {
         if (getLoadingAnim() != null) {
             getLoadingAnim().cancel();
         }
@@ -304,7 +306,7 @@ public class PlayPauseView extends View {
     /**
      * 停止Loading
      */
-    public void stopLoading() {
+    public  void stopLoading() {
         if (getLoadingAnim() != null) {
             getLoadingAnim().cancel();
         }

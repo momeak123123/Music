@@ -21,8 +21,6 @@ import java.util.List;
 public class ViewPagerAdapter extends FragmentPagerAdapter {
 
         private List<Fragment> fragments;//fragment管理员
-
-
         /**
          * 构造函数
          * @param fm fragment管理员对象

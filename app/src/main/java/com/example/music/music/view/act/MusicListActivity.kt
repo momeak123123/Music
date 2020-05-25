@@ -1,16 +1,20 @@
 package com.example.music.music.view.act
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.music.MainActivity
 import com.example.music.R
+import com.example.music.adapter.HomeAlbumAdapter
 import com.example.music.adapter.MusicListAdapter
 import com.example.music.bean.Music
-import com.example.music.config.SwipeItemLayout
 import com.example.music.music.contract.MusicListContract
 import com.example.music.music.presenter.MusicListPresenter
+import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.music_list.*
 import mvp.ljb.kt.act.BaseMvpActivity
 
@@ -21,8 +25,10 @@ import mvp.ljb.kt.act.BaseMvpActivity
  * @Description input description
  **/
 class MusicListActivity : BaseMvpActivity<MusicListContract.IPresenter>() , MusicListContract.IView {
+
     private lateinit var context: Context
     var Datas = mutableListOf<Music>()
+
     override fun registerPresenter() = MusicListPresenter::class.java
 
     override fun getLayoutId(): Int {
@@ -36,12 +42,12 @@ class MusicListActivity : BaseMvpActivity<MusicListContract.IPresenter>() , Musi
 
     override fun initData() {
         super.initData()
-        Datas.clear()
-       Datas.addAll(getPresenter().listdata())
     }
 
     override fun initView() {
         super.initView()
+        Datas.clear()
+        Datas.addAll(getPresenter().listdata())
         recycleview()
     }
 
@@ -49,16 +55,16 @@ class MusicListActivity : BaseMvpActivity<MusicListContract.IPresenter>() , Musi
 
         musiclist.layoutManager = LinearLayoutManager(this)
         musiclist.itemAnimator = DefaultItemAnimator()
-
         val adapter = MusicListAdapter(Datas,this)
-        musiclist.addOnItemTouchListener(SwipeItemLayout.OnSwipeItemTouchListener(context))
         musiclist.adapter = adapter
         adapter.setOnKotlinItemClickListener(object : MusicListAdapter.IKotlinItemClickListener {
             override fun onItemClickListener(position: Int) {
-                getPresenter().onclick(Datas,position)
+                //getPresenter().onclick(Datas,position)
+                val intent = Intent()
+                intent.setClass(context as MusicListActivity, MusicPlayActivity().javaClass)
+                startActivity(intent)
             }
         })
-        musiclist.addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.VERTICAL))
     }
 
 

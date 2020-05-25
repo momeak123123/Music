@@ -1,12 +1,10 @@
 package com.example.music.music.view.fragment
 
 import android.content.Intent
-import android.os.Bundle
-import android.widget.EditText
+import android.widget.Toast
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.music.MainActivity
 import com.example.music.R
 import com.example.music.adapter.HomeAlbumAdapter
 import com.example.music.adapter.HomeListAdapter
@@ -16,9 +14,8 @@ import com.example.music.bean.HomeList
 import com.example.music.bean.HomeSinger
 import com.example.music.music.contract.HomeContract
 import com.example.music.music.presenter.HomePresenter
-import com.example.music.music.view.act.MusicPlaybackActivity
+import com.example.music.music.view.act.MusicListActivity
 import com.example.music.music.view.act.SearchActivity
-import com.example.music.music.view.act.StartPageActivity
 import com.xuexiang.xui.widget.banner.widget.banner.BannerItem
 import com.xuexiang.xui.widget.banner.widget.banner.base.BaseBanner
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -103,10 +100,7 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
         adapter?.setOnKotlinItemClickListener(object : HomeListAdapter.IKotlinItemClickListener {
             override fun onItemClickListener(position: Int) {
                 val intent = Intent()
-                context?.let { intent.setClass(it, MusicPlaybackActivity().javaClass) }
-                val bundle = Bundle()
-                bundle.putParcelable("musiclist", data1[position])
-                intent.putExtras(bundle)
+                context?.let { intent.setClass(it, MusicListActivity().javaClass) }
                 startActivity(intent)
             }
         })
@@ -152,9 +146,11 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
         recyc_item4.adapter = adapter
         adapter?.setOnKotlinItemClickListener(object : HomeSongAdapter.IKotlinItemClickListener {
             override fun onItemClickListener(position: Int) {
-
+                Toast.makeText(context, "操作", Toast.LENGTH_SHORT).show()
             }
         })
+
+
     }
 
 }

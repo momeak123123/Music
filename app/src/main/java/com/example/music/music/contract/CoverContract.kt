@@ -11,7 +11,8 @@ import mvp.ljb.kt.contract.IModelContract
  **/
 interface CoverContract {
 
-    interface IView : IViewContract
+    interface IView : IViewContract {
+    }
 
     interface IPresenter : IPresenterContract
 

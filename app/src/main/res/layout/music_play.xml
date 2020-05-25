@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-   >
+    android:layout_height="match_parent">
 
     <RelativeLayout
         android:id="@+id/relativeLayout"
@@ -24,43 +23,7 @@
             android:layout_marginStart="@dimen/dp_10"
             android:src="@drawable/flot" />
 
-        <ImageView
-            android:id="@+id/imageView3"
-            android:layout_width="@dimen/dp_30"
-            android:layout_height="@dimen/dp_30"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginEnd="@dimen/dp_10"
-            android:src="@drawable/more" />
 
-        <TextView
-            android:id="@+id/titleIv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="@dimen/dp_5"
-            android:layout_toStartOf="@+id/imageView3"
-            android:layout_toEndOf="@+id/imageView2"
-            android:textColor="@color/white"
-            android:gravity="center"
-            android:textSize="@dimen/sp_16"
-            android:text="TextView" />
-
-        <TextView
-            android:id="@+id/subTitleTv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/dp_5"
-            android:layout_toStartOf="@+id/imageView3"
-            android:layout_toEndOf="@+id/imageView2"
-            android:gravity="center"
-            android:text="TextView"
-            android:textColor="@color/translucent_white"
-            android:textSize="@dimen/sp_14"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -71,15 +34,68 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
+        <RelativeLayout
+            android:id="@+id/textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="@dimen/dp_5">
+
+            <TextView
+                android:id="@+id/titleIv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="@dimen/dp_10"
+                android:gravity="center"
+                android:text=""
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_24" />
+
+            <TextView
+                android:id="@+id/subTitleTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/titleIv"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="@dimen/dp_10"
+                android:gravity="center"
+                android:text=""
+                android:textColor="@color/translucent_white"
+                android:textSize="@dimen/sp_16"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/Ablemname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/subTitleTv"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="@dimen/dp_10"
+                android:gravity="center"
+                android:text=""
+                android:textColor="@color/translucent_white"
+                android:textSize="@dimen/sp_16"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+        </RelativeLayout>
 
         <RelativeLayout
             android:id="@+id/progressview"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_20"
+            android:layout_below="@+id/textview"
             android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="@dimen/dp_5">
+            android:layout_marginTop="@dimen/dp_10">
 
             <TextView
                 android:id="@+id/progressTv"
@@ -119,7 +135,7 @@
 
         </RelativeLayout>
 
-        <RelativeLayout
+        <LinearLayout
             android:id="@+id/playview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -131,31 +147,18 @@
             <ImageView
                 android:id="@+id/imageView5"
                 android:layout_width="@dimen/dp_30"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/playlayout"
-                android:layout_alignParentTop="true"
-                android:layout_marginStart="@dimen/dp_100"
+                android:layout_height="@dimen/dp_30"
+                android:layout_gravity="center_vertical"
+                android:layout_marginStart="@dimen/dp_60"
+                android:layout_weight="1"
                 android:src="@drawable/clore" />
 
             <FrameLayout
                 android:id="@+id/playlayout"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/dp_70"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginStart="@dimen/dp_160"
-                android:layout_marginEnd="@dimen/dp_160"
+                android:layout_width="@dimen/dp_60"
+                android:layout_height="@dimen/dp_60"
+                android:layout_weight="3"
                 android:gravity="center">
-
-                <ProgressBar
-                    android:id="@+id/loadingPb"
-                    style="@style/Widget.AppCompat.ProgressBar"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:layout_margin="@dimen/dp_8"
-                    android:visibility="gone" />
 
                 <com.example.music.music.view.custom.PlayPauseView
                     android:id="@+id/playPauseIv"
@@ -182,16 +185,15 @@
             <ImageView
                 android:id="@+id/imageView6"
                 android:layout_width="@dimen/dp_30"
-                android:layout_height="wrap_content"
-                android:layout_alignBottom="@+id/imageView5"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="@dimen/dp_100"
+                android:layout_height="@dimen/dp_30"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="@dimen/dp_60"
+                android:layout_weight="1"
                 android:src="@drawable/clore" />
 
-        </RelativeLayout>
+        </LinearLayout>
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_60"
             android:layout_below="@+id/playview"
@@ -202,52 +204,36 @@
             <ImageView
                 android:id="@+id/icon1"
                 android:layout_width="@dimen/dp_30"
-                android:layout_height="wrap_content"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentBottom="true"
-                android:layout_marginStart="@dimen/dp_40"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="10dp"
+                android:layout_height="@dimen/dp_30"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
                 android:src="@drawable/clore" />
 
             <ImageView
                 android:id="@+id/icon2"
                 android:layout_width="@dimen/dp_30"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/icon1"
-                android:layout_alignBottom="@+id/icon1"
-                android:layout_marginStart="45dp"
-                android:layout_marginTop="0dp"
-                android:layout_marginBottom="0dp"
-                android:layout_toEndOf="@+id/icon1"
+                android:layout_height="@dimen/dp_30"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
                 android:src="@drawable/clore" />
 
             <ImageView
                 android:id="@+id/icon3"
                 android:layout_width="@dimen/dp_30"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/icon1"
-                android:layout_alignBottom="@+id/icon1"
-                android:layout_marginTop="0dp"
-                android:layout_marginEnd="52dp"
-                android:layout_marginBottom="0dp"
-                android:layout_toStartOf="@+id/icon4"
+                android:layout_height="@dimen/dp_30"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
                 android:src="@drawable/clore" />
 
             <ImageView
                 android:id="@+id/icon4"
                 android:layout_width="@dimen/dp_30"
-                android:layout_height="wrap_content"
-                android:layout_alignTop="@+id/icon1"
-                android:layout_alignBottom="@+id/icon1"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="2dp"
-                android:layout_marginEnd="60dp"
-                android:layout_marginBottom="-2dp"
+                android:layout_height="@dimen/dp_30"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
                 android:src="@drawable/clore" />
 
-        </RelativeLayout>
+        </LinearLayout>
 
     </RelativeLayout>
 

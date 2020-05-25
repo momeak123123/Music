@@ -12,7 +12,7 @@ import com.example.music.R
 import com.example.music.bean.HomeList
 import com.example.music.bean.HomeSinger
 
-class HomeSingerAdapter (val datas: List<HomeSinger>, val context: Context) : RecyclerView.Adapter<HomeSingerAdapter.InnerHolder>() {
+class HomeSingerAdapter (val datas: MutableList<HomeSinger>, val context: Context) : RecyclerView.Adapter<HomeSingerAdapter.InnerHolder>() {
 
     private var itemClickListener: IKotlinItemClickListener? = null
     /**
@@ -57,12 +57,12 @@ class HomeSingerAdapter (val datas: List<HomeSinger>, val context: Context) : Re
 
 
     fun add(item: HomeSinger) {
-        datas.toMutableList().add(item)
+        datas.add(item)
         notifyItemInserted(datas.size)
     }
 
     fun remove(position: Int) {
-        datas.toMutableList().removeAt(position)
+        datas.removeAt(position)
         notifyItemRemoved(position)
     }
 }

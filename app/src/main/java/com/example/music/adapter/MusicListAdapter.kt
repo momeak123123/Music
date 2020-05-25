@@ -1,21 +1,23 @@
 package com.example.music.adapter
 
 import android.content.Context
+import android.content.Intent
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.bean.Music
+import com.example.music.music.view.act.MusicPlayActivity
 
 /**
  * Created by Sin on 2019/1/20
  */
-class MusicListAdapter(val datas: List<Music>, val context: Context) : RecyclerView.Adapter<MusicListAdapter.InnerHolder>() {
+class MusicListAdapter(val datas: MutableList<Music>, val context: Context) : RecyclerView.Adapter<MusicListAdapter.InnerHolder>() {
+
 
     private var itemClickListener: IKotlinItemClickListener? = null
     /**
@@ -43,6 +45,7 @@ class MusicListAdapter(val datas: List<Music>, val context: Context) : RecyclerV
         var source: ImageView = itemView.findViewById(R.id.source)
         var more: ImageView = itemView.findViewById(R.id.more)
         var delete: Button = itemView.findViewById(R.id.delete)
+        var mian: RelativeLayout = itemView.findViewById(R.id.main)
     }
 
     /**
@@ -54,11 +57,20 @@ class MusicListAdapter(val datas: List<Music>, val context: Context) : RecyclerV
         holder.singer.text = datas[position].artist
         Glide.with(context).load(R.drawable.wangyiyun).into(holder.source)
         holder.more.setOnClickListener {
-
+            Toast.makeText(context, "操作", Toast.LENGTH_SHORT).show()
         }
 
         holder.delete.setOnClickListener {
-            
+            remove(holder.adapterPosition)
+        }
+
+        holder.mian.setOnClickListener {
+            val intent = Intent()
+            intent.setClass(context, MusicPlayActivity().javaClass)
+            val bundle = Bundle()
+            bundle.putParcelable("music", datas[position])
+            intent.putExtras(bundle)
+            context.startActivity(intent)
         }
     }
 
@@ -73,12 +85,13 @@ class MusicListAdapter(val datas: List<Music>, val context: Context) : RecyclerV
 
 
     fun add(item: Music) {
-        datas.toMutableList().add(item)
+        datas.add(item)
         notifyItemInserted(datas.size)
     }
 
     fun remove(position: Int) {
-        datas.toMutableList().removeAt(position)
+        datas.removeAt(position)
         notifyItemRemoved(position)
+
     }
 }

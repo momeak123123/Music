@@ -1,5 +1,6 @@
 package com.example.music.music.view.fragment
 
+import com.example.music.R
 import com.example.music.music.contract.LyricContract
 import com.example.music.music.presenter.LyricPresenter
 import mvp.ljb.kt.fragment.BaseMvpFragment
@@ -14,6 +15,6 @@ class LyricFragment : BaseMvpFragment<LyricContract.IPresenter>(), LyricContract
     override fun registerPresenter() = LyricPresenter::class.java
 
     override fun getLayoutId(): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+       return R.layout.frag_player_lrcview
     }
 }

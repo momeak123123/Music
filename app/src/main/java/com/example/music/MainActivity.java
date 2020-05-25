@@ -9,6 +9,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -78,10 +79,10 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
 
         SharedPreferences sp = this.getSharedPreferences("User", Context.MODE_PRIVATE);
         String slogin = sp.getString("login", "false");
-        if (slogin.equals("false")) {
+        /*if (slogin.equals("false")) {
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
-        }
+        }*/
 
     }
 

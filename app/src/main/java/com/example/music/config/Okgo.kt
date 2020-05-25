@@ -15,7 +15,7 @@ import com.lzy.okgo.request.base.Request
 class Okgo {
     companion object {
 
-        val url: String = "http://127.0.0.1/"
+        val url: String = "http://192.168.1.249:1017/"
         fun getokgo(inter: String,stringCallback: StringCallback?) {
             OkGo.get<String>(url + inter)
                 .execute(stringCallback)

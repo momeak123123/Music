@@ -44,9 +44,8 @@
     <string name="succes_login">登陆成功</string>
     <string name="succes_register">注册成功</string>
     <string name="go">登录</string>
-    <string name="tip_name_number_error">无效的邮箱,请重新输入！</string>
-    <string name="regex_name_number">^[a-zA-Z0-9][\\w\\.-]*[a-zA-Z0-9]@[a-zA-Z0-9][\\w\\.-]*[a-zA-Z0-9]\\.[a-zA-Z][a-zA-Z\\.]*[a-zA-Z]$</string>
-    <string name="regex_phone_number">^((13[0-9])|(14[5,7])|(15[0-3,5-9])|(16[6])|(17[0,1,3,5-8])|(18[0-9])|(19[8,9]))\\d{8}$</string>
+    <string name="tip_name_number_error">无效的邮箱,请重新输入！</string>\
+
     <!--play-->
     <string name="love">收藏</string>
     <string name="equalizer">均衡器</string>
@@ -54,8 +53,9 @@
     <string name="error_search">搜索失败，请稍后重试</string>
     <string name="secret_num">~~ 动态 %1$d ~~</string>
     <string name="error_playing_track">播放出错</string>
+    <string name="lyric_default_hint">暂无歌词</string>
     <string name="folders">文件夹</string>
-    <string name="play_time">--:--</string>
+    <string name="play_time">00:00</string>
     <string name="play_no_resource">无音乐</string>
     <string name="play_mode">%1$s("%2$d")</string>
     <string name="play_mode_random">随机播放</string>
@@ -65,4 +65,9 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
+
+
+    <!--list-->
+    <string name="delete">删除</string>
+
 </resources>

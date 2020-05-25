@@ -11,7 +11,7 @@ import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.bean.HomeSinger
 
-class SearchAdapter  (val datas: List<String>, val context: Context) : RecyclerView.Adapter<SearchAdapter.InnerHolder>() {
+class SearchAdapter  (val datas: MutableList<String>, val context: Context) : RecyclerView.Adapter<SearchAdapter.InnerHolder>() {
 
     private var itemClickListener: IKotlinItemClickListener? = null
 
@@ -56,12 +56,12 @@ class SearchAdapter  (val datas: List<String>, val context: Context) : RecyclerV
 
 
     fun add(item: String) {
-        datas.toMutableList().add(item)
+        datas.add(item)
         notifyItemInserted(datas.size)
     }
 
     fun remove(position: Int) {
-        datas.toMutableList().removeAt(position)
+        datas.removeAt(position)
         notifyItemRemoved(position)
     }
 }

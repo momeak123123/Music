@@ -11,7 +11,7 @@ import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.bean.HomeList
 
-class HomeListAdapter(val datas: List<HomeList>, val context: Context) : RecyclerView.Adapter<HomeListAdapter.InnerHolder>() {
+class HomeListAdapter(val datas: MutableList<HomeList>, val context: Context) : RecyclerView.Adapter<HomeListAdapter.InnerHolder>() {
 
     private var itemClickListener: IKotlinItemClickListener? = null
     /**
@@ -59,12 +59,12 @@ class HomeListAdapter(val datas: List<HomeList>, val context: Context) : Recycle
 
 
     fun add(item: HomeList) {
-        datas.toMutableList().add(item)
+        datas.add(item)
         notifyItemInserted(datas.size)
     }
 
     fun remove(position: Int) {
-        datas.toMutableList().removeAt(position)
+        datas.removeAt(position)
         notifyItemRemoved(position)
     }
 }
