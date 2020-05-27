@@ -45,7 +45,6 @@ class MusicListAdapter(val datas: MutableList<Music>, val context: Context) : Re
         var source: ImageView = itemView.findViewById(R.id.source)
         var more: ImageView = itemView.findViewById(R.id.more)
         var delete: Button = itemView.findViewById(R.id.delete)
-        var mian: RelativeLayout = itemView.findViewById(R.id.main)
     }
 
     /**
@@ -64,14 +63,7 @@ class MusicListAdapter(val datas: MutableList<Music>, val context: Context) : Re
             remove(holder.adapterPosition)
         }
 
-        holder.mian.setOnClickListener {
-            val intent = Intent()
-            intent.setClass(context, MusicPlayActivity().javaClass)
-            val bundle = Bundle()
-            bundle.putParcelable("music", datas[position])
-            intent.putExtras(bundle)
-            context.startActivity(intent)
-        }
+
     }
 
     // 提供set方法

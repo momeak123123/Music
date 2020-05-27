@@ -1,7 +1,7 @@
 package com.example.music.music.view.act
 
-import android.animation.ObjectAnimator
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.Bundle
@@ -32,7 +32,6 @@ class MusicPlayActivity : AppCompatActivity() {
         var position: Int = 0
         lateinit var wlMusic: WlMusic
         lateinit var observer: Observer<Music>
-        lateinit var observernext: Observer<String>
     }
 
 
@@ -52,17 +51,14 @@ class MusicPlayActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.music_play)
         context = this
-        initView()
-        initData()
-    }
-
-    fun initView(){
         detailView.animation = moveToViewLocation()
         fragments.add(coverFragment)
         fragments.add(lyricFragment)
         viewPager.adapter = ViewPagerAdapter(supportFragmentManager, fragments)
-        coverFragment.initAlbumPic()
-        playPauseIv.setLoading(true)
+        initView()
+    }
+
+    private fun initView(){
         playPauseIv.setOnClickListener {
             if (bool) {
                 if (playPauseIv.isPlaying) {
@@ -80,11 +76,16 @@ class MusicPlayActivity : AppCompatActivity() {
             }
         }
 
+        flot.setOnClickListener {
+            moveTaskToBack(true)
+        }
+
     }
 
-     fun initData() {
-        val bundle = this.intent.extras
-        val music = bundle?.get("music") as Music
+
+
+    private fun start(music:Music){
+        playPauseIv.setLoading(true)
         playingMusic = music
         //更新标题
         titleIv.text = music.title
@@ -94,22 +95,34 @@ class MusicPlayActivity : AppCompatActivity() {
         /* music?.isLove?.let {
              collectIv.setImageResource(if (it) R.drawable.item_favorite_love else R.drawable.item_favorite)
          }*/
-         object : Thread() {
-             override fun run() {
-                 bitmap = BitmapUtils.netUrlPicToBmp(music.coverBig.toString())
-                 coverFragment.setImageBitmap(bitmap)
-                 play(music.uri)
-             }
-         }.start()
+        object : Thread() {
+            override fun run() {
+                bitmap = BitmapUtils.netUrlPicToBmp(music.coverBig.toString())
+                coverFragment.setImageBitmap(bitmap)
+                play(music.uri)
+            }
+        }.start()
     }
 
     override fun onStart() {
         super.onStart()
+        val bundle = intent.extras
+        val music = bundle?.get("music") as Music
+        if(playingMusic!=null){
+            if(music.id != playingMusic!!.id){
+                start(music)
+            }
+        }else{
+            start(music)
+        }
     }
 
 
     override fun onDestroy() {
         super.onDestroy()
+        if(wlMusic.isPlaying){
+            wlMusic.stop()
+        }
     }
 
     override fun onResume() {
@@ -120,18 +133,8 @@ class MusicPlayActivity : AppCompatActivity() {
             @SuppressLint("SetTextI18n")
             override fun onNext(data: Music) {
                 //play(data.uri)
-            }
-
-            override fun onError(e: Throwable) {}
-            override fun onComplete() {}
-
-        }
-
-        observernext = object : Observer<String> {
-            override fun onSubscribe(d: Disposable) {}
-            override fun onNext(uri: String) {
-                wlMusic.stop()
-                wlMusic.playNext(uri)
+               // wlMusic.stop()
+                //wlMusic.playNext(uri)
             }
 
             override fun onError(e: Throwable) {}
@@ -215,7 +218,7 @@ class MusicPlayActivity : AppCompatActivity() {
             }
             .doOnComplete {
                 playPauseIv.pause()
-                coverFragment.onStop()
+                coverFragment.stopRotateAnimation()
             }
             .subscribe()
     }
@@ -239,6 +242,10 @@ class MusicPlayActivity : AppCompatActivity() {
         )
         mHiddenAction.duration = 300
         return mHiddenAction
+    }
+
+    override fun onBackPressed() {
+        moveTaskToBack(true)
     }
 
 }

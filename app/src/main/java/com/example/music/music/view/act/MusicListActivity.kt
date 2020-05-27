@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.music.MainActivity
 import com.example.music.R
 import com.example.music.adapter.HomeAlbumAdapter
+import com.example.music.adapter.HomeListAdapter
 import com.example.music.adapter.MusicListAdapter
 import com.example.music.bean.Music
 import com.example.music.music.contract.MusicListContract
@@ -59,9 +60,9 @@ class MusicListActivity : BaseMvpActivity<MusicListContract.IPresenter>() , Musi
         musiclist.adapter = adapter
         adapter.setOnKotlinItemClickListener(object : MusicListAdapter.IKotlinItemClickListener {
             override fun onItemClickListener(position: Int) {
-                //getPresenter().onclick(Datas,position)
                 val intent = Intent()
-                intent.setClass(context as MusicListActivity, MusicPlayActivity().javaClass)
+                context.let { intent.setClass(it, MusicPlayActivity().javaClass) }
+                intent.putExtra("music",Datas[position])
                 startActivity(intent)
             }
         })

@@ -39,6 +39,7 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>() , Star
     override fun init(savedInstanceState: Bundle?) {
         super.init(savedInstanceState)
         context=this
+
     }
     override fun initView() {
         super.initView()
@@ -49,7 +50,6 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>() , Star
             override fun onTick(millisUntilFinished: Long) {
                 time.text=(millisUntilFinished / 1000).toString()
             }
-
             override fun onFinish() {
                 finish()
                 val intent = Intent()

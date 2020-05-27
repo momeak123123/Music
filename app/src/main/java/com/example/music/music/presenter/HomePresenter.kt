@@ -1,10 +1,12 @@
 package com.example.music.music.presenter
 
+import android.content.Context
 import com.example.music.bean.HomeList
 import com.example.music.bean.HomeSinger
 import mvp.ljb.kt.presenter.BaseMvpPresenter
 import com.example.music.music.contract.HomeContract
 import com.example.music.music.model.HomeModel
+import com.google.gson.JsonObject
 import com.xuexiang.xui.widget.banner.widget.banner.BannerItem
 
 /**
@@ -19,20 +21,8 @@ class HomePresenter : BaseMvpPresenter<HomeContract.IView, HomeContract.IModel>(
         return getModel().imagesdata()
     }
 
-    override fun getdata1(): MutableList<HomeList> {
-       return getModel().getdata1()
-    }
-
-    override fun getdata2(): MutableList<HomeList> {
-        return getModel().getdata2()
-    }
-
-    override fun getdata3(): MutableList<HomeSinger> {
-        return getModel().getdata3()
-    }
-
-    override fun getdata4(): MutableList<HomeList> {
-        return getModel().getdata4()
+    override fun listdata(context: Context) {
+        return getModel().listdata(context)
     }
 
 

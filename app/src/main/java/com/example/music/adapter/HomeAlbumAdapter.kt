@@ -9,9 +9,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.music.R
+import com.example.music.bean.Album
 import com.example.music.bean.HomeList
 
-class HomeAlbumAdapter (val datas: MutableList<HomeList>, val context: Context) : RecyclerView.Adapter<HomeAlbumAdapter.InnerHolder>() {
+class HomeAlbumAdapter (val datas: List<Album>, val context: Context) : RecyclerView.Adapter<HomeAlbumAdapter.InnerHolder>() {
 
     private var itemClickListener: IKotlinItemClickListener? = null
     /**
@@ -42,9 +43,9 @@ class HomeAlbumAdapter (val datas: MutableList<HomeList>, val context: Context) 
      * 绑定数据，View和数据绑定
      */
     override fun onBindViewHolder(holder: InnerHolder, position: Int) {
-        Glide.with(context).load(datas[position].imageUrl).placeholder(R.drawable.gplugin_load).into(holder.iv_cover)
-        holder.title.text = datas[position].title
-        holder.txt.text = datas[position].txt
+        Glide.with(context).load(datas[position].album_pic_url).placeholder(R.drawable.gplugin_load).into(holder.iv_cover)
+        holder.title.text = datas[position].album_name
+        holder.txt.text = datas[position].artist_name
     }
 
     // 提供set方法
@@ -57,13 +58,5 @@ class HomeAlbumAdapter (val datas: MutableList<HomeList>, val context: Context) 
     }
 
 
-    fun add(item: HomeList) {
-        datas.add(item)
-        notifyItemInserted(datas.size)
-    }
 
-    fun remove(position: Int) {
-        datas.removeAt(position)
-        notifyItemRemoved(position)
-    }
 }

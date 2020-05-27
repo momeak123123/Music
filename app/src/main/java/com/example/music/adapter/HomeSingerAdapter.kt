@@ -9,10 +9,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.music.R
+import com.example.music.bean.Artists
 import com.example.music.bean.HomeList
 import com.example.music.bean.HomeSinger
 
-class HomeSingerAdapter (val datas: MutableList<HomeSinger>, val context: Context) : RecyclerView.Adapter<HomeSingerAdapter.InnerHolder>() {
+class HomeSingerAdapter (val data: List<Artists>, val context: Context) : RecyclerView.Adapter<HomeSingerAdapter.InnerHolder>() {
 
     private var itemClickListener: IKotlinItemClickListener? = null
     /**
@@ -31,7 +32,7 @@ class HomeSingerAdapter (val datas: MutableList<HomeSinger>, val context: Contex
     /**
      * 得到总条数
      */
-    override fun getItemCount(): Int = datas.size
+    override fun getItemCount(): Int = data.size
 
     class InnerHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var iv_cover: ImageView = itemView.findViewById(R.id.iv_cover)
@@ -42,8 +43,8 @@ class HomeSingerAdapter (val datas: MutableList<HomeSinger>, val context: Contex
      * 绑定数据，View和数据绑定
      */
     override fun onBindViewHolder(holder: InnerHolder, position: Int) {
-        Glide.with(context).load(datas[position].imageUrl).placeholder(R.drawable.gplugin_load).into(holder.iv_cover)
-        holder.title.text = datas[position].title
+        Glide.with(context).load(data[position].artist_picurl).placeholder(R.drawable.gplugin_load).into(holder.iv_cover)
+        holder.title.text = data[position].artist_name
     }
 
     // 提供set方法
@@ -56,13 +57,5 @@ class HomeSingerAdapter (val datas: MutableList<HomeSinger>, val context: Contex
     }
 
 
-    fun add(item: HomeSinger) {
-        datas.add(item)
-        notifyItemInserted(datas.size)
-    }
 
-    fun remove(position: Int) {
-        datas.removeAt(position)
-        notifyItemRemoved(position)
-    }
 }

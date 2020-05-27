@@ -21,3 +21,10 @@
 #-renamesourcefileattribute SourceFile
 -keep class com.lzf.easyfloat.** {*;}
 -keep class com.xuexiang.xui.widget.edittext.materialedittext.** { *; }
+#okhttp
+-dontwarn okhttp3.**
+-keep class okhttp3.**{*;}
+
+#okio
+-dontwarn okio.**
+-keep class okio.**{*;}

@@ -24,7 +24,11 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:allowBackup">
-        <activity android:name=".music.view.act.MusicPlayActivity" />
+        <activity android:name=".music.view.act.MusicPlayActivity"
+            android:configChanges="orientation|keyboardHidden|keyboard"
+            android:launchMode="singleInstance"
+            android:windowSoftInputMode="adjustResize"/>
+
         <activity android:name=".MainActivity" />
         <activity android:name=".music.view.act.MusicListActivity" />
         <activity android:name=".music.view.act.StartPageActivity">
@@ -37,6 +41,10 @@
         <activity android:name=".music.view.act.SearchActivity" />
         <activity android:name=".music.view.act.LoginActivity" />
         <activity android:name=".music.view.act.RegisteredActivity" />
+        <activity android:name=".music.view.act.AlbumActivity" />
+        <activity android:name=".music.view.act.AlbumDetActivity" />
+        <activity android:name=".music.view.act.ArtistActivity" />
+        <activity android:name=".music.view.act.ArtistDetActivity" />
     </application>
 
 </manifest>

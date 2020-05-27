@@ -18,7 +18,7 @@ class MusicListModel : BaseModel(), MusicListContract.IModel {
         Datas.clear()
 
         val music = Music("net")//locat
-        music.id = 0
+        music.id = 1
         music.title = "大鱼"
         music.uri = "http://mpge.5nd.com/2015/2015-11-26/69708/1.mp3"
         music.coverUri = "https://momeak.oss-cn-shenzhen.aliyuncs.com/dear1.png"
@@ -29,7 +29,7 @@ class MusicListModel : BaseModel(), MusicListContract.IModel {
         Datas.add(music)
 
         val music1 = Music("net")
-        music1.id = 1
+        music1.id = 2
         music1.title = "大鱼"
         music1.uri = "https://momeak.oss-cn-shenzhen.aliyuncs.com/music.mp3"
         music1.coverUri = "https://momeak.oss-cn-shenzhen.aliyuncs.com/dear2.png"
@@ -40,7 +40,7 @@ class MusicListModel : BaseModel(), MusicListContract.IModel {
         Datas.add(music1)
 
         val music2 = Music("net")
-        music2.id = 2
+        music2.id = 3
         music2.title = "大鱼"
         music2.uri = "http://music.163.com/song/media/outer/url?id=1327199767.mp3"
         music2.coverUri = "https://momeak.oss-cn-shenzhen.aliyuncs.com/dear3.png"

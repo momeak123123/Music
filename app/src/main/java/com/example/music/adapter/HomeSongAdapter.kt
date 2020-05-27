@@ -1,5 +1,6 @@
 package com.example.music.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -10,8 +11,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.bean.HomeList
+import com.example.music.bean.Song
+import com.example.music.bean.TopList
 
-class HomeSongAdapter (val datas: MutableList<HomeList>, val context: Context) : RecyclerView.Adapter<HomeSongAdapter.InnerHolder>() {
+class HomeSongAdapter (val datas: List<Song>, val context: Context) : RecyclerView.Adapter<HomeSongAdapter.InnerHolder>() {
 
     private var itemClickListener: IKotlinItemClickListener? = null
     /**
@@ -42,13 +45,23 @@ class HomeSongAdapter (val datas: MutableList<HomeList>, val context: Context) :
     /**
      * 绑定数据，View和数据绑定
      */
+    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: InnerHolder, position: Int) {
-        Glide.with(context).load(datas[position].imageUrl).placeholder(R.drawable.gplugin_load).into(holder.iv_cover)
-        holder.title.text = datas[position].title
-        holder.txt.text = datas[position].txt
+        val albummap = datas[position].album
+        val artists = datas[position].artists
+        Glide.with(context).load(albummap["album_picurl"]).placeholder(R.drawable.gplugin_load).into(holder.iv_cover)
+        holder.title.text = datas[position].song_name
+        for(it in artists){
+            if(holder.txt.text == ""){
+                holder.txt.text =  it.artist_name
+            }else{
+                holder.txt.text = holder.txt.text.toString() +"/"+ it.artist_name
+            }
+
+        }
 
         holder.more.setOnClickListener {
-            remove(holder.adapterPosition)
+
         }
     }
 
@@ -59,16 +72,5 @@ class HomeSongAdapter (val datas: MutableList<HomeList>, val context: Context) :
 
     interface IKotlinItemClickListener {
         fun onItemClickListener(position: Int)
-    }
-
-
-    fun add(item: HomeList) {
-        datas.add(item)
-        notifyItemInserted(datas.size)
-    }
-
-    fun remove(position: Int) {
-        datas.removeAt(position)
-        notifyItemRemoved(position)
     }
 }

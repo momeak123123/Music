@@ -1,10 +1,18 @@
 package  com.example.music.music.model
 
-import com.example.music.bean.HomeList
-import com.example.music.bean.HomeSinger
+import android.content.Context
+import android.content.SharedPreferences
+import android.widget.Toast
+import com.example.music.bean.ResultBean
+import com.example.music.common.Constants
 import com.example.music.music.contract.HomeContract
+import com.google.gson.GsonBuilder
+import com.lzy.okgo.OkGo
+import com.lzy.okgo.callback.StringCallback
+import com.lzy.okgo.model.Response
 import com.xuexiang.xui.widget.banner.widget.banner.BannerItem
 import mvp.ljb.kt.model.BaseModel
+
 
 /**
  * @Author Kotlin MVP Plugin
@@ -13,10 +21,7 @@ import mvp.ljb.kt.model.BaseModel
  **/
 class HomeModel : BaseModel(), HomeContract.IModel {
     var list = mutableListOf<BannerItem>()
-    var data1 = mutableListOf<HomeList>()
-    var data2 = mutableListOf<HomeList>()
-    var data3 = mutableListOf<HomeSinger>()
-    var data4 = mutableListOf<HomeList>()
+
     override fun imagesdata(): MutableList<BannerItem> {
         list.clear()
         val item1 = BannerItem()
@@ -34,36 +39,46 @@ class HomeModel : BaseModel(), HomeContract.IModel {
         return list
     }
 
-    override fun getdata1(): MutableList<HomeList> {
-        data1.clear()
-        for (i in 0..5) {
-            data1.add(HomeList("https://momeak.oss-cn-shenzhen.aliyuncs.com/dear1.png","Honey","Robuy"))
-        }
-        return data1
+    override fun listdata(context: Context) {
+        OkGo.get<String>(Constants.URL + "api")
+            .execute(object : StringCallback() {
+            override fun onSuccess(response: Response<String>) {
+                /**
+                 * 成功回调
+                 */
+                val gb: GsonBuilder? = GsonBuilder()
+                gb!!.setPrettyPrinting().disableHtmlEscaping()
+
+                val bean =
+                    gb.create().fromJson(response.body(), ResultBean::class.javaObjectType)
+                if (bean.code == 200) {
+
+                   /* val album:List<Album> =  Gson().fromJson<Array<Album>>(bean.data.get("album_list"), Array<Album>::class.java).toList()
+                    val artist:List<Artists> =  Gson().fromJson<Array<Artists>>(bean.data.get("hot_artist"), Array<Artists>::class.java).toList()
+                    val song:List<Song> =  Gson().fromJson<Array<Song>>(bean.data.get("hot_song"), Array<Song>::class.java).toList()
+                    val list:List<TopList> =  Gson().fromJson<Array<TopList>>(bean.data.get("top_list"), Array<TopList>::class.java).toList()
+                    val str1 = gson.toJson(album)
+                    val str2 = gson.toJson(artist)
+                    val str3 = gson.toJson(song)
+                    val str4 = gson.toJson(list)*/
+                    val sp: SharedPreferences =context.getSharedPreferences("Music", Context.MODE_PRIVATE)
+
+                    sp.edit().putString("album", bean.data.get("album_list").asJsonObject.asString).apply()
+                    sp.edit().putString("artist", bean.data.get("hot_artist").asJsonObject.asString).apply()
+                    sp.edit().putString("song", bean.data.get("hot_song").asJsonObject.asString).apply()
+                    sp.edit().putString("list", bean.data.get("top_list").asJsonObject.asString).apply()
+                } else {
+                    Toast.makeText(
+                        context,
+                        bean.data.toString(),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        })
     }
 
-    override fun getdata2(): MutableList<HomeList> {
-        data2.clear()
-        for (i in 0..5) {
-            data2.add(HomeList("https://momeak.oss-cn-shenzhen.aliyuncs.com/dear2.png","Honey","Robuy"))
-        }
-        return data2
-    }
 
-    override fun getdata3(): MutableList<HomeSinger> {
-        data3.clear()
-        for (i in 0..7) {
-            data3.add(HomeSinger("https://momeak.oss-cn-shenzhen.aliyuncs.com/dear3.png","Honey"))
-        }
-        return data3
-    }
-
-    override fun getdata4(): MutableList<HomeList> {
-        data4.clear()
-        for (i in 0..5) {
-            data4.add(HomeList("https://momeak.oss-cn-shenzhen.aliyuncs.com/dear1.png","Honey","Robuy"))
-        }
-        return data4
-    }
 
 }
+

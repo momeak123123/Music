@@ -24,6 +24,8 @@ import com.example.music.music.view.act.LoginActivity;
 import com.example.music.music.view.fragment.FindFragment;
 import com.example.music.music.view.fragment.HomeFragment;
 import com.example.music.music.view.fragment.MyFragment;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.jpeng.jptabbar.BadgeDismissListener;
 import com.jpeng.jptabbar.JPTabBar;
 import com.jpeng.jptabbar.OnTabSelectListener;
@@ -157,11 +159,10 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
     private void checkPermissions(String[] permissions) {
         //获取权限列表
         java.util.List<String> needRequestPermissonList = findDeniedPermissions(permissions);
-        if (null != needRequestPermissonList
-                && needRequestPermissonList.size() > 0) {
+        if (needRequestPermissonList.size() > 0) {
             //list.toarray将集合转化为数组
             ActivityCompat.requestPermissions(this,
-                    needRequestPermissonList.toArray(new String[needRequestPermissonList.size()]),
+                    needRequestPermissonList.toArray(new String[0]),
                     PERMISSION_REQUESTED);
         }
 

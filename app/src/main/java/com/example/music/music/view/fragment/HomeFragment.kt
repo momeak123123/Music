@@ -1,6 +1,8 @@
 package com.example.music.music.view.fragment
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.widget.Toast
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
@@ -10,14 +12,21 @@ import com.example.music.adapter.HomeAlbumAdapter
 import com.example.music.adapter.HomeListAdapter
 import com.example.music.adapter.HomeSingerAdapter
 import com.example.music.adapter.HomeSongAdapter
-import com.example.music.bean.HomeList
-import com.example.music.bean.HomeSinger
+import com.example.music.bean.Album
+import com.example.music.bean.Artists
+import com.example.music.bean.Song
+import com.example.music.bean.TopList
 import com.example.music.music.contract.HomeContract
 import com.example.music.music.presenter.HomePresenter
 import com.example.music.music.view.act.MusicListActivity
 import com.example.music.music.view.act.SearchActivity
+import com.google.gson.Gson
+import com.google.gson.JsonObject
+import com.google.gson.reflect.TypeToken
 import com.xuexiang.xui.widget.banner.widget.banner.BannerItem
 import com.xuexiang.xui.widget.banner.widget.banner.base.BaseBanner
+import io.reactivex.Observer
+import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_home.*
 import mvp.ljb.kt.fragment.BaseMvpFragment
 
@@ -30,14 +39,10 @@ import mvp.ljb.kt.fragment.BaseMvpFragment
 class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IView {
 
     companion object {
-
+        lateinit var observer: Observer<JsonObject>
     }
 
-    var data = mutableListOf<BannerItem>()
-    var data1 = mutableListOf<HomeList>()
-    var data2 = mutableListOf<HomeList>()
-    var data3 = mutableListOf<HomeSinger>()
-    var data4 = mutableListOf<HomeList>()
+    var bannerdata = mutableListOf<BannerItem>()
 
     override fun registerPresenter() = HomePresenter::class.java
 
@@ -45,28 +50,98 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
         return R.layout.fragment_home
     }
 
+
     override fun initData() {
         super.initData()
-        data1.clear()
-        data1.addAll(getPresenter().getdata1())
+        initbanner()
+        context?.let { getPresenter().listdata(it) }
+        context?.let {
+            val sp: SharedPreferences = it.getSharedPreferences("Music", Context.MODE_PRIVATE)
+            val data_toplist = mutableListOf<TopList>()
+            val data_ablum = mutableListOf<Album>()
+            val data_artist = mutableListOf<Artists>()
+            val data_song = mutableListOf<Song>()
 
-        data2.clear()
-        data2.addAll(getPresenter().getdata2())
 
-        data3.clear()
-        data3.addAll(getPresenter().getdata3())
+            val list: List<TopList> = Gson().fromJson(
+                sp.getString("list", ""),
+                object : TypeToken<List<TopList>>() {}.type
+            )
+            if (list.isNotEmpty()) {
+                if(list.size>6){
+                    for (i in 0..5) {
+                        data_toplist.add(list[i])
+                    }
+                }else{
+                    for (i in list) {
+                        data_toplist.add(i)
+                    }
+                }
 
-        data4.clear()
-        data4.addAll(getPresenter().getdata4())
+                initTopList(data_toplist)
+            }
+
+            val album: List<Album> = Gson().fromJson(
+                sp.getString("album", ""),
+                object : TypeToken<List<Album>>() {}.type
+            )
+            if (album.isNotEmpty()) {
+                if(album.size>6){
+                    for (i in 0..5) {
+                        data_ablum.add(album[i])
+                    }
+                }else{
+                    for (i in album) {
+                        data_ablum.add(i)
+                    }
+                }
+                initAlbumList(data_ablum)
+            }
+
+
+            val artist: List<Artists> = Gson().fromJson(
+                sp.getString("artist", ""),
+                object : TypeToken<List<Artists>>() {}.type
+            )
+            if (artist.isNotEmpty()) {
+                if(artist.size>8){
+                    for (i in 0..7) {
+                        data_artist.add(artist[i])
+                    }
+                }else{
+                    for (i in artist) {
+                        data_artist.add(i)
+                    }
+                }
+                initSingerList(data_artist)
+            }
+
+
+            val song: List<Song> = Gson().fromJson(
+                sp.getString("song", ""),
+                object : TypeToken<List<Song>>() {}.type
+            )
+            if (song.isNotEmpty()) {
+                if(song.size>8){
+                    for (i in 0..7) {
+                        data_song.add(song[i])
+                    }
+                }else{
+                    for (i in song) {
+                        data_song.add(i)
+                    }
+                }
+                initSongList(data_song)
+            }
+
+
+
+        }
     }
 
     override fun initView() {
         super.initView()
-        initbanner()
-        initSongList()
-        initAlbumList()
-        initSingerList()
-        initSongLists()
+
         search.setOnClickListener {
             val intent = Intent()
             context?.let { it1 -> intent.setClass(it1, SearchActivity().javaClass) }
@@ -74,28 +149,42 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        observer = object : Observer<JsonObject> {
+            override fun onSubscribe(d: Disposable) {}
+            override fun onNext(data: JsonObject) {
+
+            }
+
+            override fun onError(e: Throwable) {}
+            override fun onComplete() {}
+
+        }
+    }
 
     /**
      * 初始化轮播图
      */
     private fun initbanner() {
         //设置banner样式
-        data.clear()
-        data.addAll(getPresenter().imagesdata())
-        banner.setSource(data)
+        bannerdata.clear()
+        bannerdata.addAll(getPresenter().imagesdata())
+        banner.setSource(bannerdata)
             .setOnItemClickListener(BaseBanner.OnItemClickListener<BannerItem?> { view, t, position -> })
             .setIsOnePageLoop(false).startScroll()
 
-        banner.setSource(data).startScroll()
+        banner.setSource(bannerdata).startScroll()
     }
 
     /**
      * 初始化排行榜
      */
-    private fun initSongList() {
+    private fun initTopList(list: List<TopList>) {
         recyc_item1.layoutManager = GridLayoutManager(context, 3)
         recyc_item1.itemAnimator = DefaultItemAnimator()
-        val adapter = context?.let { HomeListAdapter(data1, it) }
+        val adapter = context?.let { HomeListAdapter(list, it) }
         recyc_item1.adapter = adapter
         adapter?.setOnKotlinItemClickListener(object : HomeListAdapter.IKotlinItemClickListener {
             override fun onItemClickListener(position: Int) {
@@ -109,10 +198,10 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
     /**
      * 初始化专辑
      */
-    private fun initAlbumList() {
+    private fun initAlbumList(album: List<Album>) {
         recyc_item2.layoutManager = GridLayoutManager(context, 3)
         recyc_item2.itemAnimator = DefaultItemAnimator()
-        val adapter = context?.let { HomeAlbumAdapter(data2, it) }
+        val adapter = context?.let { HomeAlbumAdapter(album, it) }
         recyc_item2.adapter = adapter
         adapter?.setOnKotlinItemClickListener(object : HomeAlbumAdapter.IKotlinItemClickListener {
             override fun onItemClickListener(position: Int) {
@@ -124,10 +213,10 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
     /**
      * 初始化歌手
      */
-    private fun initSingerList() {
+    private fun initSingerList(artists: List<Artists>) {
         recyc_item3.layoutManager = GridLayoutManager(context, 4)
         recyc_item3.itemAnimator = DefaultItemAnimator()
-        val adapter = context?.let { HomeSingerAdapter(data3, it) }
+        val adapter = context?.let { HomeSingerAdapter(artists, it) }
         recyc_item3.adapter = adapter
         adapter?.setOnKotlinItemClickListener(object : HomeSingerAdapter.IKotlinItemClickListener {
             override fun onItemClickListener(position: Int) {
@@ -139,10 +228,10 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
     /**
      * 初始化歌曲
      */
-    private fun initSongLists() {
+    private fun initSongList(song: List<Song>) {
         recyc_item4.layoutManager = LinearLayoutManager(context)
         recyc_item4.itemAnimator = DefaultItemAnimator()
-        val adapter = context?.let { HomeSongAdapter(data4, it) }
+        val adapter = context?.let { HomeSongAdapter(song, it) }
         recyc_item4.adapter = adapter
         adapter?.setOnKotlinItemClickListener(object : HomeSongAdapter.IKotlinItemClickListener {
             override fun onItemClickListener(position: Int) {

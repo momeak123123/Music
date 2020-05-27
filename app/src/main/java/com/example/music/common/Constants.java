@@ -4,6 +4,9 @@ package com.example.music.common;
  * Created by yonglong on 2016/5/8.
  */
 public class Constants {
+
+    public static final String URL = "http://192.168.1.249:1017/";
+
     //歌曲操作区分
     public static final int OP_LOCAL = 0; //没有歌曲下载、删除、修改(后续会有)、添加到歌单
     public static final int OP_ONLINE = 1; //没有歌曲删除、修改、添加到歌单
