@@ -87,7 +87,6 @@ dependencies {
 
     //RxBinding
     implementation 'com.jakewharton.rxbinding2:rxbinding-kotlin:2.2.0'
-    implementation 'com.jakewharton.rxbinding2:rxbinding-recyclerview-v7-kotlin:2.2.0'
 }
 
 greendao {
