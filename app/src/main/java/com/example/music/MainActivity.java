@@ -269,7 +269,7 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
 
     @Override
     public void onBackPressed() {
-        this.finish();
+       System.exit(0);
     }
 
 

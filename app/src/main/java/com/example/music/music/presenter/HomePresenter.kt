@@ -21,9 +21,6 @@ class HomePresenter : BaseMvpPresenter<HomeContract.IView, HomeContract.IModel>(
         return getModel().imagesdata()
     }
 
-    override fun listdata(context: Context) {
-        return getModel().listdata(context)
-    }
 
 
 }

@@ -1,5 +1,6 @@
 package com.example.music.music.view.fragment
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -18,17 +19,18 @@ import com.example.music.bean.Song
 import com.example.music.bean.TopList
 import com.example.music.music.contract.HomeContract
 import com.example.music.music.presenter.HomePresenter
-import com.example.music.music.view.act.MusicListActivity
+import com.example.music.music.view.act.AlbumActivity
+import com.example.music.music.view.act.ArtistActivity
 import com.example.music.music.view.act.SearchActivity
 import com.google.gson.Gson
-import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
+import com.jakewharton.rxbinding2.view.RxView
 import com.xuexiang.xui.widget.banner.widget.banner.BannerItem
 import com.xuexiang.xui.widget.banner.widget.banner.base.BaseBanner
-import io.reactivex.Observer
-import io.reactivex.disposables.Disposable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.fragment_home.*
 import mvp.ljb.kt.fragment.BaseMvpFragment
+import java.util.concurrent.TimeUnit
 
 
 /**
@@ -39,7 +41,7 @@ import mvp.ljb.kt.fragment.BaseMvpFragment
 class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IView {
 
     companion object {
-        lateinit var observer: Observer<JsonObject>
+
     }
 
     var bannerdata = mutableListOf<BannerItem>()
@@ -54,25 +56,25 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
     override fun initData() {
         super.initData()
         initbanner()
-        context?.let { getPresenter().listdata(it) }
-        context?.let {
-            val sp: SharedPreferences = it.getSharedPreferences("Music", Context.MODE_PRIVATE)
-            val data_toplist = mutableListOf<TopList>()
-            val data_ablum = mutableListOf<Album>()
-            val data_artist = mutableListOf<Artists>()
-            val data_song = mutableListOf<Song>()
 
+        val sp: SharedPreferences =
+            requireContext().getSharedPreferences("Music", Context.MODE_PRIVATE)
+        val data_toplist = mutableListOf<TopList>()
+        val data_ablum = mutableListOf<Album>()
+        val data_artist = mutableListOf<Artists>()
+        val data_song = mutableListOf<Song>()
 
+        if (!sp.getString("list", "").equals("")) {
             val list: List<TopList> = Gson().fromJson(
                 sp.getString("list", ""),
                 object : TypeToken<List<TopList>>() {}.type
             )
             if (list.isNotEmpty()) {
-                if(list.size>6){
+                if (list.size > 6) {
                     for (i in 0..5) {
                         data_toplist.add(list[i])
                     }
-                }else{
+                } else {
                     for (i in list) {
                         data_toplist.add(i)
                     }
@@ -80,88 +82,111 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
 
                 initTopList(data_toplist)
             }
+        }
 
+        if (!sp.getString("album", "").equals("")) {
             val album: List<Album> = Gson().fromJson(
                 sp.getString("album", ""),
                 object : TypeToken<List<Album>>() {}.type
             )
             if (album.isNotEmpty()) {
-                if(album.size>6){
+                if (album.size > 6) {
                     for (i in 0..5) {
                         data_ablum.add(album[i])
                     }
-                }else{
+                } else {
                     for (i in album) {
                         data_ablum.add(i)
                     }
                 }
                 initAlbumList(data_ablum)
             }
+        }
 
-
+        if (!sp.getString("artist", "").equals("")) {
             val artist: List<Artists> = Gson().fromJson(
                 sp.getString("artist", ""),
                 object : TypeToken<List<Artists>>() {}.type
             )
             if (artist.isNotEmpty()) {
-                if(artist.size>8){
+                if (artist.size > 8) {
                     for (i in 0..7) {
                         data_artist.add(artist[i])
                     }
-                }else{
+                } else {
                     for (i in artist) {
                         data_artist.add(i)
                     }
                 }
                 initSingerList(data_artist)
             }
+        }
 
-
+        if (!sp.getString("song", "").equals("")) {
             val song: List<Song> = Gson().fromJson(
                 sp.getString("song", ""),
                 object : TypeToken<List<Song>>() {}.type
             )
             if (song.isNotEmpty()) {
-                if(song.size>8){
+                if (song.size > 8) {
                     for (i in 0..7) {
                         data_song.add(song[i])
                     }
-                }else{
+                } else {
                     for (i in song) {
                         data_song.add(i)
                     }
                 }
                 initSongList(data_song)
             }
-
-
-
         }
+
     }
 
+    @SuppressLint("CheckResult")
     override fun initView() {
         super.initView()
 
-        search.setOnClickListener {
-            val intent = Intent()
-            context?.let { it1 -> intent.setClass(it1, SearchActivity().javaClass) }
-            startActivity(intent)
-        }
+        RxView.clicks(search)
+            .throttleFirst(1,TimeUnit.SECONDS)
+            .subscribe {
+                val intent = Intent()
+                context?.let { it1 -> intent.setClass(it1, SearchActivity().javaClass) }
+                startActivity(intent)
+            }
+        RxView.clicks(more1)
+            .throttleFirst(1,TimeUnit.SECONDS)
+            .subscribe {
+                val intent = Intent()
+                context?.let { intent.setClass(it, AlbumActivity().javaClass) }
+                intent.putExtra("album_type",0)
+                startActivity(intent)
+            }
+        RxView.clicks(more2)
+            .throttleFirst(1,TimeUnit.SECONDS)
+            .subscribe {
+                val intent = Intent()
+                context?.let { intent.setClass(it, AlbumActivity().javaClass) }
+                intent.putExtra("album_type",1)
+                startActivity(intent)
+            }
+        RxView.clicks(more3)
+            .throttleFirst(1,TimeUnit.SECONDS)
+            .subscribe {
+                val intent = Intent()
+                context?.let { intent.setClass(it, ArtistActivity().javaClass) }
+                startActivity(intent)
+            }
+        RxView.clicks(more4)
+            .throttleFirst(1,TimeUnit.SECONDS)
+            .subscribe {
+
+            }
     }
+
 
     override fun onResume() {
         super.onResume()
-
-        observer = object : Observer<JsonObject> {
-            override fun onSubscribe(d: Disposable) {}
-            override fun onNext(data: JsonObject) {
-
-            }
-
-            override fun onError(e: Throwable) {}
-            override fun onComplete() {}
-
-        }
     }
 
     /**
@@ -172,9 +197,8 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
         bannerdata.clear()
         bannerdata.addAll(getPresenter().imagesdata())
         banner.setSource(bannerdata)
-            .setOnItemClickListener(BaseBanner.OnItemClickListener<BannerItem?> { view, t, position -> })
+            .setOnItemClickListener(BaseBanner.OnItemClickListener<BannerItem?> { _, _, position -> println(position) })
             .setIsOnePageLoop(false).startScroll()
-
         banner.setSource(bannerdata).startScroll()
     }
 
@@ -188,9 +212,7 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
         recyc_item1.adapter = adapter
         adapter?.setOnKotlinItemClickListener(object : HomeListAdapter.IKotlinItemClickListener {
             override fun onItemClickListener(position: Int) {
-                val intent = Intent()
-                context?.let { intent.setClass(it, MusicListActivity().javaClass) }
-                startActivity(intent)
+
             }
         })
     }

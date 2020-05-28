@@ -1,5 +1,6 @@
 package com.example.music.music.view.act
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.util.TypedValue
@@ -14,9 +15,12 @@ import com.example.music.adapter.SearchAdapter
 import com.example.music.music.contract.SearchContract
 import com.example.music.music.presenter.SearchPresenter
 import com.google.gson.Gson
+import com.jakewharton.rxbinding2.view.RxView
+import kotlinx.android.synthetic.main.head.*
 import kotlinx.android.synthetic.main.search.*
 import mvp.ljb.kt.act.BaseMvpActivity
 import org.w3c.dom.Text
+import java.util.concurrent.TimeUnit
 
 /**
  * @Author Kotlin MVP Plugin
@@ -42,6 +46,7 @@ class SearchActivity : BaseMvpActivity<SearchContract.IPresenter>() , SearchCont
         Datas.addAll(getPresenter().listdata())
     }
 
+    @SuppressLint("CheckResult")
     override fun initView() {
         super.initView()
        /* if(Datas.size==0){
@@ -57,6 +62,11 @@ class SearchActivity : BaseMvpActivity<SearchContract.IPresenter>() , SearchCont
         }*/
         initSearch()
         initSearchList()
+        RxView.clicks(flot)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe {
+                finish()
+            }
     }
 
     /**

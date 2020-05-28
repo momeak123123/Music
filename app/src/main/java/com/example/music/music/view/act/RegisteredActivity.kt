@@ -1,5 +1,6 @@
 package com.example.music.music.view.act
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -8,9 +9,13 @@ import com.example.music.MainActivity
 import com.example.music.R
 import com.example.music.music.contract.RegisteredContract
 import com.example.music.music.presenter.RegisteredPresenter
+import com.jakewharton.rxbinding2.view.RxView
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_registered.*
+import kotlinx.android.synthetic.main.head.*
+import kotlinx.android.synthetic.main.start_page.*
 import mvp.ljb.kt.act.BaseMvpActivity
+import java.util.concurrent.TimeUnit
 import java.util.regex.Matcher
 import java.util.regex.Pattern
 
@@ -34,11 +39,14 @@ class RegisteredActivity : BaseMvpActivity<RegisteredContract.IPresenter>(),
         context = this
     }
 
+    @SuppressLint("CheckResult")
     override fun initData() {
         super.initData()
-        register_flot.setOnClickListener {
-            finish()
-        }
+        RxView.clicks(register_flot)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe {
+                finish()
+            }
     }
 
     override fun initView() {

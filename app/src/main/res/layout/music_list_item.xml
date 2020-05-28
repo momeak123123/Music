@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.mcxtzhang.swipemenulib.SwipeMenuLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="@dimen/dp_70">
 
@@ -32,25 +33,38 @@
 
         <TextView
             android:id="@+id/musicname"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/musicsrc"
             android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:layout_toStartOf="@+id/source"
             android:layout_toEndOf="@+id/musicsrc"
+            android:ellipsize="end"
+            android:gravity="center_vertical|left"
+            android:maxLines="1"
+            android:singleLine="true"
             android:text=""
             android:textColor="@color/white"
-            android:textSize="@dimen/sp_16" />
+            android:textSize="@dimen/sp_16"
+            tools:ignore="RtlHardcoded" />
 
         <TextView
             android:id="@+id/singer"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_alignStart="@+id/musicname"
+            android:layout_alignEnd="@+id/musicname"
             android:layout_alignBottom="@+id/musicsrc"
-            android:gravity="center_vertical"
+            android:layout_marginEnd="@dimen/dp_10"
+            android:ellipsize="end"
+            android:gravity="center_vertical|left"
+            android:maxLines="1"
+            android:singleLine="true"
             android:text=""
             android:textColor="@color/gray"
-            android:textSize="@dimen/sp_14" />
+            android:textSize="@dimen/sp_14"
+            tools:ignore="RtlHardcoded" />
 
         <ImageView
             android:id="@+id/source"

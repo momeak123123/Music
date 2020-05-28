@@ -1,5 +1,6 @@
 package com.example.music.music.presenter
 
+import android.content.Context
 import mvp.ljb.kt.presenter.BaseMvpPresenter
 import com.example.music.music.contract.StartPageContract
 import com.example.music.music.model.StartPageModel
@@ -12,5 +13,8 @@ import com.example.music.music.model.StartPageModel
 class StartPagePresenter : BaseMvpPresenter<StartPageContract.IView, StartPageContract.IModel>(), StartPageContract.IPresenter{
 
     override fun registerModel() = StartPageModel::class.java
+    override fun homedata(context: Context) {
+        getModel().homedata(context)
+    }
 
 }

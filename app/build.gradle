@@ -9,7 +9,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.music"
-        minSdkVersion 25
+        minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
@@ -44,7 +44,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-fragment:2.2.2'
     implementation 'androidx.navigation:navigation-ui:2.2.2'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
@@ -63,9 +63,8 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
 
     //okgo网络请求
-    implementation 'com.lzy.net:okgo:3.0.4' 
-    implementation 'com.lzy.net:okrx2:2.0.2'//okgo+RxJava
-    implementation 'com.lzy.net:okserver:2.0.5'//上传下载
+    implementation 'com.lzy.net:okgo:3.0.4'
+    //implementation 'com.lzy.net:okserver:2.0.5'//上传下载
 
     //音乐播放
     implementation 'ywl.ywl5320:libmusic:1.2.6'
@@ -85,6 +84,10 @@ dependencies {
 
     //侧滑
     implementation 'com.github.mcxtzhang:SwipeDelMenuLayout:V1.3.0'
+
+    //RxBinding
+    implementation 'com.jakewharton.rxbinding2:rxbinding-kotlin:2.2.0'
+    implementation 'com.jakewharton.rxbinding2:rxbinding-recyclerview-v7-kotlin:2.2.0'
 }
 
 greendao {

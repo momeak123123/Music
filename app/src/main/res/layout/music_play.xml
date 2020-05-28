@@ -5,26 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:id="@+id/relativeLayout"
-        android:layout_width="0dp"
-        android:layout_height="@dimen/dp_60"
+    <include
+        android:id="@+id/include"
+        layout="@layout/head"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:id="@+id/flot"
-            android:layout_width="@dimen/dp_30"
-            android:layout_height="@dimen/dp_30"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="@dimen/dp_10"
-            android:src="@drawable/flot" />
-
-
-    </RelativeLayout>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <RelativeLayout
         android:id="@+id/detailView"
@@ -45,26 +36,32 @@
 
             <TextView
                 android:id="@+id/titleIv"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="@dimen/dp_10"
                 android:gravity="center"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:text=""
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_24" />
 
             <TextView
                 android:id="@+id/subTitleTv"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/titleIv"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="@dimen/dp_10"
                 android:gravity="center"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:text=""
                 android:textColor="@color/translucent_white"
                 android:textSize="@dimen/sp_16"
@@ -73,13 +70,16 @@
 
             <TextView
                 android:id="@+id/Ablemname"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/subTitleTv"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="@dimen/dp_10"
                 android:gravity="center"
+                android:singleLine="true"
+                android:ellipsize="end"
+                android:maxLines="1"
                 android:text=""
                 android:textColor="@color/translucent_white"
                 android:textSize="@dimen/sp_16"
@@ -245,6 +245,6 @@
         app:layout_constraintBottom_toTopOf="@+id/detailView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/relativeLayout" />
+        app:layout_constraintTop_toBottomOf="@+id/include" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,5 +1,7 @@
 package com.example.music.music.contract
 
+import android.content.Context
+import com.google.gson.JsonObject
 import mvp.ljb.kt.contract.IPresenterContract
 import mvp.ljb.kt.contract.IViewContract
 import mvp.ljb.kt.contract.IModelContract
@@ -13,7 +15,14 @@ interface ArtistContract {
 
     interface IView : IViewContract
 
-    interface IPresenter : IPresenterContract
+    interface IPresenter : IPresenterContract {
+        fun taglist(context: Context)
+        fun listdata(context:Context,varieties: Int, letter: Int)
 
-    interface IModel : IModelContract
+    }
+
+    interface IModel : IModelContract {
+        fun taglist(context:Context)
+        fun listdata(context:Context,varieties: Int, letter: Int)
+    }
 }

@@ -1,5 +1,6 @@
 package com.example.music.music.view.act
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
@@ -12,8 +13,15 @@ import com.example.music.bean.Music
 import com.example.music.config.IntentRecevier
 import com.example.music.music.contract.StartPageContract
 import com.example.music.music.presenter.StartPagePresenter
+import com.example.music.music.view.fragment.HomeFragment
+import com.google.gson.JsonObject
+import com.jakewharton.rxbinding2.view.RxView
+import io.reactivex.Observer
+import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.start_page.*
 import mvp.ljb.kt.act.BaseMvpActivity
+import java.util.concurrent.TimeUnit
 
 /**
  * @Author Kotlin MVP Plugin
@@ -22,10 +30,6 @@ import mvp.ljb.kt.act.BaseMvpActivity
  **/
 class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>() , StartPageContract.IView {
 
-    companion object{
-
-        var Datas = mutableListOf<Music>()
-    }
     private lateinit var intentRecevier: IntentRecevier
     private lateinit var context: Context
     private lateinit var countDownTimer: CountDownTimer
@@ -41,6 +45,7 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>() , Star
         context=this
 
     }
+    @SuppressLint("CheckResult")
     override fun initView() {
         super.initView()
         intentRecevier = IntentRecevier()
@@ -51,17 +56,27 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>() , Star
                 time.text=(millisUntilFinished / 1000).toString()
             }
             override fun onFinish() {
-                finish()
                 val intent = Intent()
                 intent.setClass(context as StartPageActivity, MainActivity().javaClass)
                 startActivity(intent)
             }
         }.start()
 
-        view.setOnClickListener {
-            countDownTimer.cancel()
-            countDownTimer.onFinish()
-        }
+        RxView.clicks(view)
+            .throttleFirst(3, TimeUnit.SECONDS)
+            .subscribe {
+                countDownTimer.cancel()
+                countDownTimer.onFinish()
+            }
+    }
+
+    override fun initData() {
+        super.initData()
+       getPresenter().homedata(context)
+    }
+
+    override fun onResume() {
+        super.onResume()
     }
 
     override fun onDestroy() {

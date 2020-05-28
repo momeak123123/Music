@@ -16,6 +16,7 @@ import com.example.music.bean.Music
 import com.example.music.music.view.fragment.CoverFragment
 import com.example.music.music.view.fragment.LyricFragment
 import com.example.music.utils.BitmapUtils
+import com.jakewharton.rxbinding2.view.RxView
 import com.ywl5320.libenum.MuteEnum
 import com.ywl5320.libmusic.WlMusic
 import io.reactivex.Flowable
@@ -23,6 +24,7 @@ import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.head.*
 import kotlinx.android.synthetic.main.music_play.*
 import java.util.concurrent.TimeUnit
 
@@ -58,6 +60,7 @@ class MusicPlayActivity : AppCompatActivity() {
         initView()
     }
 
+    @SuppressLint("CheckResult")
     private fun initView(){
         playPauseIv.setOnClickListener {
             if (bool) {
@@ -76,9 +79,11 @@ class MusicPlayActivity : AppCompatActivity() {
             }
         }
 
-        flot.setOnClickListener {
-            moveTaskToBack(true)
-        }
+        RxView.clicks(top_flot)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe {
+                finish()
+            }
 
     }
 

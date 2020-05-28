@@ -24,13 +24,13 @@ interface HomeContract {
 
     interface IPresenter : IPresenterContract {
         fun imagesdata(): MutableList<BannerItem>
-        fun listdata(context: Context)
+
 
     }
 
     interface IModel : IModelContract {
         fun imagesdata(): MutableList<BannerItem>
-        fun listdata(context:Context)
+
 
     }
 }

@@ -1,8 +1,6 @@
 package com.example.music.adapter
 
 import android.content.Context
-import android.content.Intent
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.bean.Music
-import com.example.music.music.view.act.MusicPlayActivity
 
 /**
  * Created by Sin on 2019/1/20
@@ -25,7 +22,7 @@ class MusicListAdapter(val datas: MutableList<Music>, val context: Context) : Re
      */
     override fun onCreateViewHolder(holder: ViewGroup, position: Int): InnerHolder {
         //加载View
-        val itemView: View = LayoutInflater.from(context).inflate(R.layout.music_item, holder, false)
+        val itemView: View = LayoutInflater.from(context).inflate(R.layout.music_list_item, holder, false)
         itemView.setOnClickListener {
             itemClickListener?.onItemClickListener(position)
         }
