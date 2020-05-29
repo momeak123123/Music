@@ -12,11 +12,13 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.music.R
 import com.example.music.adapter.SearchAdapter
+import com.example.music.config.ItemClickListener
 import com.example.music.music.contract.SearchContract
 import com.example.music.music.presenter.SearchPresenter
 import com.google.gson.Gson
 import com.jakewharton.rxbinding2.view.RxView
 import kotlinx.android.synthetic.main.head.*
+import kotlinx.android.synthetic.main.music_album.*
 import kotlinx.android.synthetic.main.search.*
 import mvp.ljb.kt.act.BaseMvpActivity
 import org.w3c.dom.Text
@@ -102,17 +104,24 @@ class SearchActivity : BaseMvpActivity<SearchContract.IPresenter>() , SearchCont
 
         adapter = SearchAdapter(Datas,this)
         recyclerView3.adapter = adapter
-        adapter.setOnKotlinItemClickListener(object : SearchAdapter.IKotlinItemClickListener {
-            override fun onItemClickListener(position: Int) {
-                val del: ImageView = recyclerView3.findViewById(R.id.del)
-                val txt: TextView = recyclerView3.findViewById(R.id.txt)
-                del.setOnClickListener {
+        recyclerView3.addOnItemTouchListener(
+            ItemClickListener(this,
+                object : ItemClickListener.OnItemClickListener {
+                    override fun onItemClick(view: View?, position: Int) {
+                        val del: ImageView = view!!.findViewById(R.id.del)
+                        val txt: TextView = view.findViewById(R.id.txt)
+                        del.setOnClickListener {
 
-                }
-                txt.setOnClickListener {
+                        }
+                        txt.setOnClickListener {
 
-                }
-            }
-        })
+                        }
+                    }
+
+                    override fun onItemLongClick(view: View?, position: Int) {
+
+                    }
+                })
+        )
     }
 }

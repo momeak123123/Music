@@ -87,6 +87,11 @@ dependencies {
 
     //RxBinding
     implementation 'com.jakewharton.rxbinding2:rxbinding-kotlin:2.2.0'
+
+
+    //Dokit
+    debugImplementation 'com.didichuxing.doraemonkit:doraemonkit:3.1.5'
+    releaseImplementation 'com.didichuxing.doraemonkit:doraemonkit-no-op:3.1.5'
 }
 
 greendao {

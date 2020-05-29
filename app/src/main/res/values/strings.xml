@@ -79,5 +79,6 @@
 
     <!--list-->
     <string name="delete">删除</string>
+    <string name="list_dow">关闭</string>
 
 </resources>

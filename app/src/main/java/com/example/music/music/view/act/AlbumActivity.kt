@@ -5,12 +5,14 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.view.View
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.music.R
 import com.example.music.adapter.*
 import com.example.music.bean.*
+import com.example.music.config.ItemClickListener
 import com.example.music.music.contract.AlbumContract
 import com.example.music.music.presenter.AlbumPresenter
 import com.google.gson.Gson
@@ -94,13 +96,18 @@ class AlbumActivity : BaseMvpActivity<AlbumContract.IPresenter>() , AlbumContrac
         recyc_tab.itemAnimator = DefaultItemAnimator()
         val adapter = AlbumTopAdapter(list, context)
         recyc_tab.adapter = adapter
-        adapter.setOnKotlinItemClickListener(object : AlbumTopAdapter.IKotlinItemClickListener {
-            override fun onItemClickListener(position: Int) {
-                val intent = Intent()
-                intent.setClass(context, MusicListActivity().javaClass)
-                startActivity(intent)
-            }
-        })
+        recyc_tab.addOnItemTouchListener(
+            ItemClickListener(context,
+                object : ItemClickListener.OnItemClickListener {
+                    override fun onItemClick(view: View?, position: Int) {
+
+                    }
+
+                    override fun onItemLongClick(view: View?, position: Int) {
+
+                    }
+                })
+        )
     }
 
     fun initAlbumList(album: List<Album>){
@@ -108,13 +115,19 @@ class AlbumActivity : BaseMvpActivity<AlbumContract.IPresenter>() , AlbumContrac
         recyc_tab.itemAnimator = DefaultItemAnimator()
         val adapter = AlbumListAdapter(album, context)
         recyc_tab.adapter = adapter
-        adapter.setOnKotlinItemClickListener(object : AlbumListAdapter.IKotlinItemClickListener {
-            override fun onItemClickListener(position: Int) {
-                val intent = Intent()
-                intent.setClass(context, MusicListActivity().javaClass)
-                startActivity(intent)
-            }
-        })
+        recyc_tab.addOnItemTouchListener(
+            ItemClickListener(context,
+                object : ItemClickListener.OnItemClickListener {
+                    override fun onItemClick(view: View?, position: Int) {
+
+                    }
+
+                    override fun onItemLongClick(view: View?, position: Int) {
+
+                    }
+                })
+        )
+
     }
 
 

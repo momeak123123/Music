@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
@@ -17,6 +18,7 @@ import com.example.music.bean.Album
 import com.example.music.bean.Artists
 import com.example.music.bean.Song
 import com.example.music.bean.TopList
+import com.example.music.config.ItemClickListener
 import com.example.music.music.contract.HomeContract
 import com.example.music.music.presenter.HomePresenter
 import com.example.music.music.view.act.*
@@ -27,6 +29,7 @@ import com.xuexiang.xui.widget.banner.widget.banner.BannerItem
 import com.xuexiang.xui.widget.banner.widget.banner.base.BaseBanner
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
+import kotlinx.android.synthetic.main.artist_index.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import mvp.ljb.kt.fragment.BaseMvpFragment
 import java.util.concurrent.TimeUnit
@@ -209,11 +212,18 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
         recyc_item1.itemAnimator = DefaultItemAnimator()
         val adapter = context?.let { HomeListAdapter(list, it) }
         recyc_item1.adapter = adapter
-        adapter?.setOnKotlinItemClickListener(object : HomeListAdapter.IKotlinItemClickListener {
-            override fun onItemClickListener(position: Int) {
+        recyc_item1.addOnItemTouchListener(
+            ItemClickListener(context,
+                object : ItemClickListener.OnItemClickListener {
+                    override fun onItemClick(view: View?, position: Int) {
 
-            }
-        })
+                    }
+
+                    override fun onItemLongClick(view: View?, position: Int) {
+
+                    }
+                })
+        )
     }
 
     /**
@@ -224,11 +234,18 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
         recyc_item2.itemAnimator = DefaultItemAnimator()
         val adapter = context?.let { HomeAlbumAdapter(album, it) }
         recyc_item2.adapter = adapter
-        adapter?.setOnKotlinItemClickListener(object : HomeAlbumAdapter.IKotlinItemClickListener {
-            override fun onItemClickListener(position: Int) {
+        recyc_item2.addOnItemTouchListener(
+            ItemClickListener(context,
+                object : ItemClickListener.OnItemClickListener {
+                    override fun onItemClick(view: View?, position: Int) {
 
-            }
-        })
+                    }
+
+                    override fun onItemLongClick(view: View?, position: Int) {
+
+                    }
+                })
+        )
     }
 
     /**
@@ -239,15 +256,22 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
         recyc_item3.itemAnimator = DefaultItemAnimator()
         val adapter = context?.let { HomeSingerAdapter(artists, it) }
         recyc_item3.adapter = adapter
-        adapter?.setOnKotlinItemClickListener(object : HomeSingerAdapter.IKotlinItemClickListener {
-            override fun onItemClickListener(position: Int) {
-                val intent = Intent()
-                context?.let { intent.setClass(it, ArtistDetActivity().javaClass) }
-                intent.putExtra("id",artists[position].artist_id)
-                intent.putExtra("type",artists[position].type)
-                startActivity(intent)
-            }
-        })
+        recyc_item3.addOnItemTouchListener(
+            ItemClickListener(context,
+                object : ItemClickListener.OnItemClickListener {
+                    override fun onItemClick(view: View?, position: Int) {
+                        val intent = Intent()
+                        context?.let { intent.setClass(it, ArtistDetActivity().javaClass) }
+                        intent.putExtra("id",artists[position].artist_id)
+                        intent.putExtra("type",artists[position].type)
+                        startActivity(intent)
+                    }
+
+                    override fun onItemLongClick(view: View?, position: Int) {
+
+                    }
+                })
+        )
     }
 
     /**
@@ -258,18 +282,22 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
         recyc_item4.itemAnimator = DefaultItemAnimator()
         val adapter = context?.let { HomeSongAdapter(song, it) }
         recyc_item4.adapter = adapter
-        adapter?.setOnKotlinItemClickListener(object : HomeSongAdapter.IKotlinItemClickListener {
-            override fun onItemClickListener(position: Int) {
-                val intent = Intent()
-                context?.let { intent.setClass(it, MusicPlayActivity().javaClass) }
-                intent.putExtra("id",position)
-                startActivity(intent)
-                Observable.just(song).subscribe(MusicPlayActivity.observer)
+        recyc_item4.addOnItemTouchListener(
+            ItemClickListener(context,
+                object : ItemClickListener.OnItemClickListener {
+                    override fun onItemClick(view: View?, position: Int) {
+                        val intent = Intent()
+                        context?.let { intent.setClass(it, MusicPlayActivity().javaClass) }
+                        intent.putExtra("id",position)
+                        startActivity(intent)
+                        Observable.just(song).subscribe(MusicPlayActivity.observer)
+                    }
 
-            }
-        })
+                    override fun onItemLongClick(view: View?, position: Int) {
 
-
+                    }
+                })
+        )
     }
 
 }
