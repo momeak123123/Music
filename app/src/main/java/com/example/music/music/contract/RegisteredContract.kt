@@ -1,5 +1,6 @@
 package com.example.music.music.contract
 
+import android.content.Context
 import mvp.ljb.kt.contract.IPresenterContract
 import mvp.ljb.kt.contract.IViewContract
 import mvp.ljb.kt.contract.IModelContract
@@ -14,10 +15,12 @@ interface RegisteredContract {
     interface IView : IViewContract
 
     interface IPresenter : IPresenterContract {
-        fun registerdata(): Boolean
+        fun registerdata(context: Context, email:String, pass:String, code:String): Boolean
+        fun registercode(context: Context, email: String)
     }
 
     interface IModel : IModelContract {
-        fun registerdata(): Boolean
+        fun registerdata(context: Context,email:String,pass:String,code:String): Boolean
+        fun registercode(context: Context, email: String)
     }
 }

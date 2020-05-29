@@ -19,14 +19,13 @@ import com.example.music.bean.Song
 import com.example.music.bean.TopList
 import com.example.music.music.contract.HomeContract
 import com.example.music.music.presenter.HomePresenter
-import com.example.music.music.view.act.AlbumActivity
-import com.example.music.music.view.act.ArtistActivity
-import com.example.music.music.view.act.SearchActivity
+import com.example.music.music.view.act.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.jakewharton.rxbinding2.view.RxView
 import com.xuexiang.xui.widget.banner.widget.banner.BannerItem
 import com.xuexiang.xui.widget.banner.widget.banner.base.BaseBanner
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.fragment_home.*
 import mvp.ljb.kt.fragment.BaseMvpFragment
@@ -242,7 +241,11 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
         recyc_item3.adapter = adapter
         adapter?.setOnKotlinItemClickListener(object : HomeSingerAdapter.IKotlinItemClickListener {
             override fun onItemClickListener(position: Int) {
-
+                val intent = Intent()
+                context?.let { intent.setClass(it, ArtistDetActivity().javaClass) }
+                intent.putExtra("id",artists[position].artist_id)
+                intent.putExtra("type",artists[position].type)
+                startActivity(intent)
             }
         })
     }
@@ -250,14 +253,19 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
     /**
      * 初始化歌曲
      */
-    private fun initSongList(song: List<Song>) {
+    private fun initSongList(song: MutableList<Song>) {
         recyc_item4.layoutManager = LinearLayoutManager(context)
         recyc_item4.itemAnimator = DefaultItemAnimator()
         val adapter = context?.let { HomeSongAdapter(song, it) }
         recyc_item4.adapter = adapter
         adapter?.setOnKotlinItemClickListener(object : HomeSongAdapter.IKotlinItemClickListener {
             override fun onItemClickListener(position: Int) {
-                Toast.makeText(context, "操作", Toast.LENGTH_SHORT).show()
+                val intent = Intent()
+                context?.let { intent.setClass(it, MusicPlayActivity().javaClass) }
+                intent.putExtra("id",position)
+                startActivity(intent)
+                Observable.just(song).subscribe(MusicPlayActivity.observer)
+
             }
         })
 

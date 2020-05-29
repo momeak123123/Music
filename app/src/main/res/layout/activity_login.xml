@@ -55,7 +55,7 @@
             android:drawablePadding="@dimen/dp_10"
             android:hint="@string/Username"
             android:inputType="textEmailAddress"
-            android:textSize="@dimen/sp_20"
+            android:textSize="@dimen/sp_18"
             app:met_primaryColor="@color/white"
             app:met_textColor="@color/white"
             app:met_textColorHint="@color/gray" />
@@ -73,7 +73,7 @@
             android:drawablePadding="@dimen/dp_10"
             android:hint="@string/Password"
             android:inputType="textPassword"
-            android:textSize="@dimen/sp_20"
+            android:textSize="@dimen/sp_18"
             app:met_primaryColor="@color/white"
             app:met_textColor="@color/white"
             app:met_textColorHint="@color/gray" />
@@ -101,6 +101,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
         android:text="@string/unknown"
+        android:padding="@dimen/dp_10"
         android:textColor="@color/white"
         android:textSize="@dimen/sp_16"
         app:layout_constraintEnd_toEndOf="parent"

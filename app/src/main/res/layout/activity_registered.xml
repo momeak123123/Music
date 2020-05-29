@@ -55,7 +55,7 @@
             android:drawablePadding="@dimen/dp_10"
             android:hint="@string/Username"
             android:inputType="textEmailAddress"
-            android:textSize="@dimen/sp_20"
+            android:textSize="@dimen/sp_18"
             app:met_primaryColor="@color/white"
             app:met_textColor="@color/white"
             app:met_textColorHint="@color/gray" />
@@ -73,7 +73,7 @@
             android:drawablePadding="@dimen/dp_10"
             android:hint="@string/Password"
             android:inputType="textPassword"
-            android:textSize="@dimen/sp_20"
+            android:textSize="@dimen/sp_18"
             app:met_primaryColor="@color/white"
             app:met_textColor="@color/white"
             app:met_textColorHint="@color/gray" />
@@ -91,24 +91,68 @@
             android:drawablePadding="@dimen/dp_10"
             android:hint="@string/repeat_password"
             android:inputType="textPassword"
-            android:textSize="@dimen/sp_20"
+            android:textSize="@dimen/sp_18"
             app:met_primaryColor="@color/white"
             app:met_textColor="@color/white"
             app:met_textColorHint="@color/gray" />
+
+        <com.xuexiang.xui.widget.edittext.materialedittext.MaterialEditText
+            android:id="@+id/re_captcha_number"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/re_passs_number"
+            android:layout_alignStart="@+id/textView2"
+            android:layout_alignEnd="@+id/re_pass_number"
+            android:layout_marginTop="@dimen/dp_20"
+            android:layout_toEndOf="@+id/textView2"
+            android:drawableStart="@drawable/ic_repeat"
+            android:drawablePadding="@dimen/dp_10"
+            android:hint="@string/captchas"
+            android:inputType="textPassword"
+            android:textSize="@dimen/sp_18"
+            app:met_primaryColor="@color/white"
+            app:met_textColor="@color/white"
+            app:met_textColorHint="@color/gray" />
+
+
+        <com.xuexiang.xui.widget.button.roundbutton.RoundButton
+            android:id="@+id/btn_captcha"
+            style="@style/RoundButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/re_captcha_number"
+            android:layout_alignEnd="@+id/re_captcha_number"
+            android:layout_alignBottom="@+id/re_captcha_number"
+            android:layout_gravity="end"
+            android:layout_marginTop="@dimen/dp_5"
+            android:layout_marginEnd="0dp"
+            android:layout_marginBottom="12dp"
+            android:paddingStart="10dp"
+            android:paddingTop="3dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="3dp"
+            android:text="@string/captcha"
+            android:textColor="@color/white"
+            android:textSize="13sp"
+            app:rb_borderColor="@color/white"
+            app:rb_borderWidth="1.5dp"
+            app:rb_radius="15dp" />
 
         <RadioButton
             android:id="@+id/radioButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/re_passs_number"
-            android:layout_alignStart="@+id/re_passs_number"
+            android:layout_below="@+id/re_captcha_number"
+            android:layout_alignStart="@+id/re_captcha_number"
             android:layout_marginStart="@dimen/dp_5"
             android:layout_marginTop="@dimen/dp_20"
             android:text="@string/protocol"
             android:textColor="@color/white"
-            android:textSize="@dimen/sp_20" />
+            android:textSize="@dimen/sp_18" />
 
     </RelativeLayout>
+
+
 
     <com.xuexiang.xui.widget.button.roundbutton.RoundButton
         android:id="@+id/btn_register"

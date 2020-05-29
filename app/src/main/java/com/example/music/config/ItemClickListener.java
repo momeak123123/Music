@@ -1,5 +1,6 @@
 package com.example.music.config;
 
+import android.content.Context;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -16,8 +17,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class ItemClickListener extends RecyclerView.SimpleOnItemTouchListener {
 
-    private OnItemClickListener clickListener;
+
     private GestureDetectorCompat gestureDetector;
+    private View childView;
+    private RecyclerView touchView;
 
     public interface OnItemClickListener {
 
@@ -26,26 +29,25 @@ public class ItemClickListener extends RecyclerView.SimpleOnItemTouchListener {
         void onItemLongClick(View view, int position);
     }
 
-    public ItemClickListener(final RecyclerView recyclerView,
+    public ItemClickListener(Context context,
                              OnItemClickListener listener) {
-        this.clickListener = listener;
-        gestureDetector = new GestureDetectorCompat(recyclerView.getContext(),
+        gestureDetector = new GestureDetectorCompat(context,
                 new GestureDetector.SimpleOnGestureListener() {
                     @Override
                     public boolean onSingleTapUp(MotionEvent e) {
-                        View childView = recyclerView.findChildViewUnder(e.getX(), e.getY());
-                        if (childView != null && clickListener != null ) {
-                            clickListener.onItemClick(childView, recyclerView.getChildAdapterPosition(childView));
+
+                        if (childView != null && listener != null) {
+                            listener.onItemClick(childView, touchView.getChildPosition(childView));
                         }
                         return true;
                     }
 
                     @Override
                     public void onLongPress(MotionEvent e) {
-                        View childView = recyclerView.findChildViewUnder(e.getX(), e.getY());
-                        if (childView != null && clickListener != null) {
-                            clickListener.onItemLongClick(childView,
-                                    recyclerView.getChildAdapterPosition(childView));
+
+                        if (childView != null && listener != null) {
+                            listener.onItemLongClick(childView,
+                                    touchView.getChildPosition(childView));
                         }
                     }
                 });
@@ -54,6 +56,19 @@ public class ItemClickListener extends RecyclerView.SimpleOnItemTouchListener {
     @Override
     public boolean onInterceptTouchEvent(@NotNull RecyclerView rv, @NotNull MotionEvent e) {
         gestureDetector.onTouchEvent(e);
+        childView = rv.findChildViewUnder(e.getX(), e.getY());
+        touchView = rv;
         return false;
     }
+
+    @Override
+    public void onTouchEvent(@NotNull RecyclerView rv, @NotNull MotionEvent e) {
+
+    }
+
+    @Override
+    public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+    }
+
 }

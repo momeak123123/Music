@@ -2,26 +2,20 @@ package com.example.music.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.music.R
+import com.example.music.bean.AlbumDet
 import com.example.music.bean.Artists
-import com.google.gson.JsonArray
-import com.google.gson.JsonObject
-import io.reactivex.Observer
 
-class ArtistListAdapter (var datas:MutableList<Artists>, val context: Context) : RecyclerView.Adapter<ArtistListAdapter.InnerHolder>() {
+class ArtistDetAdapter  (val datas: List<AlbumDet>, val context: Context) : RecyclerView.Adapter<ArtistDetAdapter.InnerHolder>() {
 
     private var itemClickListener: IKotlinItemClickListener? = null
-
-
 
     /**
      * 相当于getView()
@@ -29,7 +23,7 @@ class ArtistListAdapter (var datas:MutableList<Artists>, val context: Context) :
     override fun onCreateViewHolder(holder: ViewGroup, position: Int): InnerHolder {
         //加载View
         val itemView: View =
-            LayoutInflater.from(context).inflate(R.layout.artist_list_item, holder, false)
+            LayoutInflater.from(context).inflate(R.layout.artist_index_item, holder, false)
         itemView.setOnClickListener {
             itemClickListener?.onItemClickListener(position)
         }
@@ -42,11 +36,10 @@ class ArtistListAdapter (var datas:MutableList<Artists>, val context: Context) :
      */
     override fun getItemCount(): Int = datas.size
 
-
     class InnerHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var iv_cover: ImageView = itemView.findViewById(R.id.iv_cover)
         var title: TextView = itemView.findViewById(R.id.title)
-
+        var txt: TextView = itemView.findViewById(R.id.txt)
     }
 
     /**
@@ -54,8 +47,10 @@ class ArtistListAdapter (var datas:MutableList<Artists>, val context: Context) :
      */
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: InnerHolder, position: Int) {
-        Glide.with(context).load(datas[position].artist_picurl).placeholder(R.drawable.gplugin_load).into(holder.iv_cover)
-        holder.title.text = datas[position].artist_name
+        Glide.with(context).load(datas[position].album_picurl).placeholder(R.drawable.gplugin_load)
+            .into(holder.iv_cover)
+        holder.title.text = datas[position].album_name
+        holder.txt.text = datas[position].publish_time
     }
 
     // 提供set方法
@@ -66,14 +61,4 @@ class ArtistListAdapter (var datas:MutableList<Artists>, val context: Context) :
     interface IKotlinItemClickListener {
         fun onItemClickListener(position: Int)
     }
-
-    fun removeAll(){
-        datas.removeAll(datas)
-
-    }
-
-    fun addAll(data: MutableList<Artists>){
-        datas.addAll(data)
-    }
-
 }

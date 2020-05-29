@@ -50,7 +50,6 @@ public class PlayPauseView extends View {
     private int mRadius;  //圆的半径
     private int mBgColor = Color.WHITE;
     private int mBtnColor = Color.BLACK;
-    private int mLoadingColor;
     private int mDirection = Direction.POSITIVE.value;
     private float mPadding;
     private int mAnimDuration = 200;//动画时间
@@ -79,7 +78,7 @@ public class PlayPauseView extends View {
         mPadding = ta.getFloat(R.styleable.PlayPauseView_space_padding, 0);
         mAnimDuration = ta.getInt(R.styleable.PlayPauseView_anim_duration, 200);
         hasProgress = ta.getBoolean(R.styleable.PlayPauseView_hasProgress, false);
-        mLoadingColor = ta.getColor(R.styleable.PlayPauseView_loadingColor, Color.parseColor("#e91e63"));
+        int mLoadingColor = ta.getColor(R.styleable.PlayPauseView_loadingColor, Color.parseColor("#e91e63"));
         ta.recycle();
 
         mPaint = new Paint();

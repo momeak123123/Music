@@ -120,6 +120,7 @@
                 android:layout_toEndOf="@+id/progressTv"
                 android:maxHeight="2dp"
                 android:progress="0"
+                android:outlineAmbientShadowColor="@color/gray"
                 android:secondaryProgress="0"
                 android:tag="tint_accent_color" />
 
@@ -146,8 +147,8 @@
 
             <ImageView
                 android:id="@+id/imageView5"
-                android:layout_width="@dimen/dp_30"
-                android:layout_height="@dimen/dp_30"
+                android:layout_width="@dimen/dp_40"
+                android:layout_height="@dimen/dp_40"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="@dimen/dp_60"
                 android:layout_weight="1"
@@ -155,9 +156,9 @@
 
             <FrameLayout
                 android:id="@+id/playlayout"
-                android:layout_width="@dimen/dp_60"
+                android:layout_width="wrap_content"
                 android:layout_height="@dimen/dp_60"
-                android:layout_weight="3"
+                android:layout_weight="1"
                 android:gravity="center">
 
                 <com.example.music.music.view.custom.PlayPauseView
@@ -165,12 +166,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:layout_margin="@dimen/dp_8"
+                    android:layout_margin="@dimen/dp_2"
                     android:background="?android:attr/selectableItemBackgroundBorderless"
                     android:elevation="@dimen/dp_10"
                     android:scaleType="fitXY"
                     app:anim_duration="300"
-                    app:bg_color="@color/translucent"
+                    app:bg_color="@color/app_blue"
                     app:btn_color="@color/white"
                     app:elevation="10dp" />
 
@@ -178,14 +179,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
-                    android:layout_margin="@dimen/dp_8" />
+                    android:layout_margin="@dimen/dp_2" />
 
             </FrameLayout>
 
             <ImageView
                 android:id="@+id/imageView6"
-                android:layout_width="@dimen/dp_30"
-                android:layout_height="@dimen/dp_30"
+                android:layout_width="@dimen/dp_40"
+                android:layout_height="@dimen/dp_40"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="@dimen/dp_60"
                 android:layout_weight="1"

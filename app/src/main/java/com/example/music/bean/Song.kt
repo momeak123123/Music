@@ -1,11 +1,14 @@
 package com.example.music.bean
 
-data class Song(
+import android.os.Parcel
+import android.os.Parcelable
+
+data class Song (
     val album : Map<String,String>,
     val artists : List<Artister>,
-    val long : String,
+    val long : String?,
     val song_id: Long,
-    val song_name: String,
+    val song_name: String?,
     val type: Int
 )
 

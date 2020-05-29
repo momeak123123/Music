@@ -10,6 +10,13 @@ import com.example.music.R
 import com.example.music.music.contract.RegisteredContract
 import com.example.music.music.presenter.RegisteredPresenter
 import com.jakewharton.rxbinding2.view.RxView
+import com.jakewharton.rxbinding2.view.enabled
+import io.reactivex.Flowable
+import io.reactivex.Observer
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import io.reactivex.internal.operators.flowable.FlowableBlockingSubscribe.subscribe
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_registered.*
 import kotlinx.android.synthetic.main.head.*
@@ -26,7 +33,10 @@ import java.util.regex.Pattern
  **/
 class RegisteredActivity : BaseMvpActivity<RegisteredContract.IPresenter>(),
     RegisteredContract.IView {
-
+    companion object {
+        lateinit var observer: Observer<Boolean>
+        lateinit var observers: Observer<Boolean>
+    }
     private lateinit var context: Context
     override fun registerPresenter() = RegisteredPresenter::class.java
 
@@ -39,40 +49,117 @@ class RegisteredActivity : BaseMvpActivity<RegisteredContract.IPresenter>(),
         context = this
     }
 
-    @SuppressLint("CheckResult")
+
     override fun initData() {
         super.initData()
+
+    }
+
+    @SuppressLint("CheckResult")
+    override fun initView() {
+        super.initView()
         RxView.clicks(register_flot)
             .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
                 finish()
             }
-    }
 
-    override fun initView() {
-        super.initView()
-        btn_register.setOnClickListener {
-            if (re_username_number.isNotEmpty) {
-                if (re_pass_number.isNotEmpty) {
-                    if (re_passs_number.text.toString().equals(re_pass_number.text.toString())) {
-                        if (getPresenter().registerdata()) {
-                            finish()
+        RxView.clicks(btn_captcha)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe {
+                if (re_username_number.isNotEmpty) {
+                    getPresenter().registercode(context,re_username_number.text.toString())
+                }else{
+                    Toast.makeText(context, R.string.error_name, Toast.LENGTH_SHORT).show()
+                }
+            }
+
+        RxView.clicks(btn_register)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe {
+                if (re_username_number.isNotEmpty) {
+                    if(isEmail(re_username_number.text.toString())){
+                        if (re_pass_number.isNotEmpty) {
+                            if (re_passs_number.text.toString() == re_pass_number.text.toString()) {
+                                if (re_captcha_number.isNotEmpty) {
+                                    getPresenter().registerdata(context,re_username_number.text.toString(),re_pass_number.text.toString(),re_captcha_number.text.toString())
+                                } else {
+                                    Toast.makeText(context, R.string.error_captcha, Toast.LENGTH_SHORT).show()
+                                }
+
+                            } else {
+                                Toast.makeText(context, R.string.error_passs, Toast.LENGTH_SHORT).show()
+                            }
+
                         } else {
-                            Toast.makeText(context, R.string.error_register, Toast.LENGTH_SHORT)
-                                .show()
+                            Toast.makeText(context, R.string.error_pass, Toast.LENGTH_SHORT).show()
                         }
-
-                    } else {
-                        Toast.makeText(context, R.string.error_passs, Toast.LENGTH_SHORT).show()
+                    }else{
+                        Toast.makeText(context, R.string.tip_name_number_error, Toast.LENGTH_SHORT).show()
                     }
 
+
                 } else {
-                    Toast.makeText(context, R.string.error_pass, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, R.string.error_name, Toast.LENGTH_SHORT).show()
                 }
-            } else {
-                Toast.makeText(context, R.string.error_name, Toast.LENGTH_SHORT).show()
             }
+    }
+
+    fun isEmail(email: String?): Boolean {
+        val str =
+            "^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$"
+        val p = Pattern.compile(str)
+        val m = p.matcher(email)
+        return m.matches()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        observer = object : Observer<Boolean> {
+            override fun onSubscribe(d: Disposable) {}
+            override fun onNext(bool: Boolean) {
+                if (bool) {
+                    finish()
+                    val intent = Intent()
+                    intent.setClass(context as RegisteredActivity, MainActivity().javaClass)
+                    startActivity(intent)
+                } else {
+
+                    Toast.makeText(context, R.string.error_register, Toast.LENGTH_SHORT)
+                        .show()
+                }
+            }
+
+            override fun onError(e: Throwable) {}
+            override fun onComplete() {}
+
         }
+
+        observers = object : Observer<Boolean> {
+            override fun onSubscribe(d: Disposable) {}
+            override fun onNext(bool: Boolean) {
+                Toast.makeText(context, R.string.succes_code, Toast.LENGTH_SHORT)
+                    .show()
+                btn_captcha.isEnabled = false
+                Flowable.intervalRange(0, 60 + 1, 0, 1, TimeUnit.SECONDS)
+              .subscribeOn(Schedulers.io())
+               .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext {
+                    btn_captcha.text=""+(60-it)+"s"
+                }
+                .doOnComplete{
+                    btn_captcha.isEnabled = true
+                    btn_captcha.text= getText(R.string.captcha)
+                }
+               .subscribe()
+            }
+
+            override fun onError(e: Throwable) {}
+            override fun onComplete() {}
+
+        }
+
+
     }
 
 }

@@ -13,8 +13,8 @@ import com.example.music.music.model.LoginModel
 class LoginPresenter : BaseMvpPresenter<LoginContract.IView, LoginContract.IModel>(), LoginContract.IPresenter{
 
     override fun registerModel() = LoginModel::class.java
-    override fun logindata(context: Context): Boolean {
-       return getModel().logindata(context)
+    override fun logindata(context: Context,email:String,pass:String): Boolean {
+       return getModel().logindata(context,email,pass)
     }
 
 }

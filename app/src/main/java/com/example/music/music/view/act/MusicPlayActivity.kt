@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import com.example.music.R
 import com.example.music.adapter.ViewPagerAdapter
 import com.example.music.bean.Music
+import com.example.music.bean.Song
 import com.example.music.music.view.fragment.CoverFragment
 import com.example.music.music.view.fragment.LyricFragment
 import com.example.music.utils.BitmapUtils
@@ -33,7 +34,7 @@ class MusicPlayActivity : AppCompatActivity() {
     companion object {
         var position: Int = 0
         lateinit var wlMusic: WlMusic
-        lateinit var observer: Observer<Music>
+        lateinit var observer: Observer<MutableList<Song>>
     }
 
 
@@ -41,8 +42,10 @@ class MusicPlayActivity : AppCompatActivity() {
     private var bool: Boolean = false
     private var min: Long = 0
     private var max: Long = 0
+    private var id: Int = 0
     private var bitmap: Bitmap? = null
-    private var playingMusic: Music? = null
+    private var playingMusic: Song? = null
+    private var playingMusicList: MutableList<Song>? = null
     private var coverFragment= CoverFragment()
     private var lyricFragment= LyricFragment()
     private val fragments = mutableListOf<Fragment>()
@@ -89,37 +92,49 @@ class MusicPlayActivity : AppCompatActivity() {
 
 
 
-    private fun start(music:Music){
+    private fun start(music:Song){
         playPauseIv.setLoading(true)
         playingMusic = music
         //更新标题
-        titleIv.text = music.title
-        subTitleTv.text = music.artist
-        Ablemname.text = music.album
+        titleIv.text = music.song_name
+        subTitleTv.text = music.artists[0].artist_name
+        Ablemname.text = music.album["album_name"]
         //更新收藏状态
         /* music?.isLove?.let {
              collectIv.setImageResource(if (it) R.drawable.item_favorite_love else R.drawable.item_favorite)
          }*/
         object : Thread() {
             override fun run() {
-                bitmap = BitmapUtils.netUrlPicToBmp(music.coverBig.toString())
+                bitmap = BitmapUtils.netUrlPicToBmp(music.album["album_picurl"])
                 coverFragment.setImageBitmap(bitmap)
-                play(music.uri)
+                play("")
+            }
+        }.start()
+    }
+
+    private fun starts(music:Song){
+        playPauseIv.setLoading(true)
+        playingMusic = music
+        //更新标题
+        titleIv.text = music.song_name
+        subTitleTv.text = music.artists[0].artist_name
+        Ablemname.text = music.album["album_name"]
+        //更新收藏状态
+        /* music?.isLove?.let {
+             collectIv.setImageResource(if (it) R.drawable.item_favorite_love else R.drawable.item_favorite)
+         }*/
+        object : Thread() {
+            override fun run() {
+                bitmap = BitmapUtils.netUrlPicToBmp(music.album["album_picurl"])
+                coverFragment.setImageBitmap(bitmap)
+                wlMusic.playNext("")
             }
         }.start()
     }
 
     override fun onStart() {
         super.onStart()
-        val bundle = intent.extras
-        val music = bundle?.get("music") as Music
-        if(playingMusic!=null){
-            if(music.id != playingMusic!!.id){
-                start(music)
-            }
-        }else{
-            start(music)
-        }
+
     }
 
 
@@ -132,11 +147,22 @@ class MusicPlayActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        observer = object : Observer<Music> {
+        observer = object : Observer<MutableList<Song>> {
             override fun onSubscribe(d: Disposable) {}
 
             @SuppressLint("SetTextI18n")
-            override fun onNext(data: Music) {
+            override fun onNext(data: MutableList<Song>) {
+                val bundle = intent.extras
+                 id = bundle?.get("id") as Int
+                if(data.isNotEmpty()){
+                    if(playingMusic!!.album["album_id"] == data[id].album["album_id"]){
+                        starts(data[id])
+                    }else{
+                        playingMusicList!!.clear()
+                        playingMusicList = data
+                        start(data[id])
+                    }
+                }
                 //play(data.uri)
                // wlMusic.stop()
                 //wlMusic.playNext(uri)
@@ -224,6 +250,7 @@ class MusicPlayActivity : AppCompatActivity() {
             .doOnComplete {
                 playPauseIv.pause()
                 coverFragment.stopRotateAnimation()
+                playtype()
             }
             .subscribe()
     }
@@ -233,6 +260,30 @@ class MusicPlayActivity : AppCompatActivity() {
             "0$time"
         else
             "" + time
+    }
+
+
+    fun playtype(){
+        when (0) {
+            1 -> {
+                starts(playingMusicList!![id])
+            }
+            2 -> {
+                val randoms = (0 until playingMusicList!!.size).random()
+                id=randoms
+                starts(playingMusicList!![randoms])
+            }
+            else -> {
+                val ids = id +1
+                if(playingMusicList!!.size == ids){
+                    id=0
+                    starts(playingMusicList!![0])
+                }else{
+                    id=ids
+                    starts(playingMusicList!![ids])
+                }
+            }
+        }
     }
 
 

@@ -80,11 +80,11 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
         initData();
 
         SharedPreferences sp = this.getSharedPreferences("User", Context.MODE_PRIVATE);
-        String slogin = sp.getString("login", "false");
-        /*if (slogin.equals("false")) {
+        String slogin = sp.getString("user_id", "");
+        if (slogin.equals("")) {
             Intent intent = new Intent(MainActivity.this, LoginActivity.class);
             startActivity(intent);
-        }*/
+        }
 
     }
 

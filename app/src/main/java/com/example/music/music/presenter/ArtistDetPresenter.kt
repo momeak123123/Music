@@ -1,5 +1,6 @@
 package com.example.music.music.presenter
 
+import android.content.Context
 import mvp.ljb.kt.presenter.BaseMvpPresenter
 import com.example.music.music.contract.ArtistDetContract
 import com.example.music.music.model.ArtistDetModel
@@ -12,5 +13,8 @@ import com.example.music.music.model.ArtistDetModel
 class ArtistDetPresenter : BaseMvpPresenter<ArtistDetContract.IView, ArtistDetContract.IModel>(), ArtistDetContract.IPresenter{
 
     override fun registerModel() = ArtistDetModel::class.java
+    override fun listdata(context: Context, id: Long, type: Int) {
+        getModel().listdata(context,id,type)
+    }
 
 }

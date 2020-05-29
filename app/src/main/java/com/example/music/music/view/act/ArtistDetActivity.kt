@@ -1,8 +1,36 @@
 package com.example.music.music.view.act
 
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
+import android.view.View
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
+import com.example.music.R
+import com.example.music.adapter.ArtistDetAdapter
+import com.example.music.adapter.ArtistListAdapter
+import com.example.music.adapter.ArtistTagAdapter
+import com.example.music.bean.AlbumDet
+import com.example.music.bean.Artists
+import com.example.music.bean.Hierarchy
+import com.example.music.bean.Music
+import com.example.music.config.ItemClickListener
 import com.example.music.music.contract.ArtistDetContract
 import com.example.music.music.presenter.ArtistDetPresenter
+import com.google.gson.Gson
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
+import com.google.gson.reflect.TypeToken
+import com.jakewharton.rxbinding2.view.RxView
+import io.reactivex.Observer
+import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.artist_index.*
+import kotlinx.android.synthetic.main.head.*
+import kotlinx.android.synthetic.main.music_artist.*
 import mvp.ljb.kt.act.BaseMvpActivity
+import java.util.concurrent.TimeUnit
 
 /**
  * @Author Kotlin MVP Plugin
@@ -11,10 +39,96 @@ import mvp.ljb.kt.act.BaseMvpActivity
  **/
 class ArtistDetActivity : BaseMvpActivity<ArtistDetContract.IPresenter>() , ArtistDetContract.IView {
 
+    companion object {
+        lateinit var observer: Observer<JsonObject>
+    }
+
+    private lateinit var context: Context
     override fun registerPresenter() = ArtistDetPresenter::class.java
 
     override fun getLayoutId(): Int {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return R.layout.artist_index
     }
 
+    override fun init(savedInstanceState: Bundle?) {
+        super.init(savedInstanceState)
+        context = this
+    }
+
+    override fun initData() {
+        super.initData()
+        val bundle = intent.extras
+        val id = bundle?.get("id") as Long
+        val type = bundle.get("type") as Int
+        getPresenter().listdata(context,id,type)
+
+    }
+
+    @SuppressLint("CheckResult")
+    override fun initView() {
+        super.initView()
+        RxView.clicks(top_flot)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe {
+                finish()
+            }
+
+    }
+
+
+    override fun onResume() {
+        super.onResume()
+
+        observer = object : Observer<JsonObject> {
+            override fun onSubscribe(d: Disposable) {}
+            override fun onNext(data: JsonObject) {
+
+                val artist: Map<String,String> = Gson().fromJson(
+                    data.getAsJsonObject("artist"),
+                    object : TypeToken<Map<String,String>>() {}.type
+                )
+                Glide.with(context).load(artist["artist_picurl"]).placeholder(R.drawable.gplugin_load).into(back)
+                artist_name.text=artist["artist_name"]
+                artist_txt.text=artist["brief_desc"]
+
+                val albums: List<AlbumDet> = Gson().fromJson(
+                    data.getAsJsonArray("albums"),
+                    object : TypeToken<List<AlbumDet>>() {}.type
+                )
+                if (albums.isNotEmpty()) {
+                    initSingerList(albums)
+                }
+            }
+
+            override fun onError(e: Throwable) {}
+            override fun onComplete() {}
+
+        }
+
+
+    }
+
+
+    private fun initSingerList(artists: List<AlbumDet>) {
+        recyc_item.layoutManager = LinearLayoutManager(context)
+        recyc_item.itemAnimator = DefaultItemAnimator()
+        val adapter = ArtistDetAdapter(artists, context)
+        recyc_item.adapter = adapter
+        recyc_item.addOnItemTouchListener(
+            ItemClickListener(context,
+                object : ItemClickListener.OnItemClickListener {
+                    override fun onItemClick(view: View?, position: Int) {
+
+                    }
+
+                    override fun onItemLongClick(view: View?, position: Int) {
+
+                    }
+                })
+        )
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+    }
 }

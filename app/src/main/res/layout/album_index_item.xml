@@ -1,10 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
+
+    <com.xuexiang.xui.widget.imageview.RadiusImageView
+        android:id="@+id/radio"
+        android:layout_width="@dimen/dp_20"
+        android:layout_height="@dimen/dp_20"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
+        android:src="@color/app_color_apr"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_cover"
+        app:layout_constraintEnd_toStartOf="@+id/iv_cover"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/iv_cover"
+        app:riv_is_circle="true" />
 
     <com.xuexiang.xui.widget.imageview.RadiusImageView
         android:id="@+id/iv_cover"
@@ -13,6 +27,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentBottom="true"
+        android:layout_marginStart="36dp"
         android:layout_marginTop="@dimen/dp_10"
         android:scaleType="centerCrop"
         android:src="@color/app_color_apr"
@@ -73,5 +88,15 @@
         app:layout_constraintTop_toTopOf="parent"
         android:src="@drawable/more" />
 
+    <TextView
+        android:id="@+id/textView3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/iv_cover"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/iv_cover" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

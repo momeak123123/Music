@@ -48,7 +48,6 @@ class ArtistTagAdapter (val datas: MutableList<Hierarchy>, val context: Context,
         holder.tag.setOnClickListener {
             if(type==1){
                 for (i in datas.indices) {
-                    println(i)
                     datas[i].cat_hierarchy = 1
                 }
                 datas[position].cat_hierarchy = 0

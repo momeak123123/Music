@@ -2,6 +2,7 @@ package com.example.music.music.view.act
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
@@ -10,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.music.R
 import com.example.music.adapter.ArtistListAdapter
 import com.example.music.adapter.ArtistTagAdapter
+import com.example.music.adapter.HomeListAdapter
 import com.example.music.bean.Artists
 import com.example.music.bean.Hierarchy
 import com.example.music.config.ItemClickListener
@@ -20,6 +22,7 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import com.jakewharton.rxbinding2.view.RxView
+import com.xuexiang.xui.widget.banner.widget.banner.BannerItem
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.head.*
@@ -39,6 +42,8 @@ class ArtistActivity : BaseMvpActivity<ArtistContract.IPresenter>(), ArtistContr
         lateinit var observers: Observer<JsonArray>
     }
 
+    private lateinit var adapter: ArtistListAdapter
+    var liatdata = mutableListOf<Artists>()
     override fun registerPresenter() = ArtistPresenter::class.java
 
     override fun getLayoutId(): Int {
@@ -47,6 +52,7 @@ class ArtistActivity : BaseMvpActivity<ArtistContract.IPresenter>(), ArtistContr
 
     var varieties: Int = 0
     var letter: Int = 0
+    var bool: Boolean = false
     private lateinit var context: Context
 
     override fun init(savedInstanceState: Bundle?) {
@@ -58,18 +64,18 @@ class ArtistActivity : BaseMvpActivity<ArtistContract.IPresenter>(), ArtistContr
         super.initData()
         top_title.text = "歌星"
         getPresenter().taglist(context)
-       /* val sp: SharedPreferences =
-            context.getSharedPreferences("Music", Context.MODE_PRIVATE)
+        /* val sp: SharedPreferences =
+             context.getSharedPreferences("Music", Context.MODE_PRIVATE)
 
-        if (!sp.getString("artist", "").equals("")) {
-            val artist: List<Artists> = Gson().fromJson(
-                sp.getString("artist", ""),
-                object : TypeToken<List<Artists>>() {}.type
-            )
-            if (artist.isNotEmpty()) {
-                initSingerList(artist)
-            }
-        }*/
+         if (!sp.getString("artist", "").equals("")) {
+             val artist: List<Artists> = Gson().fromJson(
+                 sp.getString("artist", ""),
+                 object : TypeToken<List<Artists>>() {}.type
+             )
+             if (artist.isNotEmpty()) {
+                 initSingerList(artist)
+             }
+         }*/
 
     }
 
@@ -100,20 +106,20 @@ class ArtistActivity : BaseMvpActivity<ArtistContract.IPresenter>(), ArtistContr
                     Array<Hierarchy>::class.java
                 ).toMutableList()
                 if (hierarchy1.isNotEmpty()) {
-                   // val hier = Hierarchy(0, 1, "全部")
-                   // hierarchy1.add(0, hier)
+                    // val hier = Hierarchy(0, 1, "全部")
+                    // hierarchy1.add(0, hier)
                     initTopList(hierarchy1)
                 }
                 if (hierarchy2.isNotEmpty()) {
-                   // val hier = Hierarchy(0, 2, "全部")
-                   // hierarchy2.add(0, hier)
+                    // val hier = Hierarchy(0, 2, "全部")
+                    // hierarchy2.add(0, hier)
                     initAlbumList(hierarchy2)
                 }
-                hierarchy1[0].cat_hierarchy=0
-                hierarchy2[0].cat_hierarchy=0
-                 varieties=hierarchy1[0].cat_id
-                 letter=hierarchy2[0].cat_id
-                getPresenter().listdata(context,varieties,letter)
+                hierarchy1[0].cat_hierarchy = 0
+                hierarchy2[0].cat_hierarchy = 0
+                varieties = hierarchy1[0].cat_id
+                letter = hierarchy2[0].cat_id
+                getPresenter().listdata(context, varieties, letter)
             }
 
             override fun onError(e: Throwable) {}
@@ -124,22 +130,23 @@ class ArtistActivity : BaseMvpActivity<ArtistContract.IPresenter>(), ArtistContr
         observers = object : Observer<JsonArray> {
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(data: JsonArray) {
-
-                val artist: List<Artists> = Gson().fromJson(
+                val artist: MutableList<Artists> = Gson().fromJson(
                     data,
-                    object : TypeToken<List<Artists>>() {}.type
+                    object : TypeToken<MutableList<Artists>>() {}.type
                 )
                 if (artist.isNotEmpty()) {
-                    initSingerList(artist)
+                    if (bool) {
+                        initSingerListup(artist)
+                    }else{
+                        initSingerList(artist)
+                    }
+
                 }
             }
 
             override fun onError(e: Throwable) {}
             override fun onComplete() {}
-
         }
-
-
     }
 
     fun initTopList(list: MutableList<Hierarchy>) {
@@ -150,11 +157,12 @@ class ArtistActivity : BaseMvpActivity<ArtistContract.IPresenter>(), ArtistContr
         val adapter = ArtistTagAdapter(list, context, 1)
         recyc_tab1.adapter = adapter
         recyc_tab1.addOnItemTouchListener(
-            ItemClickListener(recyc_tab1,
+            ItemClickListener(context,
                 object : ItemClickListener.OnItemClickListener {
                     override fun onItemClick(view: View?, position: Int) {
+                        bool = true
                         varieties = list[position].cat_id
-                        getPresenter().listdata(context,varieties,letter)
+                        getPresenter().listdata(context, varieties, letter)
                     }
 
                     override fun onItemLongClick(view: View?, position: Int) {
@@ -174,11 +182,12 @@ class ArtistActivity : BaseMvpActivity<ArtistContract.IPresenter>(), ArtistContr
         val adapter = ArtistTagAdapter(album, context, 2)
         recyc_tab2.adapter = adapter
         recyc_tab2.addOnItemTouchListener(
-            ItemClickListener(recyc_tab1,
+            ItemClickListener(context,
                 object : ItemClickListener.OnItemClickListener {
                     override fun onItemClick(view: View?, position: Int) {
+                        bool = true
                         letter = album[position].cat_id
-                        getPresenter().listdata(context,varieties,letter)
+                        getPresenter().listdata(context, varieties, letter)
                     }
 
                     override fun onItemLongClick(view: View?, position: Int) {
@@ -188,17 +197,35 @@ class ArtistActivity : BaseMvpActivity<ArtistContract.IPresenter>(), ArtistContr
         )
     }
 
-    private fun initSingerList(artists: List<Artists>) {
+    private fun initSingerList(artists: MutableList<Artists>) {
         recyc_list.layoutManager = LinearLayoutManager(context)
         recyc_list.itemAnimator = DefaultItemAnimator()
-        val adapter = ArtistListAdapter(artists, context)
+        adapter = ArtistListAdapter(artists, context)
         recyc_list.adapter = adapter
-        adapter.setOnKotlinItemClickListener(object : ArtistListAdapter.IKotlinItemClickListener {
-            override fun onItemClickListener(position: Int) {
+        recyc_list.addOnItemTouchListener(
+            ItemClickListener(context,
+                object : ItemClickListener.OnItemClickListener {
+                    override fun onItemClick(view: View?, position: Int) {
+                        val intent = Intent()
+                        context.let { intent.setClass(it, ArtistDetActivity().javaClass) }
+                        intent.putExtra("id", artists[position].artist_id)
+                        intent.putExtra("type", artists[position].type)
+                        startActivity(intent)
+                    }
 
-            }
-        })
+                    override fun onItemLongClick(view: View?, position: Int) {
+
+                    }
+                })
+        )
     }
+
+    fun initSingerListup(artists: MutableList<Artists>) {
+        adapter.removeAll()
+       adapter.addAll(artists)
+        adapter.notifyDataSetChanged()
+    }
+
 
     override fun onDestroy() {
         super.onDestroy()

@@ -15,10 +15,10 @@ interface LoginContract {
     interface IView : IViewContract
 
     interface IPresenter : IPresenterContract {
-        fun logindata(context: Context): Boolean
+        fun logindata(context: Context,email:String,pass:String): Boolean
     }
 
     interface IModel : IModelContract {
-        fun logindata(context: Context): Boolean
+        fun logindata(context: Context,email:String,pass:String): Boolean
     }
 }
