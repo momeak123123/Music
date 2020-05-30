@@ -168,7 +168,7 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
             .throttleFirst(1,TimeUnit.SECONDS)
             .subscribe {
                 val intent = Intent()
-                context?.let { intent.setClass(it, AlbumActivity().javaClass) }
+                context?.let { intent.setClass(it, MusicListActivity().javaClass) }
                 intent.putExtra("album_type",1)
                 startActivity(intent)
             }
@@ -290,7 +290,7 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
                         context?.let { intent.setClass(it, MusicPlayActivity().javaClass) }
                         intent.putExtra("id",position)
                         startActivity(intent)
-                        Observable.just(song).subscribe(MusicPlayActivity.observer)
+                        
                     }
 
                     override fun onItemLongClick(view: View?, position: Int) {

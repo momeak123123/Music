@@ -56,9 +56,8 @@
             android:hint="@string/Username"
             android:inputType="textEmailAddress"
             android:textSize="@dimen/sp_18"
-            app:met_primaryColor="@color/white"
-            app:met_textColor="@color/white"
-            app:met_textColorHint="@color/gray" />
+            android:textColor="@color/white"
+            android:textColorHint="@color/gray" />
 
         <com.xuexiang.xui.widget.edittext.materialedittext.MaterialEditText
             android:id="@+id/re_pass_number"
@@ -74,9 +73,8 @@
             android:hint="@string/Password"
             android:inputType="textPassword"
             android:textSize="@dimen/sp_18"
-            app:met_primaryColor="@color/white"
-            app:met_textColor="@color/white"
-            app:met_textColorHint="@color/gray" />
+            android:textColor="@color/white"
+            android:textColorHint="@color/gray" />
 
         <com.xuexiang.xui.widget.edittext.materialedittext.MaterialEditText
             android:id="@+id/re_passs_number"
@@ -92,9 +90,8 @@
             android:hint="@string/repeat_password"
             android:inputType="textPassword"
             android:textSize="@dimen/sp_18"
-            app:met_primaryColor="@color/white"
-            app:met_textColor="@color/white"
-            app:met_textColorHint="@color/gray" />
+            android:textColor="@color/white"
+            android:textColorHint="@color/gray" />
 
         <com.xuexiang.xui.widget.edittext.materialedittext.MaterialEditText
             android:id="@+id/re_captcha_number"
@@ -110,9 +107,8 @@
             android:hint="@string/captchas"
             android:inputType="textPassword"
             android:textSize="@dimen/sp_18"
-            app:met_primaryColor="@color/white"
-            app:met_textColor="@color/white"
-            app:met_textColorHint="@color/gray" />
+            android:textColor="@color/white"
+            android:textColorHint="@color/gray" />
 
 
         <com.xuexiang.xui.widget.button.roundbutton.RoundButton

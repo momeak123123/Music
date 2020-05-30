@@ -13,8 +13,10 @@ import com.example.music.adapter.HomeAlbumAdapter
 import com.example.music.adapter.HomeListAdapter
 import com.example.music.adapter.MusicListAdapter
 import com.example.music.bean.Music
+import com.example.music.config.ItemClickListener
 import com.example.music.music.contract.MusicListContract
 import com.example.music.music.presenter.MusicListPresenter
+import io.reactivex.Observable
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.music_list.*
 import mvp.ljb.kt.act.BaseMvpActivity
@@ -29,6 +31,7 @@ class MusicListActivity : BaseMvpActivity<MusicListContract.IPresenter>() , Musi
 
     private lateinit var context: Context
     var Datas = mutableListOf<Music>()
+
 
     override fun registerPresenter() = MusicListPresenter::class.java
 
@@ -58,14 +61,22 @@ class MusicListActivity : BaseMvpActivity<MusicListContract.IPresenter>() , Musi
         musiclist.itemAnimator = DefaultItemAnimator()
         val adapter = MusicListAdapter(Datas,this)
         musiclist.adapter = adapter
-        adapter.setOnKotlinItemClickListener(object : MusicListAdapter.IKotlinItemClickListener {
-            override fun onItemClickListener(position: Int) {
-                val intent = Intent()
-                context.let { intent.setClass(it, MusicPlayActivity().javaClass) }
-                intent.putExtra("music",Datas[position])
-                startActivity(intent)
-            }
-        })
+        musiclist.addOnItemTouchListener(
+            ItemClickListener(context,
+                object : ItemClickListener.OnItemClickListener {
+                    override fun onItemClick(view: View?, position: Int) {
+                        val intent = Intent()
+                        context.let { intent.setClass(it, MusicPlayActivity().javaClass) }
+                        intent.putExtra("music",Datas[position])
+                        startActivity(intent)
+                        //Observable.just(Datas).subscribe(MusicPlayActivity.observer)
+                    }
+
+                    override fun onItemLongClick(view: View?, position: Int) {
+
+                    }
+                })
+        )
     }
 
 

@@ -5,15 +5,23 @@ import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.view.View
 import android.view.animation.Animation
 import android.view.animation.TranslateAnimation
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.example.music.R
+import com.example.music.adapter.PlayListAdapter
+import com.example.music.adapter.PlaySongAdapter
+import com.example.music.adapter.SongListAdapter
 import com.example.music.adapter.ViewPagerAdapter
 import com.example.music.bean.Music
 import com.example.music.bean.Song
+import com.example.music.config.ItemClickListener
 import com.example.music.music.view.fragment.CoverFragment
 import com.example.music.music.view.fragment.LyricFragment
 import com.example.music.utils.BitmapUtils
@@ -25,8 +33,10 @@ import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.fragment_find.*
 import kotlinx.android.synthetic.main.head.*
 import kotlinx.android.synthetic.main.music_play.*
+import kotlinx.android.synthetic.main.play_list.*
 import java.util.concurrent.TimeUnit
 
 class MusicPlayActivity : AppCompatActivity() {
@@ -34,7 +44,7 @@ class MusicPlayActivity : AppCompatActivity() {
     companion object {
         var position: Int = 0
         lateinit var wlMusic: WlMusic
-        lateinit var observer: Observer<MutableList<Song>>
+        lateinit var observer: Observer<MutableList<Music>>
     }
 
 
@@ -44,8 +54,8 @@ class MusicPlayActivity : AppCompatActivity() {
     private var max: Long = 0
     private var id: Int = 0
     private var bitmap: Bitmap? = null
-    private var playingMusic: Song? = null
-    private var playingMusicList: MutableList<Song>? = null
+    private var playingMusic: Music? = null
+    private var playingMusicList: MutableList<Music>? = null
     private var coverFragment= CoverFragment()
     private var lyricFragment= LyricFragment()
     private val fragments = mutableListOf<Fragment>()
@@ -61,6 +71,10 @@ class MusicPlayActivity : AppCompatActivity() {
         fragments.add(lyricFragment)
         viewPager.adapter = ViewPagerAdapter(supportFragmentManager, fragments)
         initView()
+
+        val bundle = intent.extras
+        playingMusic = bundle?.get("music") as Music
+        start(playingMusic!!)
     }
 
     @SuppressLint("CheckResult")
@@ -87,54 +101,137 @@ class MusicPlayActivity : AppCompatActivity() {
             .subscribe {
                 finish()
             }
+        RxView.clicks(icon3)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe {
+               in_indel.visibility = View.VISIBLE
+                Glide.with(context).load("").into(del)
+                in_title.text = "选择歌单"
+            }
+        RxView.clicks(icon4)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe {
+                in_indel.visibility = View.VISIBLE
+                Glide.with(context).load("").placeholder(R.drawable.gplugin_load).into(del)
+                in_title.text = ""
+                playingMusicList?.let { it1 -> initPlayList(it1) }
+            }
+
+        RxView.clicks(list_dow)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe {
+                in_indel.visibility = View.GONE
+            }
+
 
     }
 
 
+    /**
+     * 初始化歌曲
+     */
+    private fun initPlayList(song: MutableList<Music>) {
+        in_list.layoutManager = LinearLayoutManager(context)
+        in_list.itemAnimator = DefaultItemAnimator()
+        val adapter =  PlayListAdapter(song, context)
+        in_list.adapter = adapter
+        in_list.addOnItemTouchListener(
+            ItemClickListener(context,
+                object : ItemClickListener.OnItemClickListener {
+                    override fun onItemClick(view: View?, position: Int) {
 
-    private fun start(music:Song){
+                    }
+
+                    override fun onItemLongClick(view: View?, position: Int) {
+
+                    }
+                })
+        )
+    }
+
+    /**
+     * 初始化歌曲
+     */
+    private fun initSongList(song: MutableList<Song>) {
+        in_list.layoutManager = LinearLayoutManager(context)
+        in_list.itemAnimator = DefaultItemAnimator()
+        val adapter =  PlaySongAdapter(song, context)
+        in_list.adapter = adapter
+        in_list.addOnItemTouchListener(
+            ItemClickListener(context,
+                object : ItemClickListener.OnItemClickListener {
+                    override fun onItemClick(view: View?, position: Int) {
+
+                    }
+
+                    override fun onItemLongClick(view: View?, position: Int) {
+
+                    }
+                })
+        )
+    }
+
+    private fun start(music:Music){
         playPauseIv.setLoading(true)
         playingMusic = music
         //更新标题
-        titleIv.text = music.song_name
-        subTitleTv.text = music.artists[0].artist_name
-        Ablemname.text = music.album["album_name"]
+        titleIv.text = music.title
+        subTitleTv.text = music.artist
+        Ablemname.text = music.album
         //更新收藏状态
         /* music?.isLove?.let {
              collectIv.setImageResource(if (it) R.drawable.item_favorite_love else R.drawable.item_favorite)
          }*/
         object : Thread() {
             override fun run() {
-                bitmap = BitmapUtils.netUrlPicToBmp(music.album["album_picurl"])
+                bitmap = BitmapUtils.netUrlPicToBmp(music.coverBig)
                 coverFragment.setImageBitmap(bitmap)
-                play("")
+                play(music.uri)
             }
         }.start()
     }
 
-    private fun starts(music:Song){
+    private fun starts(music:Music){
         playPauseIv.setLoading(true)
         playingMusic = music
         //更新标题
-        titleIv.text = music.song_name
-        subTitleTv.text = music.artists[0].artist_name
-        Ablemname.text = music.album["album_name"]
+        titleIv.text = music.title
+        subTitleTv.text = music.artist
+        Ablemname.text = music.album
         //更新收藏状态
         /* music?.isLove?.let {
              collectIv.setImageResource(if (it) R.drawable.item_favorite_love else R.drawable.item_favorite)
          }*/
         object : Thread() {
             override fun run() {
-                bitmap = BitmapUtils.netUrlPicToBmp(music.album["album_picurl"])
+                bitmap = BitmapUtils.netUrlPicToBmp(music.coverBig)
                 coverFragment.setImageBitmap(bitmap)
-                wlMusic.playNext("")
+                wlMusic.playNext(music.uri)
             }
         }.start()
     }
 
     override fun onStart() {
         super.onStart()
+        observer = object : Observer<MutableList<Music>> {
+            override fun onSubscribe(d: Disposable) {}
 
+            @SuppressLint("SetTextI18n")
+            override fun onNext(data: MutableList<Music>) {
+               println(0)
+                if(data.isNotEmpty()){
+
+                    if(playingMusic!!.id != data[id].id){
+                        playingMusicList!!.clear()
+                        playingMusicList = data
+                    }
+                }
+            }
+
+            override fun onError(e: Throwable) {}
+            override fun onComplete() {}
+
+        }
     }
 
 
@@ -144,36 +241,6 @@ class MusicPlayActivity : AppCompatActivity() {
             wlMusic.stop()
         }
     }
-
-    override fun onResume() {
-        super.onResume()
-        observer = object : Observer<MutableList<Song>> {
-            override fun onSubscribe(d: Disposable) {}
-
-            @SuppressLint("SetTextI18n")
-            override fun onNext(data: MutableList<Song>) {
-                val bundle = intent.extras
-                 id = bundle?.get("id") as Int
-                if(data.isNotEmpty()){
-                    if(playingMusic!!.album["album_id"] == data[id].album["album_id"]){
-                        starts(data[id])
-                    }else{
-                        playingMusicList!!.clear()
-                        playingMusicList = data
-                        start(data[id])
-                    }
-                }
-                //play(data.uri)
-               // wlMusic.stop()
-                //wlMusic.playNext(uri)
-            }
-
-            override fun onError(e: Throwable) {}
-            override fun onComplete() {}
-
-        }
-    }
-
 
     @SuppressLint("SetTextI18n")
     fun play(uri: String?) {

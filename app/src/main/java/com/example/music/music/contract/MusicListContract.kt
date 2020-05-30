@@ -13,6 +13,7 @@ import mvp.ljb.kt.contract.IModelContract
 interface MusicListContract {
 
     interface IView : IViewContract {
+
     }
 
     interface IPresenter : IPresenterContract {

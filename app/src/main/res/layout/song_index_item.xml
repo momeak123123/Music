@@ -12,13 +12,50 @@
         android:descendantFocusability="blocksDescendants">
 
         <com.xuexiang.xui.widget.imageview.RadiusImageView
+            android:id="@+id/radio"
+            android:layout_width="@dimen/dp_20"
+            android:layout_height="@dimen/dp_20"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_25"
+            android:layout_marginBottom="@dimen/dp_25"
+            android:scaleType="centerCrop"
+            android:src="@color/gray"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:riv_border_width="0dp"
+            app:riv_corner_radius="@dimen/dp_10"
+            app:riv_is_circle="false" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="@dimen/dp_20"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginTop="@dimen/dp_25"
+            android:layout_marginBottom="@dimen/dp_25"
+            android:gravity="center_vertical|center"
+            android:text="1"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            />
+
+        <com.xuexiang.xui.widget.imageview.RadiusImageView
             android:id="@+id/musicsrc"
             android:layout_width="@dimen/dp_50"
             android:layout_height="@dimen/dp_50"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginStart="@dimen/dp_40"
             android:layout_marginTop="@dimen/dp_10"
             android:layout_marginBottom="@dimen/dp_10"
             android:scaleType="centerCrop"
@@ -38,7 +75,7 @@
             android:layout_alignTop="@+id/musicsrc"
             android:layout_marginStart="@dimen/dp_10"
             android:layout_marginEnd="@dimen/dp_10"
-            android:layout_toStartOf="@+id/source"
+            android:layout_toStartOf="@+id/more"
             android:layout_toEndOf="@+id/musicsrc"
             android:ellipsize="end"
             android:gravity="center_vertical|left"
@@ -64,16 +101,6 @@
             android:textColor="@color/gray"
             android:textSize="@dimen/sp_14"
             tools:ignore="RtlHardcoded" />
-
-        <ImageView
-            android:id="@+id/source"
-            android:layout_width="@dimen/dp_20"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginEnd="@dimen/dp_20"
-            android:layout_toStartOf="@+id/more"
-            android:src="@drawable/wangyiyun" />
 
         <ImageView
             android:id="@+id/more"

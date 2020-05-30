@@ -46,6 +46,8 @@
         <activity android:name=".music.view.act.AlbumDetActivity" />
         <activity android:name=".music.view.act.ArtistActivity" />
         <activity android:name=".music.view.act.ArtistDetActivity" />
+        <activity android:name=".music.view.act.UserEditActivity" />
+        <activity android:name=".music.view.act.SongListActivity" />
     </application>
 
 </manifest>

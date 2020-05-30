@@ -80,7 +80,6 @@ class SearchActivity : BaseMvpActivity<SearchContract.IPresenter>() , SearchCont
         search_view.isIconifiedByDefault = false
         search_view.isFocusable = false
         search_view.queryHint = "搜索歌曲名称"
-
         search_view.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(queryText: String): Boolean {
                 sreachtxt = queryText

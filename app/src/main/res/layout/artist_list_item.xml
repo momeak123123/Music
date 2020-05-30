@@ -28,6 +28,7 @@
         android:layout_toEndOf="@+id/iv_cover"
         android:ellipsize="end"
         android:gravity="center_vertical|left"
+        android:layout_marginEnd="@dimen/dp_10"
         android:maxLines="1"
         android:singleLine="true"
         android:text=""
