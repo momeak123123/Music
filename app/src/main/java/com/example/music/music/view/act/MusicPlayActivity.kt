@@ -99,7 +99,7 @@ class MusicPlayActivity : AppCompatActivity() {
         RxView.clicks(top_flot)
             .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
-                finish()
+                moveTaskToBack(true)
             }
         RxView.clicks(icon3)
             .throttleFirst(1, TimeUnit.SECONDS)

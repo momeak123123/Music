@@ -72,14 +72,14 @@
 
         <ImageView
             android:id="@+id/del"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/dp_30"
+            android:layout_height="@dimen/dp_30"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:layout_marginTop="@dimen/dp_10"
             android:layout_marginEnd="@dimen/dp_20"
             android:layout_marginBottom="@dimen/dp_10"
-            android:src="@drawable/ic_home_black_24dp" />
+            android:src="@drawable/list_del" />
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

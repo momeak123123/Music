@@ -100,7 +100,12 @@ class AlbumActivity : BaseMvpActivity<AlbumContract.IPresenter>() , AlbumContrac
             ItemClickListener(context,
                 object : ItemClickListener.OnItemClickListener {
                     override fun onItemClick(view: View?, position: Int) {
-
+                        val intent = Intent()
+                         intent.setClass(context, AlbumDetActivity().javaClass)
+                        intent.putExtra("id",list[position].playlist_id)
+                        intent.putExtra("name",list[position].palylist_name)
+                        intent.putExtra("url",list[position].cover)
+                        startActivity(intent)
                     }
 
                     override fun onItemLongClick(view: View?, position: Int) {
@@ -111,7 +116,7 @@ class AlbumActivity : BaseMvpActivity<AlbumContract.IPresenter>() , AlbumContrac
     }
 
     fun initAlbumList(album: List<Album>){
-        recyc_tab.layoutManager = GridLayoutManager(context, 3)
+        recyc_tab.layoutManager = GridLayoutManager(context, 2)
         recyc_tab.itemAnimator = DefaultItemAnimator()
         val adapter = AlbumListAdapter(album, context)
         recyc_tab.adapter = adapter
@@ -119,7 +124,12 @@ class AlbumActivity : BaseMvpActivity<AlbumContract.IPresenter>() , AlbumContrac
             ItemClickListener(context,
                 object : ItemClickListener.OnItemClickListener {
                     override fun onItemClick(view: View?, position: Int) {
-
+                        val intent = Intent()
+                        intent.setClass(context, AlbumDetActivity().javaClass)
+                        intent.putExtra("id",album[position].album_id)
+                        intent.putExtra("name",album[position].album_name)
+                        intent.putExtra("url",album[position].album_pic_url)
+                        startActivity(intent)
                     }
 
                     override fun onItemLongClick(view: View?, position: Int) {

@@ -4,10 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.DefaultItemAnimator
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.music.R
 import com.example.music.adapter.*
@@ -19,13 +17,7 @@ import com.example.music.music.view.act.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.jakewharton.rxbinding2.view.RxView
-import com.xuexiang.xui.widget.banner.widget.banner.BannerItem
-import com.xuexiang.xui.widget.banner.widget.banner.base.BaseBanner
-import com.ywl5320.libmusic.WlMusic
-import io.reactivex.Observable
-import io.reactivex.Observer
 import kotlinx.android.synthetic.main.fragment_find.*
-import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.song_add.*
 import mvp.ljb.kt.fragment.BaseMvpFragment
 import java.util.concurrent.TimeUnit
@@ -89,6 +81,7 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
             .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
                 in_add.visibility = View.GONE
+
             }
 
         RxView.clicks(in_cancel)
@@ -116,11 +109,12 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
             ItemClickListener(context,
                 object : ItemClickListener.OnItemClickListener {
                     override fun onItemClick(view: View?, position: Int) {
-                        /*val intent = Intent()
-                        context?.let { intent.setClass(it, SongListActivity().javaClass) }
-                        intent.putExtra("id",position)
+                        val intent = Intent()
+                        context?.let { intent.setClass(it, SongDetActivity().javaClass) }
+                        intent.putExtra("id",song[position].song_id)
+                        intent.putExtra("name",song[position].song_name)
+                        intent.putExtra("url",song[position].album["album_picurl"])
                         startActivity(intent)
-                        Observable.just(song).subscribe(SongListActivity.observer)*/
                     }
 
                     override fun onItemLongClick(view: View?, position: Int) {

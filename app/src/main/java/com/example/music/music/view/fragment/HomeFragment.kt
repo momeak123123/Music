@@ -168,7 +168,7 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
             .throttleFirst(1,TimeUnit.SECONDS)
             .subscribe {
                 val intent = Intent()
-                context?.let { intent.setClass(it, MusicListActivity().javaClass) }
+                context?.let { intent.setClass(it, AlbumActivity().javaClass) }
                 intent.putExtra("album_type",1)
                 startActivity(intent)
             }
@@ -216,7 +216,12 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
             ItemClickListener(context,
                 object : ItemClickListener.OnItemClickListener {
                     override fun onItemClick(view: View?, position: Int) {
-
+                        val intent = Intent()
+                        context?.let { intent.setClass(it, AlbumDetActivity().javaClass) }
+                        intent.putExtra("id",list[position].playlist_id)
+                        intent.putExtra("name",list[position].palylist_name)
+                        intent.putExtra("url",list[position].cover)
+                        startActivity(intent)
                     }
 
                     override fun onItemLongClick(view: View?, position: Int) {
@@ -238,7 +243,12 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
             ItemClickListener(context,
                 object : ItemClickListener.OnItemClickListener {
                     override fun onItemClick(view: View?, position: Int) {
-
+                        val intent = Intent()
+                        context?.let { intent.setClass(it, AlbumDetActivity().javaClass) }
+                        intent.putExtra("id",album[position].album_id)
+                        intent.putExtra("name",album[position].album_name)
+                        intent.putExtra("url",album[position].album_pic_url)
+                        startActivity(intent)
                     }
 
                     override fun onItemLongClick(view: View?, position: Int) {
@@ -287,10 +297,8 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
                 object : ItemClickListener.OnItemClickListener {
                     override fun onItemClick(view: View?, position: Int) {
                         val intent = Intent()
-                        context?.let { intent.setClass(it, MusicPlayActivity().javaClass) }
-                        intent.putExtra("id",position)
+                        context?.let { intent.setClass(it, MusicListActivity().javaClass) }
                         startActivity(intent)
-                        
                     }
 
                     override fun onItemLongClick(view: View?, position: Int) {

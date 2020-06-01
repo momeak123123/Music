@@ -3,51 +3,57 @@ package com.example.music.music.view.act
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
-import android.os.Environment
 import android.view.View
+import android.view.WindowManager
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.music.R
-import com.example.music.adapter.AlbumDetAdapter
+import com.example.music.adapter.SongDetAdapter
 import com.example.music.bean.Song
 import com.example.music.config.ItemClickListener
-import com.example.music.config.LogDownloadListener
-import com.example.music.music.contract.AlbumDetContract
-import com.example.music.music.presenter.AlbumDetPresenter
-import com.example.music.utils.FileUtils
-import com.example.music.utils.FileUtils.getMusicDir
-import com.example.music.utils.FileUtils.isSDcardAvailable
+import com.example.music.music.contract.SongListContract
+import com.example.music.music.presenter.SongListPresenter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.jakewharton.rxbinding2.view.RxView
-import com.lzy.okgo.OkGo
-import com.lzy.okserver.OkDownload
-import kotlinx.android.synthetic.main.album_index.*
 import kotlinx.android.synthetic.main.head.*
+import kotlinx.android.synthetic.main.song_index.*
 import mvp.ljb.kt.act.BaseMvpActivity
-import java.io.File
-import java.util.*
 import java.util.concurrent.TimeUnit
 
 /**
  * @Author Kotlin MVP Plugin
- * @Date 2020/05/26
+ * @Date 2020/05/30
  * @Description input description
  **/
-class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumDetContract.IView {
+class SongDetActivity : BaseMvpActivity<SongListContract.IPresenter>() , SongListContract.IView {
 
-    private lateinit var adapter: AlbumDetAdapter
+    private lateinit var adapter: SongDetAdapter
     private lateinit var context: Context
-    override fun registerPresenter() = AlbumDetPresenter::class.java
+
+    override fun registerPresenter() = SongListPresenter::class.java
 
     override fun getLayoutId(): Int {
-       return R.layout.album_index
+        return R.layout.song_index
     }
 
     override fun init(savedInstanceState: Bundle?) {
         super.init(savedInstanceState)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            val window = window
+            window.clearFlags(
+                WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
+                        or WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION
+            )
+            window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    or View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            window.statusBarColor = Color.TRANSPARENT
+        }
         context=this
     }
 
@@ -79,19 +85,17 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
                     adapter.type=0
                     adapter.notifyDataSetChanged()
                 }
-
-
             }
 
-       /* if(isSDcardAvailable()){
-            val request =
-                OkGo.get<File>(apk.getUrl())
-            OkDownload.request(apk.getId().toString(), request)
-                .save()
-                .folder(getMusicDir())
-                .register(LogDownloadListener(apk, context))
-                .start()
-        }*/
+        /* if(isSDcardAvailable()){
+             val request =
+                 OkGo.get<File>(apk.getUrl())
+             OkDownload.request(apk.getId().toString(), request)
+                 .save()
+                 .folder(getMusicDir())
+                 .register(LogDownloadListener(apk, context))
+                 .start()
+         }*/
 
 
 
@@ -120,22 +124,23 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
 
     }
 
+
     /**
      * 初始化歌曲
      */
     private fun initSongList(song: MutableList<Song>) {
         recyc_item.layoutManager = LinearLayoutManager(context)
         recyc_item.itemAnimator = DefaultItemAnimator()
-         adapter =  AlbumDetAdapter(song, context)
+        adapter =  SongDetAdapter(song, context)
         recyc_item.adapter = adapter
         recyc_item.addOnItemTouchListener(
             ItemClickListener(context,
                 object : ItemClickListener.OnItemClickListener {
                     override fun onItemClick(view: View?, position: Int) {
-                       /* val intent = Intent()
-                        intent.setClass(context, MusicPlayActivity().javaClass)
-                        intent.putExtra("id",position)
-                        startActivity(intent)*/
+                        /* val intent = Intent()
+                         intent.setClass(context, MusicPlayActivity().javaClass)
+                         intent.putExtra("id",position)
+                         startActivity(intent)*/
                     }
 
                     override fun onItemLongClick(view: View?, position: Int) {
@@ -143,14 +148,6 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
                     }
                 })
         )
-    }
-
-    override fun onStart() {
-        super.onStart()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 
 }

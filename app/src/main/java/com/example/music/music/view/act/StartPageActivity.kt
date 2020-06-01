@@ -7,6 +7,7 @@ import android.content.IntentFilter
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.view.WindowManager
 import com.example.music.MainActivity
 import com.example.music.R
 import com.example.music.bean.Music

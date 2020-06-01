@@ -15,9 +15,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.Toolbar;
 
 import com.example.music.adapter.ViewPagerAdapter;
 import com.example.music.music.view.act.LoginActivity;
@@ -70,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
         blurLayout = findViewById(R.id.blurLayout);
         blurLayout.setFPS(0);

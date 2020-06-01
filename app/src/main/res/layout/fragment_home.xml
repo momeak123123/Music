@@ -338,6 +338,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_marginStart="@dimen/dp_20"
                 android:layout_marginEnd="@dimen/dp_10"
+                android:layout_marginBottom="@dimen/dp_10"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/list4" />
@@ -345,7 +346,7 @@
             <View
                 android:id="@+id/view2"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_80"
+                android:layout_height="@dimen/dp_60"
                 android:layout_below="@+id/recyc_item4"
                 android:layout_alignParentStart="true"
                 android:layout_alignParentEnd="true"
