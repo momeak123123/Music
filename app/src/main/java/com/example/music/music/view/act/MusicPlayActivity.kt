@@ -106,13 +106,13 @@ class MusicPlayActivity : AppCompatActivity() {
             .subscribe {
                in_indel.visibility = View.VISIBLE
                 Glide.with(context).load("").into(del)
-                in_title.text = "选择歌单"
+                in_title.text = R.string.song_but.toString()
             }
         RxView.clicks(icon4)
             .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
                 in_indel.visibility = View.VISIBLE
-                Glide.with(context).load("").placeholder(R.drawable.gplugin_load).into(del)
+                Glide.with(context).load("").placeholder(R.color.main_black_grey).into(del)
                 in_title.text = ""
                 playingMusicList?.let { it1 -> initPlayList(it1) }
             }

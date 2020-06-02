@@ -40,8 +40,10 @@ class LoginModel : BaseModel(), LoginContract.IModel {
                         bean.data,
                         object : TypeToken<Map<String, String>>() {}.type
                     )
+                    
 
                     val sp: SharedPreferences =context.getSharedPreferences("Music", Context.MODE_PRIVATE)
+
 
                     sp.edit().putString("username", user["username"]).apply()
                     sp.edit().putString("nickname", user["nickname"]).apply()

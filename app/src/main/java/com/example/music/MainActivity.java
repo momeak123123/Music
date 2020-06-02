@@ -80,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
         setContentView(R.layout.activity_main);
         blurLayout = findViewById(R.id.blurLayout);
         blurLayout.setFPS(0);
-        blurLayout.setBlurRadius(15);
+        blurLayout.setBlurRadius(20);
         //blurLayout.setDownscaleFactor(0.12f);
         viewPager = findViewById(R.id.viewPager);
         mTabbar = findViewById(R.id.tabbar);

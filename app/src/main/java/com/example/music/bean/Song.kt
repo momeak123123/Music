@@ -22,3 +22,11 @@ data class SongDet(
     val song: Song,
     var type: Int
 )
+
+
+data class SongList(
+    val palylist_name: String,
+    var playlist_id: String,
+    var playlist_num: Int,
+    var cover: String
+)

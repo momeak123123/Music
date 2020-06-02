@@ -53,15 +53,10 @@ class AlbumDetAdapter (val datas: List<Song>, val context: Context) : RecyclerVi
      */
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: InnerHolder, position: Int) {
-        val albummap = datas[position].album
-        val artists = datas[position].artists
-        Glide.with(context).load(albummap["album_picurl"]).placeholder(R.drawable.gplugin_load).into(holder.iv_cover)
+        Glide.with(context).load(datas[position].album["album_picurl"]).placeholder(R.color.main_black_grey).into(holder.iv_cover)
         holder.title.text = datas[position].song_name
 
-
-
-
-        for(it in artists){
+        for(it in datas[position].artists){
             if(holder.txt.text == ""){
                 holder.txt.text =  it.artist_name
             }else{

@@ -47,7 +47,7 @@ class ArtistDetAdapter  (val datas: List<AlbumDet>, val context: Context) : Recy
      */
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: InnerHolder, position: Int) {
-        Glide.with(context).load(datas[position].album_picurl).placeholder(R.drawable.gplugin_load)
+        Glide.with(context).load(datas[position].album_picurl).placeholder(R.color.main_black_grey)
             .into(holder.iv_cover)
         holder.title.text = datas[position].album_name
         holder.txt.text = datas[position].publish_time

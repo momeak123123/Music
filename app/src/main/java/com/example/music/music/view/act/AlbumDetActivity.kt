@@ -59,9 +59,10 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
     override fun initView() {
         super.initView()
         val bundle = intent.extras
-        top_title.text = bundle?.get("name") as String
-        Glide.with(context).load(bundle.get("url") as String).placeholder(R.drawable.gplugin_load).into(iv_cover)
-        Glide.with(context).load(R.drawable.more).placeholder(R.drawable.gplugin_load).into(top_set)
+        top_title.text = bundle?.get("album_name") as String
+        txt.text = bundle.get("artist_name") as String
+        Glide.with(context).load(bundle.get("album_url") as String).placeholder(R.color.main_black_grey).into(iv_cover)
+        Glide.with(context).load(R.drawable.more).placeholder(R.color.main_black_grey).into(top_set)
 
         RxView.clicks(top_flot)
             .throttleFirst(1, TimeUnit.SECONDS)

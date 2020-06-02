@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.view.View
+import android.widget.Toast
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.music.R
@@ -80,7 +81,13 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
         RxView.clicks(in_deter)
             .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
-                in_add.visibility = View.GONE
+                if(et_name.isNotEmpty){
+                    context?.let { it1 -> getPresenter().addSongList(it1,et_name.text.toString()) }
+                    in_add.visibility = View.GONE
+                }else{
+                    Toast.makeText(context, R.string.song_error_name, Toast.LENGTH_SHORT).show()
+                }
+
 
             }
 

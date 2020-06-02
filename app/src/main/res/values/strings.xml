@@ -11,6 +11,7 @@
     <string name="tab2">音乐</string>
     <string name="tab3">我的</string>
 
+
     <!-- start_page -->
     <string name="over">跳过</string>
 
@@ -19,6 +20,7 @@
     <string name="item1">排行榜</string>
     <string name="item2">推荐专辑</string>
     <string name="item3">热门歌星</string>
+    <string name="item3s">歌星</string>
     <string name="item4">随便听听</string>
     <string name="more">更多</string>
     <string name="artist">歌星</string>
@@ -78,6 +80,7 @@
     <!--list-->
     <string name="delete">删除</string>
     <string name="list_dow">关闭</string>
+    <string name="album">专辑</string>
 
     <!--song-->
     <string name="song">歌单</string>
@@ -85,7 +88,9 @@
     <string name="song_deter">确定</string>
     <string name="song_cancel">取消</string>
     <string name="song_create">创建歌单</string>
+    <string name="song_but">创建歌单</string>
     <string name="song_name">歌单名字</string>
+    <string name="song_error_name">歌单名字不能为空！</string>
 
     <!--user-->
     <string name="updown">编辑</string>
@@ -97,6 +102,7 @@
     <string name="collect">收藏</string>
     <string name="like">喜欢</string>
     <string name="user_save">保存</string>
+
 
 
 </resources>

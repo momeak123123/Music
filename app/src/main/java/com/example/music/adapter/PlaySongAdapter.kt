@@ -49,7 +49,7 @@ class PlaySongAdapter (val datas: List<Song>, val context: Context) : RecyclerVi
     override fun onBindViewHolder(holder: InnerHolder, position: Int) {
         val albummap = datas[position].album
         val artists = datas[position].artists
-        Glide.with(context).load(albummap["album_picurl"]).placeholder(R.drawable.gplugin_load)
+        Glide.with(context).load(albummap["album_picurl"]).placeholder(R.color.main_black_grey)
             .into(holder.iv_cover)
         holder.title.text = datas[position].song_name
         for (it in artists) {

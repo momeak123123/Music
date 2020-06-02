@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.os.CountDownTimer
@@ -62,6 +63,14 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>() , Star
                 startActivity(intent)
             }
         }.start()
+
+
+        val token = "BdQM4VLl4Z2xFqFl"
+
+        val sp: SharedPreferences =context.getSharedPreferences("Music", Context.MODE_PRIVATE)
+
+        sp.edit().putString("token", token).apply()
+
 
         RxView.clicks(view)
             .throttleFirst(3, TimeUnit.SECONDS)

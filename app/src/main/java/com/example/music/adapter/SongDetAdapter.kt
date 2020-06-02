@@ -56,7 +56,7 @@ class SongDetAdapter  (val datas: MutableList<Song>, val context: Context) : Rec
     override fun onBindViewHolder(holder: InnerHolder, position: Int) {
         val albummap = datas[position].album
         val artists = datas[position].artists
-        Glide.with(context).load(albummap["album_picurl"]).placeholder(R.drawable.gplugin_load).into(holder.iv_cover)
+        Glide.with(context).load(albummap["album_picurl"]).placeholder(R.color.main_black_grey).into(holder.iv_cover)
         holder.title.text = datas[position].song_name
 
 

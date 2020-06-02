@@ -59,7 +59,7 @@ class AlbumActivity : BaseMvpActivity<AlbumContract.IPresenter>() , AlbumContrac
         val bundle = intent.extras
         val int = bundle?.get("album_type") as Int
         if(int==0){
-            top_title.text="排行榜"
+            top_title.text=R.string.item1.toString()
             if (!sp.getString("list", "").equals("")) {
                 val list: List<TopList> = Gson().fromJson(
                     sp.getString("list", ""),
@@ -70,7 +70,7 @@ class AlbumActivity : BaseMvpActivity<AlbumContract.IPresenter>() , AlbumContrac
                 }
             }
         }else{
-            top_title.text="推荐专辑"
+            top_title.text=R.string.item2.toString()
             if (!sp.getString("album", "").equals("")) {
                 val album: List<Album> = Gson().fromJson(
                     sp.getString("album", ""),
@@ -102,9 +102,10 @@ class AlbumActivity : BaseMvpActivity<AlbumContract.IPresenter>() , AlbumContrac
                     override fun onItemClick(view: View?, position: Int) {
                         val intent = Intent()
                          intent.setClass(context, AlbumDetActivity().javaClass)
-                        intent.putExtra("id",list[position].playlist_id)
-                        intent.putExtra("name",list[position].palylist_name)
-                        intent.putExtra("url",list[position].cover)
+                        intent.putExtra("album_id",list[position].playlist_id)
+                        intent.putExtra("album_name",list[position].palylist_name)
+                        intent.putExtra("album_url",list[position].cover)
+                        intent.putExtra("artist_name",list[position].update_frequency)
                         startActivity(intent)
                     }
 
@@ -126,9 +127,10 @@ class AlbumActivity : BaseMvpActivity<AlbumContract.IPresenter>() , AlbumContrac
                     override fun onItemClick(view: View?, position: Int) {
                         val intent = Intent()
                         intent.setClass(context, AlbumDetActivity().javaClass)
-                        intent.putExtra("id",album[position].album_id)
-                        intent.putExtra("name",album[position].album_name)
-                        intent.putExtra("url",album[position].album_pic_url)
+                        intent.putExtra("album_id",album[position].album_id)
+                        intent.putExtra("album_name",album[position].album_name)
+                        intent.putExtra("album_url",album[position].album_picurl)
+                        intent.putExtra("artist_name",album[position].artist_name)
                         startActivity(intent)
                     }
 

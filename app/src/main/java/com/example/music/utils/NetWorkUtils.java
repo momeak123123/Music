@@ -12,6 +12,7 @@ import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Enumeration;
+import java.util.Objects;
 
 public class NetWorkUtils {
     /**
@@ -666,7 +667,7 @@ public class NetWorkUtils {
      * @throws Exception 没有找到wifi设备
      */
     public static int getWifiState(Context context) throws Exception {
-        WifiManager wifiManager = ((WifiManager) context.getSystemService(
+        WifiManager wifiManager = ((WifiManager) context.getApplicationContext().getSystemService(
                 Context.WIFI_SERVICE));
         if (wifiManager != null) {
             return wifiManager.getWifiState();
@@ -686,9 +687,7 @@ public class NetWorkUtils {
     public static boolean isWifiOpen(Context context) throws Exception {
         int wifiState = getWifiState(context);
         return wifiState == WifiManager.WIFI_STATE_ENABLED ||
-                       wifiState == WifiManager.WIFI_STATE_ENABLING
-               ? true
-               : false;
+                wifiState == WifiManager.WIFI_STATE_ENABLING;
     }
 
 
@@ -703,8 +702,8 @@ public class NetWorkUtils {
             throws Exception {
         //如果当前wifi的状态和要设置的状态不一样
         if (isWifiOpen(context) != enable) {
-            ((WifiManager) context.getSystemService(
-                    Context.WIFI_SERVICE)).setWifiEnabled(enable);
+            ((WifiManager) Objects.requireNonNull(context.getApplicationContext().getSystemService(
+                    Context.WIFI_SERVICE))).setWifiEnabled(enable);
         }
         return true;
     }
@@ -717,9 +716,9 @@ public class NetWorkUtils {
      * @return true：打开；false：关闭
      */
     public static boolean isMobileNetworkOpen(Context context) {
-        return (((ConnectivityManager) context.getSystemService(
-                Context.CONNECTIVITY_SERVICE)).getNetworkInfo(
-                ConnectivityManager.TYPE_MOBILE)).isConnected();
+        return (Objects.requireNonNull(((ConnectivityManager) Objects.requireNonNull(context.getSystemService(
+                Context.CONNECTIVITY_SERVICE))).getNetworkInfo(
+                ConnectivityManager.TYPE_MOBILE))).isConnected();
     }
 
 

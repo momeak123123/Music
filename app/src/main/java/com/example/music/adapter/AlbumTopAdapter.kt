@@ -42,7 +42,7 @@ class AlbumTopAdapter (val datas: List<TopList>, val context: Context) : Recycle
      * 绑定数据，View和数据绑定
      */
     override fun onBindViewHolder(holder: InnerHolder, position: Int) {
-        Glide.with(context).load(datas[position].cover).placeholder(R.drawable.gplugin_load).into(holder.iv_cover)
+        Glide.with(context).load(datas[position].cover).placeholder(R.color.main_black_grey).into(holder.iv_cover)
         holder.title.text = datas[position].palylist_name
         holder.txt.text = datas[position].update_frequency
     }

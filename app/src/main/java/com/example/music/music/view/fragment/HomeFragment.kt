@@ -218,9 +218,10 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
                     override fun onItemClick(view: View?, position: Int) {
                         val intent = Intent()
                         context?.let { intent.setClass(it, AlbumDetActivity().javaClass) }
-                        intent.putExtra("id",list[position].playlist_id)
-                        intent.putExtra("name",list[position].palylist_name)
-                        intent.putExtra("url",list[position].cover)
+                        intent.putExtra("album_id",list[position].playlist_id)
+                        intent.putExtra("album_name",list[position].palylist_name)
+                        intent.putExtra("album_url",list[position].cover)
+                        intent.putExtra("artist_name",list[position].update_frequency)
                         startActivity(intent)
                     }
 
@@ -245,9 +246,10 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
                     override fun onItemClick(view: View?, position: Int) {
                         val intent = Intent()
                         context?.let { intent.setClass(it, AlbumDetActivity().javaClass) }
-                        intent.putExtra("id",album[position].album_id)
-                        intent.putExtra("name",album[position].album_name)
-                        intent.putExtra("url",album[position].album_pic_url)
+                        intent.putExtra("album_id",album[position].album_id)
+                        intent.putExtra("album_name",album[position].album_name)
+                        intent.putExtra("album_url",album[position].album_picurl)
+                        intent.putExtra("artist_name",album[position].artist_name)
                         startActivity(intent)
                     }
 
