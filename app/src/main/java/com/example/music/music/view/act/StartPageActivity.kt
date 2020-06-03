@@ -47,6 +47,7 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>() , Star
         context=this
 
     }
+
     @SuppressLint("CheckResult")
     override fun initView() {
         super.initView()

@@ -54,9 +54,7 @@ class BottomMusicAdapter(val datas: MutableList<Music>, val context: Context) : 
      */
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: InnerHolder, position: Int) {
-        Glide.with(context).load(datas[position].coverUri).placeholder(R.color.main_black_grey).into(holder.iv_cover)
-        holder.tv_title.text = datas[position].title
-        holder.tv_artist.text = datas[position].artist+" - "+ datas[position].album
+
     }
 
     // 提供set方法

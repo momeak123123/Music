@@ -19,7 +19,7 @@ data class Artister(
 )
 
 data class SongDet(
-    val song: Song,
+    val song: Music,
     var type: Int
 )
 

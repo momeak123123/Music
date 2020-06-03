@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.WindowManager;
 
 import com.example.music.R;
-import com.example.music.music.view.act.MusicListActivity;
 import com.example.music.music.view.act.MusicPlayActivity;
 
 public class LyricTextView extends View {

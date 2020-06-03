@@ -45,7 +45,6 @@ class ArtistDetAdapter  (val datas: List<AlbumDet>, val context: Context) : Recy
     /**
      * 绑定数据，View和数据绑定
      */
-    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: InnerHolder, position: Int) {
         Glide.with(context).load(datas[position].album_picurl).placeholder(R.color.main_black_grey)
             .into(holder.iv_cover)

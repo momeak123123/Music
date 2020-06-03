@@ -201,7 +201,6 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
         banner.setSource(bannerdata)
             .setOnItemClickListener(BaseBanner.OnItemClickListener<BannerItem?> { _, _, position -> println(position) })
             .setIsOnePageLoop(false).startScroll()
-        banner.setSource(bannerdata).startScroll()
     }
 
     /**
@@ -298,9 +297,7 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
             ItemClickListener(context,
                 object : ItemClickListener.OnItemClickListener {
                     override fun onItemClick(view: View?, position: Int) {
-                        val intent = Intent()
-                        context?.let { intent.setClass(it, MusicListActivity().javaClass) }
-                        startActivity(intent)
+
                     }
 
                     override fun onItemLongClick(view: View?, position: Int) {

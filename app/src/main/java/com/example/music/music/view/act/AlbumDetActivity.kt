@@ -2,33 +2,27 @@ package com.example.music.music.view.act
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
-import android.os.Environment
 import android.view.View
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.adapter.AlbumDetAdapter
+import com.example.music.bean.Music
 import com.example.music.bean.Song
 import com.example.music.config.ItemClickListener
-import com.example.music.config.LogDownloadListener
 import com.example.music.music.contract.AlbumDetContract
 import com.example.music.music.presenter.AlbumDetPresenter
-import com.example.music.utils.FileUtils
-import com.example.music.utils.FileUtils.getMusicDir
-import com.example.music.utils.FileUtils.isSDcardAvailable
 import com.google.gson.Gson
+import com.google.gson.JsonArray
 import com.google.gson.reflect.TypeToken
 import com.jakewharton.rxbinding2.view.RxView
-import com.lzy.okgo.OkGo
-import com.lzy.okserver.OkDownload
+import io.reactivex.Observer
+import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.album_index.*
 import kotlinx.android.synthetic.main.head.*
 import mvp.ljb.kt.act.BaseMvpActivity
-import java.io.File
-import java.util.*
 import java.util.concurrent.TimeUnit
 
 /**
@@ -38,6 +32,12 @@ import java.util.concurrent.TimeUnit
  **/
 class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumDetContract.IView {
 
+    companion object {
+
+        lateinit var observer: Observer<JsonArray>
+    }
+
+    private lateinit var imaurl: String
     private lateinit var adapter: AlbumDetAdapter
     private lateinit var context: Context
     override fun registerPresenter() = AlbumDetPresenter::class.java
@@ -53,6 +53,7 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
 
     override fun initData() {
         super.initData()
+        getPresenter().songdata(context)
     }
 
     @SuppressLint("CheckResult")
@@ -61,6 +62,7 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
         val bundle = intent.extras
         top_title.text = bundle?.get("album_name") as String
         txt.text = bundle.get("artist_name") as String
+        imaurl = bundle.get("album_url") as String
         Glide.with(context).load(bundle.get("album_url") as String).placeholder(R.color.main_black_grey).into(iv_cover)
         Glide.with(context).load(R.drawable.more).placeholder(R.color.main_black_grey).into(top_set)
 
@@ -95,39 +97,22 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
         }*/
 
 
-
-        val sp: SharedPreferences = getSharedPreferences("Music", Context.MODE_PRIVATE)
-
-        val data_song = mutableListOf<Song>()
-
-        if (!sp.getString("song", "").equals("")) {
-            val song: List<Song> = Gson().fromJson(
-                sp.getString("song", ""),
-                object : TypeToken<List<Song>>() {}.type
-            )
-            if (song.isNotEmpty()) {
-                if (song.size > 8) {
-                    for (i in 0..7) {
-                        data_song.add(song[i])
-                    }
-                } else {
-                    for (i in song) {
-                        data_song.add(i)
-                    }
-                }
-                initSongList(data_song)
-            }
-        }
-
     }
 
     /**
      * 初始化歌曲
      */
-    private fun initSongList(song: MutableList<Song>) {
-        recyc_item.layoutManager = LinearLayoutManager(context)
+    private fun initSongList(song: List<Music>) {
+
+        val linearLayoutManager: LinearLayoutManager =
+            object : LinearLayoutManager(context, VERTICAL, false) {
+                override fun canScrollVertically(): Boolean {
+                    return false
+                }
+            }
+        recyc_item.setLayoutManager(linearLayoutManager)
         recyc_item.itemAnimator = DefaultItemAnimator()
-         adapter =  AlbumDetAdapter(song, context)
+         adapter =  AlbumDetAdapter(song, context,imaurl)
         recyc_item.adapter = adapter
         recyc_item.addOnItemTouchListener(
             ItemClickListener(context,
@@ -148,6 +133,25 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
 
     override fun onStart() {
         super.onStart()
+        observer = object : Observer<JsonArray> {
+            override fun onSubscribe(d: Disposable) {}
+
+            override fun onNext(data: JsonArray) {
+
+                    val song: List<Music> = Gson().fromJson(
+                        data,
+                        object : TypeToken<List<Song>>() {}.type
+                    )
+                    if (song.isNotEmpty()) {
+                        initSongList(song)
+
+                    }
+            }
+
+            override fun onError(e: Throwable) {}
+            override fun onComplete() {}
+
+        }
     }
 
     override fun onDestroy() {

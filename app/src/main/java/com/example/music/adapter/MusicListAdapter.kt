@@ -48,9 +48,9 @@ class MusicListAdapter(val datas: MutableList<Music>, val context: Context) : Re
      * 绑定数据，View和数据绑定
      */
     override fun onBindViewHolder(holder: InnerHolder, position: Int) {
-        Glide.with(context).load(datas[position].coverUri).placeholder(R.color.main_black_grey).into(holder.musicsrc)
+
         holder.musicname.text = datas[position].title
-        holder.singer.text = datas[position].artist
+        holder.singer.text = datas[position].author
         Glide.with(context).load(R.drawable.wangyiyun).into(holder.source)
         holder.more.setOnClickListener {
             Toast.makeText(context, "操作", Toast.LENGTH_SHORT).show()

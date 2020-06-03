@@ -29,11 +29,13 @@ import com.google.gson.reflect.TypeToken
 import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.album_index.*
 import kotlinx.android.synthetic.main.artist_index.*
 import kotlinx.android.synthetic.main.head.*
 import kotlinx.android.synthetic.main.music_artist.*
 import mvp.ljb.kt.act.BaseMvpActivity
 import java.util.concurrent.TimeUnit
+import kotlinx.android.synthetic.main.album_index.recyc_item as recyc_item1
 
 /**
  * @Author Kotlin MVP Plugin
@@ -110,6 +112,7 @@ class ArtistDetActivity : BaseMvpActivity<ArtistDetContract.IPresenter>() , Arti
                     object : TypeToken<List<AlbumDet>>() {}.type
                 )
                 if (albums.isNotEmpty()) {
+                    println(albums.size)
                     initSingerList(albums)
                 }
             }
@@ -124,7 +127,13 @@ class ArtistDetActivity : BaseMvpActivity<ArtistDetContract.IPresenter>() , Arti
 
 
     private fun initSingerList(artists: List<AlbumDet>) {
-        recyc_item.layoutManager = LinearLayoutManager(context)
+        val linearLayoutManager: LinearLayoutManager =
+            object : LinearLayoutManager(context, VERTICAL, false) {
+                override fun canScrollVertically(): Boolean {
+                    return false
+                }
+            }
+        recyc_item.layoutManager = linearLayoutManager
         recyc_item.itemAnimator = DefaultItemAnimator()
         val adapter = ArtistDetAdapter(artists, context)
         recyc_item.adapter = adapter

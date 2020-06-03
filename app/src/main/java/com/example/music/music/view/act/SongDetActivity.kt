@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.adapter.SongDetAdapter
+import com.example.music.bean.Music
 import com.example.music.bean.Song
 import com.example.music.config.ItemClickListener
 import com.example.music.music.contract.SongListContract
@@ -32,6 +33,7 @@ import java.util.concurrent.TimeUnit
  **/
 class SongDetActivity : BaseMvpActivity<SongListContract.IPresenter>() , SongListContract.IView {
 
+    private lateinit var imaurl: String
     private lateinit var adapter: SongDetAdapter
     private lateinit var context: Context
 
@@ -66,7 +68,8 @@ class SongDetActivity : BaseMvpActivity<SongListContract.IPresenter>() , SongLis
         super.initView()
         val bundle = intent.extras
         top_title.text = bundle?.get("name") as String
-        Glide.with(context).load(bundle.get("url") as String).placeholder(R.color.main_black_grey).into(iv_cover)
+        imaurl = bundle.get("url") as String
+        Glide.with(context).load(imaurl).placeholder(R.color.main_black_grey).into(iv_cover)
         Glide.with(context).load(R.drawable.more).placeholder(R.color.main_black_grey).into(top_set)
 
         RxView.clicks(top_flot)
@@ -99,7 +102,7 @@ class SongDetActivity : BaseMvpActivity<SongListContract.IPresenter>() , SongLis
 
 
 
-        val sp: SharedPreferences = getSharedPreferences("Music", Context.MODE_PRIVATE)
+       /* val sp: SharedPreferences = getSharedPreferences("Music", Context.MODE_PRIVATE)
 
         val data_song = mutableListOf<Song>()
 
@@ -120,7 +123,7 @@ class SongDetActivity : BaseMvpActivity<SongListContract.IPresenter>() , SongLis
                 }
                 initSongList(data_song)
             }
-        }
+        }*/
 
     }
 
@@ -128,10 +131,10 @@ class SongDetActivity : BaseMvpActivity<SongListContract.IPresenter>() , SongLis
     /**
      * 初始化歌曲
      */
-    private fun initSongList(song: MutableList<Song>) {
+    private fun initSongList(song: MutableList<Music>) {
         recyc_item.layoutManager = LinearLayoutManager(context)
         recyc_item.itemAnimator = DefaultItemAnimator()
-        adapter =  SongDetAdapter(song, context)
+        adapter =  SongDetAdapter(song, context,imaurl)
         recyc_item.adapter = adapter
         recyc_item.addOnItemTouchListener(
             ItemClickListener(context,

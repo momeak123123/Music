@@ -1,9 +1,13 @@
 package com.example.music.music.view.act
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.Intent
-import android.util.TypedValue
+import android.graphics.Color
+import android.os.Bundle
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.AbsoluteSizeSpan
+import android.text.style.ForegroundColorSpan
+import android.view.Gravity
 import android.view.View
 import android.widget.ImageView
 import android.widget.SearchView
@@ -15,13 +19,12 @@ import com.example.music.adapter.SearchAdapter
 import com.example.music.config.ItemClickListener
 import com.example.music.music.contract.SearchContract
 import com.example.music.music.presenter.SearchPresenter
-import com.google.gson.Gson
+import com.example.music.sql.bean.Search
+import com.example.music.sql.config.Initialization
+import com.example.music.sql.dao.mSearchDao
 import com.jakewharton.rxbinding2.view.RxView
-import kotlinx.android.synthetic.main.head.*
-import kotlinx.android.synthetic.main.music_album.*
 import kotlinx.android.synthetic.main.search.*
 import mvp.ljb.kt.act.BaseMvpActivity
-import org.w3c.dom.Text
 import java.util.concurrent.TimeUnit
 
 /**
@@ -33,7 +36,7 @@ class SearchActivity : BaseMvpActivity<SearchContract.IPresenter>() , SearchCont
 
     private lateinit var adapter: SearchAdapter
     private  var sreachtxt: String = ""
-    var Datas = mutableListOf<String>()
+    var Datas = mutableListOf<Search>()
 
     override fun registerPresenter() = SearchPresenter::class.java
 
@@ -41,17 +44,22 @@ class SearchActivity : BaseMvpActivity<SearchContract.IPresenter>() , SearchCont
        return R.layout.search
     }
 
+    override fun init(savedInstanceState: Bundle?) {
+        super.init(savedInstanceState)
+        Initialization.setupDatabaseSearch(this)
+    }
 
     override fun initData() {
         super.initData()
-        Datas.clear()
-        Datas.addAll(getPresenter().listdata())
+
     }
 
     @SuppressLint("CheckResult")
     override fun initView() {
         super.initView()
-       /* if(Datas.size==0){
+        Datas = getPresenter().listdata()
+
+        if(Datas.size==0){
             sreachtitle.visibility= View.GONE
             recyclerView3.visibility= View.GONE
             del.visibility= View.GONE
@@ -61,13 +69,21 @@ class SearchActivity : BaseMvpActivity<SearchContract.IPresenter>() , SearchCont
             recyclerView3.visibility= View.VISIBLE
             del.visibility= View.VISIBLE
             deltxt.visibility= View.VISIBLE
-        }*/
+        }
+
         initSearch()
-        initSearchList()
+        initSearchList(Datas)
         RxView.clicks(flot)
             .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
                 finish()
+            }
+
+        RxView.clicks(deltxt)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe {
+                 adapter.removeAll()
+               mSearchDao.deleteAll()
             }
     }
 
@@ -75,11 +91,33 @@ class SearchActivity : BaseMvpActivity<SearchContract.IPresenter>() , SearchCont
      * 初始化搜索
      */
     private fun initSearch() {
-
         search_view.clearFocus()
+        val id = search_view.context.resources
+            .getIdentifier("android:id/search_src_text", null, null)
+        val textView = search_view.findViewById(id) as TextView
+        textView.setTextColor(Color.WHITE)
+        textView.textSize = 16F// 设置输入字体大小
+        textView.height = 40// 设置输入框的高度
+        textView.gravity = Gravity.CENTER_VERTICAL
+
+
+        val spanText = SpannableString("搜索音乐")
+
+        // 设置字体大小
+        spanText.setSpan(
+            AbsoluteSizeSpan(16, true), 0, spanText.length,
+            Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+        )
+
+        spanText.setSpan(
+            ForegroundColorSpan(Color.GRAY), 0,
+            spanText.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+        )
+        search_view.queryHint = spanText
+
         search_view.isIconifiedByDefault = false
         search_view.isFocusable = false
-        search_view.queryHint = "搜索歌曲名称"
+
         search_view.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(queryText: String): Boolean {
                 sreachtxt = queryText
@@ -88,7 +126,14 @@ class SearchActivity : BaseMvpActivity<SearchContract.IPresenter>() , SearchCont
 
             override fun onQueryTextSubmit(queryText: String): Boolean {
                 //点击搜索
-                adapter.add(queryText)
+
+                val sea = Search()
+                sea.txt = queryText
+                sea.state = 0
+
+                mSearchDao.insert(sea)
+
+                adapter.add(sea)
                 return true
             }
         })
@@ -97,24 +142,17 @@ class SearchActivity : BaseMvpActivity<SearchContract.IPresenter>() , SearchCont
     /**
      * 初始化历史记录
      */
-    private fun initSearchList() {
+    private fun initSearchList(datas : MutableList<Search> ) {
         recyclerView3.layoutManager = LinearLayoutManager(this)
         recyclerView3.itemAnimator = DefaultItemAnimator()
 
-        adapter = SearchAdapter(Datas,this)
+        adapter = SearchAdapter(datas,this)
         recyclerView3.adapter = adapter
         recyclerView3.addOnItemTouchListener(
             ItemClickListener(this,
                 object : ItemClickListener.OnItemClickListener {
                     override fun onItemClick(view: View?, position: Int) {
-                        val del: ImageView = view!!.findViewById(R.id.del)
-                        val txt: TextView = view.findViewById(R.id.txt)
-                        del.setOnClickListener {
 
-                        }
-                        txt.setOnClickListener {
-
-                        }
                     }
 
                     override fun onItemLongClick(view: View?, position: Int) {

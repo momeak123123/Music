@@ -10,11 +10,12 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.music.R
+import com.example.music.bean.Music
 import com.example.music.bean.Song
 import com.example.music.bean.SongDet
 import com.xuexiang.xui.widget.banner.widget.banner.BannerItem
 
-class AlbumDetAdapter (val datas: List<Song>, val context: Context) : RecyclerView.Adapter<AlbumDetAdapter.InnerHolder>() {
+class AlbumDetAdapter (val datas: List<Music>, val context: Context,val imaurl :String) : RecyclerView.Adapter<AlbumDetAdapter.InnerHolder>() {
 
     private var itemClickListener: IKotlinItemClickListener? = null
 
@@ -53,17 +54,9 @@ class AlbumDetAdapter (val datas: List<Song>, val context: Context) : RecyclerVi
      */
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: InnerHolder, position: Int) {
-        Glide.with(context).load(datas[position].album["album_picurl"]).placeholder(R.color.main_black_grey).into(holder.iv_cover)
-        holder.title.text = datas[position].song_name
-
-        for(it in datas[position].artists){
-            if(holder.txt.text == ""){
-                holder.txt.text =  it.artist_name
-            }else{
-                holder.txt.text = holder.txt.text.toString() +"/"+ it.artist_name
-            }
-
-        }
+        Glide.with(context).load(imaurl).placeholder(R.color.main_black_grey).into(holder.iv_cover)
+        holder.title.text = datas[position].title
+        holder.txt.text =   datas[position].author
 
         if(type==0){
             holder.num.visibility = View.VISIBLE

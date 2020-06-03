@@ -14,7 +14,7 @@ import com.example.music.bean.Music
 import com.example.music.bean.Song
 import com.example.music.bean.SongDet
 
-class SongDetAdapter  (val datas: MutableList<Song>, val context: Context) : RecyclerView.Adapter<SongDetAdapter.InnerHolder>() {
+class SongDetAdapter  (val datas: MutableList<Music>, val context: Context,val imaurl:String) : RecyclerView.Adapter<SongDetAdapter.InnerHolder>() {
 
     private var itemClickListener: IKotlinItemClickListener? = null
 
@@ -54,22 +54,10 @@ class SongDetAdapter  (val datas: MutableList<Song>, val context: Context) : Rec
      */
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: InnerHolder, position: Int) {
-        val albummap = datas[position].album
-        val artists = datas[position].artists
-        Glide.with(context).load(albummap["album_picurl"]).placeholder(R.color.main_black_grey).into(holder.iv_cover)
-        holder.title.text = datas[position].song_name
+        Glide.with(context).load(imaurl).placeholder(R.color.main_black_grey).into(holder.iv_cover)
+        holder.title.text = datas[position].title
+        holder.txt.text =  datas[position].author
 
-
-
-
-        for(it in artists){
-            if(holder.txt.text == ""){
-                holder.txt.text =  it.artist_name
-            }else{
-                holder.txt.text = holder.txt.text.toString() +"/"+ it.artist_name
-            }
-
-        }
 
         if(type==0){
             holder.num.visibility = View.VISIBLE
@@ -112,7 +100,7 @@ class SongDetAdapter  (val datas: MutableList<Song>, val context: Context) : Rec
         fun onItemClickListener(position: Int)
     }
 
-    fun add(item: Song) {
+    fun add(item: Music) {
         datas.add(item)
         notifyItemInserted(datas.size)
     }

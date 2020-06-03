@@ -62,7 +62,7 @@ class ArtistActivity : BaseMvpActivity<ArtistContract.IPresenter>(), ArtistContr
 
     override fun initData() {
         super.initData()
-        top_title.text = R.string.item3s.toString()
+        top_title.text =getString(R.string.item3s)
         getPresenter().taglist(context)
         /* val sp: SharedPreferences =
              context.getSharedPreferences("Music", Context.MODE_PRIVATE)

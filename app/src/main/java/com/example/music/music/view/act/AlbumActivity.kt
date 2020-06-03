@@ -22,7 +22,6 @@ import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.head.*
 import kotlinx.android.synthetic.main.home_item1.*
 import kotlinx.android.synthetic.main.music_album.*
-import kotlinx.android.synthetic.main.music_list.*
 import kotlinx.android.synthetic.main.start_page.*
 import mvp.ljb.kt.act.BaseMvpActivity
 import java.util.concurrent.TimeUnit
@@ -59,7 +58,7 @@ class AlbumActivity : BaseMvpActivity<AlbumContract.IPresenter>() , AlbumContrac
         val bundle = intent.extras
         val int = bundle?.get("album_type") as Int
         if(int==0){
-            top_title.text=R.string.item1.toString()
+            top_title.text=getString(R.string.item1)
             if (!sp.getString("list", "").equals("")) {
                 val list: List<TopList> = Gson().fromJson(
                     sp.getString("list", ""),
@@ -70,7 +69,7 @@ class AlbumActivity : BaseMvpActivity<AlbumContract.IPresenter>() , AlbumContrac
                 }
             }
         }else{
-            top_title.text=R.string.item2.toString()
+            top_title.text=getString(R.string.item2)
             if (!sp.getString("album", "").equals("")) {
                 val album: List<Album> = Gson().fromJson(
                     sp.getString("album", ""),

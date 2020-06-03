@@ -8,29 +8,27 @@ import com.example.music.sql.gen.DaoSession;
 
 public class Initialization {
 
-    private static DaoSession daoSessionmusic;
+    private static DaoSession daoSessionsearch;
 
 
+/**
+ * 配置数据库
+ */
     /**
      * 配置数据库
      */
-    /**
-     * 配置数据库
-     */
-    public static void setupDatabaseMusic(Context context) {
-        DaoMaster.DevOpenHelper helper4 = new DaoMaster.DevOpenHelper(context, "Music.db", null);
+    public static void setupDatabaseSearch(Context context) {
+        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(context, "Search.db", null);
         //获取可写数据库
-        SQLiteDatabase db4 = helper4.getWritableDatabase();
+        SQLiteDatabase db = helper.getWritableDatabase();
         //获取数据库对象
-        DaoMaster daoMaster4 = new DaoMaster(db4);
+        DaoMaster daoMaster = new DaoMaster(db);
         //获取Dao对象管理者
-        daoSessionmusic = daoMaster4.newSession();
+        daoSessionsearch = daoMaster.newSession();
     }
 
-    public static DaoSession getDaoInstantMusic() {
-        return daoSessionmusic;
+    public static DaoSession getDaoInstantSearch() {
+        return daoSessionsearch;
     }
-
-
 
 }

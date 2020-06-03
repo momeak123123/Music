@@ -176,15 +176,15 @@ class MusicPlayActivity : AppCompatActivity() {
         playingMusic = music
         //更新标题
         titleIv.text = music.title
-        subTitleTv.text = music.artist
-        Ablemname.text = music.album
+        subTitleTv.text = music.author
+        //Ablemname.text = music.
         //更新收藏状态
         /* music?.isLove?.let {
              collectIv.setImageResource(if (it) R.drawable.item_favorite_love else R.drawable.item_favorite)
          }*/
         object : Thread() {
             override fun run() {
-                bitmap = BitmapUtils.netUrlPicToBmp(music.coverBig)
+               // bitmap = BitmapUtils.netUrlPicToBmp(music.)
                 coverFragment.setImageBitmap(bitmap)
                 play(music.uri)
             }
@@ -196,15 +196,15 @@ class MusicPlayActivity : AppCompatActivity() {
         playingMusic = music
         //更新标题
         titleIv.text = music.title
-        subTitleTv.text = music.artist
-        Ablemname.text = music.album
+        //subTitleTv.text = music.artist
+        //Ablemname.text = music.album
         //更新收藏状态
         /* music?.isLove?.let {
              collectIv.setImageResource(if (it) R.drawable.item_favorite_love else R.drawable.item_favorite)
          }*/
         object : Thread() {
             override fun run() {
-                bitmap = BitmapUtils.netUrlPicToBmp(music.coverBig)
+                //bitmap = BitmapUtils.netUrlPicToBmp(music.coverBig)
                 coverFragment.setImageBitmap(bitmap)
                 wlMusic.playNext(music.uri)
             }

@@ -9,5 +9,5 @@ android:shape="rectangle">
     android:centerColor="#aa000000"/>
 
 <corners
-    android:radius="@dimen/dp_15" />
+    android:radius="@dimen/dp_30" />
 </shape>

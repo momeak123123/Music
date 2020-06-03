@@ -30,8 +30,10 @@
         android:layout_alignParentBottom="true"
         android:layout_marginStart="@dimen/dp_50"
         android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginBottom="@dimen/dp_10"
         android:scaleType="centerCrop"
         android:src="@color/app_color_apr"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:riv_border_width="0dp"
@@ -86,7 +88,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
         android:src="@drawable/more"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_cover"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/iv_cover" />
 
@@ -96,7 +98,7 @@
         android:layout_height="wrap_content"
         android:text=""
         android:textColor="@color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toBottomOf="@+id/iv_cover"
         app:layout_constraintEnd_toStartOf="@+id/iv_cover"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/iv_cover" />

@@ -48,7 +48,7 @@ class PlayListAdapter  (val datas: MutableList<Music>, val context: Context) : R
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: InnerHolder, position: Int) {
         holder.title.text = datas[position].title
-        holder.txt.text =  datas[position].artist
+        holder.txt.text =  datas[position].author
 
     }
 
