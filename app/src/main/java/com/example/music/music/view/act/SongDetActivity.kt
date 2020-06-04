@@ -2,7 +2,6 @@ package com.example.music.music.view.act
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -14,17 +13,16 @@ import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.adapter.SongDetAdapter
 import com.example.music.bean.Music
-import com.example.music.bean.Song
+import com.example.music.config.CornerTransform
 import com.example.music.config.ItemClickListener
 import com.example.music.music.contract.SongListContract
 import com.example.music.music.presenter.SongListPresenter
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import com.jakewharton.rxbinding2.view.RxView
 import kotlinx.android.synthetic.main.head.*
 import kotlinx.android.synthetic.main.song_index.*
 import mvp.ljb.kt.act.BaseMvpActivity
 import java.util.concurrent.TimeUnit
+
 
 /**
  * @Author Kotlin MVP Plugin
@@ -69,7 +67,17 @@ class SongDetActivity : BaseMvpActivity<SongListContract.IPresenter>() , SongLis
         val bundle = intent.extras
         top_title.text = bundle?.get("name") as String
         imaurl = bundle.get("url") as String
-        Glide.with(context).load(imaurl).placeholder(R.color.main_black_grey).into(iv_cover)
+
+        val transformation = CornerTransform(context, dip2px(context, 30))
+        transformation.setExceptCorner(true, true, false, false)
+
+        Glide.with(context)
+            .load(imaurl)
+            .skipMemoryCache(true)
+            .placeholder(R.color.main_black_grey)
+            .transform(transformation)
+            .into(iv_cover)
+
         Glide.with(context).load(R.drawable.more).placeholder(R.color.main_black_grey).into(top_set)
 
         RxView.clicks(top_flot)
@@ -102,7 +110,7 @@ class SongDetActivity : BaseMvpActivity<SongListContract.IPresenter>() , SongLis
 
 
 
-       /* val sp: SharedPreferences = getSharedPreferences("Music", Context.MODE_PRIVATE)
+        /*val sp: SharedPreferences = getSharedPreferences("Music", Context.MODE_PRIVATE)
 
         val data_song = mutableListOf<Song>()
 
@@ -127,6 +135,10 @@ class SongDetActivity : BaseMvpActivity<SongListContract.IPresenter>() , SongLis
 
     }
 
+    fun dip2px(context: Context, dpValue: Int): Float {
+        val scale = context.resources.displayMetrics.density
+        return (dpValue * scale + 0.5f)
+    }
 
     /**
      * 初始化歌曲
