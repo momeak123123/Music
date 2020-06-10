@@ -10,14 +10,19 @@ import android.os.Parcelable
  * 版本：2.5
  */
 data class Music(
-    var id: Long = 0,
-    var song_id: Long = 0,
-    var title: String = "",
-    var author: String = "",
-    var lrclink: String = "",
-    var type: Int = 0,
-    var uri: String = ""
+    val name: String,
+    val album_name : String,
+    val album_id: Long,
+    val song_id: Long,
+    val uri : String,
+    val lrclink : String,
+    val all_artist : List<artistlist>,
+    val pic_url: String,
+    val publish_time: String
 )
 
-
+data class artistlist(
+    val id: Long,
+    val name: String
+)
 

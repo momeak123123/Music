@@ -43,9 +43,9 @@ class AlbumListAdapter  (val datas: List<Album>, val context: Context) : Recycle
      * 绑定数据，View和数据绑定
      */
     override fun onBindViewHolder(holder: InnerHolder, position: Int) {
-        Glide.with(context).load(datas[position].album_picurl).placeholder(R.color.main_black_grey).into(holder.iv_cover)
-        holder.title.text = datas[position].album_name
-        holder.txt.text = datas[position].artist_name
+        Glide.with(context).load(datas[position].pic_url).placeholder(R.color.main_black_grey).into(holder.iv_cover)
+        holder.title.text = datas[position].name
+        holder.txt.text = datas[position].info
     }
 
     // 提供set方法

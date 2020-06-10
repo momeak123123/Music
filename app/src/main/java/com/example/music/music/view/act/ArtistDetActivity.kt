@@ -46,8 +46,10 @@ class ArtistDetActivity : BaseMvpActivity<ArtistDetContract.IPresenter>() , Arti
 
     companion object {
         lateinit var observer: Observer<JsonObject>
+        lateinit var observers: Observer<Boolean>
     }
-
+    private lateinit var names: String
+    private lateinit var txts: String
     private lateinit var context: Context
     override fun registerPresenter() = ArtistDetPresenter::class.java
 
@@ -57,17 +59,6 @@ class ArtistDetActivity : BaseMvpActivity<ArtistDetContract.IPresenter>() , Arti
 
     override fun init(savedInstanceState: Bundle?) {
         super.init(savedInstanceState)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            val window = window
-            window.clearFlags(
-                WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
-                        or WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION
-            )
-            window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    or View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            window.statusBarColor = Color.TRANSPARENT
-        }
         context = this
     }
 
@@ -104,15 +95,14 @@ class ArtistDetActivity : BaseMvpActivity<ArtistDetContract.IPresenter>() , Arti
                     object : TypeToken<Map<String,String>>() {}.type
                 )
                 Glide.with(context).load(artist["artist_picurl"]).placeholder(R.color.main_black_grey).into(back)
-                artist_name.text=artist["artist_name"]
-                artist_txt.text=artist["brief_desc"]
+                names=artist["artist_name"].toString()
+                txts=artist["brief_desc"].toString()
 
                 val albums: List<AlbumDet> = Gson().fromJson(
                     data.getAsJsonArray("albums"),
                     object : TypeToken<List<AlbumDet>>() {}.type
                 )
                 if (albums.isNotEmpty()) {
-                    println(albums.size)
                     initSingerList(albums)
                 }
             }
@@ -123,19 +113,28 @@ class ArtistDetActivity : BaseMvpActivity<ArtistDetContract.IPresenter>() , Arti
         }
 
 
+        observers = object : Observer<Boolean> {
+            override fun onSubscribe(d: Disposable) {}
+            override fun onNext(data: Boolean) {
+                if(data){
+                    finish()
+                }
+            }
+            override fun onError(e: Throwable) {}
+            override fun onComplete() {
+            }
+
+        }
+
+
     }
 
 
     private fun initSingerList(artists: List<AlbumDet>) {
-        val linearLayoutManager: LinearLayoutManager =
-            object : LinearLayoutManager(context, VERTICAL, false) {
-                override fun canScrollVertically(): Boolean {
-                    return false
-                }
-            }
-        recyc_item.layoutManager = linearLayoutManager
+        recyc_item.layoutManager = LinearLayoutManager(context)
         recyc_item.itemAnimator = DefaultItemAnimator()
-        val adapter = ArtistDetAdapter(artists, context)
+        recyc_item.setHasFixedSize(true)
+        val adapter = ArtistDetAdapter(artists, context,names,txts)
         recyc_item.adapter = adapter
         recyc_item.addOnItemTouchListener(
             ItemClickListener(context,

@@ -27,6 +27,9 @@ import android.widget.Toolbar;
 
 import com.example.music.adapter.ViewPagerAdapter;
 import com.example.music.music.view.act.LoginActivity;
+import com.example.music.music.view.act.MusicPlayActivity;
+import com.example.music.music.view.act.SearchActivity;
+import com.example.music.music.view.act.StartPageActivity;
 import com.example.music.music.view.fragment.FindFragment;
 import com.example.music.music.view.fragment.HomeFragment;
 import com.example.music.music.view.fragment.MyFragment;
@@ -41,8 +44,6 @@ import java.util.List;
 import io.alterac.blurkit.BlurLayout;
 
 public class MainActivity extends AppCompatActivity implements BadgeDismissListener, OnTabSelectListener {
-
-    private List<Fragment> list;
 
     private FragmentPagerAdapter adapter;
 
@@ -93,15 +94,11 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
             startActivity(intent);
         }*/
 
-
-
-
-
     }
 
 
     private void initData() {
-        list = new ArrayList<>();
+        List<Fragment> list = new ArrayList<>();
         mTabbar.setTitles(R.string.tab1, R.string.tab2, R.string.tab3)
                 .setNormalIcons(R.drawable.tab_icon_shouye_normal, R.drawable.tab_icon_faxian_normal, R.drawable.tab_icon_me_normal)
                 //.setSelectedIcons(R.mipmap.tab1_selected, R.mipmap.tab2_selected, R.mipmap.tab3_selected)
@@ -112,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
         list.add(home);
         list.add(find);
         list.add(my);
-        viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(),list));
+        viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(), list));
         mTabbar.setContainer(viewPager);
         //设置Badge消失的代理
         mTabbar.setDismissListener(this);

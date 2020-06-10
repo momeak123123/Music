@@ -5,10 +5,10 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.view.View
-import android.widget.Toast
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.music.R
 import com.example.music.adapter.HomeAlbumAdapter
 import com.example.music.adapter.HomeListAdapter
@@ -16,7 +16,7 @@ import com.example.music.adapter.HomeSingerAdapter
 import com.example.music.adapter.HomeSongAdapter
 import com.example.music.bean.Album
 import com.example.music.bean.Artists
-import com.example.music.bean.Song
+import com.example.music.bean.Music
 import com.example.music.bean.TopList
 import com.example.music.config.ItemClickListener
 import com.example.music.music.contract.HomeContract
@@ -28,8 +28,8 @@ import com.jakewharton.rxbinding2.view.RxView
 import com.xuexiang.xui.widget.banner.widget.banner.BannerItem
 import com.xuexiang.xui.widget.banner.widget.banner.base.BaseBanner
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import kotlinx.android.synthetic.main.artist_index.*
+import io.reactivex.Observer
+import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_home.*
 import mvp.ljb.kt.fragment.BaseMvpFragment
 import java.util.concurrent.TimeUnit
@@ -43,7 +43,7 @@ import java.util.concurrent.TimeUnit
 class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IView {
 
     companion object {
-
+        lateinit var observer: Observer<Boolean>
     }
 
     var bannerdata = mutableListOf<BannerItem>()
@@ -57,14 +57,25 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
 
     override fun initData() {
         super.initData()
+        refresh() //第一次进入触发自动刷新，演示效果
         initbanner()
+        loadData()
+
+    }
+
+    private fun refresh() {
+        swipe_refresh_layout.isRefreshing = true
+        context?.let { getPresenter().homedata(it) }
+    }
+
+    fun loadData() {
 
         val sp: SharedPreferences =
             requireContext().getSharedPreferences("Music", Context.MODE_PRIVATE)
         val data_toplist = mutableListOf<TopList>()
         val data_ablum = mutableListOf<Album>()
         val data_artist = mutableListOf<Artists>()
-        val data_song = mutableListOf<Song>()
+        val data_song = mutableListOf<Music>()
 
         if (!sp.getString("list", "").equals("")) {
             val list: List<TopList> = Gson().fromJson(
@@ -125,9 +136,9 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
         }
 
         if (!sp.getString("song", "").equals("")) {
-            val song: List<Song> = Gson().fromJson(
+            val song: List<Music> = Gson().fromJson(
                 sp.getString("song", ""),
-                object : TypeToken<List<Song>>() {}.type
+                object : TypeToken<List<Music>>() {}.type
             )
             if (song.isNotEmpty()) {
                 if (song.size > 8) {
@@ -143,44 +154,51 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
             }
         }
 
+        if (swipe_refresh_layout != null) {
+            swipe_refresh_layout.isRefreshing = false
+        }
     }
 
     @SuppressLint("CheckResult")
     override fun initView() {
         super.initView()
 
+        swipe_refresh_layout.setColorSchemeColors(-0xff6634, -0xbbbc, -0x996700, -0x559934, -0x7800)
+        //下拉刷新
+        swipe_refresh_layout.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener { loadData() })
+
         RxView.clicks(search)
-            .throttleFirst(1,TimeUnit.SECONDS)
+            .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
                 val intent = Intent()
                 context?.let { it1 -> intent.setClass(it1, SearchActivity().javaClass) }
                 startActivity(intent)
             }
         RxView.clicks(more1)
-            .throttleFirst(1,TimeUnit.SECONDS)
+            .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
                 val intent = Intent()
                 context?.let { intent.setClass(it, AlbumActivity().javaClass) }
-                intent.putExtra("album_type",0)
+                intent.putExtra("album_type", 0)
                 startActivity(intent)
             }
         RxView.clicks(more2)
-            .throttleFirst(1,TimeUnit.SECONDS)
+            .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
                 val intent = Intent()
                 context?.let { intent.setClass(it, AlbumActivity().javaClass) }
-                intent.putExtra("album_type",1)
+                intent.putExtra("album_type", 1)
                 startActivity(intent)
             }
         RxView.clicks(more3)
-            .throttleFirst(1,TimeUnit.SECONDS)
+            .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
                 val intent = Intent()
                 context?.let { intent.setClass(it, ArtistActivity().javaClass) }
                 startActivity(intent)
             }
         RxView.clicks(more4)
-            .throttleFirst(1,TimeUnit.SECONDS)
+            .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
 
             }
@@ -189,6 +207,19 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
 
     override fun onResume() {
         super.onResume()
+        observer = object : Observer<Boolean> {
+            override fun onSubscribe(d: Disposable) {}
+            override fun onNext(data: Boolean) {
+                if (data) {
+                    loadData()
+                }
+            }
+
+            override fun onError(e: Throwable) {}
+            override fun onComplete() {}
+
+        }
+
     }
 
     /**
@@ -199,7 +230,11 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
         bannerdata.clear()
         bannerdata.addAll(getPresenter().imagesdata())
         banner.setSource(bannerdata)
-            .setOnItemClickListener(BaseBanner.OnItemClickListener<BannerItem?> { _, _, position -> println(position) })
+            .setOnItemClickListener(BaseBanner.OnItemClickListener<BannerItem?> { _, _, position ->
+                println(
+                    position
+                )
+            })
             .setIsOnePageLoop(false).startScroll()
     }
 
@@ -217,10 +252,12 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
                     override fun onItemClick(view: View?, position: Int) {
                         val intent = Intent()
                         context?.let { intent.setClass(it, AlbumDetActivity().javaClass) }
-                        intent.putExtra("album_id",list[position].playlist_id)
-                        intent.putExtra("album_name",list[position].palylist_name)
-                        intent.putExtra("album_url",list[position].cover)
-                        intent.putExtra("artist_name",list[position].update_frequency)
+                        intent.putExtra("album_id", list[position].from_id)
+                        intent.putExtra("album_type", list[position].from)
+                        intent.putExtra("palylist_name", list[position].name)
+                        intent.putExtra("info", list[position].info)
+                        intent.putExtra("cover", list[position].pic_url)
+                        intent.putExtra("type", 1)
                         startActivity(intent)
                     }
 
@@ -245,10 +282,12 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
                     override fun onItemClick(view: View?, position: Int) {
                         val intent = Intent()
                         context?.let { intent.setClass(it, AlbumDetActivity().javaClass) }
-                        intent.putExtra("album_id",album[position].album_id)
-                        intent.putExtra("album_name",album[position].album_name)
-                        intent.putExtra("album_url",album[position].album_picurl)
-                        intent.putExtra("artist_name",album[position].artist_name)
+                        intent.putExtra("album_id", album[position].album_id)
+                        intent.putExtra("album_type", album[position].type)
+                        intent.putExtra("palylist_name", album[position].name)
+                        intent.putExtra("info", album[position].info)
+                        intent.putExtra("cover", album[position].pic_url)
+                        intent.putExtra("type", 2)
                         startActivity(intent)
                     }
 
@@ -273,8 +312,8 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
                     override fun onItemClick(view: View?, position: Int) {
                         val intent = Intent()
                         context?.let { intent.setClass(it, ArtistDetActivity().javaClass) }
-                        intent.putExtra("id",artists[position].artist_id)
-                        intent.putExtra("type",artists[position].type)
+                        intent.putExtra("id", artists[position].artist_id)
+                        intent.putExtra("type", artists[position].type)
                         startActivity(intent)
                     }
 
@@ -288,7 +327,7 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
     /**
      * 初始化歌曲
      */
-    private fun initSongList(song: MutableList<Song>) {
+    private fun initSongList(song: MutableList<Music>) {
         recyc_item4.layoutManager = LinearLayoutManager(context)
         recyc_item4.itemAnimator = DefaultItemAnimator()
         val adapter = context?.let { HomeSongAdapter(song, it) }
@@ -297,6 +336,11 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
             ItemClickListener(context,
                 object : ItemClickListener.OnItemClickListener {
                     override fun onItemClick(view: View?, position: Int) {
+                        MusicPlayActivity.id = position
+                        Observable.just(song).subscribe(MusicPlayActivity.observer)
+                        val intent = Intent()
+                        context?.let { intent.setClass(it, MusicPlayActivity().javaClass) }
+                        startActivity(intent)
 
                     }
 

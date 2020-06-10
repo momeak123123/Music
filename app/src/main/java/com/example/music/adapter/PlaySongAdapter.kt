@@ -10,9 +10,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.music.R
-import com.example.music.bean.Song
+import com.example.music.bean.Music
 
-class PlaySongAdapter (val datas: List<Song>, val context: Context) : RecyclerView.Adapter<PlaySongAdapter.InnerHolder>() {
+class PlaySongAdapter (val datas: List<Music>, val context: Context) : RecyclerView.Adapter<PlaySongAdapter.InnerHolder>() {
 
     private var itemClickListener: IKotlinItemClickListener? = null
 
@@ -47,19 +47,20 @@ class PlaySongAdapter (val datas: List<Song>, val context: Context) : RecyclerVi
      */
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: InnerHolder, position: Int) {
-        val albummap = datas[position].album
-        val artists = datas[position].artists
-        Glide.with(context).load(albummap["album_picurl"]).placeholder(R.color.main_black_grey)
-            .into(holder.iv_cover)
-        holder.title.text = datas[position].song_name
-        for (it in artists) {
-            if (holder.txt.text == "") {
-                holder.txt.text = it.artist_name
-            } else {
-                holder.txt.text = holder.txt.text.toString() + "/" + it.artist_name
+        Glide.with(context).load(datas[position].pic_url).placeholder(R.color.main_black_grey).into(holder.iv_cover)
+        holder.title.text = datas[position].name
+        val artist =  datas[position].all_artist
+        var srtist_name = ""
+        for(it in artist){
+            if(srtist_name != ""){
+                srtist_name += "/"+it.name
+            }else{
+                srtist_name = it.name
             }
 
         }
+        holder.txt.text = srtist_name
+
 
     }
 

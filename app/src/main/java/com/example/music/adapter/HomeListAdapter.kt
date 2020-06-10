@@ -9,8 +9,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.music.R
-import com.example.music.bean.HomeList
-import com.example.music.bean.Song
 import com.example.music.bean.TopList
 
 class HomeListAdapter(val datas: List<TopList>, val context: Context) : RecyclerView.Adapter<HomeListAdapter.InnerHolder>() {
@@ -44,9 +42,9 @@ class HomeListAdapter(val datas: List<TopList>, val context: Context) : Recycler
      * 绑定数据，View和数据绑定
      */
     override fun onBindViewHolder(holder: InnerHolder, position: Int) {
-        Glide.with(context).load(datas[position].cover).placeholder(R.color.main_black_grey).into(holder.iv_cover)
-        holder.title.text = datas[position].palylist_name
-        holder.txt.text = datas[position].update_frequency
+        Glide.with(context).load(datas[position].pic_url).placeholder(R.color.main_black_grey).into(holder.iv_cover)
+        holder.title.text = datas[position].name
+        holder.txt.text = datas[position].info
     }
 
     // 提供set方法

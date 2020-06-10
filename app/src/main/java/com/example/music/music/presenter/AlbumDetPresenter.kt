@@ -13,8 +13,12 @@ import com.example.music.music.model.AlbumDetModel
 class AlbumDetPresenter : BaseMvpPresenter<AlbumDetContract.IView, AlbumDetContract.IModel>(), AlbumDetContract.IPresenter{
 
     override fun registerModel() = AlbumDetModel::class.java
-    override fun songdata(context: Context) {
-        getModel().songdata(context)
+    override fun songdata(id:Long,type:Int,context: Context) {
+        getModel().songdata(id,type,context)
+    }
+
+    override fun songdatas(id:Long,type:Int,context: Context) {
+        getModel().songdatas(id, type,context)
     }
 
 }

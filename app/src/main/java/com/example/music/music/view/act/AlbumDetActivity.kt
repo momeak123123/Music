@@ -2,28 +2,36 @@ package com.example.music.music.view.act
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.adapter.AlbumDetAdapter
 import com.example.music.bean.Music
-import com.example.music.bean.Song
 import com.example.music.config.ItemClickListener
 import com.example.music.music.contract.AlbumDetContract
 import com.example.music.music.presenter.AlbumDetPresenter
 import com.google.gson.Gson
 import com.google.gson.JsonArray
+import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import com.jakewharton.rxbinding2.view.RxView
+import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.album_index.*
+import kotlinx.android.synthetic.main.album_index.swipe_refresh_layout
+import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.head.*
 import mvp.ljb.kt.act.BaseMvpActivity
 import java.util.concurrent.TimeUnit
+
 
 /**
  * @Author Kotlin MVP Plugin
@@ -33,11 +41,24 @@ import java.util.concurrent.TimeUnit
 class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumDetContract.IView {
 
     companion object {
+        fun finish() {
+            finish()
+        }
 
-        lateinit var observer: Observer<JsonArray>
+        lateinit var observer: Observer<JsonObject>
+        lateinit var observers: Observer<Boolean>
     }
 
-    private lateinit var imaurl: String
+    private lateinit var names: String
+    private var album_type: Int =0
+    private var album_id: Long =0
+    private lateinit var covers: String
+    private lateinit var songdata: String
+    private lateinit var txts: String
+
+    var songlist = mutableListOf<Music>()
+
+    private var type: Int = 0
     private lateinit var adapter: AlbumDetAdapter
     private lateinit var context: Context
     override fun registerPresenter() = AlbumDetPresenter::class.java
@@ -53,38 +74,59 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
 
     override fun initData() {
         super.initData()
-        getPresenter().songdata(context)
+        refresh()
+    }
+
+    private fun refresh() {
+        swipe_refresh_layout.isRefreshing = true
+        val bundle = intent.extras
+        type =  bundle?.get("type") as Int
+        album_id = bundle.get("album_id") as Long
+        album_type = bundle.get("album_type") as Int
+        loadData()
+        names = bundle.get("palylist_name") as String
+        txts = bundle.get("info") as String
+        covers = bundle.get("cover") as String
+    }
+
+   fun loadData(){
+       if(type == 1){
+           getPresenter().songdatas(album_id,album_type,context)
+       }else{
+           getPresenter().songdata(album_id,album_type,context)
+       }
+   }
+
+    init {
+        observer = object : Observer<JsonObject> {
+            override fun onSubscribe(d: Disposable) {}
+            override fun onNext(data: JsonObject) {
+
+                val song : MutableList<Music> = Gson().fromJson(
+                    data.asJsonObject.get("song_list").asJsonArray,
+                    object : TypeToken<MutableList<Music>>() {}.type
+                )
+
+                if (song.isNotEmpty()) {
+                    songlist = song
+                    songlist.add(0,song[0])
+                    initSongList(songlist)
+                }
+            }
+            override fun onError(e: Throwable) {}
+            override fun onComplete() {
+            }
+
+        }
     }
 
     @SuppressLint("CheckResult")
     override fun initView() {
         super.initView()
-        val bundle = intent.extras
-        top_title.text = bundle?.get("album_name") as String
-        txt.text = bundle.get("artist_name") as String
-        imaurl = bundle.get("album_url") as String
-        Glide.with(context).load(bundle.get("album_url") as String).placeholder(R.color.main_black_grey).into(iv_cover)
-        Glide.with(context).load(R.drawable.more).placeholder(R.color.main_black_grey).into(top_set)
 
-        RxView.clicks(top_flot)
-            .throttleFirst(1, TimeUnit.SECONDS)
-            .subscribe {
-                finish()
-            }
-
-        RxView.clicks(top_set)
-            .throttleFirst(1, TimeUnit.SECONDS)
-            .subscribe {
-                if(adapter.type==0){
-                    adapter.type=1
-                    adapter.notifyDataSetChanged()
-                }else{
-                    adapter.type=0
-                    adapter.notifyDataSetChanged()
-                }
-
-
-            }
+        swipe_refresh_layout.setColorSchemeColors(-0xff6634, -0xbbbc, -0x996700, -0x559934, -0x7800)
+        //下拉刷新
+        swipe_refresh_layout.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener { loadData() })
 
        /* if(isSDcardAvailable()){
             val request =
@@ -102,26 +144,27 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
     /**
      * 初始化歌曲
      */
-    private fun initSongList(song: List<Music>) {
-
-        val linearLayoutManager: LinearLayoutManager =
-            object : LinearLayoutManager(context, VERTICAL, false) {
-                override fun canScrollVertically(): Boolean {
-                    return false
-                }
-            }
-        recyc_item.setLayoutManager(linearLayoutManager)
+    private fun initSongList(song: MutableList<Music>) {
+        val layoutManager = LinearLayoutManager(this)
+        layoutManager.orientation = LinearLayoutManager.VERTICAL
+        recyc_item.isNestedScrollingEnabled = false
+        recyc_item.layoutManager = layoutManager
         recyc_item.itemAnimator = DefaultItemAnimator()
-         adapter =  AlbumDetAdapter(song, context,imaurl)
+        recyc_item.setHasFixedSize(true)
+
+        adapter =  AlbumDetAdapter(song, context,txts,covers,names)
         recyc_item.adapter = adapter
         recyc_item.addOnItemTouchListener(
             ItemClickListener(context,
                 object : ItemClickListener.OnItemClickListener {
                     override fun onItemClick(view: View?, position: Int) {
-                       /* val intent = Intent()
-                        intent.setClass(context, MusicPlayActivity().javaClass)
-                        intent.putExtra("id",position)
-                        startActivity(intent)*/
+                        if(position>0){
+                            MusicPlayActivity.id = position
+                            Observable.just(song).subscribe(MusicPlayActivity.observer)
+                            val intent = Intent()
+                            intent.setClass(context, MusicPlayActivity().javaClass)
+                            startActivity(intent)
+                        }
                     }
 
                     override fun onItemLongClick(view: View?, position: Int) {
@@ -129,27 +172,27 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
                     }
                 })
         )
+
+        if (swipe_refresh_layout != null) {
+            swipe_refresh_layout.isRefreshing = false
+        }
     }
 
-    override fun onStart() {
-        super.onStart()
-        observer = object : Observer<JsonArray> {
+    override fun onResume() {
+        super.onResume()
+        observers = object : Observer<Boolean> {
             override fun onSubscribe(d: Disposable) {}
 
-            override fun onNext(data: JsonArray) {
+            override fun onNext(data: Boolean) {
+                if(data){
+                    finish()
+                }
 
-                    val song: List<Music> = Gson().fromJson(
-                        data,
-                        object : TypeToken<List<Song>>() {}.type
-                    )
-                    if (song.isNotEmpty()) {
-                        initSongList(song)
-
-                    }
             }
 
             override fun onError(e: Throwable) {}
-            override fun onComplete() {}
+            override fun onComplete() {
+            }
 
         }
     }

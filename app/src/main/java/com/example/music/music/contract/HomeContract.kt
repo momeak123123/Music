@@ -1,11 +1,6 @@
 package com.example.music.music.contract
 
 import android.content.Context
-import com.example.music.bean.Banner
-
-import com.example.music.bean.HomeList
-import com.example.music.bean.HomeSinger
-import com.google.gson.JsonObject
 import com.xuexiang.xui.widget.banner.widget.banner.BannerItem
 import mvp.ljb.kt.contract.IPresenterContract
 import mvp.ljb.kt.contract.IViewContract
@@ -24,13 +19,13 @@ interface HomeContract {
 
     interface IPresenter : IPresenterContract {
         fun imagesdata(): MutableList<BannerItem>
-
+        fun homedata(context: Context)
 
     }
 
     interface IModel : IModelContract {
         fun imagesdata(): MutableList<BannerItem>
-
+        fun homedata(context: Context)
 
     }
 }

@@ -1,10 +1,12 @@
 package com.example.music.bean
 
 data class TopList(
-    val cover : String,
+    val name : String,
+    val pic_url : String,
     val info : String,
-    val palylist_name : String,
-    val playlist_id: Long,
+    val top_id: Long,
     val update_frequency: String,
-    val type: Int
+    val type: Int,
+    val from: Int,
+    val from_id: Long
 )

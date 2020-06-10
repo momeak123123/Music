@@ -32,7 +32,7 @@ import java.util.concurrent.TimeUnit
  **/
 class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>() , StartPageContract.IView {
 
-    private lateinit var intentRecevier: IntentRecevier
+
     private lateinit var context: Context
     private lateinit var countDownTimer: CountDownTimer
 
@@ -45,22 +45,22 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>() , Star
     override fun init(savedInstanceState: Bundle?) {
         super.init(savedInstanceState)
         context=this
-
+        val intent = Intent()
+        intent.setClass(context, MusicPlayActivity().javaClass)
+        startActivity(intent)
     }
 
     @SuppressLint("CheckResult")
     override fun initView() {
         super.initView()
-        intentRecevier = IntentRecevier()
-        val filter = IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION)
-        this.registerReceiver(intentRecevier,filter)
-        countDownTimer = object : CountDownTimer(3000 + 500, 1000) {
+
+        countDownTimer = object : CountDownTimer(5000 + 500, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 time.text=(millisUntilFinished / 1000).toString()
             }
             override fun onFinish() {
                 val intent = Intent()
-                intent.setClass(context as StartPageActivity, MainActivity().javaClass)
+                intent.setClass(context, MainActivity().javaClass)
                 startActivity(intent)
             }
         }.start()
@@ -83,7 +83,7 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>() , Star
 
     override fun initData() {
         super.initData()
-       getPresenter().homedata(context)
+        //context.let { getPresenter().homedata(it) }
     }
 
     override fun onResume() {
@@ -92,6 +92,5 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>() , Star
 
     override fun onDestroy() {
         super.onDestroy()
-        unregisterReceiver(intentRecevier)
     }
 }

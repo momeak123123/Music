@@ -54,8 +54,8 @@ class ArtistListAdapter (var datas:MutableList<Artists>, val context: Context) :
      */
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: InnerHolder, position: Int) {
-        Glide.with(context).load(datas[position].artist_picurl).placeholder(R.color.main_black_grey).into(holder.iv_cover)
-        holder.title.text = datas[position].artist_name
+        Glide.with(context).load(datas[position].pic_url).placeholder(R.color.main_black_grey).into(holder.iv_cover)
+        holder.title.text = datas[position].name
     }
 
     // 提供set方法

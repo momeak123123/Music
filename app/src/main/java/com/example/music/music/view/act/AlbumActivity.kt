@@ -101,10 +101,12 @@ class AlbumActivity : BaseMvpActivity<AlbumContract.IPresenter>() , AlbumContrac
                     override fun onItemClick(view: View?, position: Int) {
                         val intent = Intent()
                          intent.setClass(context, AlbumDetActivity().javaClass)
-                        intent.putExtra("album_id",list[position].playlist_id)
-                        intent.putExtra("album_name",list[position].palylist_name)
-                        intent.putExtra("album_url",list[position].cover)
-                        intent.putExtra("artist_name",list[position].update_frequency)
+                        intent.putExtra("album_id",list[position].from_id)
+                        intent.putExtra("album_type",list[position].from)
+                        intent.putExtra("palylist_name",list[position].name)
+                        intent.putExtra("info",list[position].info)
+                        intent.putExtra("cover",list[position].pic_url)
+                        intent.putExtra("type",1)
                         startActivity(intent)
                     }
 
@@ -127,9 +129,11 @@ class AlbumActivity : BaseMvpActivity<AlbumContract.IPresenter>() , AlbumContrac
                         val intent = Intent()
                         intent.setClass(context, AlbumDetActivity().javaClass)
                         intent.putExtra("album_id",album[position].album_id)
-                        intent.putExtra("album_name",album[position].album_name)
-                        intent.putExtra("album_url",album[position].album_picurl)
-                        intent.putExtra("artist_name",album[position].artist_name)
+                        intent.putExtra("album_type",album[position].type)
+                        intent.putExtra("palylist_name",album[position].name)
+                        intent.putExtra("info",album[position].info)
+                        intent.putExtra("cover",album[position].pic_url)
+                        intent.putExtra("type",2)
                         startActivity(intent)
                     }
 

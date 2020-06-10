@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.bean.Music
-import com.example.music.bean.Song
 import com.example.music.bean.SongDet
 
 class SongDetAdapter  (val datas: MutableList<Music>, val context: Context,val imaurl:String) : RecyclerView.Adapter<SongDetAdapter.InnerHolder>() {
@@ -55,8 +54,19 @@ class SongDetAdapter  (val datas: MutableList<Music>, val context: Context,val i
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: InnerHolder, position: Int) {
         Glide.with(context).load(imaurl).placeholder(R.color.main_black_grey).into(holder.iv_cover)
-        holder.title.text = datas[position].title
-        holder.txt.text =  datas[position].author
+
+        holder.title.text = datas[position].name
+        val artist =  datas[position].all_artist
+        var srtist_name = ""
+        for(it in artist){
+            if(srtist_name != ""){
+                srtist_name += "/"+it.name
+            }else{
+                srtist_name = it.name
+            }
+
+        }
+        holder.txt.text =  srtist_name
 
 
         if(type==0){

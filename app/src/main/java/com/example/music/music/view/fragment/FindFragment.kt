@@ -45,12 +45,12 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
 
         val sp: SharedPreferences =
             requireContext().getSharedPreferences("Music", Context.MODE_PRIVATE)
-        val data_song = mutableListOf<Song>()
+        val data_song = mutableListOf<Music>()
 
         if (!sp.getString("song", "").equals("")) {
-            val song: List<Song> = Gson().fromJson(
+            val song: List<Music> = Gson().fromJson(
                 sp.getString("song", ""),
-                object : TypeToken<List<Song>>() {}.type
+                object : TypeToken<List<Music>>() {}.type
             )
             if (song.isNotEmpty()) {
                 if (song.size > 8) {
@@ -107,7 +107,7 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
     /**
      * 初始化歌曲
      */
-    private fun initSongList(song: MutableList<Song>) {
+    private fun initSongList(song: MutableList<Music>) {
         song_list.layoutManager = LinearLayoutManager(context)
         song_list.itemAnimator = DefaultItemAnimator()
         val adapter = context?.let { SongListAdapter(song, it) }
@@ -116,12 +116,12 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
             ItemClickListener(context,
                 object : ItemClickListener.OnItemClickListener {
                     override fun onItemClick(view: View?, position: Int) {
-                        val intent = Intent()
+                        /*val intent = Intent()
                         context?.let { intent.setClass(it, SongDetActivity().javaClass) }
                         intent.putExtra("id",song[position].song_id)
-                        intent.putExtra("name",song[position].song_name)
+                        intent.putExtra("name",song[position].)
                         intent.putExtra("url",song[position].album["album_picurl"])
-                        startActivity(intent)
+                        startActivity(intent)*/
                     }
 
                     override fun onItemLongClick(view: View?, position: Int) {

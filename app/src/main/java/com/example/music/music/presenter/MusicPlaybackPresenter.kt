@@ -1,6 +1,5 @@
 package com.example.music.music.presenter
 
-import com.example.music.bean.HomeList
 import mvp.ljb.kt.presenter.BaseMvpPresenter
 import com.example.music.music.contract.MusicPlaybackContract
 import com.example.music.music.model.MusicPlaybackModel

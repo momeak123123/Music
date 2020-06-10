@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.bean.Album
-import com.example.music.bean.HomeList
 
 class HomeAlbumAdapter (val datas: List<Album>, val context: Context) : RecyclerView.Adapter<HomeAlbumAdapter.InnerHolder>() {
 
@@ -43,9 +42,9 @@ class HomeAlbumAdapter (val datas: List<Album>, val context: Context) : Recycler
      * 绑定数据，View和数据绑定
      */
     override fun onBindViewHolder(holder: InnerHolder, position: Int) {
-        Glide.with(context).load(datas[position].album_picurl).placeholder(R.color.main_black_grey).into(holder.iv_cover)
-        holder.title.text = datas[position].album_name
-        holder.txt.text = datas[position].artist_name
+        Glide.with(context).load(datas[position].pic_url).placeholder(R.color.main_black_grey).into(holder.iv_cover)
+        holder.title.text = datas[position].name
+        holder.txt.text = datas[position].info
     }
 
     // 提供set方法

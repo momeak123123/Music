@@ -15,11 +15,13 @@ interface AlbumDetContract {
     interface IView : IViewContract
 
     interface IPresenter : IPresenterContract {
-        fun songdata(context: Context)
+        fun songdata(id:Long,type:Int,context: Context)
+        fun songdatas(id:Long,type:Int,context: Context)
 
     }
 
     interface IModel : IModelContract{
-        fun songdata(context: Context)
+        fun songdata(id:Long,type:Int,context: Context)
+        fun songdatas(id:Long,type:Int,context: Context)
     }
 }

@@ -12,52 +12,123 @@ import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.bean.AlbumDet
 import com.example.music.bean.Artists
+import com.example.music.bean.SongDet
+import com.example.music.music.view.act.AlbumDetActivity
+import com.jakewharton.rxbinding2.view.RxView
+import io.reactivex.Observable
+import java.util.concurrent.TimeUnit
 
-class ArtistDetAdapter  (val datas: List<AlbumDet>, val context: Context) : RecyclerView.Adapter<ArtistDetAdapter.InnerHolder>() {
+class ArtistDetAdapter  (val datas: List<AlbumDet>, val context: Context,val name : String ,val txt :String) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var itemClickListener: IKotlinItemClickListener? = null
+    companion object {
+        const val TYPE_TITLE = 0
+        const val TYPE_SELLER = 1
+    }
+
+    var type = 0
+
+    var listdet = mutableListOf<SongDet>()
+
+    override fun getItemViewType(position: Int): Int {
+        return if (position == 0) {
+            TYPE_TITLE
+        } else {
+            TYPE_SELLER
+        }
+    }
 
     /**
      * 相当于getView()
      */
-    override fun onCreateViewHolder(holder: ViewGroup, position: Int): InnerHolder {
+    override fun onCreateViewHolder(holder: ViewGroup, position: Int): RecyclerView.ViewHolder {
         //加载View
-        val itemView: View =
-            LayoutInflater.from(context).inflate(R.layout.artist_index_item, holder, false)
-        itemView.setOnClickListener {
-            itemClickListener?.onItemClickListener(position)
+        return when (position) {
+            TYPE_TITLE -> TitleHolder(
+                LayoutInflater.from(context).inflate(R.layout.artist_index_header, holder, false)
+            )
+            TYPE_SELLER -> SellerHolder(
+                LayoutInflater.from(context).inflate(R.layout.artist_index_item, holder, false)
+            )
+            else -> TitleHolder(
+                LayoutInflater.from(context).inflate(R.layout.artist_index_header, holder, false)
+            )
         }
-        return InnerHolder(itemView)
 
     }
 
     /**
      * 得到总条数
      */
-    override fun getItemCount(): Int = datas.size
+    override fun getItemCount(): Int {
 
-    class InnerHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var iv_cover: ImageView = itemView.findViewById(R.id.iv_cover)
-        var title: TextView = itemView.findViewById(R.id.title)
-        var txt: TextView = itemView.findViewById(R.id.txt)
+        return datas.size
+
     }
+
 
     /**
      * 绑定数据，View和数据绑定
      */
-    override fun onBindViewHolder(holder: InnerHolder, position: Int) {
-        Glide.with(context).load(datas[position].album_picurl).placeholder(R.color.main_black_grey)
-            .into(holder.iv_cover)
-        holder.title.text = datas[position].album_name
-        holder.txt.text = datas[position].publish_time
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (position < datas.size) {
+            when (getItemViewType(position)) {
+                TYPE_TITLE -> (holder as TitleHolder).bindData()
+                TYPE_SELLER -> (holder as SellerHolder).bindData(position)
+            }
+
+        }
+
+
     }
 
-    // 提供set方法
-    fun setOnKotlinItemClickListener(itemClickListener: IKotlinItemClickListener) {
-        this.itemClickListener = itemClickListener
+
+    inner class TitleHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+
+        var artist_name: TextView
+        var artist_txt: TextView
+        var top_flot: ImageView
+
+        init {
+
+            artist_name = itemView.findViewById(R.id.artist_name)
+            artist_txt = itemView.findViewById(R.id.artist_txt)
+            top_flot = itemView.findViewById(R.id.top_flot)
+
+        }
+
+        @SuppressLint("CheckResult")
+        fun bindData() {
+            artist_name.text = name
+            artist_txt.text = txt
+
+
+            RxView.clicks(top_flot)
+                .throttleFirst(1, TimeUnit.SECONDS)
+                .subscribe {
+                    Observable.just(true).subscribe(AlbumDetActivity.observers)
+                }
+        }
+
     }
 
-    interface IKotlinItemClickListener {
-        fun onItemClickListener(position: Int)
+    inner class SellerHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        var iv_cover: ImageView
+        var title: TextView
+        var txt: TextView
+
+        init {
+            iv_cover = itemView.findViewById(R.id.iv_cover)
+            title = itemView.findViewById(R.id.title)
+            txt = itemView.findViewById(R.id.txt)
+        }
+
+        fun bindData(position: Int) {
+            Glide.with(context).load(datas[position].pic_url).placeholder(R.color.main_black_grey)
+                .into(iv_cover)
+            title.text = datas[position].album_name
+            txt.text =  datas[position].artist_name
+        }
     }
 }
