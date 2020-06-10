@@ -87,6 +87,9 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
         mTabbar = findViewById(R.id.tabbar);
         initData();
 
+        Intent intent = new Intent(MainActivity.this, StartPageActivity.class);
+        startActivity(intent);
+
         SharedPreferences sp = this.getSharedPreferences("User", Context.MODE_PRIVATE);
         String slogin = sp.getString("user_id", "");
         /*if (slogin.equals("")) {

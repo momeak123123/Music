@@ -54,14 +54,12 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>() , Star
     override fun initView() {
         super.initView()
 
-        countDownTimer = object : CountDownTimer(5000 + 500, 1000) {
+        countDownTimer = object : CountDownTimer(5000 , 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 time.text=(millisUntilFinished / 1000).toString()
             }
             override fun onFinish() {
-                val intent = Intent()
-                intent.setClass(context, MainActivity().javaClass)
-                startActivity(intent)
+                finish()
             }
         }.start()
 

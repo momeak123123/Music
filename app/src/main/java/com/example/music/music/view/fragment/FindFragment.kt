@@ -2,22 +2,23 @@ package com.example.music.music.view.fragment
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
+import android.text.InputType
 import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.music.R
-import com.example.music.adapter.*
-import com.example.music.bean.*
+import com.example.music.adapter.SongListAdapter
+import com.example.music.bean.Music
 import com.example.music.config.ItemClickListener
 import com.example.music.music.contract.FindContract
 import com.example.music.music.presenter.FindPresenter
-import com.example.music.music.view.act.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.jakewharton.rxbinding2.view.RxView
+import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
+import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog.SingleButtonCallback
 import kotlinx.android.synthetic.main.fragment_find.*
 import kotlinx.android.synthetic.main.song_add.*
 import mvp.ljb.kt.fragment.BaseMvpFragment
@@ -29,6 +30,8 @@ import java.util.concurrent.TimeUnit
  * @Description input description
  **/
 class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IView {
+
+    private lateinit var names: String
 
     companion object {
 
@@ -75,14 +78,15 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
         RxView.clicks(add)
             .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
-                in_add.visibility = View.VISIBLE
+                //in_add.visibility = View.VISIBLE
+                showInputDialog()
             }
 
         RxView.clicks(in_deter)
             .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
                 if(et_name.isNotEmpty){
-                    context?.let { it1 -> getPresenter().addSongList(it1,et_name.text.toString()) }
+                    context?.let { it1 -> getPresenter().addSongList(it1,names) }
                     in_add.visibility = View.GONE
                 }else{
                     Toast.makeText(context, R.string.song_error_name, Toast.LENGTH_SHORT).show()
@@ -102,6 +106,35 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
 
     override fun onResume() {
         super.onResume()
+    }
+
+    /**
+     * 带输入框的对话框
+     */
+    private fun showInputDialog() {
+        context?.let {
+            MaterialDialog.Builder(it)
+                .title(R.string.song_create)
+                .inputType(
+                    InputType.TYPE_CLASS_TEXT
+                            or InputType.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD
+                            or InputType.TYPE_TEXT_FLAG_CAP_WORDS
+                )
+                .input(
+                    getString(R.string.song_error_name),
+                    "",
+                    false,
+                    MaterialDialog.InputCallback { _, input -> names = input.toString() }
+                )
+                .inputRange(1, 10)
+                .positiveText(R.string.song_deter)
+                .negativeText(R.string.song_cancel)
+                .onPositive(SingleButtonCallback { _, _ ->
+                    context?.let { it1 -> getPresenter().addSongList(it1,names) }
+                })
+                .cancelable(false)
+                .show()
+        }
     }
 
     /**

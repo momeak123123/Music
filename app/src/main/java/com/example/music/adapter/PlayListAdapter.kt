@@ -46,6 +46,7 @@ class PlayListAdapter  (val datas: MutableList<Music>, val context: Context) : R
      */
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: InnerHolder, position: Int) {
+        Glide.with(context).load(R.drawable.del_black).into(holder.more)
         holder.title.text = datas[position].name
         val artist =  datas[position].all_artist
         var srtist_name = ""
