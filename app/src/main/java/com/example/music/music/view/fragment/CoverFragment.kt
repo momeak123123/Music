@@ -57,7 +57,7 @@ class CoverFragment : BaseMvpFragment<CoverContract.IPresenter>(), CoverContract
             .subscribe(object : Observer<Bitmap?> {
                 override fun onSubscribe(d: Disposable) {}
                 override fun onNext(cover: Bitmap) {
-                    coverView.setImageBitmap(cover)
+                    iv_cover.setImageBitmap(cover)
                     currentBitmap = cover
                 }
                 override fun onError(e: Throwable) {}
@@ -69,8 +69,8 @@ class CoverFragment : BaseMvpFragment<CoverContract.IPresenter>(), CoverContract
     }
 
     fun initAnimator() {
-        mAnimator = ObjectAnimator.ofFloat(coverView, "rotation", 0.0f, 360.0f)
-        mAnimator.duration = 3600//设定转一圈的时间
+        mAnimator = ObjectAnimator.ofFloat(iv_cover, "rotation", 0.0f, 360.0f)
+        mAnimator.duration = 6000//设定转一圈的时间
         mAnimator.repeatCount = Animation.INFINITE//设定无限循环
         mAnimator.repeatMode = ObjectAnimator.RESTART// 循环模式
         mAnimator.interpolator = object : LinearInterpolator(){}

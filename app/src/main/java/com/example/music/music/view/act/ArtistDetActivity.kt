@@ -48,6 +48,7 @@ class ArtistDetActivity : BaseMvpActivity<ArtistDetContract.IPresenter>() , Arti
         lateinit var observer: Observer<JsonObject>
         lateinit var observers: Observer<Boolean>
     }
+
     private lateinit var names: String
     private lateinit var txts: String
     private lateinit var context: Context
@@ -74,12 +75,6 @@ class ArtistDetActivity : BaseMvpActivity<ArtistDetContract.IPresenter>() , Arti
     @SuppressLint("CheckResult")
     override fun initView() {
         super.initView()
-        RxView.clicks(top_flot)
-            .throttleFirst(1, TimeUnit.SECONDS)
-            .subscribe {
-                finish()
-            }
-
     }
 
 
@@ -89,15 +84,13 @@ class ArtistDetActivity : BaseMvpActivity<ArtistDetContract.IPresenter>() , Arti
         observer = object : Observer<JsonObject> {
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(data: JsonObject) {
-
                 val artist: Map<String,String> = Gson().fromJson(
                     data.getAsJsonObject("artist"),
                     object : TypeToken<Map<String,String>>() {}.type
                 )
-                Glide.with(context).load(artist["artist_picurl"]).placeholder(R.color.main_black_grey).into(back)
+                Glide.with(context).load(artist["artist_picurl"].toString()).placeholder(R.color.main_black_grey).into(back)
                 names=artist["artist_name"].toString()
                 txts=artist["brief_desc"].toString()
-
                 val albums: List<AlbumDet> = Gson().fromJson(
                     data.getAsJsonArray("albums"),
                     object : TypeToken<List<AlbumDet>>() {}.type
@@ -109,7 +102,6 @@ class ArtistDetActivity : BaseMvpActivity<ArtistDetContract.IPresenter>() , Arti
 
             override fun onError(e: Throwable) {}
             override fun onComplete() {}
-
         }
 
 
@@ -123,10 +115,7 @@ class ArtistDetActivity : BaseMvpActivity<ArtistDetContract.IPresenter>() , Arti
             override fun onError(e: Throwable) {}
             override fun onComplete() {
             }
-
         }
-
-
     }
 
 
@@ -142,7 +131,6 @@ class ArtistDetActivity : BaseMvpActivity<ArtistDetContract.IPresenter>() , Arti
                     override fun onItemClick(view: View?, position: Int) {
 
                     }
-
                     override fun onItemLongClick(view: View?, position: Int) {
 
                     }

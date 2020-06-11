@@ -3,24 +3,17 @@ package com.example.music.music.view.act
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
-import android.content.SharedPreferences
-import android.net.ConnectivityManager
 import android.os.Bundle
 import android.os.CountDownTimer
-import android.view.WindowManager
 import com.example.music.MainActivity
 import com.example.music.R
-import com.example.music.bean.Music
-import com.example.music.config.IntentRecevier
 import com.example.music.music.contract.StartPageContract
 import com.example.music.music.presenter.StartPagePresenter
-import com.example.music.music.view.fragment.HomeFragment
-import com.google.gson.JsonObject
 import com.jakewharton.rxbinding2.view.RxView
-import io.reactivex.Observer
+import io.reactivex.Flowable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.music_play.*
 import kotlinx.android.synthetic.main.start_page.*
 import mvp.ljb.kt.act.BaseMvpActivity
 import java.util.concurrent.TimeUnit
@@ -33,6 +26,7 @@ import java.util.concurrent.TimeUnit
 class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>() , StartPageContract.IView {
 
 
+    private lateinit var mDisposable: Disposable
     private lateinit var context: Context
     private lateinit var countDownTimer: CountDownTimer
 
@@ -54,28 +48,43 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>() , Star
     override fun initView() {
         super.initView()
 
-        countDownTimer = object : CountDownTimer(5000 , 1000) {
+       /* countDownTimer = object : CountDownTimer(5000+500 , 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 time.text=(millisUntilFinished / 1000).toString()
             }
             override fun onFinish() {
-                finish()
+                val intent = Intent()
+                intent.setClass(context as StartPageActivity, MainActivity().javaClass)
+                startActivity(intent)
             }
-        }.start()
+        }.start()*/
 
+        mDisposable = Flowable.intervalRange(0, 5, 0, 1, TimeUnit.SECONDS)
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnNext { t ->
+                time.text=(5-t).toString()
+            }
+            .doOnComplete {
+                val intent = Intent()
+                intent.setClass(context as StartPageActivity, MainActivity().javaClass)
+                startActivity(intent)
+            }
+            .subscribe()
 
-        val token = "BdQM4VLl4Z2xFqFl"
+       /* val token = "BdQM4VLl4Z2xFqFl"
 
         val sp: SharedPreferences =context.getSharedPreferences("Music", Context.MODE_PRIVATE)
 
-        sp.edit().putString("token", token).apply()
+        sp.edit().putString("token", token).apply()*/
 
 
         RxView.clicks(view)
-            .throttleFirst(3, TimeUnit.SECONDS)
+            .throttleFirst(5, TimeUnit.SECONDS)
             .subscribe {
-                countDownTimer.cancel()
-                countDownTimer.onFinish()
+                mDisposable.dispose()
+                val intent = Intent()
+                intent.setClass(context as StartPageActivity, MainActivity().javaClass)
+                startActivity(intent)
             }
     }
 

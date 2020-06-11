@@ -1,7 +1,6 @@
 package com.example.music.music.view.act
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.graphics.Bitmap
 import android.os.Bundle
@@ -17,17 +16,12 @@ import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.adapter.PlayListAdapter
 import com.example.music.adapter.PlaySongAdapter
-import com.example.music.adapter.SongListAdapter
 import com.example.music.adapter.ViewPagerAdapter
-import com.example.music.bean.AlbumDet
 import com.example.music.bean.Music
 import com.example.music.config.ItemClickListener
 import com.example.music.music.view.fragment.CoverFragment
 import com.example.music.music.view.fragment.LyricFragment
 import com.example.music.utils.BitmapUtils
-import com.google.gson.Gson
-import com.google.gson.JsonObject
-import com.google.gson.reflect.TypeToken
 import com.jakewharton.rxbinding2.view.RxView
 import com.ywl5320.libenum.MuteEnum
 import com.ywl5320.libmusic.WlMusic
@@ -36,8 +30,7 @@ import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.artist_index.*
-import kotlinx.android.synthetic.main.fragment_find.*
+import kotlinx.android.synthetic.main.frag_player_lrcview.*
 import kotlinx.android.synthetic.main.head.*
 import kotlinx.android.synthetic.main.music_play.*
 import kotlinx.android.synthetic.main.play_list.*
@@ -50,14 +43,14 @@ class MusicPlayActivity : AppCompatActivity() {
         var id: Int = 0
         lateinit var wlMusic: WlMusic
         lateinit var observer: Observer<MutableList<Music>>
+        var song_id: Long = 0
+        lateinit var mDisposable: Disposable
+         var max: Long = 0
+        lateinit var observers: Observer<Long>
     }
 
-
-    private lateinit var mDisposable: Disposable
     private var bool: Boolean = false
     private var min: Long = 0
-    private var max: Long = 0
-    private var song_id: Long = 0
     private var bitmap: Bitmap? = null
     private var playingMusic: Music? = null
     private var playingMusicList: MutableList<Music>? = null
@@ -78,6 +71,8 @@ class MusicPlayActivity : AppCompatActivity() {
         initView()
         moveTaskToBack(true)
     }
+
+
 
     @SuppressLint("CheckResult")
     private fun initView(){
@@ -161,7 +156,21 @@ class MusicPlayActivity : AppCompatActivity() {
 
     }
 
+    override fun onResume() {
+        super.onResume()
 
+        observers = object : Observer<Long> {
+            override fun onSubscribe(d: Disposable) {}
+            @SuppressLint("SetTextI18n")
+            override fun onNext(bool: Long) {
+                time(bool, max - bool)
+            }
+
+            override fun onError(e: Throwable) {}
+            override fun onComplete() {}
+
+        }
+    }
 
     /**
      * 初始化歌曲
@@ -224,7 +233,7 @@ class MusicPlayActivity : AppCompatActivity() {
         }
         subTitleTv.text = srtist_name
         Ablemname.text = music.album_name
-
+        lyricFragment.lrcView(music.song_id)
         object : Thread() {
             override fun run() {
                 bitmap = BitmapUtils.netUrlPicToBmp(music.pic_url)
@@ -255,7 +264,7 @@ class MusicPlayActivity : AppCompatActivity() {
         }
         subTitleTv.text = srtist_name
         Ablemname.text = music.album_name
-
+        lyricFragment.lrcView(music.song_id)
         object : Thread() {
             override fun run() {
                 bitmap = BitmapUtils.netUrlPicToBmp(music.pic_url)
@@ -288,18 +297,19 @@ class MusicPlayActivity : AppCompatActivity() {
         wlMusic.setConvertSampleRate(null) //设定恒定采样率（null为取消）
         wlMusic.prePared()
         wlMusic.setOnPreparedListener {
-            Observable.just(wlMusic.duration.toLong())
+            Observable.just((wlMusic.duration*1000).toLong())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Observer<Long> {
                     override fun onSubscribe(d: Disposable) {}
                     override fun onNext(aLong: Long) {
                         bool = true
                         max = aLong
-                        progressSb.max = wlMusic.duration
-                        val f = aLong / 60
-                        val m = aLong % 60
+                        progressSb.max =(wlMusic.duration*1000)
+                        val f = (aLong/1000) / 60
+                        val m = (aLong/1000) % 60
                         progressTv.text = "00:00"
                         durationTv.text = unitFormat(f.toInt()) + ":" + unitFormat(m.toInt())
+                        lrcView.updateTime(0)
                         playPauseIv.setLoading(false)
 
                     }
@@ -326,25 +336,27 @@ class MusicPlayActivity : AppCompatActivity() {
             }
 
             override fun onStopTrackingTouch(seekBar: SeekBar) {
-                wlMusic.seek(position, true, true) //表示seek已经完成，然后才回调时间，避免自己控制时间逻辑和时间显示不稳定问题。
+                wlMusic.seek(position/1000, true, true) //表示seek已经完成，然后才回调时间，避免自己控制时间逻辑和时间显示不稳定问题。
                 if (!mDisposable.isDisposed) {
                     mDisposable.dispose()
-                    time(position.toLong(), max - position)
+                    Observable.just(position.toLong()).subscribe(observers)
                 }
+
             }
         })
     }
 
     @SuppressLint("SetTextI18n")
     fun time(init: Long, count: Long) {
-        mDisposable = Flowable.intervalRange(init, count + 1, 0, 1, TimeUnit.SECONDS)
+        mDisposable = Flowable.intervalRange(init, count + 1000, 0, 1, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
             .doOnNext { t ->
                 min = t
-                val fs = t / 60
-                val ms = t % 60
+                val fs = (t/1000) / 60
+                val ms = (t/1000) % 60
                 progressTv.text = unitFormat(fs.toInt()) + ":" + unitFormat(ms.toInt())
                 progressSb.progress = t.toInt()
+                lrcView.updateTime(t.toLong())
             }
             .doOnComplete {
                 playPauseIv.pause()

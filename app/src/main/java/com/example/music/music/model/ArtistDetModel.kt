@@ -25,7 +25,6 @@ class ArtistDetModel : BaseModel(), ArtistDetContract.IModel {
     override fun listdata(context: Context, id: Long, type: Int) {
         OkGo.get<String>(Constants.URL + "api/artist/getartist_info")
             .params("artist_id",id)
-            .params("type",type)
             .execute(object : StringCallback() {
                 override fun onSuccess(response: Response<String>) {
                     /**

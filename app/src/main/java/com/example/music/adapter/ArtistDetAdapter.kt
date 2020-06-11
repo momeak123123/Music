@@ -14,6 +14,7 @@ import com.example.music.bean.AlbumDet
 import com.example.music.bean.Artists
 import com.example.music.bean.SongDet
 import com.example.music.music.view.act.AlbumDetActivity
+import com.example.music.music.view.act.ArtistDetActivity
 import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.Observable
 import java.util.concurrent.TimeUnit
@@ -107,8 +108,9 @@ class ArtistDetAdapter  (val datas: List<AlbumDet>, val context: Context,val nam
             RxView.clicks(top_flot)
                 .throttleFirst(1, TimeUnit.SECONDS)
                 .subscribe {
-                    Observable.just(true).subscribe(AlbumDetActivity.observers)
+                    Observable.just(true).subscribe(ArtistDetActivity.observers)
                 }
+
         }
 
     }

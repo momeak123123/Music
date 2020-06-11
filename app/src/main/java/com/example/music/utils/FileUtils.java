@@ -81,7 +81,9 @@ public class FileUtils {
         return dir;
     }
 
-
+    public static String getCorpImagePath(Context context) {
+        return context.getExternalCacheDir() + "/corp.jpg";
+    }
     /**
      * 判断外部存储是否可用
      *

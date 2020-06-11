@@ -124,7 +124,6 @@ class RegisteredActivity : BaseMvpActivity<RegisteredContract.IPresenter>(),
                     intent.setClass(context as RegisteredActivity, MainActivity().javaClass)
                     startActivity(intent)
                 } else {
-
                     Toast.makeText(context, R.string.error_register, Toast.LENGTH_SHORT)
                         .show()
                 }
@@ -137,13 +136,13 @@ class RegisteredActivity : BaseMvpActivity<RegisteredContract.IPresenter>(),
 
         observers = object : Observer<Boolean> {
             override fun onSubscribe(d: Disposable) {}
+            @SuppressLint("SetTextI18n")
             override fun onNext(bool: Boolean) {
-                Toast.makeText(context, R.string.succes_code, Toast.LENGTH_SHORT)
-                    .show()
+                Toast.makeText(context, R.string.succes_code, Toast.LENGTH_SHORT).show()
                 btn_captcha.isEnabled = false
                 Flowable.intervalRange(0, 60 + 1, 0, 1, TimeUnit.SECONDS)
-              .subscribeOn(Schedulers.io())
-               .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext {
                     btn_captcha.text=""+(60-it)+"s"
                 }
@@ -151,7 +150,7 @@ class RegisteredActivity : BaseMvpActivity<RegisteredContract.IPresenter>(),
                     btn_captcha.isEnabled = true
                     btn_captcha.text= getText(R.string.captcha)
                 }
-               .subscribe()
+                .subscribe()
             }
 
             override fun onError(e: Throwable) {}

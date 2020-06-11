@@ -80,15 +80,9 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
 
         setContentView(R.layout.activity_main);
         blurLayout = findViewById(R.id.blurLayout);
-        blurLayout.setFPS(0);
-        blurLayout.setBlurRadius(20);
-        //blurLayout.setDownscaleFactor(0.12f);
+
         viewPager = findViewById(R.id.viewPager);
         mTabbar = findViewById(R.id.tabbar);
-        initData();
-
-        Intent intent = new Intent(MainActivity.this, StartPageActivity.class);
-        startActivity(intent);
 
         SharedPreferences sp = this.getSharedPreferences("User", Context.MODE_PRIVATE);
         String slogin = sp.getString("user_id", "");
@@ -98,7 +92,6 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
         }*/
 
     }
-
 
     private void initData() {
         List<Fragment> list = new ArrayList<>();
@@ -143,7 +136,13 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
     @Override
     protected void onStart() {
         super.onStart();
+        initData();
+
+        blurLayout.setFPS(0);
+        blurLayout.setBlurRadius(20);
+        //blurLayout.setDownscaleFactor(0.12f);
         blurLayout.startBlur();
+
     }
 
     @Override
@@ -160,6 +159,8 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
             checkPermissions(needPermissions);
         }
     }
+
+
 
     /**
      * 检查权限

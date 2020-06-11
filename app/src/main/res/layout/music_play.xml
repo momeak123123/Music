@@ -111,15 +111,13 @@
             <SeekBar
                 android:id="@+id/progressSb"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentBottom="true"
-                android:layout_marginStart="@dimen/dp_10"
-                android:layout_marginEnd="@dimen/dp_10"
                 android:layout_toStartOf="@+id/durationTv"
                 android:layout_toEndOf="@+id/progressTv"
-                android:maxHeight="2dp"
                 android:progress="0"
+                android:thumbOffset="@dimen/dp_4"
                 android:secondaryProgress="0"
                 android:tag="tint_accent_color" />
 

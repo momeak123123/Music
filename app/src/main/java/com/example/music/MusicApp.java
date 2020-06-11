@@ -3,9 +3,6 @@ package com.example.music;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
-
-import com.didichuxing.doraemonkit.DoraemonKit;
-import com.didichuxing.doraemonkit.kit.AbstractKit;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheEntity;
 import com.lzy.okgo.cache.CacheMode;
@@ -37,7 +34,6 @@ public class MusicApp extends Application {
         XUI.init(this); //初始化UI框架
         XUI.debug(false);  //开启UI框架调试日志
         OkGo.getInstance().init(this);//网络请求
-        DoraemonKit.install(this);
         initOkGo();
     }
 

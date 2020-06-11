@@ -4,15 +4,26 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.example.music.music.view.custom.LyricView
-        android:id="@+id/lyricShow"
+    <me.wcy.lrcview.LrcView
+        android:id="@+id/lrcView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_margin="@dimen/dp_20"
-        android:clickable="true"
-        android:focusable="true"
-        app:highlightColor="@color/amber"
-        app:textAlign="center"
-        app:textColor="@color/white" />
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lrcAnimationDuration="1000"
+        app:lrcCurrentTextColor="#3F51B5"
+        app:lrcDividerHeight="20dp"
+        app:lrcLabel="找不到歌词(@_@)"
+        app:lrcNormalTextColor="#BDBDBD"
+        app:lrcNormalTextSize="15sp"
+        app:lrcPadding="16dp"
+        app:lrcTextGravity="center"
+        app:lrcTextSize="15sp"
+        app:lrcTimeTextColor="#BDBDBD"
+        app:lrcTimelineColor="#80BDBDBD"
+        app:lrcTimelineTextColor="#9FA8DA" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

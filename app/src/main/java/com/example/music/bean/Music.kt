@@ -15,7 +15,6 @@ data class Music(
     val album_id: Long,
     val song_id: Long,
     val uri : String,
-    val lrclink : String,
     val all_artist : List<artistlist>,
     val pic_url: String,
     val publish_time: String

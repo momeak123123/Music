@@ -1,8 +1,23 @@
 package com.example.music.music.view.fragment
 
+import android.os.Handler
+import android.widget.Toast
 import com.example.music.R
+import com.example.music.bean.ResultBean
+import com.example.music.common.Constants
 import com.example.music.music.contract.LyricContract
 import com.example.music.music.presenter.LyricPresenter
+import com.example.music.music.view.act.ArtistDetActivity
+import com.example.music.music.view.act.MusicPlayActivity
+import com.google.gson.Gson
+import com.lzy.okgo.OkGo
+import com.lzy.okgo.callback.StringCallback
+import com.lzy.okgo.model.Response
+import io.reactivex.Observable
+import kotlinx.android.synthetic.main.frag_player_lrcview.*
+import kotlinx.android.synthetic.main.music_play.*
+import me.wcy.lrcview.LrcView
+import me.wcy.lrcview.LrcView.OnPlayClickListener
 import mvp.ljb.kt.fragment.BaseMvpFragment
 
 /**
@@ -12,9 +27,58 @@ import mvp.ljb.kt.fragment.BaseMvpFragment
  **/
 class LyricFragment : BaseMvpFragment<LyricContract.IPresenter>(), LyricContract.IView {
 
+
+    private val handler = Handler()
+
     override fun registerPresenter() = LyricPresenter::class.java
 
     override fun getLayoutId(): Int {
        return R.layout.frag_player_lrcview
+    }
+
+    override fun onResume() {
+        super.onResume()
+        lrcView.setDraggable(true, LrcView.OnPlayClickListener { time: Long ->
+            MusicPlayActivity.wlMusic.seek((time/1000).toInt(), true, true)
+            if (!MusicPlayActivity.wlMusic.isPlaying) {
+                MusicPlayActivity.wlMusic.start()
+            }
+            if (!MusicPlayActivity.mDisposable.isDisposed) {
+                MusicPlayActivity.mDisposable.dispose()
+                Observable.just(time).subscribe(MusicPlayActivity.observers)
+            }
+            true
+        })
+    }
+
+     fun lrcView(songid:Long) {
+        super.initView()
+
+            OkGo.get<String>(Constants.URL + "api/index/get_lrclink")
+                .params("song_id",songid)
+                .execute(object : StringCallback() {
+                    override fun onSuccess(response: Response<String>) {
+                        /**
+                         * 成功回调
+                         */
+
+                        val bean =
+                            Gson().fromJson(response.body(), ResultBean::class.javaObjectType)
+                        if (bean.code == 200) {
+                            val lrclink = bean.data.get("lrclink").asString
+
+                            // 加载歌词文本
+                            lrcView.loadLrc(lrclink)
+
+
+                        } else {
+                            Toast.makeText(
+                                context,
+                                bean.data.toString(),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                })
     }
 }
