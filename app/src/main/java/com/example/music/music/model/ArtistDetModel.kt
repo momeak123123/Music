@@ -23,26 +23,37 @@ import mvp.ljb.kt.model.BaseModel
  **/
 class ArtistDetModel : BaseModel(), ArtistDetContract.IModel {
     override fun listdata(context: Context, id: Long, type: Int) {
+
+
         OkGo.get<String>(Constants.URL + "api/artist/getartist_info")
-            .params("artist_id",id)
+            .params("artist_id", id)
             .execute(object : StringCallback() {
                 override fun onSuccess(response: Response<String>) {
                     /**
                      * 成功回调
                      */
-
-                    val bean =
-                        Gson().fromJson(response.body(), ResultBean::class.javaObjectType)
-                    if (bean.code == 200) {
-                        Observable.just(bean.data).subscribe(ArtistDetActivity.observer)
-                    } else {
+                    try {
+                        val bean =
+                            Gson().fromJson(response.body(), ResultBean::class.javaObjectType)
+                        if (bean.code == 200) {
+                            Observable.just(bean.data).subscribe(ArtistDetActivity.observer)
+                        } else {
+                            Toast.makeText(
+                                context,
+                                bean.data.toString(),
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    } catch (e: Exception) {
                         Toast.makeText(
                             context,
-                            bean.data.toString(),
-                            Toast.LENGTH_SHORT
+                            "程序出现了未知异常",
+                            Toast.LENGTH_LONG
                         ).show()
                     }
                 }
             })
+
+
     }
 }

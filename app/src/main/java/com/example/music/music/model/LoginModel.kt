@@ -23,51 +23,62 @@ import mvp.ljb.kt.model.BaseModel
  * @Description input description
  **/
 class LoginModel : BaseModel(), LoginContract.IModel {
-    override fun logindata(context: Context,email:String,pass:String): Boolean {
+    override fun logindata(context: Context, email: String, pass: String): Boolean {
+
+
         OkGo.get<String>(Constants.URL + "api/login/login")
-            .params("user_email",email)
-            .params("password",pass)
+            .params("user_email", email)
+            .params("password", pass)
             .execute(object : StringCallback() {
-            override fun onSuccess(response: Response<String>) {
-                /**
-                 * 成功回调
-                 */
-                val bean =
-                    Gson().fromJson(response.body(), ResultBean::class.javaObjectType)
-                if (bean.code == 200) {
+                override fun onSuccess(response: Response<String>) {
+                    /**
+                     * 成功回调
+                     */
+                    try {
+                        val bean =
+                            Gson().fromJson(response.body(), ResultBean::class.javaObjectType)
+                        if (bean.code == 200) {
 
-                    val user: Map<String,String> = Gson().fromJson(
-                        bean.data,
-                        object : TypeToken<Map<String, String>>() {}.type
-                    )
-                    
-
-                    val sp: SharedPreferences =context.getSharedPreferences("Music", Context.MODE_PRIVATE)
+                            val user: Map<String, String> = Gson().fromJson(
+                                bean.data,
+                                object : TypeToken<Map<String, String>>() {}.type
+                            )
 
 
-                    sp.edit().putString("username", user["username"]).apply()
-                    sp.edit().putString("nickname", user["nickname"]).apply()
-                    sp.edit().putString("url", user["headimgurl"]).apply()
-                    sp.edit().putString("countries", user["countries"]).apply()
-                    sp.edit().putString("province", user["province"]).apply()
-                    sp.edit().putString("city", user["city"]).apply()
-                    sp.edit().putString("sex", user["sex"]).apply()
-                    sp.edit().putString("token", user["token"]).apply()
-                    sp.edit().putString("user_id", user["user_id"]).apply()
-                    sp.edit().putString("follow", user["follow"]).apply()
-                    sp.edit().putString("collect", user["collect"]).apply()
-                    sp.edit().putString("like", user["like"]).apply()
+                            val sp: SharedPreferences =
+                                context.getSharedPreferences("Music", Context.MODE_PRIVATE)
 
-                    Observable.just(true).subscribe(LoginActivity.observer)
-                } else {
-                    Toast.makeText(
-                        context,
-                        bean.data.toString(),
-                        Toast.LENGTH_SHORT
-                    ).show()
+
+                            sp.edit().putString("username", user["username"]).apply()
+                            sp.edit().putString("nickname", user["nickname"]).apply()
+                            sp.edit().putString("url", user["headimgurl"]).apply()
+                            sp.edit().putString("countries", user["countries"]).apply()
+                            sp.edit().putString("province", user["province"]).apply()
+                            sp.edit().putString("city", user["city"]).apply()
+                            sp.edit().putString("sex", user["sex"]).apply()
+                            sp.edit().putString("token", user["token"]).apply()
+                            sp.edit().putString("user_id", user["user_id"]).apply()
+                            sp.edit().putString("follow", user["follow"]).apply()
+                            sp.edit().putString("collect", user["collect"]).apply()
+                            sp.edit().putString("like", user["like"]).apply()
+
+                            Observable.just(true).subscribe(LoginActivity.observer)
+                        } else {
+                            Toast.makeText(
+                                context,
+                                bean.data.toString(),
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    } catch (e: Exception) {
+                        Toast.makeText(
+                            context,
+                            "程序出现了未知异常",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
                 }
-            }
-        })
-       return false
+            })
+        return false
     }
 }

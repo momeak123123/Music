@@ -5,10 +5,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.CountDownTimer
+import android.widget.Toast
 import com.example.music.MainActivity
 import com.example.music.R
 import com.example.music.music.contract.StartPageContract
 import com.example.music.music.presenter.StartPagePresenter
+import com.example.music.utils.NetWorkUtils
 import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -39,25 +41,11 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>() , Star
     override fun init(savedInstanceState: Bundle?) {
         super.init(savedInstanceState)
         context=this
-        val intent = Intent()
-        intent.setClass(context, MusicPlayActivity().javaClass)
-        startActivity(intent)
     }
 
     @SuppressLint("CheckResult")
     override fun initView() {
         super.initView()
-
-       /* countDownTimer = object : CountDownTimer(5000+500 , 1000) {
-            override fun onTick(millisUntilFinished: Long) {
-                time.text=(millisUntilFinished / 1000).toString()
-            }
-            override fun onFinish() {
-                val intent = Intent()
-                intent.setClass(context as StartPageActivity, MainActivity().javaClass)
-                startActivity(intent)
-            }
-        }.start()*/
 
         mDisposable = Flowable.intervalRange(0, 5, 0, 1, TimeUnit.SECONDS)
             .observeOn(AndroidSchedulers.mainThread())
@@ -90,7 +78,8 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>() , Star
 
     override fun initData() {
         super.initData()
-        //context.let { getPresenter().homedata(it) }
+        context.let { getPresenter().homedata(it) }
+        //Toast.makeText(context, NetWorkUtils.getNetworkTypeName(context), Toast.LENGTH_SHORT).show()
     }
 
     override fun onResume() {

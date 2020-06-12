@@ -19,7 +19,7 @@ import io.reactivex.Observer
 
 class ArtistListAdapter (var datas:MutableList<Artists>, val context: Context) : RecyclerView.Adapter<ArtistListAdapter.InnerHolder>() {
 
-    private var itemClickListener: IKotlinItemClickListener? = null
+
 
 
 
@@ -30,9 +30,7 @@ class ArtistListAdapter (var datas:MutableList<Artists>, val context: Context) :
         //加载View
         val itemView: View =
             LayoutInflater.from(context).inflate(R.layout.artist_list_item, holder, false)
-        itemView.setOnClickListener {
-            itemClickListener?.onItemClickListener(position)
-        }
+
         return InnerHolder(itemView)
 
     }
@@ -58,14 +56,7 @@ class ArtistListAdapter (var datas:MutableList<Artists>, val context: Context) :
         holder.title.text = datas[position].name
     }
 
-    // 提供set方法
-    fun setOnKotlinItemClickListener(itemClickListener: IKotlinItemClickListener) {
-        this.itemClickListener = itemClickListener
-    }
 
-    interface IKotlinItemClickListener {
-        fun onItemClickListener(position: Int)
-    }
 
     fun removeAll(){
         datas.removeAll(datas)

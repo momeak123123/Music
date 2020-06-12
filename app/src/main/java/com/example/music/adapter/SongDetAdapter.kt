@@ -12,103 +12,195 @@ import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.bean.Music
 import com.example.music.bean.SongDet
+import com.example.music.music.view.act.AlbumDetActivity
+import com.example.music.music.view.act.SongDetActivity
+import com.jakewharton.rxbinding2.view.RxView
+import io.reactivex.Observable
+import kotlinx.android.synthetic.main.head.*
+import java.util.concurrent.TimeUnit
 
-class SongDetAdapter  (val datas: MutableList<Music>, val context: Context,val imaurl:String) : RecyclerView.Adapter<SongDetAdapter.InnerHolder>() {
+class SongDetAdapter  (val datas: MutableList<Music>, val context: Context,
+                       val covers: String,
+                       val names:String) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var itemClickListener: IKotlinItemClickListener? = null
+
+    companion object {
+        const val TYPE_TITLE = 0
+        const val TYPE_SELLER = 1
+    }
 
     var type = 0
 
     var listdet = mutableListOf<SongDet>()
+
+    override fun getItemViewType(position: Int): Int {
+        return if (position == 0) {
+            TYPE_TITLE
+        } else {
+            TYPE_SELLER
+        }
+    }
+
     /**
      * 相当于getView()
      */
-    override fun onCreateViewHolder(holder: ViewGroup, position: Int): InnerHolder {
+    override fun onCreateViewHolder(holder: ViewGroup, position: Int): RecyclerView.ViewHolder {
         //加载View
-        val itemView: View = LayoutInflater.from(context).inflate(R.layout.song_index_item, holder, false)
-        itemView.setOnClickListener {
-            itemClickListener?.onItemClickListener(position)
+        return when (position) {
+            TYPE_TITLE -> TitleHolder(
+                LayoutInflater.from(context).inflate(R.layout.song_index_header, holder, false)
+            )
+            TYPE_SELLER -> SellerHolder(
+                LayoutInflater.from(context).inflate(R.layout.song_index_item, holder, false)
+            )
+            else -> TitleHolder(
+                LayoutInflater.from(context).inflate(R.layout.song_index_header, holder, false)
+            )
         }
-        return InnerHolder(itemView)
 
     }
 
     /**
      * 得到总条数
      */
-    override fun getItemCount(): Int = datas.size
+    override fun getItemCount(): Int {
 
-    class InnerHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var iv_cover: ImageView = itemView.findViewById(R.id.musicsrc)
-        var title: TextView = itemView.findViewById(R.id.musicname)
-        var txt: TextView = itemView.findViewById(R.id.singer)
-        var more: ImageView = itemView.findViewById(R.id.more)
-        var radio: ImageView = itemView.findViewById(R.id.radio)
-        var num: TextView = itemView.findViewById(R.id.num)
-        var delete: TextView = itemView.findViewById(R.id.delete)
+        return datas.size
+
     }
+
 
     /**
      * 绑定数据，View和数据绑定
      */
-    @SuppressLint("SetTextI18n")
-    override fun onBindViewHolder(holder: InnerHolder, position: Int) {
-        Glide.with(context).load(imaurl).placeholder(R.color.main_black_grey).into(holder.iv_cover)
 
-        holder.title.text = datas[position].name
-        val artist =  datas[position].all_artist
-        var srtist_name = ""
-        for(it in artist){
-            if(srtist_name != ""){
-                srtist_name += "/"+it.name
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (position < datas.size) {
+            when (getItemViewType(position)) {
+                TYPE_TITLE -> (holder as TitleHolder).bindData()
+                TYPE_SELLER -> (holder as SellerHolder).bindData(position)
+            }
+
+        }
+    }
+
+    inner class TitleHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        var iv_cover: ImageView
+        var txt: TextView
+        var top_flot: ImageView
+        var title: TextView
+        var top_set: ImageView
+
+        init {
+            iv_cover = itemView.findViewById(R.id.iv_cover)
+            txt = itemView.findViewById(R.id.txt)
+            top_flot = itemView.findViewById(R.id.top_flot)
+            title = itemView.findViewById(R.id.title)
+            top_set = itemView.findViewById(R.id.top_set)
+        }
+
+        @SuppressLint("CheckResult")
+        fun bindData() {
+            Glide.with(context).load(covers).placeholder(R.color.main_black_grey).into(iv_cover)
+            title.text = names
+            Glide.with(context).load(R.drawable.more).placeholder(R.color.main_black_grey).into(top_set)
+
+            RxView.clicks(top_flot)
+                .throttleFirst(1, TimeUnit.SECONDS)
+                .subscribe {
+                    Observable.just(true).subscribe(SongDetActivity.observers)
+                }
+
+            RxView.clicks(top_set)
+                .throttleFirst(1, TimeUnit.SECONDS)
+                .subscribe {
+                    if (type == 0) {
+                        type = 1
+                        notifyDataSetChanged()
+                    } else {
+                        type = 0
+                        notifyDataSetChanged()
+                    }
+
+                }
+
+        }
+
+    }
+
+    inner class SellerHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        var iv_cover: ImageView
+        var title: TextView
+        var txt: TextView
+        var more: ImageView
+        var radio: ImageView
+        var num: TextView
+        var delete: ImageView
+
+        init {
+             iv_cover = itemView.findViewById(R.id.musicsrc)
+             title = itemView.findViewById(R.id.musicname)
+             txt = itemView.findViewById(R.id.singer)
+             more = itemView.findViewById(R.id.more)
+             radio = itemView.findViewById(R.id.radio)
+             num = itemView.findViewById(R.id.num)
+             delete = itemView.findViewById(R.id.delete)
+        }
+
+        fun bindData(position: Int) {
+            Glide.with(context).load(datas[position].pic_url).placeholder(R.color.main_black_grey).into(iv_cover)
+
+            title.text = datas[position].name
+            val artist =  datas[position].all_artist
+            var srtist_name = ""
+            for(it in artist){
+                if(srtist_name != ""){
+                    srtist_name += "/"+it.name
+                }else{
+                    srtist_name = it.name
+                }
+
+            }
+            txt.text =  srtist_name
+
+
+            if(type==0){
+                num.visibility = View.VISIBLE
+                radio.visibility = View.GONE
+                num.text = (position+1).toString()
             }else{
-                srtist_name = it.name
+                num.visibility = View.GONE
+                radio.visibility = View.VISIBLE
+                for(it in datas){
+                    listdet.add(SongDet(it,0))
+                }
             }
 
-        }
-        holder.txt.text =  srtist_name
+            radio.setOnClickListener {
+                if(listdet[position].type==0){
+                    listdet[position].type = 1
+                    Glide.with(context).load(R.drawable.select).into(radio)
+                }else{
+                    listdet[position].type = 0
+                    Glide.with(context).load(R.drawable.upselect).into(radio)
+                }
 
-
-        if(type==0){
-            holder.num.visibility = View.VISIBLE
-            holder.radio.visibility = View.GONE
-            holder.num.text = (position+1).toString()
-        }else{
-            holder.num.visibility = View.GONE
-            holder.radio.visibility = View.VISIBLE
-            for(it in datas){
-                listdet.add(SongDet(it,0))
-            }
-        }
-
-        holder.radio.setOnClickListener {
-            if(listdet[position].type==0){
-                listdet[position].type = 1
-                Glide.with(context).load(R.drawable.select).into(holder.radio)
-            }else{
-                listdet[position].type = 0
-                Glide.with(context).load(R.drawable.upselect).into(holder.radio)
             }
 
-        }
+            more.setOnClickListener {
 
-        holder.more.setOnClickListener {
+            }
 
-        }
-
-        holder.delete.setOnClickListener {
-            remove(holder.adapterPosition)
+            delete.setOnClickListener {
+                remove(adapterPosition)
+            }
         }
     }
 
-    // 提供set方法
-    fun setOnKotlinItemClickListener(itemClickListener: IKotlinItemClickListener) {
-        this.itemClickListener = itemClickListener
-    }
 
-    interface IKotlinItemClickListener {
-        fun onItemClickListener(position: Int)
-    }
+
+
 
     fun add(item: Music) {
         datas.add(item)

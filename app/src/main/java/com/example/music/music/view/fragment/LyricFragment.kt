@@ -7,6 +7,7 @@ import com.example.music.bean.ResultBean
 import com.example.music.common.Constants
 import com.example.music.music.contract.LyricContract
 import com.example.music.music.presenter.LyricPresenter
+import com.example.music.music.view.act.AlbumDetActivity
 import com.example.music.music.view.act.ArtistDetActivity
 import com.example.music.music.view.act.MusicPlayActivity
 import com.google.gson.Gson
@@ -43,10 +44,8 @@ class LyricFragment : BaseMvpFragment<LyricContract.IPresenter>(), LyricContract
             if (!MusicPlayActivity.wlMusic.isPlaying) {
                 MusicPlayActivity.wlMusic.start()
             }
-            if (!MusicPlayActivity.mDisposable.isDisposed) {
-                MusicPlayActivity.mDisposable.dispose()
-                Observable.just(time).subscribe(MusicPlayActivity.observers)
-            }
+            Observable.just(time/1000).subscribe(MusicPlayActivity.observers)
+
             true
         })
     }
@@ -61,23 +60,30 @@ class LyricFragment : BaseMvpFragment<LyricContract.IPresenter>(), LyricContract
                         /**
                          * 成功回调
                          */
+                        try {
+                            val bean =
+                                Gson().fromJson(response.body(), ResultBean::class.javaObjectType)
+                            if (bean.code == 200) {
+                                val lrclink = bean.data.get("lrclink").asString
+                                // 加载歌词文本
+                                lrcView.loadLrc("")
+                                lrcView.loadLrc(lrclink)
 
-                        val bean =
-                            Gson().fromJson(response.body(), ResultBean::class.javaObjectType)
-                        if (bean.code == 200) {
-                            val lrclink = bean.data.get("lrclink").asString
-
-                            // 加载歌词文本
-                            lrcView.loadLrc(lrclink)
-
-
-                        } else {
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    bean.data.toString(),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        } catch (e: Exception) {
                             Toast.makeText(
                                 context,
-                                bean.data.toString(),
-                                Toast.LENGTH_SHORT
+                                "程序出现了未知异常",
+                                Toast.LENGTH_LONG
                             ).show()
                         }
+
                     }
                 })
     }

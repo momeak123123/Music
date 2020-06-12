@@ -15,16 +15,14 @@ import com.xuexiang.xui.widget.textview.supertextview.SuperButton
 
 class ArtistTagAdapter (val datas: MutableList<Hierarchy>, val context: Context,val type:Int) : RecyclerView.Adapter<ArtistTagAdapter.InnerHolder>() {
 
-    private var itemClickListener: IKotlinItemClickListener? = null
+
     /**
      * 相当于getView()
      */
     override fun onCreateViewHolder(holder: ViewGroup, position: Int): InnerHolder {
         //加载View
         val itemView: View = LayoutInflater.from(context).inflate(R.layout.artist_item, holder, false)
-        itemView.setOnClickListener {
-            itemClickListener?.onItemClickListener(itemView,position)
-        }
+
         return InnerHolder(itemView)
 
     }
@@ -75,14 +73,7 @@ class ArtistTagAdapter (val datas: MutableList<Hierarchy>, val context: Context,
 
     }
 
-    // 提供set方法
-    fun setOnKotlinItemClickListener(itemClickListener: IKotlinItemClickListener) {
-        this.itemClickListener = itemClickListener
-    }
 
-    interface IKotlinItemClickListener {
-        fun onItemClickListener(view:View,position: Int)
-    }
 
 
 

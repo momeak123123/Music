@@ -42,10 +42,8 @@ import java.util.concurrent.TimeUnit
  **/
 class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IView {
 
-    companion object {
-        lateinit var observer: Observer<Boolean>
-    }
 
+    private lateinit var sp: SharedPreferences
     var bannerdata = mutableListOf<BannerItem>()
 
     override fun registerPresenter() = HomePresenter::class.java
@@ -57,21 +55,17 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
 
     override fun initData() {
         super.initData()
-        refresh() //第一次进入触发自动刷新，演示效果
+        sp = requireContext().getSharedPreferences("Music", Context.MODE_PRIVATE)
+        if (sp.getString("list", "").equals("")) {
+            swipe_refresh_layout.isRefreshing = true
+            loadData()
+        }
         initbanner()
-        loadData()
 
-    }
-
-    private fun refresh() {
-        swipe_refresh_layout.isRefreshing = true
-        context?.let { getPresenter().homedata(it) }
     }
 
     fun loadData() {
 
-        val sp: SharedPreferences =
-            requireContext().getSharedPreferences("Music", Context.MODE_PRIVATE)
         val data_toplist = mutableListOf<TopList>()
         val data_ablum = mutableListOf<Album>()
         val data_artist = mutableListOf<Artists>()
@@ -207,19 +201,7 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
 
     override fun onResume() {
         super.onResume()
-        observer = object : Observer<Boolean> {
-            override fun onSubscribe(d: Disposable) {}
-            override fun onNext(data: Boolean) {
-                if (data) {
-                    loadData()
-                }
-            }
-
-            override fun onError(e: Throwable) {}
-            override fun onComplete() {}
-
-        }
-
+        loadData()
     }
 
     /**
@@ -250,6 +232,7 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
             ItemClickListener(context,
                 object : ItemClickListener.OnItemClickListener {
                     override fun onItemClick(view: View?, position: Int) {
+                        println(position)
                         val intent = Intent()
                         context?.let { intent.setClass(it, AlbumDetActivity().javaClass) }
                         intent.putExtra("album_id", list[position].from_id)
@@ -267,6 +250,7 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
                 })
         )
     }
+
 
     /**
      * 初始化专辑
@@ -336,10 +320,11 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
             ItemClickListener(context,
                 object : ItemClickListener.OnItemClickListener {
                     override fun onItemClick(view: View?, position: Int) {
-                        MusicPlayActivity.id = position
-                        Observable.just(song).subscribe(MusicPlayActivity.observer)
+                        val json: String = Gson().toJson(song)
                         val intent = Intent()
                         context?.let { intent.setClass(it, MusicPlayActivity().javaClass) }
+                        intent.putExtra("pos",position)
+                        intent.putExtra("list",json)
                         startActivity(intent)
 
                     }

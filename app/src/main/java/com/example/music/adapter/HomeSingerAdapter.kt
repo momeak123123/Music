@@ -13,16 +13,13 @@ import com.example.music.bean.Artists
 
 class HomeSingerAdapter (val data: List<Artists>, val context: Context) : RecyclerView.Adapter<HomeSingerAdapter.InnerHolder>() {
 
-    private var itemClickListener: IKotlinItemClickListener? = null
     /**
      * 相当于getView()
      */
     override fun onCreateViewHolder(holder: ViewGroup, position: Int): InnerHolder {
         //加载View
         val itemView: View = LayoutInflater.from(context).inflate(R.layout.home_item2, holder, false)
-        itemView.setOnClickListener {
-            itemClickListener?.onItemClickListener(position)
-        }
+
         return InnerHolder(itemView)
 
     }
@@ -45,14 +42,6 @@ class HomeSingerAdapter (val data: List<Artists>, val context: Context) : Recycl
         holder.title.text = data[position].name
     }
 
-    // 提供set方法
-    fun setOnKotlinItemClickListener(itemClickListener: IKotlinItemClickListener) {
-        this.itemClickListener = itemClickListener
-    }
-
-    interface IKotlinItemClickListener {
-        fun onItemClickListener(position: Int)
-    }
 
 
 

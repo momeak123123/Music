@@ -1,16 +1,14 @@
 package com.example.music.music.view.act
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.adapter.AlbumDetAdapter
 import com.example.music.bean.Music
@@ -18,19 +16,13 @@ import com.example.music.config.ItemClickListener
 import com.example.music.music.contract.AlbumDetContract
 import com.example.music.music.presenter.AlbumDetPresenter
 import com.google.gson.Gson
-import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
-import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.album_index.*
-import kotlinx.android.synthetic.main.album_index.swipe_refresh_layout
-import kotlinx.android.synthetic.main.fragment_home.*
-import kotlinx.android.synthetic.main.head.*
 import mvp.ljb.kt.act.BaseMvpActivity
-import java.util.concurrent.TimeUnit
 
 
 /**
@@ -41,13 +33,10 @@ import java.util.concurrent.TimeUnit
 class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumDetContract.IView {
 
     companion object {
-        fun finish() {
-            finish()
-        }
-
         lateinit var observer: Observer<JsonObject>
         lateinit var observers: Observer<Boolean>
     }
+
 
     private lateinit var names: String
     private var album_type: Int =0
@@ -159,10 +148,11 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
                 object : ItemClickListener.OnItemClickListener {
                     override fun onItemClick(view: View?, position: Int) {
                         if(position>0){
-                            MusicPlayActivity.id = position
-                            Observable.just(song).subscribe(MusicPlayActivity.observer)
+                            val json: String = Gson().toJson(song)
                             val intent = Intent()
                             intent.setClass(context, MusicPlayActivity().javaClass)
+                            intent.putExtra("pos",position)
+                            intent.putExtra("list",json)
                             startActivity(intent)
                         }
                     }
@@ -189,7 +179,6 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
                 }
 
             }
-
             override fun onError(e: Throwable) {}
             override fun onComplete() {
             }
@@ -202,3 +191,4 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
     }
 
 }
+

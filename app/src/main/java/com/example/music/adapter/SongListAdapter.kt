@@ -11,19 +11,18 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.bean.Music
+import com.example.music.sql.bean.Playlist
 
-class SongListAdapter  (val datas: List<Music>, val context: Context) : RecyclerView.Adapter<SongListAdapter.InnerHolder>() {
+class SongListAdapter  (val datas: List<Playlist>, val context: Context) : RecyclerView.Adapter<SongListAdapter.InnerHolder>() {
 
-    private var itemClickListener: IKotlinItemClickListener? = null
+
     /**
      * 相当于getView()
      */
     override fun onCreateViewHolder(holder: ViewGroup, position: Int): InnerHolder {
         //加载View
         val itemView: View = LayoutInflater.from(context).inflate(R.layout.song_list_item, holder, false)
-        itemView.setOnClickListener {
-            itemClickListener?.onItemClickListener(position)
-        }
+
         return InnerHolder(itemView)
 
     }
@@ -47,27 +46,9 @@ class SongListAdapter  (val datas: List<Music>, val context: Context) : Recycler
     override fun onBindViewHolder(holder: InnerHolder, position: Int) {
         Glide.with(context).load(datas[position].pic_url).placeholder(R.color.main_black_grey).into(holder.iv_cover)
         holder.title.text = datas[position].name
-        val artist =  datas[position].all_artist
-        var srtist_name = ""
-        for(it in artist){
-            if(srtist_name != ""){
-                srtist_name += "/"+it.name
-            }else{
-                srtist_name = it.name
-            }
-
-        }
-        holder.txt.text = srtist_name
+        holder.txt.text =  datas[position].name
 
 
     }
 
-    // 提供set方法
-    fun setOnKotlinItemClickListener(itemClickListener: IKotlinItemClickListener) {
-        this.itemClickListener = itemClickListener
-    }
-
-    interface IKotlinItemClickListener {
-        fun onItemClickListener(position: Int)
-    }
 }

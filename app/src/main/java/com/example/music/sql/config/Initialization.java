@@ -9,11 +9,10 @@ import com.example.music.sql.gen.DaoSession;
 public class Initialization {
 
     private static DaoSession daoSessionsearch;
+    private static DaoSession daoSessionplaylist;
 
 
-/**
- * 配置数据库
- */
+
     /**
      * 配置数据库
      */
@@ -29,6 +28,24 @@ public class Initialization {
 
     public static DaoSession getDaoInstantSearch() {
         return daoSessionsearch;
+    }
+
+
+    /**
+     * 配置数据库
+     */
+    public static void setupDatabasePlaylist(Context context) {
+        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(context, "Playlist.db", null);
+        //获取可写数据库
+        SQLiteDatabase db = helper.getWritableDatabase();
+        //获取数据库对象
+        DaoMaster daoMaster = new DaoMaster(db);
+        //获取Dao对象管理者
+        daoSessionplaylist = daoMaster.newSession();
+    }
+
+    public static DaoSession getDaoInstantPlaylist() {
+        return daoSessionplaylist;
     }
 
 }

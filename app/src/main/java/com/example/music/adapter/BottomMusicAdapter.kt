@@ -23,16 +23,14 @@ import kotlinx.android.synthetic.main.frag_player_coverview.*
  */
 class BottomMusicAdapter(val datas: MutableList<Music>, val context: Context) : RecyclerView.Adapter<BottomMusicAdapter.InnerHolder>() {
 
-    private var itemClickListener: IKotlinItemClickListener? = null
+
     /**
      * 相当于getView()
      */
     override fun onCreateViewHolder(holder: ViewGroup, position: Int): InnerHolder {
         //加载View
         val itemView: View = LayoutInflater.from(context).inflate(R.layout.bottom_music_item, holder, false)
-        itemView.setOnClickListener {
-            itemClickListener?.onItemClickListener(position)
-        }
+
         return InnerHolder(itemView)
 
     }
@@ -57,16 +55,7 @@ class BottomMusicAdapter(val datas: MutableList<Music>, val context: Context) : 
 
     }
 
-    // 提供set方法
-    fun setOnKotlinItemClickListener(itemClickListener: IKotlinItemClickListener) {
-        this.itemClickListener = itemClickListener
-    }
 
-    interface IKotlinItemClickListener {
-        fun onItemClickListener(position: Int){
-
-        }
-    }
 
 
     fun add(item: Music) {

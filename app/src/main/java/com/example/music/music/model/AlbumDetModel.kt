@@ -23,53 +23,76 @@ import mvp.ljb.kt.model.BaseModel
  **/
 class AlbumDetModel : BaseModel(), AlbumDetContract.IModel {
 
-    override fun songdata(id:Long,type:Int,context: Context){
+    override fun songdata(id: Long, type: Int, context: Context) {
+
         OkGo.get<String>(Constants.URL + "api/album/getAlbumSonglist")
-            .params("album_id",id)
+            .params("album_id", id)
             .execute(object : StringCallback() {
                 override fun onSuccess(response: Response<String>) {
                     /**
                      * 成功回调
                      */
-
-                    val bean =
-                        Gson().fromJson(response.body(), ResultBean::class.javaObjectType)
-                    if (bean.code == 200) {
-                        Observable.just(bean.data).subscribe(AlbumDetActivity.observer)
-                    } else {
+                    try {
+                        val bean =
+                            Gson().fromJson(response.body(), ResultBean::class.javaObjectType)
+                        if (bean.code == 200) {
+                            Observable.just(bean.data).subscribe(AlbumDetActivity.observer)
+                        } else {
+                            Toast.makeText(
+                                context,
+                                bean.data.toString(),
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    } catch (e: Exception) {
                         Toast.makeText(
                             context,
-                            bean.data.toString(),
-                            Toast.LENGTH_SHORT
+                            "程序出现了未知异常",
+                            Toast.LENGTH_LONG
                         ).show()
                     }
+
                 }
             })
+
+
     }
 
-    override fun songdatas(id:Long,type:Int,context: Context) {
+    override fun songdatas(id: Long, type: Int, context: Context) {
+
+
         OkGo.get<String>(Constants.URL + "api/ranking/rankList")
-            .params("from_id",id)
-            .params("from",type)
+            .params("from_id", id)
+            .params("from", type)
             .execute(object : StringCallback() {
                 override fun onSuccess(response: Response<String>) {
                     /**
                      * 成功回调
                      */
-
-                    val bean =
-                        Gson().fromJson(response.body(), ResultBean::class.javaObjectType)
-                    if (bean.code == 200) {
-                        Observable.just(bean.data).subscribe(AlbumDetActivity.observer)
-                    } else {
+                    try {
+                        val bean =
+                            Gson().fromJson(response.body(), ResultBean::class.javaObjectType)
+                        if (bean.code == 200) {
+                            Observable.just(bean.data).subscribe(AlbumDetActivity.observer)
+                        } else {
+                            Toast.makeText(
+                                context,
+                                bean.data.toString(),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    } catch (e: Exception) {
                         Toast.makeText(
                             context,
-                            bean.data.toString(),
+                            "程序出现了未知异常",
                             Toast.LENGTH_SHORT
                         ).show()
                     }
+
                 }
             })
+
+
     }
 }
 

@@ -2,14 +2,17 @@ package com.example.music.music.view.act
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.TranslateAnimation
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -22,6 +25,9 @@ import com.example.music.config.ItemClickListener
 import com.example.music.music.view.fragment.CoverFragment
 import com.example.music.music.view.fragment.LyricFragment
 import com.example.music.utils.BitmapUtils
+import com.google.gson.Gson
+import com.google.gson.JsonArray
+import com.google.gson.reflect.TypeToken
 import com.jakewharton.rxbinding2.view.RxView
 import com.ywl5320.libenum.MuteEnum
 import com.ywl5320.libmusic.WlMusic
@@ -42,20 +48,20 @@ class MusicPlayActivity : AppCompatActivity() {
         var position: Int = 0
         var id: Int = 0
         lateinit var wlMusic: WlMusic
-        lateinit var observer: Observer<MutableList<Music>>
-        var song_id: Long = 0
-        lateinit var mDisposable: Disposable
-         var max: Long = 0
         lateinit var observers: Observer<Long>
     }
 
+    private val type: Int = 0
+    var song_id: Long = 0
+    lateinit var mDisposable: Disposable
+    var max: Long = 0
     private var bool: Boolean = false
     private var min: Long = 0
     private var bitmap: Bitmap? = null
     private var playingMusic: Music? = null
     private var playingMusicList: MutableList<Music>? = null
-    private var coverFragment= CoverFragment()
-    private var lyricFragment= LyricFragment()
+    private var coverFragment = CoverFragment()
+    private var lyricFragment = LyricFragment()
     private val fragments = mutableListOf<Fragment>()
     private lateinit var context: Context
 
@@ -69,13 +75,12 @@ class MusicPlayActivity : AppCompatActivity() {
         fragments.add(lyricFragment)
         viewPager.adapter = ViewPagerAdapter(supportFragmentManager, fragments)
         initView()
-        moveTaskToBack(true)
+        initData()
     }
 
 
-
     @SuppressLint("CheckResult")
-    private fun initView(){
+    private fun initView() {
         playPauseIv.setOnClickListener {
             if (bool) {
                 if (playPauseIv.isPlaying) {
@@ -101,7 +106,7 @@ class MusicPlayActivity : AppCompatActivity() {
         RxView.clicks(icon3)
             .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
-               in_indel.visibility = View.VISIBLE
+                in_indel.visibility = View.VISIBLE
                 Glide.with(context).load("").into(del)
                 in_title.text = R.string.song_but.toString()
             }
@@ -109,7 +114,8 @@ class MusicPlayActivity : AppCompatActivity() {
             .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
                 in_indel.visibility = View.VISIBLE
-                Glide.with(this).load(R.drawable.list_del).placeholder(R.color.main_black_grey).into(del)
+                Glide.with(this).load(R.drawable.list_del).placeholder(R.color.main_black_grey)
+                    .into(del)
                 in_title.text = ""
                 initPlayList()
             }
@@ -123,37 +129,56 @@ class MusicPlayActivity : AppCompatActivity() {
 
     }
 
-    override fun onStart() {
-        super.onStart()
-        observer = object : Observer<MutableList<Music>> {
-            override fun onSubscribe(d: Disposable) {}
-            override fun onNext(song: MutableList<Music>) {
+    fun initData() {
+        val bundle = intent.extras
+        val pos = bundle?.get("pos") as Int
+        val list = bundle.get("list") as String
 
-                if (song.isNotEmpty()) {
-                    if(song[id].song_id == song_id){
-                        playingMusicList = song
-                    }else{
-                        song_id = song[id].song_id
-                        playingMusicList = song
-                        playingMusic = song[id]
+        val obj: JsonArray = Gson().fromJson(list, JsonArray::class.java)
+        val song: MutableList<Music> = Gson().fromJson(
+            obj,
+            object : TypeToken<MutableList<Music>>() {}.type
+        )
 
-                        if(bool){
-                            starts(playingMusic!!)
-                        }else{
-                            start(playingMusic!!)
-                        }
+        if (song.isNotEmpty()) {
+            id = pos
+            song_id = song[pos].song_id
+            playingMusicList = song
+            playingMusic = song[pos]
+            start(playingMusic!!)
+        }
+    }
 
-                    }
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        if (intent != null) {
+            val bundle = intent.extras
+            val pos = bundle?.get("pos") as Int
+            val list = bundle.get("list") as String
+
+            val obj: JsonArray = Gson().fromJson(list, JsonArray::class.java)
+            val song: MutableList<Music> = Gson().fromJson(
+                obj,
+                object : TypeToken<MutableList<Music>>() {}.type
+            )
+
+            if (song.isNotEmpty()) {
+                if (song[pos].song_id == song_id) {
+                    println("一样")
+                    playingMusicList = song
+                } else {
+                    println("不一样")
+                    id = pos
+                    song_id = song[pos].song_id
+                    playingMusicList = song
+                    playingMusic = song[pos]
+                    starts(playingMusic!!)
+
 
                 }
 
             }
-            override fun onError(e: Throwable) {}
-            override fun onComplete() {}
-
         }
-
-
     }
 
     override fun onResume() {
@@ -161,9 +186,12 @@ class MusicPlayActivity : AppCompatActivity() {
 
         observers = object : Observer<Long> {
             override fun onSubscribe(d: Disposable) {}
-            @SuppressLint("SetTextI18n")
             override fun onNext(bool: Long) {
-                time(bool, max - bool)
+                if (!mDisposable.isDisposed) {
+                    mDisposable.dispose()
+                    time(bool, max - bool)
+                }
+
             }
 
             override fun onError(e: Throwable) {}
@@ -200,7 +228,7 @@ class MusicPlayActivity : AppCompatActivity() {
     private fun initSongList(song: MutableList<Music>) {
         in_list.layoutManager = LinearLayoutManager(context)
         in_list.itemAnimator = DefaultItemAnimator()
-        val adapter =  PlaySongAdapter(song, context)
+        val adapter = PlaySongAdapter(song, context)
         in_list.adapter = adapter
         in_list.addOnItemTouchListener(
             ItemClickListener(context,
@@ -216,17 +244,17 @@ class MusicPlayActivity : AppCompatActivity() {
         )
     }
 
-    private fun start(music:Music){
+    private fun start(music: Music) {
         playPauseIv.setLoading(true)
         playingMusic = music
         //更新标题
         titleIv.text = music.name
-        val artist =  music.all_artist
+        val artist = music.all_artist
         var srtist_name = ""
-        for(it in artist){
-            if(srtist_name != ""){
-                srtist_name += "/"+it.name
-            }else{
+        for (it in artist) {
+            if (srtist_name != "") {
+                srtist_name += "/" + it.name
+            } else {
                 srtist_name = it.name
             }
 
@@ -243,7 +271,7 @@ class MusicPlayActivity : AppCompatActivity() {
         }.start()
     }
 
-    private fun starts(music:Music){
+    private fun starts(music: Music) {
         wlMusic.stop()
         playPauseIv.pause()
         playPauseIv.setLoading(true)
@@ -252,12 +280,12 @@ class MusicPlayActivity : AppCompatActivity() {
         playingMusic = music
         //更新标题
         titleIv.text = music.name
-        val artist =  music.all_artist
+        val artist = music.all_artist
         var srtist_name = ""
-        for(it in artist){
-            if(srtist_name != ""){
-                srtist_name += "/"+it.name
-            }else{
+        for (it in artist) {
+            if (srtist_name != "") {
+                srtist_name += "/" + it.name
+            } else {
                 srtist_name = it.name
             }
 
@@ -278,7 +306,7 @@ class MusicPlayActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        if(wlMusic.isPlaying){
+        if (wlMusic.isPlaying) {
             wlMusic.stop()
         }
     }
@@ -297,16 +325,15 @@ class MusicPlayActivity : AppCompatActivity() {
         wlMusic.setConvertSampleRate(null) //设定恒定采样率（null为取消）
         wlMusic.prePared()
         wlMusic.setOnPreparedListener {
-            Observable.just((wlMusic.duration*1000).toLong())
+            Observable.just((wlMusic.duration).toLong())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(object : Observer<Long> {
                     override fun onSubscribe(d: Disposable) {}
                     override fun onNext(aLong: Long) {
-                        bool = true
                         max = aLong
-                        progressSb.max =(wlMusic.duration*1000)
-                        val f = (aLong/1000) / 60
-                        val m = (aLong/1000) % 60
+                        progressSb.max = aLong.toInt()
+                        val f = aLong / 60
+                        val m = aLong % 60
                         progressTv.text = "00:00"
                         durationTv.text = unitFormat(f.toInt()) + ":" + unitFormat(m.toInt())
                         lrcView.updateTime(0)
@@ -336,27 +363,23 @@ class MusicPlayActivity : AppCompatActivity() {
             }
 
             override fun onStopTrackingTouch(seekBar: SeekBar) {
-                wlMusic.seek(position/1000, true, true) //表示seek已经完成，然后才回调时间，避免自己控制时间逻辑和时间显示不稳定问题。
-                if (!mDisposable.isDisposed) {
-                    mDisposable.dispose()
-                    Observable.just(position.toLong()).subscribe(observers)
-                }
-
+                wlMusic.seek(position , true, true) //表示seek已经完成，然后才回调时间，避免自己控制时间逻辑和时间显示不稳定问题。
+                Observable.just(position.toLong()).subscribe(observers)
             }
         })
     }
 
     @SuppressLint("SetTextI18n")
     fun time(init: Long, count: Long) {
-        mDisposable = Flowable.intervalRange(init, count + 1000, 0, 1, TimeUnit.MILLISECONDS)
+        mDisposable = Flowable.intervalRange(init, count + 1, 0, 1, TimeUnit.SECONDS)
             .observeOn(AndroidSchedulers.mainThread())
             .doOnNext { t ->
                 min = t
-                val fs = (t/1000) / 60
-                val ms = (t/1000) % 60
+                val fs = t / 60
+                val ms = t % 60
                 progressTv.text = unitFormat(fs.toInt()) + ":" + unitFormat(ms.toInt())
                 progressSb.progress = t.toInt()
-                lrcView.updateTime(t.toLong())
+                lrcView.updateTime(t*1000)
             }
             .doOnComplete {
                 playPauseIv.pause()
@@ -374,8 +397,8 @@ class MusicPlayActivity : AppCompatActivity() {
     }
 
 
-    fun playtype(){
-        when (0) {
+    fun playtype() {
+        when (type) {
             1 -> {
                 //单曲循环
                 starts(playingMusic!!)
@@ -383,17 +406,17 @@ class MusicPlayActivity : AppCompatActivity() {
             2 -> {
                 //随机播放
                 val randoms = (0 until playingMusicList!!.size).random()
-                id=randoms
+                id = randoms
                 starts(playingMusicList!![randoms])
             }
             else -> {
                 //列表循环
-                val ids = id +1
-                if(playingMusicList!!.size == ids){
-                    id=0
+                val ids = id + 1
+                if (playingMusicList!!.size == ids) {
+                    id = 0
                     starts(playingMusicList!![0])
-                }else{
-                    id=ids
+                } else {
+                    id = ids
                     starts(playingMusicList!![ids])
                 }
             }

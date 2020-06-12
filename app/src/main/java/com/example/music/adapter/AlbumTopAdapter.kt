@@ -13,16 +13,14 @@ import com.example.music.bean.TopList
 
 class AlbumTopAdapter (val datas: List<TopList>, val context: Context) : RecyclerView.Adapter<AlbumTopAdapter.InnerHolder>() {
 
-    private var itemClickListener: IKotlinItemClickListener? = null
+
     /**
      * 相当于getView()
      */
     override fun onCreateViewHolder(holder: ViewGroup, position: Int): InnerHolder {
         //加载View
         val itemView: View = LayoutInflater.from(context).inflate(R.layout.album_item, holder, false)
-        itemView.setOnClickListener {
-            itemClickListener?.onItemClickListener(position)
-        }
+
         return InnerHolder(itemView)
 
     }
@@ -47,12 +45,5 @@ class AlbumTopAdapter (val datas: List<TopList>, val context: Context) : Recycle
         holder.txt.text = datas[position].update_frequency
     }
 
-    // 提供set方法
-    fun setOnKotlinItemClickListener(itemClickListener: IKotlinItemClickListener) {
-        this.itemClickListener = itemClickListener
-    }
 
-    interface IKotlinItemClickListener {
-        fun onItemClickListener(position: Int)
-    }
 }

@@ -14,7 +14,7 @@ import com.example.music.bean.Music
 
 class PlayListAdapter  (val datas: MutableList<Music>, val context: Context) : RecyclerView.Adapter<PlayListAdapter.InnerHolder>() {
 
-    private var itemClickListener: IKotlinItemClickListener? = null
+
 
     /**
      * 相当于getView()
@@ -23,9 +23,7 @@ class PlayListAdapter  (val datas: MutableList<Music>, val context: Context) : R
         //加载View
         val itemView: View =
             LayoutInflater.from(context).inflate(R.layout.play_playlist_item, holder, false)
-        itemView.setOnClickListener {
-            itemClickListener?.onItemClickListener(position)
-        }
+
         return InnerHolder(itemView)
 
     }
@@ -62,12 +60,5 @@ class PlayListAdapter  (val datas: MutableList<Music>, val context: Context) : R
 
     }
 
-    // 提供set方法
-    fun setOnKotlinItemClickListener(itemClickListener: IKotlinItemClickListener) {
-        this.itemClickListener = itemClickListener
-    }
 
-    interface IKotlinItemClickListener {
-        fun onItemClickListener(position: Int)
-    }
 }

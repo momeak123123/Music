@@ -21,51 +21,73 @@ import mvp.ljb.kt.model.BaseModel
  * @Description input description
  **/
 class ArtistModel : BaseModel(), ArtistContract.IModel {
-    override fun taglist(context:Context){
+    override fun taglist(context: Context) {
+
+
         OkGo.get<String>(Constants.URL + "api/artist/getCat")
             .execute(object : StringCallback() {
                 override fun onSuccess(response: Response<String>) {
                     /**
                      * 成功回调
                      */
-
-                    val bean =
-                        Gson().fromJson(response.body(), ResultBean::class.javaObjectType)
-                    if (bean.code == 200) {
-                        Observable.just(bean.data).subscribe(ArtistActivity.observer)
-                    } else {
+                    try {
+                        val bean =
+                            Gson().fromJson(response.body(), ResultBean::class.javaObjectType)
+                        if (bean.code == 200) {
+                            Observable.just(bean.data).subscribe(ArtistActivity.observer)
+                        } else {
+                            Toast.makeText(
+                                context,
+                                bean.data.toString(),
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    } catch (e: Exception) {
                         Toast.makeText(
                             context,
-                            bean.data.toString(),
-                            Toast.LENGTH_SHORT
+                            "程序出现了未知异常",
+                            Toast.LENGTH_LONG
                         ).show()
                     }
                 }
             })
+
+
     }
 
-    override fun listdata(context:Context,varieties: Int, letter: Int) {
+    override fun listdata(context: Context, varieties: Int, letter: Int) {
+
+
         OkGo.get<String>(Constants.URL + "api/artist/getartist_list")
-            .params("varieties",varieties)
-            .params("letter",letter)
+            .params("varieties", varieties)
+            .params("letter", letter)
             .execute(object : StringCallback() {
                 override fun onSuccess(response: Response<String>) {
                     /**
                      * 成功回调
                      */
-
-                    val bean =
-                        Gson().fromJson(response.body(), ResultBeans::class.javaObjectType)
-                    if (bean.code == 200) {
-                        Observable.just(bean.data).subscribe(ArtistActivity.observers)
-                    } else {
+                    try {
+                        val bean =
+                            Gson().fromJson(response.body(), ResultBeans::class.javaObjectType)
+                        if (bean.code == 200) {
+                            Observable.just(bean.data).subscribe(ArtistActivity.observers)
+                        } else {
+                            Toast.makeText(
+                                context,
+                                bean.data.toString(),
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    } catch (e: Exception) {
                         Toast.makeText(
                             context,
-                            bean.data.toString(),
-                            Toast.LENGTH_SHORT
+                            "程序出现了未知异常",
+                            Toast.LENGTH_LONG
                         ).show()
                     }
                 }
             })
+
+
     }
 }

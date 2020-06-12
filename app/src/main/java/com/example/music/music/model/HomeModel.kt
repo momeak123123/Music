@@ -43,43 +43,67 @@ class HomeModel : BaseModel(), HomeContract.IModel {
     }
 
     override fun homedata(context: Context) {
+
+
         OkGo.get<String>(Constants.URL + "api")
             .execute(object : StringCallback() {
                 override fun onSuccess(response: Response<String>) {
                     /**
                      * 成功回调
                      */
+                    try {
+                        val bean =
+                            Gson().fromJson(response.body(), ResultBean::class.javaObjectType)
+                        if (bean.code == 200) {
 
-                    val bean =
-                        Gson().fromJson(response.body(), ResultBean::class.javaObjectType)
-                    if (bean.code == 200) {
+                            val album: List<Album> = Gson().fromJson<Array<Album>>(
+                                bean.data.getAsJsonArray("album_list"),
+                                Array<Album>::class.java
+                            ).toList()
+                            val artist: List<Artists> = Gson().fromJson<Array<Artists>>(
+                                bean.data.getAsJsonArray("hot_artist"),
+                                Array<Artists>::class.java
+                            ).toList()
+                            val song: List<Music> = Gson().fromJson<Array<Music>>(
+                                bean.data.getAsJsonArray("hot_song"),
+                                Array<Music>::class.java
+                            ).toList()
+                            val list: List<TopList> = Gson().fromJson<Array<TopList>>(
+                                bean.data.getAsJsonArray("top_list"),
+                                Array<TopList>::class.java
+                            ).toList()
+                            val str1 = Gson().toJson(album)
+                            val str2 = Gson().toJson(artist)
+                            val str3 = Gson().toJson(song)
+                            val str4 = Gson().toJson(list)
 
-                        val album:List<Album> =  Gson().fromJson<Array<Album>>(bean.data.getAsJsonArray("album_list"), Array<Album>::class.java).toList()
-                        val artist:List<Artists> =  Gson().fromJson<Array<Artists>>(bean.data.getAsJsonArray("hot_artist"), Array<Artists>::class.java).toList()
-                        val song:List<Music> =  Gson().fromJson<Array<Music>>(bean.data.getAsJsonArray("hot_song"), Array<Music>::class.java).toList()
-                        val list:List<TopList> =  Gson().fromJson<Array<TopList>>(bean.data.getAsJsonArray("top_list"), Array<TopList>::class.java).toList()
-                        val str1 = Gson().toJson(album)
-                        val str2 = Gson().toJson(artist)
-                        val str3 = Gson().toJson(song)
-                        val str4 = Gson().toJson(list)
+                            val sp: SharedPreferences =
+                                context.getSharedPreferences("Music", Context.MODE_PRIVATE)
 
-                        val sp: SharedPreferences =context.getSharedPreferences("Music", Context.MODE_PRIVATE)
+                            sp.edit().putString("album", str1).apply()
+                            sp.edit().putString("artist", str2).apply()
+                            sp.edit().putString("song", str3).apply()
+                            sp.edit().putString("list", str4).apply()
 
-                        sp.edit().putString("album", str1).apply()
-                        sp.edit().putString("artist", str2).apply()
-                        sp.edit().putString("song", str3).apply()
-                        sp.edit().putString("list", str4).apply()
 
-                        Observable.just(true).subscribe(HomeFragment.observer)
-                    } else {
+                        } else {
+                            Toast.makeText(
+                                context,
+                                bean.data.toString(),
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    } catch (e: Exception) {
                         Toast.makeText(
                             context,
-                            bean.data.toString(),
-                            Toast.LENGTH_SHORT
+                            "程序出现了未知异常",
+                            Toast.LENGTH_LONG
                         ).show()
                     }
                 }
             })
+
+
     }
 
 }

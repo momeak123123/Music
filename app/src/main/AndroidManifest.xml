@@ -27,7 +27,7 @@
         tools:replace="android:allowBackup"
         tools:targetApi="n">
         <activity android:name=".music.view.act.MusicPlayActivity"
-            android:configChanges="orientation|keyboardHidden|keyboard"
+            android:configChanges="orientation|keyboardHidden"
             android:launchMode="singleInstance"
             android:windowSoftInputMode="adjustResize"/>
 

@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
+import io.reactivex.functions.Consumer;
+import io.reactivex.plugins.RxJavaPlugins;
 import okhttp3.OkHttpClient;
 
 public class MusicApp extends Application {
@@ -35,6 +37,12 @@ public class MusicApp extends Application {
         XUI.debug(false);  //开启UI框架调试日志
         OkGo.getInstance().init(this);//网络请求
         initOkGo();
+        RxJavaPlugins.setErrorHandler(new Consumer<Throwable>() {
+            @Override
+            public void accept(Throwable throwable) throws Exception {
+                throwable.printStackTrace();//这里处理所有的Rxjava异常
+            }
+        });
     }
 
     public static synchronized MusicApp getInstance() {

@@ -5,10 +5,13 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.graphics.Bitmap
 import android.os.Build
+import android.os.Handler
+import android.os.Message
 import android.view.View
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.example.music.R
 import com.example.music.music.contract.CoverContract
@@ -20,6 +23,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.frag_player_coverview.*
 import mvp.ljb.kt.fragment.BaseMvpFragment
+import java.lang.ref.WeakReference
 
 
 /**
@@ -34,6 +38,7 @@ class CoverFragment : BaseMvpFragment<CoverContract.IPresenter>(), CoverContract
     override fun getLayoutId(): Int {
         return R.layout.frag_player_coverview
     }
+
     private lateinit var mAnimator: ObjectAnimator
 
     //当前专辑图片
@@ -52,14 +57,24 @@ class CoverFragment : BaseMvpFragment<CoverContract.IPresenter>(), CoverContract
      * 设置Bitmap
      */
     fun setImageBitmap(bm: Bitmap?) {
+
         Observable.just(bm)
             .subscribeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<Bitmap?> {
                 override fun onSubscribe(d: Disposable) {}
                 override fun onNext(cover: Bitmap) {
-                    iv_cover.setImageBitmap(cover)
-                    currentBitmap = cover
+                    try {
+                        iv_cover.setImageBitmap(cover)
+                        currentBitmap = cover
+                    } catch (e: Exception) {
+                        Toast.makeText(
+                            context,
+                            "图片加载失败",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
                 }
+
                 override fun onError(e: Throwable) {}
                 override fun onComplete() {
 
@@ -68,12 +83,13 @@ class CoverFragment : BaseMvpFragment<CoverContract.IPresenter>(), CoverContract
 
     }
 
+
     fun initAnimator() {
         mAnimator = ObjectAnimator.ofFloat(iv_cover, "rotation", 0.0f, 360.0f)
         mAnimator.duration = 6000//设定转一圈的时间
         mAnimator.repeatCount = Animation.INFINITE//设定无限循环
         mAnimator.repeatMode = ObjectAnimator.RESTART// 循环模式
-        mAnimator.interpolator = object : LinearInterpolator(){}
+        mAnimator.interpolator = object : LinearInterpolator() {}
         mAnimator.start()//动画开始
         mAnimator.pause()
     }
