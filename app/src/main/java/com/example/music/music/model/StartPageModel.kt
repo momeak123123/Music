@@ -68,7 +68,7 @@ class StartPageModel : BaseModel(), StartPageContract.IModel {
                         } else {
                             Toast.makeText(
                                 context,
-                                bean.data.toString(),
+                                bean.msg,
                                 Toast.LENGTH_LONG
                             ).show()
                         }

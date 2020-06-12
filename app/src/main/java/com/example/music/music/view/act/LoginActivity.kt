@@ -47,6 +47,7 @@ class LoginActivity : BaseMvpActivity<LoginContract.IPresenter>(), LoginContract
         RxView.clicks(register_text)
             .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
+                finish()
                 val intent = Intent()
                 intent.setClass(context as LoginActivity, RegisteredActivity().javaClass)
                 startActivity(intent)
@@ -59,9 +60,9 @@ class LoginActivity : BaseMvpActivity<LoginContract.IPresenter>(), LoginContract
         RxView.clicks(btn_login)
             .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
-                if (et_username_number.isNotEmpty) {
+                if (et_username_number.text.toString() != "") {
                     if(isEmail(et_username_number.text.toString())){
-                        if (et_passs_number.isNotEmpty) {
+                        if (et_passs_number.text.toString() != "") {
 
                             getPresenter().logindata(
                                 context,
@@ -102,9 +103,6 @@ class LoginActivity : BaseMvpActivity<LoginContract.IPresenter>(), LoginContract
             override fun onNext(bool: Boolean) {
                 if (bool) {
                     finish()
-                    val intent = Intent()
-                    intent.setClass(context as LoginActivity, MainActivity().javaClass)
-                    startActivity(intent)
                 } else {
 
                     Toast.makeText(context, R.string.error_login, Toast.LENGTH_SHORT).show()

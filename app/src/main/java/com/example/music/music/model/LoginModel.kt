@@ -46,8 +46,7 @@ class LoginModel : BaseModel(), LoginContract.IModel {
 
 
                             val sp: SharedPreferences =
-                                context.getSharedPreferences("Music", Context.MODE_PRIVATE)
-
+                                context.getSharedPreferences("User", Context.MODE_PRIVATE)
 
                             sp.edit().putString("username", user["username"]).apply()
                             sp.edit().putString("nickname", user["nickname"]).apply()
@@ -66,7 +65,7 @@ class LoginModel : BaseModel(), LoginContract.IModel {
                         } else {
                             Toast.makeText(
                                 context,
-                                bean.data.toString(),
+                                bean.msg,
                                 Toast.LENGTH_LONG
                             ).show()
                         }

@@ -47,10 +47,10 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>() , Star
     override fun initView() {
         super.initView()
 
-        mDisposable = Flowable.intervalRange(0, 5, 0, 1, TimeUnit.SECONDS)
+        mDisposable = Flowable.intervalRange(0, 3, 0, 1, TimeUnit.SECONDS)
             .observeOn(AndroidSchedulers.mainThread())
             .doOnNext { t ->
-                time.text=(5-t).toString()
+                time.text=(3-t).toString()
             }
             .doOnComplete {
                 val intent = Intent()
@@ -59,15 +59,8 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>() , Star
             }
             .subscribe()
 
-       /* val token = "BdQM4VLl4Z2xFqFl"
-
-        val sp: SharedPreferences =context.getSharedPreferences("Music", Context.MODE_PRIVATE)
-
-        sp.edit().putString("token", token).apply()*/
-
-
         RxView.clicks(view)
-            .throttleFirst(5, TimeUnit.SECONDS)
+            .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
                 mDisposable.dispose()
                 val intent = Intent()

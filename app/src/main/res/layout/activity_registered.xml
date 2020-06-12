@@ -41,7 +41,7 @@
             android:textColor="@android:color/white"
             android:textSize="@dimen/sp_28" />
 
-        <com.xuexiang.xui.widget.edittext.materialedittext.MaterialEditText
+        <EditText
             android:id="@+id/re_username_number"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -51,15 +51,16 @@
             android:layout_marginTop="@dimen/dp_20"
             android:layout_marginEnd="@dimen/dp_40"
             android:layout_toEndOf="@+id/textView2"
-            android:drawableStart="@drawable/ic_repeat"
+            android:drawableStart="@drawable/emil"
             android:drawablePadding="@dimen/dp_10"
             android:hint="@string/Username"
             android:inputType="textEmailAddress"
             android:textSize="@dimen/sp_18"
             android:textColor="@color/white"
-            android:textColorHint="@color/gray" />
+            android:textColorHint="@color/gray"
+            tools:ignore="TextFields" />
 
-        <com.xuexiang.xui.widget.edittext.materialedittext.MaterialEditText
+        <EditText
             android:id="@+id/re_pass_number"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -68,15 +69,16 @@
             android:layout_alignEnd="@+id/re_username_number"
             android:layout_marginTop="@dimen/dp_20"
             android:layout_toEndOf="@+id/textView2"
-            android:drawableStart="@drawable/ic_repeat"
+            android:drawableStart="@drawable/pass"
             android:drawablePadding="@dimen/dp_10"
             android:hint="@string/Password"
             android:inputType="textPassword"
             android:textSize="@dimen/sp_18"
             android:textColor="@color/white"
-            android:textColorHint="@color/gray" />
+            android:textColorHint="@color/gray"
+            tools:ignore="TextFields" />
 
-        <com.xuexiang.xui.widget.edittext.materialedittext.MaterialEditText
+        <EditText
             android:id="@+id/re_passs_number"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -85,15 +87,16 @@
             android:layout_alignEnd="@+id/re_pass_number"
             android:layout_marginTop="@dimen/dp_20"
             android:layout_toEndOf="@+id/textView2"
-            android:drawableStart="@drawable/ic_repeat"
+            android:drawableStart="@drawable/pass"
             android:drawablePadding="@dimen/dp_10"
             android:hint="@string/repeat_password"
             android:inputType="textPassword"
             android:textSize="@dimen/sp_18"
             android:textColor="@color/white"
-            android:textColorHint="@color/gray" />
+            android:textColorHint="@color/gray"
+            tools:ignore="TextFields" />
 
-        <com.xuexiang.xui.widget.edittext.materialedittext.MaterialEditText
+        <EditText
             android:id="@+id/re_captcha_number"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -102,13 +105,14 @@
             android:layout_alignEnd="@+id/re_pass_number"
             android:layout_marginTop="@dimen/dp_20"
             android:layout_toEndOf="@+id/textView2"
-            android:drawableStart="@drawable/ic_repeat"
+            android:drawableStart="@drawable/yan"
             android:drawablePadding="@dimen/dp_10"
             android:hint="@string/captchas"
             android:inputType="textPassword"
             android:textSize="@dimen/sp_18"
             android:textColor="@color/white"
-            android:textColorHint="@color/gray" />
+            android:textColorHint="@color/gray"
+            tools:ignore="TextFields" />
 
 
         <com.xuexiang.xui.widget.button.roundbutton.RoundButton

@@ -40,7 +40,7 @@ class AlbumDetModel : BaseModel(), AlbumDetContract.IModel {
                         } else {
                             Toast.makeText(
                                 context,
-                                bean.data.toString(),
+                                bean.msg,
                                 Toast.LENGTH_LONG
                             ).show()
                         }

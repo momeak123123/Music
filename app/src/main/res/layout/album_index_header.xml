@@ -73,7 +73,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginStart="@dimen/dp_60"
             android:layout_weight="1"
-            android:src="@drawable/clore" />
+            android:src="@drawable/shang" />
 
         <FrameLayout
             android:id="@+id/playlayout"
@@ -112,7 +112,7 @@
             android:layout_gravity="center_vertical"
             android:layout_marginEnd="@dimen/dp_60"
             android:layout_weight="1"
-            android:src="@drawable/clore" />
+            android:src="@drawable/xia" />
 
     </LinearLayout>
 

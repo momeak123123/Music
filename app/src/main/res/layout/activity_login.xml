@@ -41,7 +41,7 @@
             android:textColor="@android:color/white"
             android:textSize="@dimen/sp_28" />
 
-        <com.xuexiang.xui.widget.edittext.materialedittext.MaterialEditText
+        <EditText
             android:id="@+id/et_username_number"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -51,16 +51,16 @@
             android:layout_marginTop="@dimen/dp_20"
             android:layout_marginEnd="@dimen/dp_40"
             android:layout_toEndOf="@+id/textView2"
-            android:drawableStart="@drawable/ic_repeat"
+            android:drawableStart="@drawable/emil"
             android:drawablePadding="@dimen/dp_10"
             android:hint="@string/Username"
             android:inputType="textEmailAddress"
             android:textSize="@dimen/sp_18"
             android:textColor="@color/white"
             android:textColorHint="@color/gray"
-            />
+            tools:ignore="TextFields" />
 
-        <com.xuexiang.xui.widget.edittext.materialedittext.MaterialEditText
+        <EditText
             android:id="@+id/et_passs_number"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -69,13 +69,14 @@
             android:layout_alignEnd="@+id/et_username_number"
             android:layout_marginTop="@dimen/dp_20"
             android:layout_toEndOf="@+id/textView2"
-            android:drawableStart="@drawable/ic_repeat"
+            android:drawableStart="@drawable/pass"
             android:drawablePadding="@dimen/dp_10"
             android:hint="@string/Password"
             android:inputType="textPassword"
             android:textSize="@dimen/sp_18"
             android:textColor="@color/white"
-            android:textColorHint="@color/gray" />
+            android:textColorHint="@color/gray"
+            tools:ignore="TextFields" />
     </RelativeLayout>
 
     <com.xuexiang.xui.widget.button.roundbutton.RoundButton
@@ -106,5 +107,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn_login" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

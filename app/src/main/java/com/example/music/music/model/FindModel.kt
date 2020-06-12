@@ -7,6 +7,7 @@ import com.example.music.bean.*
 import com.example.music.common.Constants
 import com.example.music.music.contract.FindContract
 import com.example.music.music.view.act.LoginActivity
+import com.example.music.music.view.fragment.FindFragment
 import com.example.music.sql.bean.Playlist
 import com.example.music.sql.dao.mPlaylistDao
 import com.google.gson.Gson
@@ -46,11 +47,11 @@ class FindModel : BaseModel(), FindContract.IModel {
                                 object : TypeToken<Playlist>() {}.type
                             )
                             mPlaylistDao.insert(song)
-                            Observable.just(true).subscribe(LoginActivity.observer)
+                            Observable.just(true).subscribe(FindFragment.observer)
                         } else {
                             Toast.makeText(
                                 context,
-                                bean.data.toString(),
+                                bean.msg,
                                 Toast.LENGTH_LONG
                             ).show()
                         }

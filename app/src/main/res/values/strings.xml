@@ -102,7 +102,7 @@
     <string name="collect">收藏</string>
     <string name="like">喜欢</string>
     <string name="user_save">保存</string>
-
+    <string name="error_user">资料不能为空</string>
 
 
 </resources>

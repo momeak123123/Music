@@ -1,6 +1,10 @@
 package com.example.music.music.view.act
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.os.Bundle
+import android.text.Editable
+import android.widget.Toast
 import com.example.music.R
 import com.example.music.music.contract.UserEditContract
 import com.example.music.music.presenter.UserEditPresenter
@@ -15,13 +19,22 @@ import java.util.concurrent.TimeUnit
  * @Date 2020/05/30
  * @Description input description
  **/
-class UserEditActivity : BaseMvpActivity<UserEditContract.IPresenter>() , UserEditContract.IView {
+class UserEditActivity : BaseMvpActivity<UserEditContract.IPresenter>(), UserEditContract.IView {
+
+
+    private lateinit var context: Context
 
     override fun registerPresenter() = UserEditPresenter::class.java
 
     override fun getLayoutId(): Int {
-       return R.layout.user_edit
+        return R.layout.user_edit
     }
+
+    override fun init(savedInstanceState: Bundle?) {
+        super.init(savedInstanceState)
+        context =this
+    }
+
 
     @SuppressLint("CheckResult")
     override fun initView() {
@@ -35,13 +48,37 @@ class UserEditActivity : BaseMvpActivity<UserEditContract.IPresenter>() , UserEd
         RxView.clicks(btn_edit)
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
+                if (name.text.toString() != "") {
+                    if (gender.text.toString() != "") {
+                        if (city.text.toString() != "") {
+                            getPresenter().registerdata(
+                                context,
+                                name.text.toString(),
+                                gender.text.toString(),
+                                city.text.toString()
+                            )
+                        } else {
+                            Toast.makeText(context, R.string.error_user, Toast.LENGTH_SHORT)
+                                .show()
+                        }
 
+                    } else {
+                        Toast.makeText(context, R.string.error_user, Toast.LENGTH_SHORT).show()
+                    }
+                } else {
+                    Toast.makeText(context, R.string.error_user, Toast.LENGTH_SHORT).show()
+                }
             }
     }
 
     override fun initData() {
         super.initData()
 
+        val sp =
+            getSharedPreferences("User", Context.MODE_PRIVATE)
+        name.text = Editable.Factory.getInstance().newEditable(sp.getString("name", ""))
+        gender.text = Editable.Factory.getInstance().newEditable(sp.getString("gender", ""))
+        city.text = Editable.Factory.getInstance().newEditable(sp.getString("city", ""))
     }
 
     override fun onResume() {

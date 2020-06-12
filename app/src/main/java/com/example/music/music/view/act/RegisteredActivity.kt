@@ -67,7 +67,7 @@ class RegisteredActivity : BaseMvpActivity<RegisteredContract.IPresenter>(),
         RxView.clicks(btn_captcha)
             .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
-                if (re_username_number.isNotEmpty) {
+                if (re_username_number.text.toString() != "") {
                     getPresenter().registercode(context,re_username_number.text.toString())
                 }else{
                     Toast.makeText(context, R.string.error_name, Toast.LENGTH_SHORT).show()
@@ -77,11 +77,11 @@ class RegisteredActivity : BaseMvpActivity<RegisteredContract.IPresenter>(),
         RxView.clicks(btn_register)
             .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
-                if (re_username_number.isNotEmpty) {
+                if (re_username_number.text.toString() != "") {
                     if(isEmail(re_username_number.text.toString())){
-                        if (re_pass_number.isNotEmpty) {
+                        if (re_pass_number.text.toString() != "") {
                             if (re_passs_number.text.toString() == re_pass_number.text.toString()) {
-                                if (re_captcha_number.isNotEmpty) {
+                                if (re_captcha_number.text.toString() != "") {
                                     getPresenter().registerdata(context,re_username_number.text.toString(),re_pass_number.text.toString(),re_captcha_number.text.toString())
                                 } else {
                                     Toast.makeText(context, R.string.error_captcha, Toast.LENGTH_SHORT).show()
@@ -120,9 +120,6 @@ class RegisteredActivity : BaseMvpActivity<RegisteredContract.IPresenter>(),
             override fun onNext(bool: Boolean) {
                 if (bool) {
                     finish()
-                    val intent = Intent()
-                    intent.setClass(context as RegisteredActivity, MainActivity().javaClass)
-                    startActivity(intent)
                 } else {
                     Toast.makeText(context, R.string.error_register, Toast.LENGTH_SHORT)
                         .show()
@@ -138,7 +135,7 @@ class RegisteredActivity : BaseMvpActivity<RegisteredContract.IPresenter>(),
             override fun onSubscribe(d: Disposable) {}
             @SuppressLint("SetTextI18n")
             override fun onNext(bool: Boolean) {
-                Toast.makeText(context, R.string.succes_code, Toast.LENGTH_SHORT).show()
+
                 btn_captcha.isEnabled = false
                 Flowable.intervalRange(0, 60 + 1, 0, 1, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.io())

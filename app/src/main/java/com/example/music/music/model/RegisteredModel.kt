@@ -3,7 +3,9 @@ package  com.example.music.music.model
 import android.content.Context
 import android.content.SharedPreferences
 import android.widget.Toast
+import com.example.music.R
 import com.example.music.bean.ResultBean
+import com.example.music.bean.ResultBeans
 import com.example.music.common.Constants
 import com.example.music.music.contract.RegisteredContract
 import com.example.music.music.view.act.LoginActivity
@@ -48,7 +50,7 @@ class RegisteredModel : BaseModel(), RegisteredContract.IModel {
                                 object : TypeToken<Map<String, String>>() {}.type
                             )
                             val sp: SharedPreferences =
-                                context.getSharedPreferences("Music", Context.MODE_PRIVATE)
+                                context.getSharedPreferences("User", Context.MODE_PRIVATE)
                             sp.edit().putString("username", user["username"]).apply()
                             sp.edit().putString("nickname", user["nickname"]).apply()
                             sp.edit().putString("url", user["headimgurl"]).apply()
@@ -65,7 +67,7 @@ class RegisteredModel : BaseModel(), RegisteredContract.IModel {
                         } else {
                             Toast.makeText(
                                 context,
-                                bean.data.toString(),
+                                bean.msg,
                                 Toast.LENGTH_LONG
                             ).show()
                         }
@@ -85,26 +87,34 @@ class RegisteredModel : BaseModel(), RegisteredContract.IModel {
     }
 
     override fun registercode(context: Context, email: String) {
-        Observable.just(true).subscribe(RegisteredActivity.observers)
-        /* OkGo.get<String>(Constants.URL + "api/login/registered")
-             .params("user_email",email)
-             .execute(object : StringCallback() {
-                 override fun onSuccess(response: Response<String>) {
-                     /**
-                      * 成功回调
-                      */
-                     val bean =
-                         Gson().fromJson(response.body(), ResultBean::class.javaObjectType)
-                     if (bean.code == 200) {
-                         Observable.just(true).subscribe(RegisteredActivity.observers)
-                     } else {
-                         Toast.makeText(
-                             context,
-                             bean.data.toString(),
-                             Toast.LENGTH_SHORT
-                         ).show()
-                     }
-                 }
-             })*/
+        OkGo.get<String>(Constants.URL + "api/login/send_code")
+            .params("user_email", email)
+            .execute(object : StringCallback() {
+                override fun onSuccess(response: Response<String>) {
+                    /**
+                     * 成功回调
+                     */
+                    try {
+                        val bean =
+                            Gson().fromJson(response.body(), ResultBeans::class.javaObjectType)
+                        if (bean.code == 200) {
+                            Toast.makeText(context, R.string.succes_code, Toast.LENGTH_SHORT).show()
+                            Observable.just(true).subscribe(RegisteredActivity.observers)
+                        } else {
+                            Toast.makeText(
+                                context,
+                                bean.data.toString(),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    } catch (e: Exception) {
+                        Toast.makeText(
+                            context,
+                            "程序出现了未知异常",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+            })
     }
 }

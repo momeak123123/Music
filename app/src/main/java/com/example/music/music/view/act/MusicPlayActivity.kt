@@ -82,7 +82,7 @@ class MusicPlayActivity : AppCompatActivity() {
     @SuppressLint("CheckResult")
     private fun initView() {
         playPauseIv.setOnClickListener {
-            if (bool) {
+            if(bool){
                 if (playPauseIv.isPlaying) {
                     playPauseIv.pause()
                     wlMusic.pause()
@@ -94,8 +94,8 @@ class MusicPlayActivity : AppCompatActivity() {
                     time(min, max - min)
                     coverFragment.resumeRotateAnimation()
                 }
-
             }
+
         }
 
         RxView.clicks(top_flot)
@@ -331,6 +331,7 @@ class MusicPlayActivity : AppCompatActivity() {
                     override fun onSubscribe(d: Disposable) {}
                     override fun onNext(aLong: Long) {
                         max = aLong
+                        bool = true
                         progressSb.max = aLong.toInt()
                         val f = aLong / 60
                         val m = aLong % 60

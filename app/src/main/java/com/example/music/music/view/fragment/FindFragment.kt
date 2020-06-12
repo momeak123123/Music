@@ -11,12 +11,14 @@ import android.widget.Toast
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.example.music.MainActivity
 import com.example.music.R
 import com.example.music.adapter.SongListAdapter
 import com.example.music.bean.Music
 import com.example.music.config.ItemClickListener
 import com.example.music.music.contract.FindContract
 import com.example.music.music.presenter.FindPresenter
+import com.example.music.music.view.act.LoginActivity
 import com.example.music.music.view.act.SongDetActivity
 import com.example.music.sql.bean.Playlist
 import com.example.music.sql.config.Initialization
@@ -27,6 +29,8 @@ import com.google.gson.reflect.TypeToken
 import com.jakewharton.rxbinding2.view.RxView
 import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
 import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog.SingleButtonCallback
+import io.reactivex.Observer
+import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_find.*
 import kotlinx.android.synthetic.main.fragment_find.back
@@ -43,7 +47,7 @@ import java.util.concurrent.TimeUnit
 class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IView {
 
     companion object {
-
+        lateinit var observer: Observer<Boolean>
     }
 
     override fun registerPresenter() = FindPresenter::class.java
@@ -105,6 +109,20 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
 
     override fun onResume() {
         super.onResume()
+        observer = object : Observer<Boolean> {
+            override fun onSubscribe(d: Disposable) {}
+            override fun onNext(bool: Boolean) {
+                if (bool) {
+
+                } else {
+                    Toast.makeText(context, R.string.error_login, Toast.LENGTH_SHORT).show()
+                }
+            }
+
+            override fun onError(e: Throwable) {}
+            override fun onComplete() {}
+
+        }
     }
 
     /**
