@@ -58,28 +58,24 @@ class CoverFragment : BaseMvpFragment<CoverContract.IPresenter>(), CoverContract
      */
     fun setImageBitmap(bm: Bitmap?) {
 
-        Observable.just(bm)
-            .subscribeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : Observer<Bitmap?> {
-                override fun onSubscribe(d: Disposable) {}
-                override fun onNext(cover: Bitmap) {
-                    try {
+        if (bm != null) {
+            Observable.just(bm)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(object : Observer<Bitmap?> {
+                    override fun onSubscribe(d: Disposable) {}
+                    override fun onNext(cover: Bitmap) {
+
                         iv_cover.setImageBitmap(cover)
                         currentBitmap = cover
-                    } catch (e: Exception) {
-                        Toast.makeText(
-                            context,
-                            "图片加载失败",
-                            Toast.LENGTH_LONG
-                        ).show()
                     }
-                }
 
-                override fun onError(e: Throwable) {}
-                override fun onComplete() {
+                    override fun onError(e: Throwable) {}
+                    override fun onComplete() {
 
-                }
-            })
+                    }
+                })
+        }
+
 
     }
 

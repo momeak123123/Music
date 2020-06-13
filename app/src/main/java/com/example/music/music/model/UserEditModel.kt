@@ -25,7 +25,7 @@ class UserEditModel : BaseModel(), UserEditContract.IModel{
 
     override fun registerdata(context: Context, name: String, gender: String, city: String) {
         val sp: SharedPreferences = context.getSharedPreferences("User", Context.MODE_PRIVATE)
-        OkGo.get<String>(Constants.URL + "api/user/up_userinfo")
+        OkGo.get<String>(Constants.URL + "api/user/up_user_info")
             .params("token",sp.getString("token", ""))
             .params("nickname",name)
             .params("sex",gender)

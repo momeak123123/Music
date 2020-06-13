@@ -8,9 +8,13 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
+import android.widget.ImageView
+import android.widget.RelativeLayout
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.example.music.R
+import com.example.music.adapter.AlbumDetAdapter
 import com.example.music.adapter.SongDetAdapter
 import com.example.music.bean.Music
 import com.example.music.config.CornerTransform
@@ -147,23 +151,16 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>() , SongDetC
         recyc_item.itemAnimator = DefaultItemAnimator()
         adapter =  SongDetAdapter(song, context,imaurl,names)
         recyc_item.adapter = adapter
-        recyc_item.addOnItemTouchListener(
-            ItemClickListener(context,
-                object : ItemClickListener.OnItemClickListener {
-                    override fun onItemClick(view: View?, position: Int) {
-                        val json: String = Gson().toJson(song)
-                        val intent = Intent()
-                        intent.setClass(context, MusicPlayActivity().javaClass)
-                        intent.putExtra("pos",position)
-                        intent.putExtra("list",json)
-                        startActivity(intent)
-                    }
-
-                    override fun onItemLongClick(view: View?, position: Int) {
-
-                    }
-                })
-        )
+        adapter.setOnItemClickListener(object : SongDetAdapter.ItemClickListener {
+            override fun onItemClick(view:View,position: Int) {
+                val json: String = Gson().toJson(song)
+                val intent = Intent()
+                intent.setClass(context, MusicPlayActivity().javaClass)
+                intent.putExtra("pos",position)
+                intent.putExtra("list",json)
+                startActivity(intent)
+            }
+        })
     }
 
 }

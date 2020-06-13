@@ -15,14 +15,17 @@ public class Playlist {
     private String name;
     private String pic_url;
     private String create_time;
-    @Generated(hash = 1304521256)
+    private String song_num;
+
+    @Generated(hash = 416949362)
     public Playlist(Long id, Long playid, String name, String pic_url,
-            String create_time) {
+            String create_time, String song_num) {
         this.id = id;
         this.playid = playid;
         this.name = name;
         this.pic_url = pic_url;
         this.create_time = create_time;
+        this.song_num = song_num;
     }
     @Generated(hash = 1160175056)
     public Playlist() {
@@ -57,6 +60,11 @@ public class Playlist {
     public void setCreate_time(String create_time) {
         this.create_time = create_time;
     }
-   
+    public String getSong_num() {
+        return this.song_num;
+    }
+    public void setSong_num(String song_num) {
+        this.song_num = song_num;
+    }
 
 }

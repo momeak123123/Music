@@ -30,7 +30,7 @@ class SongDetAdapter  (val datas: MutableList<Music>, val context: Context,
     }
 
     var type = 0
-
+    private var mItemClickListener: SongDetAdapter.ItemClickListener? = null
     var listdet = mutableListOf<SongDet>()
 
     override fun getItemViewType(position: Int): Int {
@@ -104,7 +104,7 @@ class SongDetAdapter  (val datas: MutableList<Music>, val context: Context,
         fun bindData() {
             Glide.with(context).load(covers).placeholder(R.color.main_black_grey).into(iv_cover)
             title.text = names
-            Glide.with(context).load(R.drawable.more).placeholder(R.color.main_black_grey).into(top_set)
+            Glide.with(context).load(R.drawable.mores).placeholder(R.color.main_black_grey).into(top_set)
 
             RxView.clicks(top_flot)
                 .throttleFirst(1, TimeUnit.SECONDS)
@@ -149,6 +149,9 @@ class SongDetAdapter  (val datas: MutableList<Music>, val context: Context,
         }
 
         fun bindData(position: Int) {
+            itemView.setOnClickListener { v ->
+                mItemClickListener?.onItemClick(v,position)
+            }
             Glide.with(context).load(datas[position].pic_url).placeholder(R.color.main_black_grey).into(iv_cover)
 
             title.text = datas[position].name
@@ -188,6 +191,7 @@ class SongDetAdapter  (val datas: MutableList<Music>, val context: Context,
 
             }
 
+
             more.setOnClickListener {
 
             }
@@ -199,7 +203,13 @@ class SongDetAdapter  (val datas: MutableList<Music>, val context: Context,
     }
 
 
+    interface ItemClickListener {
+        fun onItemClick(view:View,position: Int)
+    }
 
+    fun setOnItemClickListener(itemClickListener: ItemClickListener) {
+        this.mItemClickListener = itemClickListener
+    }
 
 
     fun add(item: Music) {

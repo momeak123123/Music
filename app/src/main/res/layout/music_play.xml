@@ -143,9 +143,9 @@
             android:layout_marginTop="@dimen/dp_10">
 
             <ImageView
-                android:id="@+id/imageView5"
-                android:layout_width="@dimen/dp_40"
-                android:layout_height="@dimen/dp_40"
+                android:id="@+id/pre"
+                android:layout_width="@dimen/dp_30"
+                android:layout_height="@dimen/dp_30"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="@dimen/dp_60"
                 android:layout_weight="1"
@@ -181,9 +181,9 @@
             </FrameLayout>
 
             <ImageView
-                android:id="@+id/imageView6"
-                android:layout_width="@dimen/dp_40"
-                android:layout_height="@dimen/dp_40"
+                android:id="@+id/next"
+                android:layout_width="@dimen/dp_30"
+                android:layout_height="@dimen/dp_30"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="@dimen/dp_60"
                 android:layout_weight="1"

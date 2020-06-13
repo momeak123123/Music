@@ -24,7 +24,7 @@ class ArtistModel : BaseModel(), ArtistContract.IModel {
     override fun taglist(context: Context) {
 
 
-        OkGo.get<String>(Constants.URL + "api/artist/getCat")
+        OkGo.get<String>(Constants.URL + "api/artist/get_cat")
             .execute(object : StringCallback() {
                 override fun onSuccess(response: Response<String>) {
                     /**
@@ -58,7 +58,7 @@ class ArtistModel : BaseModel(), ArtistContract.IModel {
     override fun listdata(context: Context, varieties: Int, letter: Int) {
 
 
-        OkGo.get<String>(Constants.URL + "api/artist/getartist_list")
+        OkGo.get<String>(Constants.URL + "api/artist/get_artist_list")
             .params("varieties", varieties)
             .params("letter", letter)
             .execute(object : StringCallback() {

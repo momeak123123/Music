@@ -29,7 +29,7 @@ class FindModel : BaseModel(), FindContract.IModel {
 
         val sp: SharedPreferences = context.getSharedPreferences("User", Context.MODE_PRIVATE)
 
-        OkGo.get<String>(Constants.URL + "api/user/create_playlist")
+        OkGo.post<String>(Constants.URL + "api/user/create_play_list")
             .params("token", sp.getString("token", ""))
             .params("name", et_name)
             .execute(object : StringCallback() {
@@ -47,7 +47,7 @@ class FindModel : BaseModel(), FindContract.IModel {
                                 object : TypeToken<Playlist>() {}.type
                             )
                             mPlaylistDao.insert(song)
-                            Observable.just(true).subscribe(FindFragment.observer)
+                            Observable.just(song).subscribe(FindFragment.observer)
                         } else {
                             Toast.makeText(
                                 context,

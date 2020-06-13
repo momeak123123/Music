@@ -46,8 +46,10 @@ import java.util.concurrent.TimeUnit
  **/
 class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IView {
 
+    private var adapter: SongListAdapter? = null
+
     companion object {
-        lateinit var observer: Observer<Boolean>
+        lateinit var observer: Observer<Playlist>
     }
 
     override fun registerPresenter() = FindPresenter::class.java
@@ -109,14 +111,10 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
 
     override fun onResume() {
         super.onResume()
-        observer = object : Observer<Boolean> {
+        observer = object : Observer<Playlist> {
             override fun onSubscribe(d: Disposable) {}
-            override fun onNext(bool: Boolean) {
-                if (bool) {
-
-                } else {
-                    Toast.makeText(context, R.string.error_login, Toast.LENGTH_SHORT).show()
-                }
+            override fun onNext(data: Playlist) {
+                adapter?.add(data)
             }
 
             override fun onError(e: Throwable) {}
@@ -160,7 +158,7 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
     private fun initSongList(song: MutableList<Playlist>) {
         song_list.layoutManager = LinearLayoutManager(context)
         song_list.itemAnimator = DefaultItemAnimator()
-        val adapter = context?.let { SongListAdapter(song, it) }
+        adapter = context?.let { SongListAdapter(song, it) }
         song_list.adapter = adapter
         song_list.addOnItemTouchListener(
             ItemClickListener(context,

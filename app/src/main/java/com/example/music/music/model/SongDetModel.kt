@@ -22,10 +22,8 @@ import mvp.ljb.kt.model.BaseModel
  **/
 class SongDetModel : BaseModel(), SongDetContract.IModel {
     override fun listdata(context: Context, id: Long) {
-
-
             val sp: SharedPreferences = context.getSharedPreferences("User", Context.MODE_PRIVATE)
-            OkGo.get<String>(Constants.URL + "api/user/get_song_list")
+            OkGo.post<String>(Constants.URL + "api/user/get_song_list")
                 .params("play_list_id",id)
                 .params("token",sp.getString("token", ""))
                 .execute(object : StringCallback() {

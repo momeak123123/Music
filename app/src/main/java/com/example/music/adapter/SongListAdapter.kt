@@ -13,7 +13,7 @@ import com.example.music.R
 import com.example.music.bean.Music
 import com.example.music.sql.bean.Playlist
 
-class SongListAdapter  (val datas: List<Playlist>, val context: Context) : RecyclerView.Adapter<SongListAdapter.InnerHolder>() {
+class SongListAdapter  (val datas: MutableList<Playlist>, val context: Context) : RecyclerView.Adapter<SongListAdapter.InnerHolder>() {
 
 
     /**
@@ -46,8 +46,19 @@ class SongListAdapter  (val datas: List<Playlist>, val context: Context) : Recyc
     override fun onBindViewHolder(holder: InnerHolder, position: Int) {
         Glide.with(context).load(datas[position].pic_url).placeholder(R.color.main_black_grey).into(holder.iv_cover)
         holder.title.text = datas[position].name
-        holder.txt.text =  datas[position].name
+        holder.txt.text =  datas[position].song_num+"首音乐"
 
+
+    }
+
+    fun add(item: Playlist) {
+        datas.add(item)
+        notifyItemInserted(datas.size)
+    }
+
+    fun remove(position: Int) {
+        datas.removeAt(position)
+        notifyItemRemoved(position)
 
     }
 

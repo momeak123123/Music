@@ -5,14 +5,12 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.TranslateAnimation
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
@@ -24,11 +22,15 @@ import com.example.music.bean.Music
 import com.example.music.config.ItemClickListener
 import com.example.music.music.view.fragment.CoverFragment
 import com.example.music.music.view.fragment.LyricFragment
+import com.example.music.sql.bean.Playlist
+import com.example.music.sql.dao.mPlaylistDao
 import com.example.music.utils.BitmapUtils
 import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.reflect.TypeToken
 import com.jakewharton.rxbinding2.view.RxView
+import com.xuexiang.xui.widget.dialog.materialdialog.DialogAction
+import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
 import com.ywl5320.libenum.MuteEnum
 import com.ywl5320.libmusic.WlMusic
 import io.reactivex.Flowable
@@ -51,7 +53,7 @@ class MusicPlayActivity : AppCompatActivity() {
         lateinit var observers: Observer<Long>
     }
 
-    private val type: Int = 0
+    private var type: Int = 0
     var song_id: Long = 0
     lateinit var mDisposable: Disposable
     var max: Long = 0
@@ -103,13 +105,42 @@ class MusicPlayActivity : AppCompatActivity() {
             .subscribe {
                 moveTaskToBack(true)
             }
+
+        RxView.clicks(icon1)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe {
+                if(type<2){
+                    type++
+                    if(type==1){
+                        Glide.with(context).load(R.drawable.dan).placeholder(R.color.main_black_grey).into(icon1)
+                    }else{
+                        Glide.with(context).load(R.drawable.sui).placeholder(R.color.main_black_grey).into(icon1)
+                    }
+
+                }else{
+                    type=0
+                    Glide.with(context).load(R.drawable.xun).placeholder(R.color.main_black_grey)
+                        .into(icon1)
+                }
+
+            }
+
+        RxView.clicks(icon2)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe {
+
+            }
+
         RxView.clicks(icon3)
             .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
                 in_indel.visibility = View.VISIBLE
                 Glide.with(context).load("").into(del)
                 in_title.text = R.string.song_but.toString()
+                val list: MutableList<Playlist> =  mPlaylistDao.queryAll()
+                initSongList(list)
             }
+
         RxView.clicks(icon4)
             .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
@@ -164,10 +195,8 @@ class MusicPlayActivity : AppCompatActivity() {
 
             if (song.isNotEmpty()) {
                 if (song[pos].song_id == song_id) {
-                    println("一样")
                     playingMusicList = song
                 } else {
-                    println("不一样")
                     id = pos
                     song_id = song[pos].song_id
                     playingMusicList = song
@@ -212,7 +241,7 @@ class MusicPlayActivity : AppCompatActivity() {
             ItemClickListener(context,
                 object : ItemClickListener.OnItemClickListener {
                     override fun onItemClick(view: View?, position: Int) {
-
+                        starts(playingMusicList!![position])
                     }
 
                     override fun onItemLongClick(view: View?, position: Int) {
@@ -225,7 +254,7 @@ class MusicPlayActivity : AppCompatActivity() {
     /**
      * 初始化歌曲
      */
-    private fun initSongList(song: MutableList<Music>) {
+    private fun initSongList(song: MutableList<Playlist>) {
         in_list.layoutManager = LinearLayoutManager(context)
         in_list.itemAnimator = DefaultItemAnimator()
         val adapter = PlaySongAdapter(song, context)
@@ -234,7 +263,15 @@ class MusicPlayActivity : AppCompatActivity() {
             ItemClickListener(context,
                 object : ItemClickListener.OnItemClickListener {
                     override fun onItemClick(view: View?, position: Int) {
+                        MaterialDialog.Builder(context)
+                            .title("添加音乐")
+                            .content("是否将音乐加入此歌单")
+                            .positiveText("确认")
+                            .negativeText("取消")
+                            .onPositive { _: MaterialDialog?, _: DialogAction? ->
 
+                            }
+                            .show()
                     }
 
                     override fun onItemLongClick(view: View?, position: Int) {
@@ -277,6 +314,8 @@ class MusicPlayActivity : AppCompatActivity() {
         playPauseIv.setLoading(true)
         mDisposable.dispose()
         coverFragment.stopRotateAnimation()
+        Observable.just(0L).subscribe(observers)
+        song_id = music.song_id
         playingMusic = music
         //更新标题
         titleIv.text = music.name
@@ -310,6 +349,7 @@ class MusicPlayActivity : AppCompatActivity() {
             wlMusic.stop()
         }
     }
+
 
     @SuppressLint("SetTextI18n")
     fun play(uri: String?) {

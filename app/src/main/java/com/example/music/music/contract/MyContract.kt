@@ -1,5 +1,6 @@
 package com.example.music.music.contract
 
+import android.content.Context
 import mvp.ljb.kt.contract.IPresenterContract
 import mvp.ljb.kt.contract.IViewContract
 import mvp.ljb.kt.contract.IModelContract
@@ -13,7 +14,11 @@ interface MyContract {
 
     interface IView : IViewContract
 
-    interface IPresenter : IPresenterContract
+    interface IPresenter : IPresenterContract {
+        fun data(context: Context)
+    }
 
-    interface IModel : IModelContract
+    interface IModel : IModelContract{
+        fun data(context: Context)
+    }
 }

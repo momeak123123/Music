@@ -1,14 +1,17 @@
 package com.example.music.music.view.act
 
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.ImageView
+import android.widget.RelativeLayout
+import android.widget.Toast
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.adapter.AlbumDetAdapter
 import com.example.music.bean.Music
@@ -18,7 +21,6 @@ import com.example.music.music.presenter.AlbumDetPresenter
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
-import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.album_index.*
@@ -143,25 +145,16 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
 
         adapter =  AlbumDetAdapter(song, context,txts,covers,names)
         recyc_item.adapter = adapter
-        recyc_item.addOnItemTouchListener(
-            ItemClickListener(context,
-                object : ItemClickListener.OnItemClickListener {
-                    override fun onItemClick(view: View?, position: Int) {
-                        if(position>0){
-                            val json: String = Gson().toJson(song)
-                            val intent = Intent()
-                            intent.setClass(context, MusicPlayActivity().javaClass)
-                            intent.putExtra("pos",position)
-                            intent.putExtra("list",json)
-                            startActivity(intent)
-                        }
-                    }
-
-                    override fun onItemLongClick(view: View?, position: Int) {
-
-                    }
-                })
-        )
+        adapter.setOnItemClickListener(object : AlbumDetAdapter.ItemClickListener {
+            override fun onItemClick(view:View,position: Int) {
+                val json: String = Gson().toJson(song)
+                val intent = Intent()
+                intent.setClass(context, MusicPlayActivity().javaClass)
+                intent.putExtra("pos",position)
+                intent.putExtra("list",json)
+                startActivity(intent)
+            }
+        })
 
         if (swipe_refresh_layout != null) {
             swipe_refresh_layout.isRefreshing = false

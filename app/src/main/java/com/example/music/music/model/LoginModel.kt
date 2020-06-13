@@ -26,7 +26,7 @@ class LoginModel : BaseModel(), LoginContract.IModel {
     override fun logindata(context: Context, email: String, pass: String): Boolean {
 
 
-        OkGo.get<String>(Constants.URL + "api/login/login")
+        OkGo.post<String>(Constants.URL + "api/login/login")
             .params("user_email", email)
             .params("password", pass)
             .execute(object : StringCallback() {

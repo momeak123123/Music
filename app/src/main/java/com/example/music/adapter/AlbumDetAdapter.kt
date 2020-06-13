@@ -10,13 +10,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.music.R
-import com.example.music.bean.Banner
 import com.example.music.bean.Music
 import com.example.music.bean.SongDet
 import com.example.music.music.view.act.AlbumDetActivity
 import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.Observable
-import kotlinx.android.synthetic.main.head.*
 import java.util.concurrent.TimeUnit
 
 
@@ -32,6 +30,8 @@ class AlbumDetAdapter(
         const val TYPE_TITLE = 0
         const val TYPE_SELLER = 1
     }
+
+    private var mItemClickListener: ItemClickListener? = null
 
     var type = 0
 
@@ -112,7 +112,7 @@ class AlbumDetAdapter(
             txt.text = txts
             Glide.with(context).load(covers).placeholder(R.color.main_black_grey).into(iv_cover)
             top_title.text = names
-            Glide.with(context).load(R.drawable.more).placeholder(R.color.main_black_grey).into(top_set)
+            Glide.with(context).load(R.drawable.mores).placeholder(R.color.main_black_grey).into(top_set)
 
             RxView.clicks(top_flot)
                 .throttleFirst(1, TimeUnit.SECONDS)
@@ -156,6 +156,10 @@ class AlbumDetAdapter(
         }
 
         fun bindData(position: Int) {
+
+            itemView.setOnClickListener { v ->
+                mItemClickListener?.onItemClick(v,position)
+            }
             Glide.with(context).load(datas[position].pic_url).placeholder(R.color.main_black_grey)
                 .into(iv_cover)
             title.text = datas[position].name
@@ -194,11 +198,20 @@ class AlbumDetAdapter(
                 }
 
             }
+
             more.setOnClickListener {
 
             }
+
         }
     }
 
+    interface ItemClickListener {
+        fun onItemClick(view:View,position: Int)
+    }
+
+    fun setOnItemClickListener(itemClickListener: ItemClickListener) {
+        this.mItemClickListener = itemClickListener
+    }
 }
 

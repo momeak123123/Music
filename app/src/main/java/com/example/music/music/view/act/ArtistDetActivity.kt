@@ -85,14 +85,14 @@ class ArtistDetActivity : BaseMvpActivity<ArtistDetContract.IPresenter>() , Arti
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(data: JsonObject) {
                 val artist: Map<String,String> = Gson().fromJson(
-                    data.getAsJsonObject("artist"),
+                    data.getAsJsonObject("artist_info"),
                     object : TypeToken<Map<String,String>>() {}.type
                 )
-                Glide.with(context).load(artist["artist_picurl"].toString()).placeholder(R.color.main_black_grey).into(back)
-                names=artist["artist_name"].toString()
+                Glide.with(context).load(artist["pic_url"].toString()).placeholder(R.color.main_black_grey).into(back)
+                names=artist["name"].toString()
                 txts=artist["brief_desc"].toString()
                 val albums: List<AlbumDet> = Gson().fromJson(
-                    data.getAsJsonArray("albums"),
+                    data.getAsJsonArray("album_info"),
                     object : TypeToken<List<AlbumDet>>() {}.type
                 )
                 if (albums.isNotEmpty()) {

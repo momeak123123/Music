@@ -29,6 +29,7 @@ public class PlaylistDao extends AbstractDao<Playlist, Long> {
         public final static Property Name = new Property(2, String.class, "name", false, "NAME");
         public final static Property Pic_url = new Property(3, String.class, "pic_url", false, "PIC_URL");
         public final static Property Create_time = new Property(4, String.class, "create_time", false, "CREATE_TIME");
+        public final static Property Song_num = new Property(5, String.class, "song_num", false, "SONG_NUM");
     }
 
 
@@ -48,7 +49,8 @@ public class PlaylistDao extends AbstractDao<Playlist, Long> {
                 "\"PLAYID\" INTEGER," + // 1: playid
                 "\"NAME\" TEXT," + // 2: name
                 "\"PIC_URL\" TEXT," + // 3: pic_url
-                "\"CREATE_TIME\" TEXT);"); // 4: create_time
+                "\"CREATE_TIME\" TEXT," + // 4: create_time
+                "\"SONG_NUM\" TEXT);"); // 5: song_num
         // Add Indexes
         db.execSQL("CREATE UNIQUE INDEX " + constraint + "IDX_PLAYLIST__id ON \"PLAYLIST\"" +
                 " (\"_id\" ASC);");
@@ -88,6 +90,11 @@ public class PlaylistDao extends AbstractDao<Playlist, Long> {
         if (create_time != null) {
             stmt.bindString(5, create_time);
         }
+ 
+        String song_num = entity.getSong_num();
+        if (song_num != null) {
+            stmt.bindString(6, song_num);
+        }
     }
 
     @Override
@@ -118,6 +125,11 @@ public class PlaylistDao extends AbstractDao<Playlist, Long> {
         if (create_time != null) {
             stmt.bindString(5, create_time);
         }
+ 
+        String song_num = entity.getSong_num();
+        if (song_num != null) {
+            stmt.bindString(6, song_num);
+        }
     }
 
     @Override
@@ -132,7 +144,8 @@ public class PlaylistDao extends AbstractDao<Playlist, Long> {
             cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1), // playid
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // name
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // pic_url
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4) // create_time
+            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // create_time
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5) // song_num
         );
         return entity;
     }
@@ -144,6 +157,7 @@ public class PlaylistDao extends AbstractDao<Playlist, Long> {
         entity.setName(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setPic_url(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setCreate_time(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
+        entity.setSong_num(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
      }
     
     @Override
