@@ -17,11 +17,13 @@ import com.example.music.R
 import com.example.music.adapter.AlbumDetAdapter
 import com.example.music.adapter.SongDetAdapter
 import com.example.music.bean.Music
+import com.example.music.bean.artistlist
 import com.example.music.config.CornerTransform
 import com.example.music.config.ItemClickListener
 import com.example.music.music.contract.SongDetContract
 import com.example.music.music.presenter.SongDetPresenter
 import com.google.gson.Gson
+import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import io.reactivex.Observer
@@ -38,15 +40,17 @@ import mvp.ljb.kt.act.BaseMvpActivity
 class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>() , SongDetContract.IView {
 
     companion object {
-        lateinit var observer: Observer<JsonObject>
+        lateinit var observer: Observer<JsonArray>
         lateinit var observers: Observer<Boolean>
     }
 
+    private lateinit var nums: String
     private lateinit var names: String
     private lateinit var imaurl: String
     private lateinit var adapter: SongDetAdapter
     private lateinit var context: Context
     var songlist = mutableListOf<Music>()
+
     override fun registerPresenter() = SongDetPresenter::class.java
 
     override fun getLayoutId(): Int {
@@ -81,9 +85,9 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>() , SongDetC
         val bundle = intent.extras
         names = bundle?.get("name") as String
         imaurl = bundle.get("url") as String
+        nums = bundle.get("num") as String
         getPresenter().listdata(context,bundle.get("id") as Long)
-        val transformation = CornerTransform(context, dip2px(context, 30))
-        transformation.setExceptCorner(true, true, false, false)
+
 
 
         /* if(isSDcardAvailable()){
@@ -99,26 +103,30 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>() , SongDetC
 
     }
 
-    fun dip2px(context: Context, dpValue: Int): Float {
-        val scale = context.resources.displayMetrics.density
-        return (dpValue * scale + 0.5f)
-    }
+
 
     override fun onResume() {
         super.onResume()
 
-        observer = object : Observer<JsonObject> {
+        observer = object : Observer<JsonArray> {
             override fun onSubscribe(d: Disposable) {}
-            override fun onNext(data: JsonObject) {
+            override fun onNext(data: JsonArray) {
 
                 val song : MutableList<Music> = Gson().fromJson(
-                    data.asJsonObject.get("song_list").asJsonArray,
+                    data,
                     object : TypeToken<MutableList<Music>>() {}.type
                 )
 
                 if (song.isNotEmpty()) {
                     songlist = song
-                    songlist.add(0,song[0])
+                    val one = mutableListOf<artistlist>()
+                    val det =  Music("","",0,0,"", one,"","")
+                    songlist.add(0,det)
+                    initSongList(songlist)
+                }else{
+                    val one = mutableListOf<artistlist>()
+                    val det =  Music("","",0,0,"", one,"","")
+                    songlist.add(0,det)
                     initSongList(songlist)
                 }
             }
@@ -149,7 +157,7 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>() , SongDetC
     private fun initSongList(song: MutableList<Music>) {
         recyc_item.layoutManager = LinearLayoutManager(context)
         recyc_item.itemAnimator = DefaultItemAnimator()
-        adapter =  SongDetAdapter(song, context,imaurl,names)
+        adapter =  SongDetAdapter(song, context,imaurl,names,nums)
         recyc_item.adapter = adapter
         adapter.setOnItemClickListener(object : SongDetAdapter.ItemClickListener {
             override fun onItemClick(view:View,position: Int) {

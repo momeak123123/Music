@@ -46,7 +46,7 @@ class FindModel : BaseModel(), FindContract.IModel {
                                 bean.data,
                                 object : TypeToken<Playlist>() {}.type
                             )
-                            mPlaylistDao.insert(song)
+
                             Observable.just(song).subscribe(FindFragment.observer)
                         } else {
                             Toast.makeText(
@@ -66,5 +66,44 @@ class FindModel : BaseModel(), FindContract.IModel {
             })
 
 
+    }
+
+    override fun listdata(context: Context) {
+        val sp: SharedPreferences = context.getSharedPreferences("User", Context.MODE_PRIVATE)
+
+        OkGo.post<String>(Constants.URL + "api/user/get_play_list")
+            .params("token", sp.getString("token", ""))
+            .execute(object : StringCallback() {
+                override fun onSuccess(response: Response<String>) {
+                    /**
+                     * 成功回调
+                     */
+                    try {
+                        val bean =
+                            Gson().fromJson(response.body(), ResultBeans::class.javaObjectType)
+                        if (bean.code == 200) {
+
+                            val list: MutableList<Playlist> = Gson().fromJson(
+                                bean.data,
+                                object : TypeToken<MutableList<Playlist>>() {}.type
+                            )
+
+                            Observable.just(list).subscribe(FindFragment.observers)
+                        } else {
+                            Toast.makeText(
+                                context,
+                                bean.msg,
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    } catch (e: Exception) {
+                        Toast.makeText(
+                            context,
+                            "程序出现了未知异常",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+            })
     }
 }

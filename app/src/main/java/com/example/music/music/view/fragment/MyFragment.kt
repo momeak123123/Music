@@ -48,7 +48,6 @@ class MyFragment : BaseMvpFragment<MyContract.IPresenter>(), MyContract.IView {
 
     override fun initData() {
         super.initData()
-        getPresenter().data(requireContext())
         val sp: SharedPreferences =
             requireContext().getSharedPreferences("User", Context.MODE_PRIVATE)
 

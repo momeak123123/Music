@@ -13,7 +13,7 @@ import com.example.music.bean.Hierarchy
 import com.xuexiang.xui.utils.ResUtils.getResources
 import com.xuexiang.xui.widget.textview.supertextview.SuperButton
 
-class ArtistTagAdapter (val datas: MutableList<Hierarchy>, val context: Context,val type:Int) : RecyclerView.Adapter<ArtistTagAdapter.InnerHolder>() {
+class ArtistTagAdapter (val datas: List<Hierarchy>, val context: Context,val type:Int) : RecyclerView.Adapter<ArtistTagAdapter.InnerHolder>() {
 
 
     /**

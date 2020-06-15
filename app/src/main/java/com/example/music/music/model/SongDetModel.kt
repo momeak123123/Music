@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.widget.Toast
 import com.example.music.bean.ResultBean
+import com.example.music.bean.ResultBeans
 import com.example.music.common.Constants
 import com.example.music.music.contract.SongDetContract
 import com.example.music.music.view.act.AlbumDetActivity
@@ -33,7 +34,7 @@ class SongDetModel : BaseModel(), SongDetContract.IModel {
                          */
                         try {
                         val bean =
-                            Gson().fromJson(response.body(), ResultBean::class.javaObjectType)
+                            Gson().fromJson(response.body(), ResultBeans::class.javaObjectType)
                         if (bean.code == 200) {
                             Observable.just(bean.data).subscribe(SongDetActivity.observer)
                         } else {

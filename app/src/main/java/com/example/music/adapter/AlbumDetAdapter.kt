@@ -2,6 +2,8 @@ package com.example.music.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,8 +15,10 @@ import com.example.music.R
 import com.example.music.bean.Music
 import com.example.music.bean.SongDet
 import com.example.music.music.view.act.AlbumDetActivity
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.Observable
+import kotlinx.android.synthetic.main.album_index_header.*
 import java.util.concurrent.TimeUnit
 
 
@@ -98,6 +102,7 @@ class AlbumDetAdapter(
         var top_flot: ImageView
         var top_title: TextView
         var top_set: ImageView
+        var floatingActionButton: FloatingActionButton
 
         init {
             iv_cover = itemView.findViewById(R.id.iv_cover)
@@ -105,6 +110,7 @@ class AlbumDetAdapter(
             top_flot = itemView.findViewById(R.id.top_flot)
             top_title = itemView.findViewById(R.id.top_title)
             top_set = itemView.findViewById(R.id.top_set)
+            floatingActionButton = itemView.findViewById(R.id.floatingActionButton)
         }
 
         @SuppressLint("CheckResult")
@@ -113,7 +119,7 @@ class AlbumDetAdapter(
             Glide.with(context).load(covers).placeholder(R.color.main_black_grey).into(iv_cover)
             top_title.text = names
             Glide.with(context).load(R.drawable.mores).placeholder(R.color.main_black_grey).into(top_set)
-
+            floatingActionButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#06b7ff"))
             RxView.clicks(top_flot)
                 .throttleFirst(1, TimeUnit.SECONDS)
                 .subscribe {

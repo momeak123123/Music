@@ -61,7 +61,7 @@
     <color name="white_translucent">#c8ffffff</color>
     <color name="app_color_apr">#2f3946</color>
 
-    <color name="dark">#000000</color>
+    <color name="dark">#00000000</color>
 
 
     <color name="background_notification_color">#323232</color>

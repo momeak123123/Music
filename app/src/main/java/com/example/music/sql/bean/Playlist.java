@@ -11,17 +11,16 @@ public class Playlist {
     @Id(autoincrement = true)//设置自增长
     @Index(unique = true)//设置唯一性
     private Long id;
-    private Long playid;
+    private Long play_list_id;
     private String name;
     private String pic_url;
     private String create_time;
     private String song_num;
-
-    @Generated(hash = 416949362)
-    public Playlist(Long id, Long playid, String name, String pic_url,
+    @Generated(hash = 1255000093)
+    public Playlist(Long id, Long play_list_id, String name, String pic_url,
             String create_time, String song_num) {
         this.id = id;
-        this.playid = playid;
+        this.play_list_id = play_list_id;
         this.name = name;
         this.pic_url = pic_url;
         this.create_time = create_time;
@@ -36,11 +35,11 @@ public class Playlist {
     public void setId(Long id) {
         this.id = id;
     }
-    public Long getPlayid() {
-        return this.playid;
+    public Long getPlay_list_id() {
+        return this.play_list_id;
     }
-    public void setPlayid(Long playid) {
-        this.playid = playid;
+    public void setPlay_list_id(Long play_list_id) {
+        this.play_list_id = play_list_id;
     }
     public String getName() {
         return this.name;

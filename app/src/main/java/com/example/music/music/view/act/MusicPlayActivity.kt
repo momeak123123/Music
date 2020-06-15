@@ -3,7 +3,9 @@ package com.example.music.music.view.act
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.view.animation.Animation
@@ -20,6 +22,7 @@ import com.example.music.adapter.PlaySongAdapter
 import com.example.music.adapter.ViewPagerAdapter
 import com.example.music.bean.Music
 import com.example.music.config.ItemClickListener
+import com.example.music.music.model.MusicPlayModel
 import com.example.music.music.view.fragment.CoverFragment
 import com.example.music.music.view.fragment.LyricFragment
 import com.example.music.sql.bean.Playlist
@@ -76,6 +79,7 @@ class MusicPlayActivity : AppCompatActivity() {
         fragments.add(coverFragment)
         fragments.add(lyricFragment)
         viewPager.adapter = ViewPagerAdapter(supportFragmentManager, fragments)
+        floatingActionButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#06b7ff"));
         initView()
         initData()
     }
@@ -136,7 +140,7 @@ class MusicPlayActivity : AppCompatActivity() {
             .subscribe {
                 in_indel.visibility = View.VISIBLE
                 Glide.with(context).load("").into(del)
-                in_title.text = R.string.song_but.toString()
+                in_title.text = getText(R.string.song_but)
                 val list: MutableList<Playlist> =  mPlaylistDao.queryAll()
                 initSongList(list)
             }
@@ -269,6 +273,7 @@ class MusicPlayActivity : AppCompatActivity() {
                             .positiveText("确认")
                             .negativeText("取消")
                             .onPositive { _: MaterialDialog?, _: DialogAction? ->
+                                MusicPlayModel.addSong(context,song_id,song[position].play_list_id)
 
                             }
                             .show()

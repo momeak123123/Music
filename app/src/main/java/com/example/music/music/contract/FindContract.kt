@@ -16,10 +16,12 @@ interface FindContract {
 
     interface IPresenter : IPresenterContract {
         fun addSongList(context:Context,et_name: String)
+        fun listdata(context: Context)
     }
 
     interface IModel : IModelContract{
         fun addSongList(context: Context, et_name: String)
+        fun listdata(context: Context)
     }
 
 }

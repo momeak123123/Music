@@ -1,10 +1,8 @@
 package com.example.music.sql.dao;
 
 import com.example.music.sql.bean.Playlist;
-import com.example.music.sql.bean.Search;
 import com.example.music.sql.config.Initialization;
 import com.example.music.sql.gen.PlaylistDao;
-import com.example.music.sql.gen.SearchDao;
 
 import java.util.List;
 
@@ -52,7 +50,7 @@ public class mPlaylistDao {
      * @return
      */
     public static List<Playlist> query(Long playid) {
-        return Initialization.getDaoInstantPlaylist().getPlaylistDao().queryBuilder().where(PlaylistDao.Properties.Playid.eq(playid)).list();
+        return Initialization.getDaoInstantPlaylist().getPlaylistDao().queryBuilder().where(PlaylistDao.Properties.Play_list_id.eq(playid)).list();
     }
 
 
@@ -68,7 +66,7 @@ public class mPlaylistDao {
      */
     public static List<Playlist> queryBuilder(Long playid,int set , int lim) {
 
-        return Initialization.getDaoInstantPlaylist().getPlaylistDao().queryBuilder().where(PlaylistDao.Properties.Playid.eq(playid)).offset(set).limit(lim).list();
+        return Initialization.getDaoInstantPlaylist().getPlaylistDao().queryBuilder().where(PlaylistDao.Properties.Play_list_id.eq(playid)).offset(set).limit(lim).list();
     }
 
     /**
@@ -91,7 +89,7 @@ public class mPlaylistDao {
 
     public static List<Playlist> queryBuilder() {
         // 正序
-        return Initialization.getDaoInstantPlaylist().getPlaylistDao().queryBuilder().orderAsc(PlaylistDao.Properties.Playid).list();
+        return Initialization.getDaoInstantPlaylist().getPlaylistDao().queryBuilder().orderAsc(PlaylistDao.Properties.Play_list_id).list();
 
         // 反序
         //Initialization.getDaoInstantMusic().getMusicDao().queryBuilder().orderDesc(UserDao.Properties.Id).list();

@@ -62,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
             Manifest.permission.WAKE_LOCK
 
     };
+    public static Boolean bool = true;
 
     private static final int PERMISSION_REQUESTED = 0;
     private static final int REQUEST_CODE = 1;
@@ -84,12 +85,19 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
         viewPager = findViewById(R.id.viewPager);
         mTabbar = findViewById(R.id.tabbar);
 
-        SharedPreferences sp = this.getSharedPreferences("User", Context.MODE_PRIVATE);
-        String slogin = sp.getString("user_id", "");
-        if (slogin.equals("")) {
-            Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        if(bool){
+            Intent intent = new Intent(MainActivity.this, StartPageActivity.class);
             startActivity(intent);
+        }else{
+            SharedPreferences sp = this.getSharedPreferences("User", Context.MODE_PRIVATE);
+            String slogin = sp.getString("user_id", "");
+            if (slogin.equals("")) {
+                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(intent);
+            }
+
         }
+
 
 
 

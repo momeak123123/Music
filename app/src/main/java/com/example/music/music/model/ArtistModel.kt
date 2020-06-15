@@ -21,7 +21,7 @@ import mvp.ljb.kt.model.BaseModel
  * @Description input description
  **/
 class ArtistModel : BaseModel(), ArtistContract.IModel {
-    override fun taglist(context: Context) {
+    override fun taglist(context: Context,bool: Boolean) {
 
 
         OkGo.get<String>(Constants.URL + "api/artist/get_cat")
@@ -34,7 +34,27 @@ class ArtistModel : BaseModel(), ArtistContract.IModel {
                         val bean =
                             Gson().fromJson(response.body(), ResultBean::class.javaObjectType)
                         if (bean.code == 200) {
-                            Observable.just(bean.data).subscribe(ArtistActivity.observer)
+                            val hierarchy1 = Gson().fromJson<Array<Hierarchy>>(
+                                bean.data.getAsJsonArray("hierarchy_1"),
+                                Array<Hierarchy>::class.java
+                            ).toMutableList()
+                            val hierarchy2 = Gson().fromJson<Array<Hierarchy>>(
+                                bean.data.getAsJsonArray("hierarchy_2"),
+                                Array<Hierarchy>::class.java
+                            ).toMutableList()
+                            val h1 = Gson().toJson(hierarchy1)
+                            val h2 = Gson().toJson(hierarchy2)
+
+                            val sp: SharedPreferences =
+                                context.getSharedPreferences("Music", Context.MODE_PRIVATE)
+
+                            sp.edit().putString("h1", h1).apply()
+                            sp.edit().putString("h2", h2).apply()
+
+                            if(bool){
+                                Observable.just(bean.data).subscribe(ArtistActivity.observer)
+                            }
+
                         } else {
                             Toast.makeText(
                                 context,

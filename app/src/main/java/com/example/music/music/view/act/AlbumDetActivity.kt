@@ -3,6 +3,8 @@ package com.example.music.music.view.act
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
@@ -15,6 +17,7 @@ import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.adapter.AlbumDetAdapter
 import com.example.music.bean.Music
+import com.example.music.bean.artistlist
 import com.example.music.config.ItemClickListener
 import com.example.music.music.contract.AlbumDetContract
 import com.example.music.music.presenter.AlbumDetPresenter
@@ -24,6 +27,7 @@ import com.google.gson.reflect.TypeToken
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.album_index.*
+import kotlinx.android.synthetic.main.album_index_header.*
 import mvp.ljb.kt.act.BaseMvpActivity
 
 
@@ -40,6 +44,7 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
     }
 
 
+    private var album_time: Long = 0
     private lateinit var names: String
     private var album_type: Int =0
     private var album_id: Long =0
@@ -61,6 +66,7 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
     override fun init(savedInstanceState: Bundle?) {
         super.init(savedInstanceState)
         context=this
+
     }
 
     override fun initData() {
@@ -74,6 +80,7 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
         type =  bundle?.get("type") as Int
         album_id = bundle.get("album_id") as Long
         album_type = bundle.get("album_type") as Int
+        album_time = bundle.get("album_time") as Long
         loadData()
         names = bundle.get("palylist_name") as String
         txts = bundle.get("info") as String
@@ -82,7 +89,7 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
 
    fun loadData(){
        if(type == 1){
-           getPresenter().songdatas(album_id,album_type,context)
+           getPresenter().songdatas(album_id,album_type,album_time,context)
        }else{
            getPresenter().songdata(album_id,album_type,context)
        }
@@ -100,7 +107,14 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
 
                 if (song.isNotEmpty()) {
                     songlist = song
-                    songlist.add(0,song[0])
+                    val one = mutableListOf<artistlist>()
+                    val det =  Music("","",0,0,"", one,"","")
+                    songlist.add(0,det)
+                    initSongList(songlist)
+                }else{
+                    val one = mutableListOf<artistlist>()
+                    val det =  Music("","",0,0,"", one,"","")
+                    songlist.add(0,det)
                     initSongList(songlist)
                 }
             }

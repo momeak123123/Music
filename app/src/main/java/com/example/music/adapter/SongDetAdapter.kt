@@ -2,6 +2,8 @@ package com.example.music.adapter
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,19 +11,23 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.music.R
 import com.example.music.bean.Music
 import com.example.music.bean.SongDet
+import com.example.music.config.CornerTransform
 import com.example.music.music.view.act.AlbumDetActivity
 import com.example.music.music.view.act.SongDetActivity
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.Observable
 import kotlinx.android.synthetic.main.head.*
+import java.security.AccessController.getContext
 import java.util.concurrent.TimeUnit
 
 class SongDetAdapter  (val datas: MutableList<Music>, val context: Context,
                        val covers: String,
-                       val names:String) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+                       val names:String,val num:String) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 
     companion object {
@@ -30,7 +36,7 @@ class SongDetAdapter  (val datas: MutableList<Music>, val context: Context,
     }
 
     var type = 0
-    private var mItemClickListener: SongDetAdapter.ItemClickListener? = null
+    private var mItemClickListener: ItemClickListener? = null
     var listdet = mutableListOf<SongDet>()
 
     override fun getItemViewType(position: Int): Int {
@@ -91,6 +97,7 @@ class SongDetAdapter  (val datas: MutableList<Music>, val context: Context,
         var top_flot: ImageView
         var title: TextView
         var top_set: ImageView
+        var floatingActionButton: FloatingActionButton
 
         init {
             iv_cover = itemView.findViewById(R.id.iv_cover)
@@ -98,14 +105,28 @@ class SongDetAdapter  (val datas: MutableList<Music>, val context: Context,
             top_flot = itemView.findViewById(R.id.top_flot)
             title = itemView.findViewById(R.id.title)
             top_set = itemView.findViewById(R.id.top_set)
+            floatingActionButton = itemView.findViewById(R.id.floatingActionButton)
+        }
+
+        fun dip2px(context: Context, dpValue: Int): Float {
+            val scale = context.resources.displayMetrics.density
+            return (dpValue * scale + 0.5f)
         }
 
         @SuppressLint("CheckResult")
         fun bindData() {
-            Glide.with(context).load(covers).placeholder(R.color.main_black_grey).into(iv_cover)
-            title.text = names
-            Glide.with(context).load(R.drawable.mores).placeholder(R.color.main_black_grey).into(top_set)
+            val transformation = CornerTransform(context, dip2px(context, 40))
+            transformation.setExceptCorner(true, true, false, false)
+            Glide.with(context).load(covers).
+            skipMemoryCache(true).
+            diskCacheStrategy(DiskCacheStrategy.NONE)
+                .transform(transformation).into(iv_cover)
 
+           // Glide.with(context).load(covers).placeholder(R.color.main_black_grey).into(iv_cover)
+            title.text = names
+            txt.text = num+"首"
+            Glide.with(context).load(R.drawable.mores).placeholder(R.color.main_black_grey).into(top_set)
+            floatingActionButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#06b7ff"))
             RxView.clicks(top_flot)
                 .throttleFirst(1, TimeUnit.SECONDS)
                 .subscribe {

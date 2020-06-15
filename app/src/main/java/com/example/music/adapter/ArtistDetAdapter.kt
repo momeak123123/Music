@@ -10,6 +10,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.music.R
+import com.example.music.bean.Album
 import com.example.music.bean.AlbumDet
 import com.example.music.bean.Artists
 import com.example.music.bean.SongDet
@@ -19,7 +20,7 @@ import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.Observable
 import java.util.concurrent.TimeUnit
 
-class ArtistDetAdapter  (val datas: List<AlbumDet>, val context: Context,val name : String ,val txt :String) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ArtistDetAdapter  (val datas: List<Album>, val context: Context, val name : String, val txt :String, val url :String) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
         const val TYPE_TITLE = 0
@@ -90,12 +91,14 @@ class ArtistDetAdapter  (val datas: List<AlbumDet>, val context: Context,val nam
         var artist_name: TextView
         var artist_txt: TextView
         var top_flot: ImageView
+        var back: ImageView
 
         init {
 
             artist_name = itemView.findViewById(R.id.artist_name)
             artist_txt = itemView.findViewById(R.id.artist_txt)
             top_flot = itemView.findViewById(R.id.top_flot)
+            back = itemView.findViewById(R.id.back)
 
         }
 
@@ -103,7 +106,7 @@ class ArtistDetAdapter  (val datas: List<AlbumDet>, val context: Context,val nam
         fun bindData() {
             artist_name.text = name
             artist_txt.text = txt
-
+            Glide.with(context).load(url).placeholder(R.color.main_black_grey).into(back)
 
             RxView.clicks(top_flot)
                 .throttleFirst(1, TimeUnit.SECONDS)
@@ -129,8 +132,8 @@ class ArtistDetAdapter  (val datas: List<AlbumDet>, val context: Context,val nam
         fun bindData(position: Int) {
             Glide.with(context).load(datas[position].pic_url).placeholder(R.color.main_black_grey)
                 .into(iv_cover)
-            title.text = datas[position].album_name
-            txt.text =  datas[position].artist_name
+            title.text = datas[position].name
+            txt.text =  datas[position].info
         }
     }
 }

@@ -38,7 +38,6 @@ class PlaySongAdapter (val datas: List<Playlist>, val context: Context) : Recycl
         var iv_cover: ImageView = itemView.findViewById(R.id.iv_cover)
         var title: TextView = itemView.findViewById(R.id.title)
         var txt: TextView = itemView.findViewById(R.id.txt)
-        var right: ImageView = itemView.findViewById(R.id.right)
     }
 
     /**

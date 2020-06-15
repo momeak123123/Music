@@ -13,6 +13,7 @@
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentBottom="true"
+        android:layout_marginStart="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_10"
         android:layout_marginBottom="@dimen/dp_10"
         android:scaleType="centerCrop"
@@ -20,7 +21,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.9"
+        app:layout_constraintVertical_bias="0.0"
         app:riv_border_width="0dp"
         app:riv_corner_radius="@dimen/dp_10"
         app:riv_is_circle="false" />

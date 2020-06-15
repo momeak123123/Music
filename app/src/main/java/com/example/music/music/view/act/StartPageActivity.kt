@@ -41,21 +41,20 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>() , Star
     override fun init(savedInstanceState: Bundle?) {
         super.init(savedInstanceState)
         context=this
+        MainActivity.bool = false
     }
 
     @SuppressLint("CheckResult")
     override fun initView() {
         super.initView()
 
-        mDisposable = Flowable.intervalRange(0, 3, 0, 1, TimeUnit.SECONDS)
+        mDisposable = Flowable.intervalRange(0, 4, 0, 1, TimeUnit.SECONDS)
             .observeOn(AndroidSchedulers.mainThread())
             .doOnNext { t ->
                 time.text=(3-t).toString()
             }
             .doOnComplete {
-                val intent = Intent()
-                intent.setClass(context as StartPageActivity, MainActivity().javaClass)
-                startActivity(intent)
+               finish()
             }
             .subscribe()
 
@@ -63,9 +62,7 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>() , Star
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
                 mDisposable.dispose()
-                val intent = Intent()
-                intent.setClass(context as StartPageActivity, MainActivity().javaClass)
-                startActivity(intent)
+               finish()
             }
     }
 

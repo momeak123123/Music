@@ -32,14 +32,14 @@
             android:windowSoftInputMode="adjustResize"/>
 
         <activity android:name=".MainActivity" >
-
-        </activity>
-        <activity android:name=".music.view.act.StartPageActivity"
-            android:theme="@style/AppTheme.Full">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".music.view.act.StartPageActivity"
+            android:theme="@style/AppTheme.Full">
+
         </activity>
         <activity android:name=".music.view.act.SearchActivity" />
         <activity android:name=".music.view.act.LoginActivity" />

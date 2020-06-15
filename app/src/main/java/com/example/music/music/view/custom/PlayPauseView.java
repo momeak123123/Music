@@ -78,7 +78,7 @@ public class PlayPauseView extends View {
         mPadding = ta.getFloat(R.styleable.PlayPauseView_space_padding, 0);
         mAnimDuration = ta.getInt(R.styleable.PlayPauseView_anim_duration, 200);
         hasProgress = ta.getBoolean(R.styleable.PlayPauseView_hasProgress, false);
-        int mLoadingColor = ta.getColor(R.styleable.PlayPauseView_loadingColor, Color.parseColor("#e91e63"));
+        int mLoadingColor = ta.getColor(R.styleable.PlayPauseView_loadingColor, Color.parseColor("#06b7ff"));
         ta.recycle();
 
         mPaint = new Paint();

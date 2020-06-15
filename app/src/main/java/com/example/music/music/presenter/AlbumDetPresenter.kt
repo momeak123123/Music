@@ -17,8 +17,8 @@ class AlbumDetPresenter : BaseMvpPresenter<AlbumDetContract.IView, AlbumDetContr
         getModel().songdata(id,type,context)
     }
 
-    override fun songdatas(id:Long,type:Int,context: Context) {
-        getModel().songdatas(id, type,context)
+    override fun songdatas(id:Long,type:Int, time: Long ,context: Context) {
+        getModel().songdatas(id, type,time,context)
     }
 
 }

@@ -63,19 +63,38 @@ class ArtistActivity : BaseMvpActivity<ArtistContract.IPresenter>(), ArtistContr
     override fun initData() {
         super.initData()
         top_title.text =getString(R.string.item3s)
-        getPresenter().taglist(context)
-        /* val sp: SharedPreferences =
-             context.getSharedPreferences("Music", Context.MODE_PRIVATE)
 
-         if (!sp.getString("artist", "").equals("")) {
-             val artist: List<Artists> = Gson().fromJson(
-                 sp.getString("artist", ""),
-                 object : TypeToken<List<Artists>>() {}.type
-             )
-             if (artist.isNotEmpty()) {
-                 initSingerList(artist)
-             }
-         }*/
+        val sp: SharedPreferences =
+            context.getSharedPreferences("Music", Context.MODE_PRIVATE)
+
+        if (!sp.getString("h1", "").equals("")) {
+            getPresenter().taglist(context,false)
+            val hierarchy1: List<Hierarchy> = Gson().fromJson(
+                sp.getString("h1", ""),
+                object : TypeToken<List<Hierarchy>>() {}.type
+            )
+            val hierarchy2: List<Hierarchy> = Gson().fromJson(
+                sp.getString("h2", ""),
+                object : TypeToken<List<Hierarchy>>() {}.type
+            )
+            if (hierarchy1.isNotEmpty()) {
+                // val hier = Hierarchy(0, 1, "全部")
+                // hierarchy1.add(0, hier)
+                initTopList(hierarchy1)
+            }
+            if (hierarchy2.isNotEmpty()) {
+                // val hier = Hierarchy(0, 2, "全部")
+                // hierarchy2.add(0, hier)
+                initAlbumList(hierarchy2)
+            }
+            hierarchy1[0].cat_hierarchy = 0
+            hierarchy2[0].cat_hierarchy = 0
+            varieties = hierarchy1[0].cat_id
+            letter = hierarchy2[0].cat_id
+            getPresenter().listdata(context, varieties, letter)
+        }else{
+            getPresenter().taglist(context,true)
+        }
 
     }
 
@@ -149,7 +168,7 @@ class ArtistActivity : BaseMvpActivity<ArtistContract.IPresenter>(), ArtistContr
         }
     }
 
-    fun initTopList(list: MutableList<Hierarchy>) {
+    fun initTopList(list: List<Hierarchy>) {
         val linearLayoutManager = LinearLayoutManager(context)
         linearLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
         recyc_tab1.layoutManager = linearLayoutManager
@@ -174,7 +193,7 @@ class ArtistActivity : BaseMvpActivity<ArtistContract.IPresenter>(), ArtistContr
     }
 
 
-    fun initAlbumList(album: MutableList<Hierarchy>) {
+    fun initAlbumList(album: List<Hierarchy>) {
         val linearLayoutManager = LinearLayoutManager(context)
         linearLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
         recyc_tab2.layoutManager = linearLayoutManager

@@ -50,6 +50,7 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
 
     companion object {
         lateinit var observer: Observer<Playlist>
+        lateinit var observers: Observer<MutableList<Playlist>>
     }
 
     override fun registerPresenter() = FindPresenter::class.java
@@ -66,12 +67,13 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
         super.initData()
 
         val list: MutableList<Playlist> =  mPlaylistDao.queryAll()
+        println("数量${list.size}")
         if(list.size>0){
-            back.visibility = View.GONE
             initSongList(list)
         }else{
-            back.visibility = View.VISIBLE
+            context?.let { getPresenter().listdata(it) }
         }
+
 
 
     }
@@ -114,7 +116,29 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
         observer = object : Observer<Playlist> {
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(data: Playlist) {
-                adapter?.add(data)
+                back.visibility = View.GONE
+                mPlaylistDao.insert(data)
+                adapter!!.add(data)
+            }
+
+            override fun onError(e: Throwable) {}
+            override fun onComplete() {}
+
+        }
+
+        observers = object : Observer<MutableList<Playlist>> {
+            override fun onSubscribe(d: Disposable) {}
+            override fun onNext(data: MutableList<Playlist>) {
+                if(data.size>0){
+                    initSongList(data)
+                    back.visibility = View.GONE
+                    for(it in data){
+                        mPlaylistDao.insert(it)
+                    }
+
+                }else{
+                    back.visibility = View.VISIBLE
+                }
             }
 
             override fun onError(e: Throwable) {}
@@ -166,9 +190,10 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
                     override fun onItemClick(view: View?, position: Int) {
                         val intent = Intent()
                         context?.let { intent.setClass(it, SongDetActivity().javaClass) }
-                        intent.putExtra("id",song[position].playid)
+                        intent.putExtra("id",song[position].play_list_id)
                         intent.putExtra("name",song[position].name)
                         intent.putExtra("url",song[position].pic_url)
+                        intent.putExtra("num",song[position].song_num)
                         startActivity(intent)
                     }
 

@@ -93,15 +93,18 @@
                 android:elevation="@dimen/dp_10"
                 android:scaleType="fitXY"
                 app:anim_duration="300"
-                app:bg_color="@color/app_blue"
-                app:btn_color="@color/white"
+                app:loadingColor="@color/colorAccent"
+                app:bg_color="@color/colorPrimary"
+                app:btn_color="@color/colorAccent"
                 app:elevation="10dp" />
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/floatingActionButton"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:layout_margin="@dimen/dp_2" />
+                android:backgroundTint="@color/colorAccent"
+                android:layout_margin="0dp" />
 
         </FrameLayout>
 

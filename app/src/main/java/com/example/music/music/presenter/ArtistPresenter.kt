@@ -14,8 +14,8 @@ import com.google.gson.JsonObject
 class ArtistPresenter : BaseMvpPresenter<ArtistContract.IView, ArtistContract.IModel>(), ArtistContract.IPresenter{
 
     override fun registerModel() = ArtistModel::class.java
-    override fun taglist(context: Context) {
-       return getModel().taglist(context)
+    override fun taglist(context: Context,bool: Boolean) {
+       return getModel().taglist(context,bool)
     }
 
     override fun listdata(context:Context,varieties: Int, letter: Int) {

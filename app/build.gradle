@@ -93,7 +93,7 @@ dependencies {
 }
 
 greendao {
-    schemaVersion 2
+    schemaVersion 4
     daoPackage 'com.example.music.sql.gen'
     targetGenDir 'src/main/java'
 }

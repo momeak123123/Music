@@ -10,15 +10,13 @@ import android.view.View
 import android.view.WindowManager
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.adapter.ArtistDetAdapter
 import com.example.music.adapter.ArtistListAdapter
 import com.example.music.adapter.ArtistTagAdapter
-import com.example.music.bean.AlbumDet
-import com.example.music.bean.Artists
-import com.example.music.bean.Hierarchy
-import com.example.music.bean.Music
+import com.example.music.bean.*
 import com.example.music.config.ItemClickListener
 import com.example.music.music.contract.ArtistDetContract
 import com.example.music.music.presenter.ArtistDetPresenter
@@ -31,6 +29,7 @@ import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.album_index.*
 import kotlinx.android.synthetic.main.artist_index.*
+import kotlinx.android.synthetic.main.artist_index.swipe_refresh_layout
 import kotlinx.android.synthetic.main.head.*
 import kotlinx.android.synthetic.main.music_artist.*
 import mvp.ljb.kt.act.BaseMvpActivity
@@ -48,18 +47,29 @@ class ArtistDetActivity : BaseMvpActivity<ArtistDetContract.IPresenter>() , Arti
         lateinit var observer: Observer<JsonObject>
         lateinit var observers: Observer<Boolean>
     }
-
+    private lateinit var urls: String
     private lateinit var names: String
     private lateinit var txts: String
     private lateinit var context: Context
     override fun registerPresenter() = ArtistDetPresenter::class.java
-
+    var songlist = mutableListOf<Album>()
     override fun getLayoutId(): Int {
         return R.layout.artist_index
     }
 
     override fun init(savedInstanceState: Bundle?) {
         super.init(savedInstanceState)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            val window = window
+            window.clearFlags(
+                WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
+                        or WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION
+            )
+            window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    or View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            window.statusBarColor = Color.TRANSPARENT
+        }
         context = this
     }
 
@@ -75,6 +85,9 @@ class ArtistDetActivity : BaseMvpActivity<ArtistDetContract.IPresenter>() , Arti
     @SuppressLint("CheckResult")
     override fun initView() {
         super.initView()
+        swipe_refresh_layout.setColorSchemeColors(-0xff6634, -0xbbbc, -0x996700, -0x559934, -0x7800)
+        //下拉刷新
+        swipe_refresh_layout.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener { initData() })
     }
 
 
@@ -88,15 +101,26 @@ class ArtistDetActivity : BaseMvpActivity<ArtistDetContract.IPresenter>() , Arti
                     data.getAsJsonObject("artist_info"),
                     object : TypeToken<Map<String,String>>() {}.type
                 )
-                Glide.with(context).load(artist["pic_url"].toString()).placeholder(R.color.main_black_grey).into(back)
+                urls=artist["pic_url"].toString()
                 names=artist["name"].toString()
                 txts=artist["brief_desc"].toString()
-                val albums: List<AlbumDet> = Gson().fromJson(
+                val albums: MutableList<Album> = Gson().fromJson(
                     data.getAsJsonArray("album_info"),
-                    object : TypeToken<List<AlbumDet>>() {}.type
+                    object : TypeToken<MutableList<Album>>() {}.type
                 )
                 if (albums.isNotEmpty()) {
-                    initSingerList(albums)
+                    songlist = albums
+                    val asrt =  Album(0,"","",0,"","","",0,"")
+                    songlist.add(0,asrt)
+                    initSingerList(songlist)
+                }else{
+                    val asrt =  Album(0,"","",0,"","","",0,"")
+                    songlist.add(0,asrt)
+                    initSingerList(songlist)
+                }
+
+                if (swipe_refresh_layout != null) {
+                    swipe_refresh_layout.isRefreshing = false
                 }
             }
 
@@ -119,11 +143,11 @@ class ArtistDetActivity : BaseMvpActivity<ArtistDetContract.IPresenter>() , Arti
     }
 
 
-    private fun initSingerList(artists: List<AlbumDet>) {
+    private fun initSingerList(artists: List<Album>) {
         recyc_item.layoutManager = LinearLayoutManager(context)
         recyc_item.itemAnimator = DefaultItemAnimator()
         recyc_item.setHasFixedSize(true)
-        val adapter = ArtistDetAdapter(artists, context,names,txts)
+        val adapter = ArtistDetAdapter(artists, context,names,txts,urls)
         recyc_item.adapter = adapter
         recyc_item.addOnItemTouchListener(
             ItemClickListener(context,

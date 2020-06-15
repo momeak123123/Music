@@ -16,12 +16,12 @@ interface AlbumDetContract {
 
     interface IPresenter : IPresenterContract {
         fun songdata(id:Long,type:Int,context: Context)
-        fun songdatas(id:Long,type:Int,context: Context)
+        fun songdatas(id:Long,type:Int, time: Long ,context: Context)
 
     }
 
     interface IModel : IModelContract{
         fun songdata(id:Long,type:Int,context: Context)
-        fun songdatas(id:Long,type:Int,context: Context)
+        fun songdatas(id:Long,type:Int, time: Long ,context: Context)
     }
 }

@@ -55,11 +55,8 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
 
     override fun initData() {
         super.initData()
-        sp = requireContext().getSharedPreferences("Music", Context.MODE_PRIVATE)
-        if (sp.getString("list", "").equals("")) {
-            swipe_refresh_layout.isRefreshing = true
-            loadData()
-        }
+
+        loadData()
         initbanner()
 
     }
@@ -70,7 +67,7 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
         val data_ablum = mutableListOf<Album>()
         val data_artist = mutableListOf<Artists>()
         val data_song = mutableListOf<Music>()
-
+        sp = requireContext().getSharedPreferences("Music", Context.MODE_PRIVATE)
         if (!sp.getString("list", "").equals("")) {
             val list: List<TopList> = Gson().fromJson(
                 sp.getString("list", ""),
@@ -201,7 +198,12 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
 
     override fun onResume() {
         super.onResume()
-        loadData()
+        try {
+            if(MusicPlayActivity.wlMusic.isPlaying){
+                music.visibility = View.VISIBLE
+            }
+        }catch (e: Exception){ }
+
     }
 
     /**
@@ -237,6 +239,7 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
                         context?.let { intent.setClass(it, AlbumDetActivity().javaClass) }
                         intent.putExtra("album_id", list[position].from_id)
                         intent.putExtra("album_type", list[position].from)
+                        intent.putExtra("album_time",list[position].update_time)
                         intent.putExtra("palylist_name", list[position].name)
                         intent.putExtra("info", list[position].info)
                         intent.putExtra("cover", list[position].pic_url)
@@ -268,6 +271,7 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
                         context?.let { intent.setClass(it, AlbumDetActivity().javaClass) }
                         intent.putExtra("album_id", album[position].album_id)
                         intent.putExtra("album_type", album[position].type)
+                        intent.putExtra("album_time",0L)
                         intent.putExtra("palylist_name", album[position].name)
                         intent.putExtra("info", album[position].info)
                         intent.putExtra("cover", album[position].pic_url)

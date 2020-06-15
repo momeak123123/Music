@@ -6,6 +6,31 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <ImageView
+        android:id="@+id/back"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_400"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:scaleType="centerCrop"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/backs"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/unbacks"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toBottomOf="@+id/back"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <include
         android:id="@+id/include"
         layout="@layout/head"
@@ -26,7 +51,9 @@
         android:layout_below="@+id/include"
         android:layout_alignParentStart="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="@dimen/dp_160"
+        android:layout_marginTop="@dimen/dp_180"
+        android:layout_marginStart="@dimen/dp_20"
+        android:layout_marginEnd="@dimen/dp_20"
         android:gravity="center_vertical|center"
         android:text=""
         android:textColor="@color/white"
@@ -42,6 +69,8 @@
         android:layout_below="@+id/artist_name"
         android:layout_alignStart="@+id/artist_name"
         android:layout_alignEnd="@+id/artist_name"
+        android:layout_marginStart="@dimen/dp_20"
+        android:layout_marginEnd="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_20"
         android:ellipsize="end"
         android:gravity="center_vertical|left"
@@ -61,6 +90,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/artist_txt"
         android:layout_alignParentStart="true"
+        android:layout_marginStart="@dimen/dp_20"
         android:layout_marginTop="@dimen/dp_20"
         android:text="@string/album"
         android:textColor="@color/grey"

@@ -25,7 +25,7 @@ public class PlaylistDao extends AbstractDao<Playlist, Long> {
      */
     public static class Properties {
         public final static Property Id = new Property(0, Long.class, "id", true, "_id");
-        public final static Property Playid = new Property(1, Long.class, "playid", false, "PLAYID");
+        public final static Property Play_list_id = new Property(1, Long.class, "play_list_id", false, "PLAY_LIST_ID");
         public final static Property Name = new Property(2, String.class, "name", false, "NAME");
         public final static Property Pic_url = new Property(3, String.class, "pic_url", false, "PIC_URL");
         public final static Property Create_time = new Property(4, String.class, "create_time", false, "CREATE_TIME");
@@ -46,7 +46,7 @@ public class PlaylistDao extends AbstractDao<Playlist, Long> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"PLAYLIST\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT ," + // 0: id
-                "\"PLAYID\" INTEGER," + // 1: playid
+                "\"PLAY_LIST_ID\" INTEGER," + // 1: play_list_id
                 "\"NAME\" TEXT," + // 2: name
                 "\"PIC_URL\" TEXT," + // 3: pic_url
                 "\"CREATE_TIME\" TEXT," + // 4: create_time
@@ -71,9 +71,9 @@ public class PlaylistDao extends AbstractDao<Playlist, Long> {
             stmt.bindLong(1, id);
         }
  
-        Long playid = entity.getPlayid();
-        if (playid != null) {
-            stmt.bindLong(2, playid);
+        Long play_list_id = entity.getPlay_list_id();
+        if (play_list_id != null) {
+            stmt.bindLong(2, play_list_id);
         }
  
         String name = entity.getName();
@@ -106,9 +106,9 @@ public class PlaylistDao extends AbstractDao<Playlist, Long> {
             stmt.bindLong(1, id);
         }
  
-        Long playid = entity.getPlayid();
-        if (playid != null) {
-            stmt.bindLong(2, playid);
+        Long play_list_id = entity.getPlay_list_id();
+        if (play_list_id != null) {
+            stmt.bindLong(2, play_list_id);
         }
  
         String name = entity.getName();
@@ -141,7 +141,7 @@ public class PlaylistDao extends AbstractDao<Playlist, Long> {
     public Playlist readEntity(Cursor cursor, int offset) {
         Playlist entity = new Playlist( //
             cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1), // playid
+            cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1), // play_list_id
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // name
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // pic_url
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // create_time
@@ -153,7 +153,7 @@ public class PlaylistDao extends AbstractDao<Playlist, Long> {
     @Override
     public void readEntity(Cursor cursor, Playlist entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setPlayid(cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1));
+        entity.setPlay_list_id(cursor.isNull(offset + 1) ? null : cursor.getLong(offset + 1));
         entity.setName(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setPic_url(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setCreate_time(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
