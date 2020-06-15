@@ -161,12 +161,15 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
         recyc_item.adapter = adapter
         adapter.setOnItemClickListener(object : AlbumDetAdapter.ItemClickListener {
             override fun onItemClick(view:View,position: Int) {
-                val json: String = Gson().toJson(song)
-                val intent = Intent()
-                intent.setClass(context, MusicPlayActivity().javaClass)
-                intent.putExtra("pos",position)
-                intent.putExtra("list",json)
-                startActivity(intent)
+                if(position>0){
+                    val json: String = Gson().toJson(song)
+                    val intent = Intent()
+                    intent.setClass(context, MusicPlayActivity().javaClass)
+                    intent.putExtra("pos",position)
+                    intent.putExtra("list",json)
+                    startActivity(intent)
+                }
+
             }
         })
 

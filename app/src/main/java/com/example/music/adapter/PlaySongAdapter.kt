@@ -10,10 +10,11 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.music.R
+import com.example.music.bean.Artists
 import com.example.music.bean.Music
 import com.example.music.sql.bean.Playlist
 
-class PlaySongAdapter (val datas: List<Playlist>, val context: Context) : RecyclerView.Adapter<PlaySongAdapter.InnerHolder>() {
+class PlaySongAdapter (val datas: MutableList<Playlist>, val context: Context) : RecyclerView.Adapter<PlaySongAdapter.InnerHolder>() {
 
 
 
@@ -49,8 +50,10 @@ class PlaySongAdapter (val datas: List<Playlist>, val context: Context) : Recycl
         holder.title.text = datas[position].name
         holder.txt.text = datas[position].song_num+"首音乐"
 
-
     }
 
-
+    fun update(pos:Int,num: String){
+        datas[pos].song_num = num
+        notifyItemChanged(pos)
+    }
 }

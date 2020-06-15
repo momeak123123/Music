@@ -53,15 +53,18 @@ class MusicPlayActivity : AppCompatActivity() {
         var position: Int = 0
         var id: Int = 0
         lateinit var wlMusic: WlMusic
+        lateinit var observer: Observer<String>
         lateinit var observers: Observer<Long>
     }
 
+    private lateinit var adapter: PlaySongAdapter
     private var type: Int = 0
     var song_id: Long = 0
     lateinit var mDisposable: Disposable
     var max: Long = 0
     private var bool: Boolean = false
     private var min: Long = 0
+    private var pos: Int = 0
     private var bitmap: Bitmap? = null
     private var playingMusic: Music? = null
     private var playingMusicList: MutableList<Music>? = null
@@ -217,6 +220,19 @@ class MusicPlayActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
+        observer = object : Observer<String> {
+            override fun onSubscribe(d: Disposable) {}
+            override fun onNext(num: String) {
+
+                adapter.update(pos,num)
+
+            }
+
+            override fun onError(e: Throwable) {}
+            override fun onComplete() {}
+
+        }
+
         observers = object : Observer<Long> {
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(bool: Long) {
@@ -261,19 +277,21 @@ class MusicPlayActivity : AppCompatActivity() {
     private fun initSongList(song: MutableList<Playlist>) {
         in_list.layoutManager = LinearLayoutManager(context)
         in_list.itemAnimator = DefaultItemAnimator()
-        val adapter = PlaySongAdapter(song, context)
+         adapter = PlaySongAdapter(song, context)
         in_list.adapter = adapter
         in_list.addOnItemTouchListener(
             ItemClickListener(context,
                 object : ItemClickListener.OnItemClickListener {
                     override fun onItemClick(view: View?, position: Int) {
+                        pos = position
                         MaterialDialog.Builder(context)
                             .title("添加音乐")
                             .content("是否将音乐加入此歌单")
                             .positiveText("确认")
                             .negativeText("取消")
                             .onPositive { _: MaterialDialog?, _: DialogAction? ->
-                                MusicPlayModel.addSong(context,song_id,song[position].play_list_id)
+                                val idmap : LongArray = longArrayOf(song_id)
+                                MusicPlayModel.addSong(context,idmap,song[position].play_list_id)
 
                             }
                             .show()

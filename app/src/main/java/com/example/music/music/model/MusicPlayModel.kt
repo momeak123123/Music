@@ -5,8 +5,10 @@ import android.content.SharedPreferences
 import android.widget.Toast
 import com.example.music.bean.ResultBeans
 import com.example.music.common.Constants
+import com.example.music.music.view.act.MusicPlayActivity
 import com.example.music.music.view.fragment.FindFragment
 import com.example.music.sql.bean.Playlist
+import com.example.music.sql.dao.mPlaylistDao
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.lzy.okgo.OkGo
@@ -16,14 +18,14 @@ import io.reactivex.Observable
 
 class MusicPlayModel {
     companion object {
-        fun addSong(context: Context, songid: Long, playid: Long) {
+        fun addSong(context: Context, songid: LongArray, playid: Long) {
 
             val sp: SharedPreferences = context.getSharedPreferences("User", Context.MODE_PRIVATE)
-            println(sp.getString("token", ""))
+                println( Gson().toJson(songid))
             OkGo.post<String>(Constants.URL + "api/user/add_play_list")
                 .params("token", sp.getString("token", ""))
                 .params("play_list_id", playid)
-                .params("song_id", songid)
+                .params("song_id", Gson().toJson(songid))
                 .execute(object : StringCallback() {
                     override fun onSuccess(response: Response<String>) {
                         /**
@@ -32,11 +34,16 @@ class MusicPlayModel {
                         try {
                             val bean =
                                 Gson().fromJson(response.body(), ResultBeans::class.javaObjectType)
-                                Toast.makeText(
-                                    context,
-                                    bean.msg,
-                                    Toast.LENGTH_LONG
-                                ).show()
+                            val playlist: Playlist = mPlaylistDao.query(playid)[0]
+                            val num = ((playlist.song_num).toInt() + 1).toString()
+                            playlist.song_num = num
+                            mPlaylistDao.update(playlist)
+                            Observable.just(num).subscribe(MusicPlayActivity.observer)
+                            Toast.makeText(
+                                context,
+                                bean.msg,
+                                Toast.LENGTH_LONG
+                            ).show()
                         } catch (e: Exception) {
                             Toast.makeText(
                                 context,

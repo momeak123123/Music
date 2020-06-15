@@ -25,6 +25,8 @@ import com.example.music.sql.config.Initialization
 import com.example.music.sql.dao.mPlaylistDao
 import com.example.music.sql.dao.mSearchDao
 import com.google.gson.Gson
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import com.jakewharton.rxbinding2.view.RxView
 import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
@@ -49,8 +51,12 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
     private var adapter: SongListAdapter? = null
 
     companion object {
-        lateinit var observer: Observer<Playlist>
+        lateinit var observer: Observer<JsonObject>
         lateinit var observers: Observer<MutableList<Playlist>>
+
+        fun add(){
+
+        }
     }
 
     override fun registerPresenter() = FindPresenter::class.java
@@ -85,40 +91,27 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
         RxView.clicks(add)
             .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
-                //in_add.visibility = View.VISIBLE
-                showInputDialog()
+                MainActivity.craet(true)
+                //showInputDialog()
             }
-
-        /*RxView.clicks(in_deter)
-            .throttleFirst(1, TimeUnit.SECONDS)
-            .subscribe {
-                if(et_name.isNotEmpty){
-                    context?.let { it1 -> getPresenter().addSongList(it1,names) }
-                    in_add.visibility = View.GONE
-                }else{
-                    Toast.makeText(context, R.string.song_error_name, Toast.LENGTH_SHORT).show()
-                }
-
-
-            }
-
-        RxView.clicks(in_cancel)
-            .throttleFirst(1, TimeUnit.SECONDS)
-            .subscribe {
-                in_add.visibility = View.GONE
-            }*/
 
     }
 
 
     override fun onResume() {
         super.onResume()
-        observer = object : Observer<Playlist> {
+        observer = object : Observer<JsonObject> {
             override fun onSubscribe(d: Disposable) {}
-            override fun onNext(data: Playlist) {
+            override fun onNext(data: JsonObject) {
+
+                val song: Playlist = Gson().fromJson(
+                    data,
+                    object : TypeToken<Playlist>() {}.type
+                )
+
                 back.visibility = View.GONE
-                mPlaylistDao.insert(data)
-                adapter!!.add(data)
+                mPlaylistDao.insert(song)
+                adapter!!.add(song)
             }
 
             override fun onError(e: Throwable) {}
@@ -150,7 +143,7 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
     /**
      * 带输入框的对话框
      */
-    @SuppressLint("ResourceAsColor")
+   /* @SuppressLint("ResourceAsColor")
     private fun showInputDialog() {
         context?.let {
             MaterialDialog.Builder(it)
@@ -174,7 +167,7 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
                 .cancelable(false)
                 .show()
         }
-    }
+    }*/
 
     /**
      * 初始化歌曲

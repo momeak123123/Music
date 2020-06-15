@@ -39,15 +39,10 @@ class FindModel : BaseModel(), FindContract.IModel {
                      */
                     try {
                         val bean =
-                            Gson().fromJson(response.body(), ResultBeans::class.javaObjectType)
+                            Gson().fromJson(response.body(), ResultBean::class.javaObjectType)
                         if (bean.code == 200) {
 
-                            val song: Playlist = Gson().fromJson(
-                                bean.data,
-                                object : TypeToken<Playlist>() {}.type
-                            )
-
-                            Observable.just(song).subscribe(FindFragment.observer)
+                            Observable.just(bean.data).subscribe(FindFragment.observer)
                         } else {
                             Toast.makeText(
                                 context,

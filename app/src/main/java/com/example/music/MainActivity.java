@@ -10,6 +10,7 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
 import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -23,9 +24,15 @@ import android.provider.Settings;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.Toolbar;
 
 import com.example.music.adapter.ViewPagerAdapter;
+import com.example.music.common.Constants;
+import com.example.music.config.MainModel;
+import com.example.music.music.model.FindModel;
 import com.example.music.music.view.act.LoginActivity;
 import com.example.music.music.view.act.MusicPlayActivity;
 import com.example.music.music.view.act.SearchActivity;
@@ -35,12 +42,18 @@ import com.example.music.music.view.fragment.HomeFragment;
 import com.example.music.music.view.fragment.MyFragment;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.jakewharton.rxbinding2.view.RxView;
 import com.jpeng.jptabbar.BadgeDismissListener;
 import com.jpeng.jptabbar.JPTabBar;
 import com.jpeng.jptabbar.OnTabSelectListener;
+import com.lzy.okgo.OkGo;
+import com.xuexiang.xui.widget.edittext.materialedittext.MaterialEditText;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+
 import io.alterac.blurkit.BlurLayout;
 
 public class MainActivity extends AppCompatActivity implements BadgeDismissListener, OnTabSelectListener {
@@ -73,7 +86,11 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
     private ViewPager viewPager;
     private JPTabBar mTabbar;
     private BlurLayout blurLayout;
-
+    private static RelativeLayout relat1;
+    private static RelativeLayout relat2;
+    private static MaterialEditText et_name;
+    private static TextView in_cancel;
+    private static TextView in_deter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +101,11 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
 
         viewPager = findViewById(R.id.viewPager);
         mTabbar = findViewById(R.id.tabbar);
-
+         relat1 = findViewById(R.id.relat1);
+         relat2 = findViewById(R.id.relat2);
+        et_name = findViewById(R.id.et_name);
+        in_cancel = findViewById(R.id.in_cancel);
+        in_deter = findViewById(R.id.in_deter);
         if(bool){
             Intent intent = new Intent(MainActivity.this, StartPageActivity.class);
             startActivity(intent);
@@ -97,11 +118,35 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
             }
 
         }
+        initView();
+        craet(false);
+    }
+
+    @SuppressLint("CheckResult")
+    private void initView(){
+        RxView.clicks(in_deter)
+                .throttleFirst(1, TimeUnit.SECONDS)
+                .subscribe(o -> {
+                    if(et_name.isNotEmpty()){
+                        MainModel.adddata(this,et_name.getEditValue());
+                        et_name.clear();
+                        craet(false);
+                    }else{
+                        Toast.makeText(this, R.string.song_error_name, Toast.LENGTH_LONG).show();
+                    }
 
 
-
+                });
+        RxView.clicks(in_cancel)
+                .throttleFirst(1, TimeUnit.SECONDS)
+                .subscribe(o -> {
+                    craet(false);
+                });
 
     }
+
+
+
 
     private void initData() {
         List<Fragment> list = new ArrayList<>();
@@ -170,6 +215,20 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
         }
     }
 
+    public static void craet(Boolean bool){
+        if(bool){
+            relat1.setVisibility(View.VISIBLE);
+            relat2.setVisibility(View.VISIBLE);
+        }else{
+            relat1.setVisibility(View.GONE);
+            relat2.setVisibility(View.GONE);
+        }
+    }
+
+
+    public static String add(){
+        return Objects.requireNonNull(et_name.getText()).toString();
+    }
 
 
     /**

@@ -7,6 +7,7 @@ import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -84,7 +85,7 @@ class SongDetAdapter  (val datas: MutableList<Music>, val context: Context,
         if (position < datas.size) {
             when (getItemViewType(position)) {
                 TYPE_TITLE -> (holder as TitleHolder).bindData()
-                TYPE_SELLER -> (holder as SellerHolder).bindData(position)
+                TYPE_SELLER -> (holder as SellerHolder).bindData(position-1)
             }
 
         }
@@ -157,12 +158,12 @@ class SongDetAdapter  (val datas: MutableList<Music>, val context: Context,
         var more: ImageView
         var radio: ImageView
         var num: TextView
-        var delete: ImageView
+        var delete: Button
 
         init {
-             iv_cover = itemView.findViewById(R.id.musicsrc)
-             title = itemView.findViewById(R.id.musicname)
-             txt = itemView.findViewById(R.id.singer)
+             iv_cover = itemView.findViewById(R.id.iv_cover)
+             title = itemView.findViewById(R.id.title)
+             txt = itemView.findViewById(R.id.txt)
              more = itemView.findViewById(R.id.more)
              radio = itemView.findViewById(R.id.radio)
              num = itemView.findViewById(R.id.num)

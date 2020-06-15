@@ -4,14 +4,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content">
 
     <RelativeLayout
-        android:id="@+id/relativeLayout4"
+        android:id="@+id/relat1"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_60"
         android:background="@color/white"
-        app:layout_constraintBottom_toTopOf="@+id/view3"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -34,10 +34,11 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/relat2"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_60"
         android:background="@drawable/ima_radio"
-        app:layout_constraintBottom_toTopOf="@+id/relativeLayout4"
+        app:layout_constraintBottom_toTopOf="@+id/relat1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -92,13 +93,5 @@
             android:text="@string/song_create" />
 
     </RelativeLayout>
-
-    <View
-        android:id="@+id/view3"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/dp_60"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
