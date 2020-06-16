@@ -45,20 +45,20 @@ class LoginActivity : BaseMvpActivity<LoginContract.IPresenter>(), LoginContract
     override fun initView() {
         super.initView()
         RxView.clicks(register_text)
-            .throttleFirst(1, TimeUnit.SECONDS)
+            .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
-                finish()
                 val intent = Intent()
                 intent.setClass(context as LoginActivity, RegisteredActivity().javaClass)
                 startActivity(intent)
+                finish()
             }
         RxView.clicks(login_flot)
-            .throttleFirst(1, TimeUnit.SECONDS)
+            .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
                 finish()
             }
         RxView.clicks(btn_login)
-            .throttleFirst(1, TimeUnit.SECONDS)
+            .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
                 if (et_username_number.text.toString() != "") {
                     if(isEmail(et_username_number.text.toString())){

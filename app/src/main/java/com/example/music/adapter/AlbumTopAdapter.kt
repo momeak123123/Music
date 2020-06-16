@@ -13,6 +13,8 @@ import com.example.music.bean.TopList
 
 class AlbumTopAdapter (val datas: List<TopList>, val context: Context) : RecyclerView.Adapter<AlbumTopAdapter.InnerHolder>() {
 
+    private var mItemClickListener: ItemClickListener? = null
+
 
     /**
      * 相当于getView()
@@ -40,10 +42,19 @@ class AlbumTopAdapter (val datas: List<TopList>, val context: Context) : Recycle
      * 绑定数据，View和数据绑定
      */
     override fun onBindViewHolder(holder: InnerHolder, position: Int) {
+        holder.itemView.setOnClickListener { v ->
+            mItemClickListener?.onItemClick(v,position)
+        }
         Glide.with(context).load(datas[position].pic_url).placeholder(R.color.main_black_grey).into(holder.iv_cover)
         holder.title.text = datas[position].name
         holder.txt.text = datas[position].update_frequency
     }
+    interface ItemClickListener {
+        fun onItemClick(view:View,position: Int)
+    }
 
+    fun setOnItemClickListener(itemClickListener: ItemClickListener) {
+        this.mItemClickListener = itemClickListener
+    }
 
 }

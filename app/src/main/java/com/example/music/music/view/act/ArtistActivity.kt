@@ -9,12 +9,11 @@ import android.view.View
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.music.R
+import com.example.music.adapter.AlbumListAdapter
 import com.example.music.adapter.ArtistListAdapter
 import com.example.music.adapter.ArtistTagAdapter
-import com.example.music.adapter.HomeListAdapter
 import com.example.music.bean.Artists
 import com.example.music.bean.Hierarchy
-import com.example.music.config.ItemClickListener
 import com.example.music.music.contract.ArtistContract
 import com.example.music.music.presenter.ArtistPresenter
 import com.google.gson.Gson
@@ -22,7 +21,6 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import com.jakewharton.rxbinding2.view.RxView
-import com.xuexiang.xui.widget.banner.widget.banner.BannerItem
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.head.*
@@ -175,20 +173,15 @@ class ArtistActivity : BaseMvpActivity<ArtistContract.IPresenter>(), ArtistContr
         recyc_tab1.itemAnimator = DefaultItemAnimator()
         val adapter = ArtistTagAdapter(list, context, 1)
         recyc_tab1.adapter = adapter
-        recyc_tab1.addOnItemTouchListener(
-            ItemClickListener(context,
-                object : ItemClickListener.OnItemClickListener {
-                    override fun onItemClick(view: View?, position: Int) {
-                        bool = true
-                        varieties = list[position].cat_id
-                        getPresenter().listdata(context, varieties, letter)
-                    }
+        adapter.setOnItemClickListener(object : ArtistTagAdapter.ItemClickListener {
+            override fun onItemClick(view:View,position: Int) {
+                bool = true
+                varieties = list[position].cat_id
+                getPresenter().listdata(context, varieties, letter)
 
-                    override fun onItemLongClick(view: View?, position: Int) {
+            }
+        })
 
-                    }
-                })
-        )
 
     }
 
@@ -200,20 +193,15 @@ class ArtistActivity : BaseMvpActivity<ArtistContract.IPresenter>(), ArtistContr
         recyc_tab2.itemAnimator = DefaultItemAnimator()
         val adapter = ArtistTagAdapter(album, context, 2)
         recyc_tab2.adapter = adapter
-        recyc_tab2.addOnItemTouchListener(
-            ItemClickListener(context,
-                object : ItemClickListener.OnItemClickListener {
-                    override fun onItemClick(view: View?, position: Int) {
-                        bool = true
-                        letter = album[position].cat_id
-                        getPresenter().listdata(context, varieties, letter)
-                    }
+        adapter.setOnItemClickListener(object : ArtistTagAdapter.ItemClickListener {
+            override fun onItemClick(view:View,position: Int) {
+                bool = true
+                letter = album[position].cat_id
+                getPresenter().listdata(context, varieties, letter)
 
-                    override fun onItemLongClick(view: View?, position: Int) {
+            }
+        })
 
-                    }
-                })
-        )
     }
 
     private fun initSingerList(artists: MutableList<Artists>) {
@@ -221,22 +209,17 @@ class ArtistActivity : BaseMvpActivity<ArtistContract.IPresenter>(), ArtistContr
         recyc_list.itemAnimator = DefaultItemAnimator()
         adapter = ArtistListAdapter(artists, context)
         recyc_list.adapter = adapter
-        recyc_list.addOnItemTouchListener(
-            ItemClickListener(context,
-                object : ItemClickListener.OnItemClickListener {
-                    override fun onItemClick(view: View?, position: Int) {
-                        val intent = Intent()
-                        context.let { intent.setClass(it, ArtistDetActivity().javaClass) }
-                        intent.putExtra("id", artists[position].artist_id)
-                        intent.putExtra("type", artists[position].type)
-                        startActivity(intent)
-                    }
+        adapter.setOnItemClickListener(object : ArtistListAdapter.ItemClickListener {
+            override fun onItemClick(view:View,position: Int) {
+                val intent = Intent()
+                context.let { intent.setClass(it, ArtistDetActivity().javaClass) }
+                intent.putExtra("id", artists[position].artist_id)
+                intent.putExtra("type", artists[position].type)
+                startActivity(intent)
 
-                    override fun onItemLongClick(view: View?, position: Int) {
+            }
+        })
 
-                    }
-                })
-        )
     }
 
     fun initSingerListup(artists: MutableList<Artists>) {

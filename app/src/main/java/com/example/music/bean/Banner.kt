@@ -1,3 +1,3 @@
 package com.example.music.bean
 
-data class Banner(val imageUrl :String ,val title:String, val iewType: Int)
+data class Banner(val url :String )

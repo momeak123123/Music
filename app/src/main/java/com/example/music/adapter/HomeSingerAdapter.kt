@@ -13,6 +13,9 @@ import com.example.music.bean.Artists
 
 class HomeSingerAdapter (val data: List<Artists>, val context: Context) : RecyclerView.Adapter<HomeSingerAdapter.InnerHolder>() {
 
+    private var mItemClickListener: ItemClickListener? = null
+
+
     /**
      * 相当于getView()
      */
@@ -38,11 +41,20 @@ class HomeSingerAdapter (val data: List<Artists>, val context: Context) : Recycl
      * 绑定数据，View和数据绑定
      */
     override fun onBindViewHolder(holder: InnerHolder, position: Int) {
+        holder.itemView.setOnClickListener { v ->
+            mItemClickListener?.onItemClick(v,position)
+        }
         Glide.with(context).load(data[position].pic_url).placeholder(R.color.main_black_grey).into(holder.iv_cover)
         holder.title.text = data[position].name
     }
 
+    interface ItemClickListener {
+        fun onItemClick(view:View,position: Int)
+    }
 
+    fun setOnItemClickListener(itemClickListener: ItemClickListener) {
+        this.mItemClickListener = itemClickListener
+    }
 
 
 }

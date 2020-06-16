@@ -93,7 +93,7 @@
     <string name="song_error_name">请输入歌单名称</string>
     <string name="song_all">全选</string>
     <string name="song_unall">全不选</string>
-    <string name="song_collect">收藏</string>
+    <string name="song_collect">收藏到歌单</string>
     <string name="song_download">下载</string>
     <string name="song_carry">完成</string>
     <string name="song_edit">编辑歌单</string>

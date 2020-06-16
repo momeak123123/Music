@@ -16,9 +16,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-
     <include
-        android:id="@+id/include"
+        android:id="@+id/foods"
         layout="@layout/food"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -31,10 +30,10 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <include
-        android:id="@+id/includes"
+        android:id="@+id/set"
         layout="@layout/song_set"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
@@ -42,6 +41,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

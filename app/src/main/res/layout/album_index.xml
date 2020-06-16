@@ -29,7 +29,7 @@
 
 
     <include
-        android:id="@+id/include"
+        android:id="@+id/foods"
         layout="@layout/food"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

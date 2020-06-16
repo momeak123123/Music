@@ -15,6 +15,8 @@ import com.example.music.R
 import com.example.music.bean.Music
 import com.example.music.bean.SongDet
 import com.example.music.music.view.act.AlbumDetActivity
+import com.example.music.music.view.act.MusicPlayActivity
+import com.example.music.music.view.act.SongDetActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.Observable
@@ -25,9 +27,10 @@ import java.util.concurrent.TimeUnit
 class AlbumDetAdapter(
     val datas: MutableList<Music>,
     val context: Context,
+    val id: Long,
     val txts: String,
     val covers: String,
-    val names:String
+    val names: String
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     companion object {
@@ -53,6 +56,9 @@ class AlbumDetAdapter(
      * 相当于getView()
      */
     override fun onCreateViewHolder(holder: ViewGroup, position: Int): RecyclerView.ViewHolder {
+        for (it in datas) {
+            listdet.add(SongDet(it, 0))
+        }
         //加载View
         return when (position) {
             TYPE_TITLE -> TitleHolder(
@@ -102,7 +108,9 @@ class AlbumDetAdapter(
         var top_flot: ImageView
         var top_title: TextView
         var top_set: ImageView
-        var floatingActionButton: FloatingActionButton
+        var pre: ImageView
+        var play: ImageView
+        var next: ImageView
 
         init {
             iv_cover = itemView.findViewById(R.id.iv_cover)
@@ -110,7 +118,9 @@ class AlbumDetAdapter(
             top_flot = itemView.findViewById(R.id.top_flot)
             top_title = itemView.findViewById(R.id.top_title)
             top_set = itemView.findViewById(R.id.top_set)
-            floatingActionButton = itemView.findViewById(R.id.floatingActionButton)
+            pre = itemView.findViewById(R.id.pre)
+            play = itemView.findViewById(R.id.play)
+            next = itemView.findViewById(R.id.next)
         }
 
         @SuppressLint("CheckResult")
@@ -118,8 +128,21 @@ class AlbumDetAdapter(
             txt.text = txts
             Glide.with(context).load(covers).placeholder(R.color.main_black_grey).into(iv_cover)
             top_title.text = names
-            Glide.with(context).load(R.drawable.mores).placeholder(R.color.main_black_grey).into(top_set)
-            floatingActionButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#06b7ff"))
+            Glide.with(context).load(R.drawable.mores).into(top_set)
+            Glide.with(context).load(R.drawable.shang).into(pre)
+            if (MusicPlayActivity.album_id == id) {
+                if (MusicPlayActivity.wlMusic.isPlaying) {
+                    Glide.with(context).load(R.drawable.plays).into(play)
+                } else {
+                    Glide.with(context).load(R.drawable.play).into(play)
+                }
+            }else{
+                Glide.with(context).load(R.drawable.play).into(play)
+            }
+
+            Glide.with(context).load(R.drawable.xia).into(next)
+
+
             RxView.clicks(top_flot)
                 .throttleFirst(1, TimeUnit.SECONDS)
                 .subscribe {
@@ -132,14 +155,41 @@ class AlbumDetAdapter(
                     if (type == 0) {
                         type = 1
                         notifyDataSetChanged()
+                        Observable.just(1).subscribe(AlbumDetActivity.observerd)
                     } else {
                         type = 0
                         notifyDataSetChanged()
+                        Observable.just(0).subscribe(AlbumDetActivity.observerd)
                     }
 
                 }
 
+            RxView.clicks(pre)
+                .throttleFirst(1, TimeUnit.SECONDS)
+                .subscribe {
+                    if (MusicPlayActivity.album_id == id) {
+                        Observable.just(1).subscribe(MusicPlayActivity.observerset)
+                    }
+                }
+            RxView.clicks(play)
+                .throttleFirst(1, TimeUnit.SECONDS)
+                .subscribe {
+                    if (MusicPlayActivity.album_id == id) {
+                        Observable.just(0).subscribe(MusicPlayActivity.observerset)
+                    } else {
+                        Observable.just(datas).subscribe(MusicPlayActivity.observerplay)
+                    }
 
+
+                }
+            RxView.clicks(next)
+                .throttleFirst(1, TimeUnit.SECONDS)
+                .subscribe {
+                    if (MusicPlayActivity.album_id == id) {
+                        Observable.just(2).subscribe(MusicPlayActivity.observerset)
+                    }
+
+                }
         }
 
     }
@@ -164,8 +214,9 @@ class AlbumDetAdapter(
         fun bindData(position: Int) {
 
             itemView.setOnClickListener { v ->
-                mItemClickListener?.onItemClick(v,position)
+                mItemClickListener?.onItemClick(v, position)
             }
+
             Glide.with(context).load(datas[position].pic_url).placeholder(R.color.main_black_grey)
                 .into(iv_cover)
             title.text = datas[position].name
@@ -189,8 +240,10 @@ class AlbumDetAdapter(
             } else {
                 num.visibility = View.GONE
                 radio.visibility = View.VISIBLE
-                for (it in datas) {
-                    listdet.add(SongDet(it, 0))
+                if (listdet[position].type == 1) {
+                    Glide.with(context).load(R.drawable.select).into(radio)
+                } else {
+                    Glide.with(context).load(R.drawable.upselect).into(radio)
                 }
             }
 
@@ -212,8 +265,21 @@ class AlbumDetAdapter(
         }
     }
 
+    fun update(bool: Boolean) {
+        if (bool) {
+            for (i in 0..listdet.size) {
+                listdet[i].type = 1
+            }
+        } else {
+            for (i in 0..listdet.size) {
+                listdet[i].type = 0
+            }
+        }
+        notifyDataSetChanged()
+    }
+
     interface ItemClickListener {
-        fun onItemClick(view:View,position: Int)
+        fun onItemClick(view: View, position: Int)
     }
 
     fun setOnItemClickListener(itemClickListener: ItemClickListener) {

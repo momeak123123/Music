@@ -8,8 +8,8 @@
 
     <com.xuexiang.xui.widget.imageview.RadiusImageView
         android:id="@+id/iv_cover"
-        android:layout_width="@dimen/dp_150"
-        android:layout_height="@dimen/dp_150"
+        android:layout_width="@dimen/dp_130"
+        android:layout_height="@dimen/dp_130"
         android:layout_gravity="center"
         android:layout_marginStart="16dp"
         android:layout_marginTop="28dp"
@@ -120,16 +120,15 @@
             <TextView
                 android:id="@+id/attention"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_40"
+                android:layout_height="@dimen/dp_30"
                 android:layout_marginTop="@dimen/dp_40"
                 android:ellipsize="end"
-                android:textSize="@dimen/sp_16"
                 android:gravity="center_vertical|center"
                 android:maxLines="1"
                 android:singleLine="true"
                 android:text="@string/attention"
                 android:textColor="@color/white"
-                />
+                android:textSize="@dimen/sp_14" />
         </FrameLayout>
 
         <FrameLayout
@@ -153,15 +152,15 @@
             <TextView
                 android:id="@+id/collect"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_40"
+                android:layout_height="@dimen/dp_30"
                 android:layout_marginTop="@dimen/dp_40"
                 android:ellipsize="end"
-                android:textSize="@dimen/sp_16"
                 android:gravity="center_vertical|center"
                 android:maxLines="1"
                 android:singleLine="true"
                 android:text="@string/collect"
-                android:textColor="@color/white"/>
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_14" />
 
         </FrameLayout>
 
@@ -187,15 +186,15 @@
             <TextView
                 android:id="@+id/like"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/dp_40"
+                android:layout_height="@dimen/dp_30"
                 android:layout_marginTop="@dimen/dp_40"
                 android:ellipsize="end"
-                android:textSize="@dimen/sp_16"
                 android:gravity="center_vertical|center"
                 android:maxLines="1"
                 android:singleLine="true"
                 android:text="@string/like"
-                android:textColor="@color/white"/>
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_14" />
         </FrameLayout>
 
     </LinearLayout>

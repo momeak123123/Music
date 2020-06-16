@@ -11,30 +11,20 @@ import android.view.WindowManager
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.bumptech.glide.Glide
 import com.example.music.R
+import com.example.music.adapter.AlbumDetAdapter
 import com.example.music.adapter.ArtistDetAdapter
-import com.example.music.adapter.ArtistListAdapter
-import com.example.music.adapter.ArtistTagAdapter
 import com.example.music.bean.*
-import com.example.music.config.ItemClickListener
 import com.example.music.music.contract.ArtistDetContract
 import com.example.music.music.presenter.ArtistDetPresenter
 import com.google.gson.Gson
-import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
-import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.album_index.*
 import kotlinx.android.synthetic.main.artist_index.*
 import kotlinx.android.synthetic.main.artist_index.swipe_refresh_layout
-import kotlinx.android.synthetic.main.head.*
-import kotlinx.android.synthetic.main.music_artist.*
 import mvp.ljb.kt.act.BaseMvpActivity
-import java.util.concurrent.TimeUnit
-import kotlinx.android.synthetic.main.album_index.recyc_item as recyc_item1
 
 /**
  * @Author Kotlin MVP Plugin
@@ -109,11 +99,13 @@ class ArtistDetActivity : BaseMvpActivity<ArtistDetContract.IPresenter>() , Arti
                     object : TypeToken<MutableList<Album>>() {}.type
                 )
                 if (albums.isNotEmpty()) {
+                    songlist.clear()
                     songlist = albums
                     val asrt =  Album(0,"","",0,"","","",0,"")
                     songlist.add(0,asrt)
                     initSingerList(songlist)
                 }else{
+                    songlist.clear()
                     val asrt =  Album(0,"","",0,"","","",0,"")
                     songlist.add(0,asrt)
                     initSingerList(songlist)
@@ -149,17 +141,13 @@ class ArtistDetActivity : BaseMvpActivity<ArtistDetContract.IPresenter>() , Arti
         recyc_item.setHasFixedSize(true)
         val adapter = ArtistDetAdapter(artists, context,names,txts,urls)
         recyc_item.adapter = adapter
-        recyc_item.addOnItemTouchListener(
-            ItemClickListener(context,
-                object : ItemClickListener.OnItemClickListener {
-                    override fun onItemClick(view: View?, position: Int) {
+        adapter.setOnItemClickListener(object : ArtistDetAdapter.ItemClickListener {
+            override fun onItemClick(view:View,position: Int) {
 
-                    }
-                    override fun onItemLongClick(view: View?, position: Int) {
 
-                    }
-                })
-        )
+            }
+        })
+
     }
 
     override fun onDestroy() {

@@ -8,28 +8,26 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
-import android.widget.ImageView
-import android.widget.RelativeLayout
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
 import com.example.music.R
-import com.example.music.adapter.AlbumDetAdapter
 import com.example.music.adapter.SongDetAdapter
 import com.example.music.bean.Music
 import com.example.music.bean.artistlist
-import com.example.music.config.CornerTransform
-import com.example.music.config.ItemClickListener
 import com.example.music.music.contract.SongDetContract
 import com.example.music.music.presenter.SongDetPresenter
 import com.google.gson.Gson
 import com.google.gson.JsonArray
-import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
+import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.food.*
 import kotlinx.android.synthetic.main.song_index.*
+import kotlinx.android.synthetic.main.song_set.*
+import kotlinx.android.synthetic.main.song_set.all
 import mvp.ljb.kt.act.BaseMvpActivity
+import java.util.concurrent.TimeUnit
 
 
 /**
@@ -42,8 +40,11 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>() , SongDetC
     companion object {
         lateinit var observer: Observer<JsonArray>
         lateinit var observers: Observer<Boolean>
+        lateinit var observerd: Observer<Int>
     }
 
+    private var playids: Long = 0
+    private var ids: Long = 0
     private lateinit var nums: String
     private lateinit var names: String
     private lateinit var imaurl: String
@@ -86,9 +87,62 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>() , SongDetC
         names = bundle?.get("name") as String
         imaurl = bundle.get("url") as String
         nums = bundle.get("num") as String
-        getPresenter().listdata(context,bundle.get("id") as Long)
+        ids = bundle.get("id") as Long
+        playids = bundle.get("playid") as Long
+        getPresenter().listdata(context,playids)
 
+        RxView.clicks(song_set_back)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe {
+                set.visibility = View.GONE
 
+            }
+        RxView.clicks(relat1)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe {
+                set.visibility = View.GONE
+                val intent = Intent()
+                intent.setClass(context as SongDetActivity, SongEditActivity().javaClass)
+                startActivity(intent)
+            }
+        RxView.clicks(relat2)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe {
+                set.visibility = View.GONE
+                foods.visibility = View.VISIBLE
+            }
+        RxView.clicks(relat3)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe {
+                set.visibility = View.GONE
+                getPresenter().deldata(context,ids,playids)
+            }
+
+        RxView.clicks(all)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe {
+               all.text = getText(R.string.song_unall)
+                for(it in adapter.listdet){
+                    it.type = 1
+                }
+                adapter.notifyDataSetChanged()
+            }
+        RxView.clicks(cencel)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe {
+                foods.visibility = View.GONE
+            }
+        RxView.clicks(down)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe {
+
+            }
+        RxView.clicks(deter)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe {
+                foods.visibility = View.GONE
+
+            }
 
         /* if(isSDcardAvailable()){
              val request =
@@ -118,16 +172,19 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>() , SongDetC
                 )
 
                 if (song.isNotEmpty()) {
+                    songlist.clear()
                     songlist = song
                     val one = mutableListOf<artistlist>()
                     val det =  Music("","",0,0,"", one,"","")
                     songlist.add(0,det)
                     initSongList(songlist)
                 }else{
+                    songlist.clear()
                     val one = mutableListOf<artistlist>()
                     val det =  Music("","",0,0,"", one,"","")
                     songlist.add(0,det)
                     initSongList(songlist)
+                    println(songlist.size)
                 }
             }
             override fun onError(e: Throwable) {}
@@ -138,10 +195,28 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>() , SongDetC
 
         observers = object : Observer<Boolean> {
             override fun onSubscribe(d: Disposable) {}
-
             override fun onNext(data: Boolean) {
                 if(data){
                     finish()
+                }
+
+            }
+            override fun onError(e: Throwable) {}
+            override fun onComplete() {
+            }
+
+        }
+
+        observerd = object : Observer<Int> {
+            override fun onSubscribe(d: Disposable) {}
+            @SuppressLint("CheckResult")
+            override fun onNext(data: Int) {
+                if(data == 1){
+                    set.visibility = View.VISIBLE
+
+                }else{
+                    foods.visibility = View.GONE
+                    set.visibility = View.GONE
                 }
 
             }
@@ -162,10 +237,11 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>() , SongDetC
         adapter.setOnItemClickListener(object : SongDetAdapter.ItemClickListener {
             override fun onItemClick(view:View,position: Int) {
                 if(position>0){
+                    song.removeAt(0)
                     val json: String = Gson().toJson(song)
                     val intent = Intent()
                     intent.setClass(context, MusicPlayActivity().javaClass)
-                    intent.putExtra("pos",position)
+                    intent.putExtra("pos",position-1)
                     intent.putExtra("list",json)
                     startActivity(intent)
                 }

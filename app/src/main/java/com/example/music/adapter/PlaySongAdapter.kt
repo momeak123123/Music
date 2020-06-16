@@ -17,6 +17,14 @@ import com.example.music.sql.bean.Playlist
 class PlaySongAdapter (val datas: MutableList<Playlist>, val context: Context) : RecyclerView.Adapter<PlaySongAdapter.InnerHolder>() {
 
 
+    private var mItemClickListener: ItemClickListener? = null
+    interface ItemClickListener {
+        fun onItemClick(view:View,position: Int)
+    }
+
+    fun setOnItemClickListener(itemClickListener: ItemClickListener) {
+        this.mItemClickListener = itemClickListener
+    }
 
     /**
      * 相当于getView()
@@ -46,6 +54,9 @@ class PlaySongAdapter (val datas: MutableList<Playlist>, val context: Context) :
      */
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: InnerHolder, position: Int) {
+        holder.itemView.setOnClickListener { v ->
+            mItemClickListener?.onItemClick(v,position)
+        }
         Glide.with(context).load(datas[position].pic_url).placeholder(R.color.main_black_grey).into(holder.iv_cover)
         holder.title.text = datas[position].name
         holder.txt.text = datas[position].song_num+"首音乐"

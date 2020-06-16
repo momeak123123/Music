@@ -20,6 +20,14 @@ import io.reactivex.Observer
 class ArtistListAdapter (var datas:MutableList<Artists>, val context: Context) : RecyclerView.Adapter<ArtistListAdapter.InnerHolder>() {
 
 
+    private var mItemClickListener: ItemClickListener? = null
+    interface ItemClickListener {
+        fun onItemClick(view:View,position: Int)
+    }
+
+    fun setOnItemClickListener(itemClickListener: ItemClickListener) {
+        this.mItemClickListener = itemClickListener
+    }
 
 
 
@@ -52,6 +60,9 @@ class ArtistListAdapter (var datas:MutableList<Artists>, val context: Context) :
      */
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: InnerHolder, position: Int) {
+        holder.itemView.setOnClickListener { v ->
+            mItemClickListener?.onItemClick(v,position)
+        }
         Glide.with(context).load(datas[position].pic_url).placeholder(R.color.main_black_grey).into(holder.iv_cover)
         holder.title.text = datas[position].name
     }

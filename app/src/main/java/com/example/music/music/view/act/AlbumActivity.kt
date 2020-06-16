@@ -8,21 +8,16 @@ import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.music.R
 import com.example.music.adapter.*
 import com.example.music.bean.*
-import com.example.music.config.ItemClickListener
 import com.example.music.music.contract.AlbumContract
 import com.example.music.music.presenter.AlbumPresenter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.jakewharton.rxbinding2.view.RxView
-import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.head.*
-import kotlinx.android.synthetic.main.home_item1.*
 import kotlinx.android.synthetic.main.music_album.*
-import kotlinx.android.synthetic.main.start_page.*
 import mvp.ljb.kt.act.BaseMvpActivity
 import java.util.concurrent.TimeUnit
 
@@ -95,27 +90,22 @@ class AlbumActivity : BaseMvpActivity<AlbumContract.IPresenter>() , AlbumContrac
         recyc_tab.itemAnimator = DefaultItemAnimator()
         val adapter = AlbumTopAdapter(list, context)
         recyc_tab.adapter = adapter
-        recyc_tab.addOnItemTouchListener(
-            ItemClickListener(context,
-                object : ItemClickListener.OnItemClickListener {
-                    override fun onItemClick(view: View?, position: Int) {
-                        val intent = Intent()
-                         intent.setClass(context, AlbumDetActivity().javaClass)
-                        intent.putExtra("album_id",list[position].from_id)
-                        intent.putExtra("album_type",list[position].from)
-                        intent.putExtra("album_time",list[position].update_time)
-                        intent.putExtra("palylist_name",list[position].name)
-                        intent.putExtra("info",list[position].info)
-                        intent.putExtra("cover",list[position].pic_url)
-                        intent.putExtra("type",1)
-                        startActivity(intent)
-                    }
+        adapter.setOnItemClickListener(object : AlbumTopAdapter.ItemClickListener {
+            override fun onItemClick(view:View,position: Int) {
+                val intent = Intent()
+                intent.setClass(context, AlbumDetActivity().javaClass)
+                intent.putExtra("album_id",list[position].from_id)
+                intent.putExtra("album_type",list[position].from)
+                intent.putExtra("album_time",list[position].update_time)
+                intent.putExtra("palylist_name",list[position].name)
+                intent.putExtra("info",list[position].info)
+                intent.putExtra("cover",list[position].pic_url)
+                intent.putExtra("type",1)
+                startActivity(intent)
 
-                    override fun onItemLongClick(view: View?, position: Int) {
+            }
+        })
 
-                    }
-                })
-        )
     }
 
     fun initAlbumList(album: List<Album>){
@@ -123,27 +113,21 @@ class AlbumActivity : BaseMvpActivity<AlbumContract.IPresenter>() , AlbumContrac
         recyc_tab.itemAnimator = DefaultItemAnimator()
         val adapter = AlbumListAdapter(album, context)
         recyc_tab.adapter = adapter
-        recyc_tab.addOnItemTouchListener(
-            ItemClickListener(context,
-                object : ItemClickListener.OnItemClickListener {
-                    override fun onItemClick(view: View?, position: Int) {
-                        val intent = Intent()
-                        intent.setClass(context, AlbumDetActivity().javaClass)
-                        intent.putExtra("album_id",album[position].album_id)
-                        intent.putExtra("album_type",album[position].type)
-                        intent.putExtra("album_time",0L)
-                        intent.putExtra("palylist_name",album[position].name)
-                        intent.putExtra("info",album[position].info)
-                        intent.putExtra("cover",album[position].pic_url)
-                        intent.putExtra("type",2)
-                        startActivity(intent)
-                    }
+        adapter.setOnItemClickListener(object : AlbumListAdapter.ItemClickListener {
+            override fun onItemClick(view:View,position: Int) {
+                val intent = Intent()
+                intent.setClass(context, AlbumDetActivity().javaClass)
+                intent.putExtra("album_id",album[position].album_id)
+                intent.putExtra("album_type",album[position].type)
+                intent.putExtra("album_time",0L)
+                intent.putExtra("palylist_name",album[position].name)
+                intent.putExtra("info",album[position].info)
+                intent.putExtra("cover",album[position].pic_url)
+                intent.putExtra("type",2)
+                startActivity(intent)
 
-                    override fun onItemLongClick(view: View?, position: Int) {
-
-                    }
-                })
-        )
+            }
+        })
 
     }
 

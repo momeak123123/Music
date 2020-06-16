@@ -3,32 +3,29 @@ package com.example.music.music.view.act
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.content.res.ColorStateList
-import android.graphics.Color
 import android.os.Bundle
 import android.view.View
-import android.widget.ImageView
-import android.widget.RelativeLayout
-import android.widget.Toast
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.adapter.AlbumDetAdapter
 import com.example.music.bean.Music
+import com.example.music.bean.SongDet
 import com.example.music.bean.artistlist
-import com.example.music.config.ItemClickListener
 import com.example.music.music.contract.AlbumDetContract
 import com.example.music.music.presenter.AlbumDetPresenter
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
+import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.album_index.*
-import kotlinx.android.synthetic.main.album_index_header.*
+import kotlinx.android.synthetic.main.food.*
+import kotlinx.android.synthetic.main.song_set.all
 import mvp.ljb.kt.act.BaseMvpActivity
+import java.util.concurrent.TimeUnit
 
 
 /**
@@ -41,9 +38,11 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
     companion object {
         lateinit var observer: Observer<JsonObject>
         lateinit var observers: Observer<Boolean>
+        lateinit var observerd: Observer<Int>
     }
 
 
+    private var bools: Boolean = true
     private var album_time: Long = 0
     private lateinit var names: String
     private var album_type: Int =0
@@ -53,7 +52,6 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
     private lateinit var txts: String
 
     var songlist = mutableListOf<Music>()
-
     private var type: Int = 0
     private lateinit var adapter: AlbumDetAdapter
     private lateinit var context: Context
@@ -106,12 +104,14 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
                 )
 
                 if (song.isNotEmpty()) {
+                    songlist.clear()
                     songlist = song
                     val one = mutableListOf<artistlist>()
                     val det =  Music("","",0,0,"", one,"","")
                     songlist.add(0,det)
                     initSongList(songlist)
                 }else{
+                    songlist.clear()
                     val one = mutableListOf<artistlist>()
                     val det =  Music("","",0,0,"", one,"","")
                     songlist.add(0,det)
@@ -132,6 +132,41 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
         swipe_refresh_layout.setColorSchemeColors(-0xff6634, -0xbbbc, -0x996700, -0x559934, -0x7800)
         //下拉刷新
         swipe_refresh_layout.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener { loadData() })
+
+        RxView.clicks(foods)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe {}
+
+        RxView.clicks(all)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe {
+                if(bools ){
+                    all.text = getText(R.string.song_unall)
+                    adapter.update(true)
+                    bools = false
+                }else{
+                    all.text = getText(R.string.song_all)
+                    adapter.update(false)
+                    bools = true
+                }
+
+            }
+        RxView.clicks(cencel)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe {
+                foods.visibility = View.GONE
+            }
+        RxView.clicks(down)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe {
+
+            }
+        RxView.clicks(deter)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe {
+                foods.visibility = View.GONE
+
+            }
 
        /* if(isSDcardAvailable()){
             val request =
@@ -157,15 +192,16 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
         recyc_item.itemAnimator = DefaultItemAnimator()
         recyc_item.setHasFixedSize(true)
 
-        adapter =  AlbumDetAdapter(song, context,txts,covers,names)
+        adapter =  AlbumDetAdapter(song, context,album_id,txts,covers,names)
         recyc_item.adapter = adapter
         adapter.setOnItemClickListener(object : AlbumDetAdapter.ItemClickListener {
             override fun onItemClick(view:View,position: Int) {
                 if(position>0){
+                    song.removeAt(0)
                     val json: String = Gson().toJson(song)
                     val intent = Intent()
                     intent.setClass(context, MusicPlayActivity().javaClass)
-                    intent.putExtra("pos",position)
+                    intent.putExtra("pos",position-1)
                     intent.putExtra("list",json)
                     startActivity(intent)
                 }
@@ -186,6 +222,23 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
             override fun onNext(data: Boolean) {
                 if(data){
                     finish()
+                }
+
+            }
+            override fun onError(e: Throwable) {}
+            override fun onComplete() {
+            }
+
+        }
+
+       observerd = object : Observer<Int> {
+            override fun onSubscribe(d: Disposable) {}
+            @SuppressLint("CheckResult")
+            override fun onNext(data: Int) {
+                if(data == 1){
+                    foods.visibility = View.VISIBLE
+                }else{
+                    foods.visibility = View.GONE
                 }
 
             }

@@ -50,51 +50,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ima" />
 
-    <EditText
-        android:id="@+id/gender"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/name"
-        android:layout_alignEnd="@+id/name"
-        android:layout_marginTop="@dimen/dp_20"
-        android:hint="@string/user_gra"
-        android:inputType="text"
-        android:textColor="@color/white"
-        android:textColorHint="@color/gray"
-        android:textSize="@dimen/sp_18"
-        app:layout_constraintEnd_toEndOf="@+id/name"
-        app:layout_constraintStart_toStartOf="@+id/name"
-        app:layout_constraintTop_toBottomOf="@+id/name" />
-
-    <EditText
-        android:id="@+id/city"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/gender"
-        android:layout_alignEnd="@+id/gender"
-        android:layout_marginTop="@dimen/dp_20"
-        android:hint="@string/user_city"
-        android:inputType="text"
-        android:textColor="@color/white"
-        android:textColorHint="@color/gray"
-        android:textSize="@dimen/sp_18"
-        app:layout_constraintEnd_toEndOf="@+id/gender"
-        app:layout_constraintStart_toStartOf="@+id/gender"
-        app:layout_constraintTop_toBottomOf="@+id/gender" />
 
     <com.xuexiang.xui.widget.button.roundbutton.RoundButton
         android:id="@+id/btn_edit"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_50"
         android:layout_marginStart="@dimen/dp_40"
-        android:layout_marginTop="@dimen/dp_100"
         android:layout_marginEnd="@dimen/dp_40"
+        android:layout_marginBottom="@dimen/dp_60"
         android:text="@string/user_save"
         android:textColor="@color/white_pressed"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/city"
         app:rb_backgroundColor="@color/app_blue"
         app:rb_borderColor="@color/app_blue"
         app:rb_isRadiusAdjustBounds="true" />

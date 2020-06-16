@@ -15,6 +15,8 @@ import com.example.music.bean.Music
 class PlayListAdapter  (val datas: MutableList<Music>, val context: Context) : RecyclerView.Adapter<PlayListAdapter.InnerHolder>() {
 
 
+    private var mItemClickListener: ItemClickListener? = null
+
 
     /**
      * 相当于getView()
@@ -44,6 +46,9 @@ class PlayListAdapter  (val datas: MutableList<Music>, val context: Context) : R
      */
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: InnerHolder, position: Int) {
+        holder.itemView.setOnClickListener { v ->
+            mItemClickListener?.onItemClick(v,position)
+        }
         Glide.with(context).load(R.drawable.del_black).into(holder.more)
         holder.title.text = datas[position].name
         val artist =  datas[position].all_artist
@@ -59,6 +64,12 @@ class PlayListAdapter  (val datas: MutableList<Music>, val context: Context) : R
         holder.txt.text =  srtist_name
 
     }
+    interface ItemClickListener {
+        fun onItemClick(view:View,position: Int)
+    }
 
+    fun setOnItemClickListener(itemClickListener: ItemClickListener) {
+        this.mItemClickListener = itemClickListener
+    }
 
 }

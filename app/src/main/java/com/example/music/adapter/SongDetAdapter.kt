@@ -85,7 +85,7 @@ class SongDetAdapter  (val datas: MutableList<Music>, val context: Context,
         if (position < datas.size) {
             when (getItemViewType(position)) {
                 TYPE_TITLE -> (holder as TitleHolder).bindData()
-                TYPE_SELLER -> (holder as SellerHolder).bindData(position-1)
+                TYPE_SELLER -> (holder as SellerHolder).bindData(position)
             }
 
         }
@@ -98,7 +98,7 @@ class SongDetAdapter  (val datas: MutableList<Music>, val context: Context,
         var top_flot: ImageView
         var title: TextView
         var top_set: ImageView
-        var floatingActionButton: FloatingActionButton
+
 
         init {
             iv_cover = itemView.findViewById(R.id.iv_cover)
@@ -106,7 +106,7 @@ class SongDetAdapter  (val datas: MutableList<Music>, val context: Context,
             top_flot = itemView.findViewById(R.id.top_flot)
             title = itemView.findViewById(R.id.title)
             top_set = itemView.findViewById(R.id.top_set)
-            floatingActionButton = itemView.findViewById(R.id.floatingActionButton)
+
         }
 
         fun dip2px(context: Context, dpValue: Int): Float {
@@ -127,7 +127,6 @@ class SongDetAdapter  (val datas: MutableList<Music>, val context: Context,
             title.text = names
             txt.text = num+"首"
             Glide.with(context).load(R.drawable.mores).placeholder(R.color.main_black_grey).into(top_set)
-            floatingActionButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#06b7ff"))
             RxView.clicks(top_flot)
                 .throttleFirst(1, TimeUnit.SECONDS)
                 .subscribe {
@@ -140,9 +139,11 @@ class SongDetAdapter  (val datas: MutableList<Music>, val context: Context,
                     if (type == 0) {
                         type = 1
                         notifyDataSetChanged()
+                        Observable.just(1).subscribe(SongDetActivity.observerd)
                     } else {
                         type = 0
                         notifyDataSetChanged()
+                        Observable.just(0).subscribe(SongDetActivity.observerd)
                     }
 
                 }
@@ -193,7 +194,7 @@ class SongDetAdapter  (val datas: MutableList<Music>, val context: Context,
             if(type==0){
                 num.visibility = View.VISIBLE
                 radio.visibility = View.GONE
-                num.text = (position+1).toString()
+                num.text = (position).toString()
             }else{
                 num.visibility = View.GONE
                 radio.visibility = View.VISIBLE
@@ -223,7 +224,6 @@ class SongDetAdapter  (val datas: MutableList<Music>, val context: Context,
             }
         }
     }
-
 
     interface ItemClickListener {
         fun onItemClick(view:View,position: Int)

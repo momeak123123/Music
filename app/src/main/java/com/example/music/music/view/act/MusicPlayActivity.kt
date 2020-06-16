@@ -17,11 +17,11 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.example.music.R
+import com.example.music.adapter.ArtistListAdapter
 import com.example.music.adapter.PlayListAdapter
 import com.example.music.adapter.PlaySongAdapter
 import com.example.music.adapter.ViewPagerAdapter
 import com.example.music.bean.Music
-import com.example.music.config.ItemClickListener
 import com.example.music.music.model.MusicPlayModel
 import com.example.music.music.view.fragment.CoverFragment
 import com.example.music.music.view.fragment.LyricFragment
@@ -52,14 +52,18 @@ class MusicPlayActivity : AppCompatActivity() {
     companion object {
         var position: Int = 0
         var id: Int = 0
+        var album_id: Long = 0
+        var song_id: Long = 0
         lateinit var wlMusic: WlMusic
         lateinit var observer: Observer<String>
         lateinit var observers: Observer<Long>
+        lateinit var observerplay: Observer<MutableList<Music>>
+        lateinit var observerset: Observer<Int>
     }
+
 
     private lateinit var adapter: PlaySongAdapter
     private var type: Int = 0
-    var song_id: Long = 0
     lateinit var mDisposable: Disposable
     var max: Long = 0
     private var bool: Boolean = false
@@ -116,18 +120,17 @@ class MusicPlayActivity : AppCompatActivity() {
         RxView.clicks(icon1)
             .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
-                if(type<2){
+                if(type<3){
                     type++
                     if(type==1){
-                        Glide.with(context).load(R.drawable.dan).placeholder(R.color.main_black_grey).into(icon1)
+                        Glide.with(context).load(R.drawable.sui).into(icon1)
                     }else{
-                        Glide.with(context).load(R.drawable.sui).placeholder(R.color.main_black_grey).into(icon1)
+                        Glide.with(context).load(R.drawable.xun).into(icon1)
                     }
 
                 }else{
                     type=0
-                    Glide.with(context).load(R.drawable.xun).placeholder(R.color.main_black_grey)
-                        .into(icon1)
+                    Glide.with(context).load(R.drawable.dan).into(icon1)
                 }
 
             }
@@ -165,6 +168,16 @@ class MusicPlayActivity : AppCompatActivity() {
             }
 
 
+        RxView.clicks(pre)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe {
+                Observable.just(1).subscribe(observerset)
+            }
+        RxView.clicks(next)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe {
+                Observable.just(2).subscribe(observerset)
+            }
     }
 
     fun initData() {
@@ -181,6 +194,7 @@ class MusicPlayActivity : AppCompatActivity() {
         if (song.isNotEmpty()) {
             id = pos
             song_id = song[pos].song_id
+            album_id = song[pos].album_id
             playingMusicList = song
             playingMusic = song[pos]
             start(playingMusic!!)
@@ -206,6 +220,7 @@ class MusicPlayActivity : AppCompatActivity() {
                 } else {
                     id = pos
                     song_id = song[pos].song_id
+                    album_id = song[pos].album_id
                     playingMusicList = song
                     playingMusic = song[pos]
                     starts(playingMusic!!)
@@ -247,6 +262,55 @@ class MusicPlayActivity : AppCompatActivity() {
             override fun onComplete() {}
 
         }
+
+        observerplay = object : Observer<MutableList<Music>> {
+            override fun onSubscribe(d: Disposable) {}
+            override fun onNext(song: MutableList<Music>) {
+
+                if (song.isNotEmpty()) {
+                    id = 0
+                    song_id = song[0].song_id
+                    playingMusicList = song
+                    playingMusic = song[0]
+                    start(playingMusic!!)
+                }
+
+            }
+
+            override fun onError(e: Throwable) {}
+            override fun onComplete() {}
+
+        }
+
+        observerset = object : Observer<Int> {
+            override fun onSubscribe(d: Disposable) {}
+            override fun onNext(data: Int) {
+                when (data) {
+                    0 -> {
+                        if (playPauseIv.isPlaying) {
+                            playPauseIv.pause()
+                            wlMusic.pause()
+                            mDisposable.dispose()
+                            coverFragment.stopRotateAnimation()
+                        }
+                    }
+                    1 -> {
+                        type = 3
+                        playtype()
+                    }
+                    2 -> {
+                        type = 2
+                        playtype()
+
+                    }
+                }
+
+            }
+
+            override fun onError(e: Throwable) {}
+            override fun onComplete() {}
+
+        }
     }
 
     /**
@@ -257,18 +321,13 @@ class MusicPlayActivity : AppCompatActivity() {
         in_list.itemAnimator = DefaultItemAnimator()
         val adapter = playingMusicList?.let { PlayListAdapter(it, context) }
         in_list.adapter = adapter
-        in_list.addOnItemTouchListener(
-            ItemClickListener(context,
-                object : ItemClickListener.OnItemClickListener {
-                    override fun onItemClick(view: View?, position: Int) {
-                        starts(playingMusicList!![position])
-                    }
+        adapter!!.setOnItemClickListener(object : PlayListAdapter.ItemClickListener {
+            override fun onItemClick(view:View,position: Int) {
+                starts(playingMusicList!![position])
 
-                    override fun onItemLongClick(view: View?, position: Int) {
+            }
+        })
 
-                    }
-                })
-        )
     }
 
     /**
@@ -279,29 +338,23 @@ class MusicPlayActivity : AppCompatActivity() {
         in_list.itemAnimator = DefaultItemAnimator()
          adapter = PlaySongAdapter(song, context)
         in_list.adapter = adapter
-        in_list.addOnItemTouchListener(
-            ItemClickListener(context,
-                object : ItemClickListener.OnItemClickListener {
-                    override fun onItemClick(view: View?, position: Int) {
-                        pos = position
-                        MaterialDialog.Builder(context)
-                            .title("添加音乐")
-                            .content("是否将音乐加入此歌单")
-                            .positiveText("确认")
-                            .negativeText("取消")
-                            .onPositive { _: MaterialDialog?, _: DialogAction? ->
-                                val idmap : LongArray = longArrayOf(song_id)
-                                MusicPlayModel.addSong(context,idmap,song[position].play_list_id)
-
-                            }
-                            .show()
-                    }
-
-                    override fun onItemLongClick(view: View?, position: Int) {
+        adapter.setOnItemClickListener(object : PlaySongAdapter.ItemClickListener {
+            override fun onItemClick(view:View,position: Int) {
+                pos = position
+                MaterialDialog.Builder(context)
+                    .title("添加音乐")
+                    .content("是否将音乐加入此歌单")
+                    .positiveText("确认")
+                    .negativeText("取消")
+                    .onPositive { _: MaterialDialog?, _: DialogAction? ->
+                        val idmap : LongArray = longArrayOf(song_id)
+                        MusicPlayModel.addSong(context,idmap,song[position].play_list_id)
 
                     }
-                })
-        )
+                    .show()
+
+            }
+        })
     }
 
     private fun start(music: Music) {
@@ -463,17 +516,17 @@ class MusicPlayActivity : AppCompatActivity() {
 
     fun playtype() {
         when (type) {
-            1 -> {
+            0 -> {
                 //单曲循环
                 starts(playingMusic!!)
             }
-            2 -> {
+            1 -> {
                 //随机播放
                 val randoms = (0 until playingMusicList!!.size).random()
                 id = randoms
                 starts(playingMusicList!![randoms])
             }
-            else -> {
+            2 -> {
                 //列表循环
                 val ids = id + 1
                 if (playingMusicList!!.size == ids) {
@@ -483,6 +536,24 @@ class MusicPlayActivity : AppCompatActivity() {
                     id = ids
                     starts(playingMusicList!![ids])
                 }
+            }
+            3 -> {
+                //列表循环
+                if(id>0){
+                    val ids = id - 1
+                    if (playingMusicList!!.size == ids) {
+                        id = 0
+                        starts(playingMusicList!![0])
+                    } else {
+                        id = ids
+                        starts(playingMusicList!![ids])
+                    }
+                }else{
+                    val ids = playingMusicList!!.size
+                    id = ids
+                    starts(playingMusicList!![ids])
+                }
+
             }
         }
     }

@@ -9,44 +9,28 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
-import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.Toolbar;
 
 import com.example.music.adapter.ViewPagerAdapter;
-import com.example.music.common.Constants;
 import com.example.music.config.MainModel;
-import com.example.music.music.model.FindModel;
-import com.example.music.music.view.act.LoginActivity;
-import com.example.music.music.view.act.MusicPlayActivity;
-import com.example.music.music.view.act.SearchActivity;
 import com.example.music.music.view.act.StartPageActivity;
 import com.example.music.music.view.fragment.FindFragment;
 import com.example.music.music.view.fragment.HomeFragment;
 import com.example.music.music.view.fragment.MyFragment;
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.jpeng.jptabbar.BadgeDismissListener;
 import com.jpeng.jptabbar.JPTabBar;
 import com.jpeng.jptabbar.OnTabSelectListener;
-import com.lzy.okgo.OkGo;
 import com.xuexiang.xui.widget.edittext.materialedittext.MaterialEditText;
 
 import java.util.ArrayList;
@@ -91,6 +75,7 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
     private static MaterialEditText et_name;
     private static TextView in_cancel;
     private static TextView in_deter;
+    private int indexs = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,17 +94,11 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
         if(bool){
             Intent intent = new Intent(MainActivity.this, StartPageActivity.class);
             startActivity(intent);
-        }else{
-            SharedPreferences sp = this.getSharedPreferences("User", Context.MODE_PRIVATE);
-            String slogin = sp.getString("user_id", "");
-            if (slogin.equals("")) {
-                Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                startActivity(intent);
-            }
-
         }
+
         initView();
         craet(false);
+        MainModel.Companion.homedata(this);
     }
 
     @SuppressLint("CheckResult")
@@ -128,20 +107,20 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
                 .throttleFirst(1, TimeUnit.SECONDS)
                 .subscribe(o -> {
                     if(et_name.isNotEmpty()){
-                        MainModel.adddata(this,et_name.getEditValue());
+                        MainModel.Companion.addsonglist(this,et_name.getEditValue());
                         et_name.clear();
                         craet(false);
                     }else{
                         Toast.makeText(this, R.string.song_error_name, Toast.LENGTH_LONG).show();
                     }
-
-
                 });
         RxView.clicks(in_cancel)
                 .throttleFirst(1, TimeUnit.SECONDS)
                 .subscribe(o -> {
                     craet(false);
                 });
+
+
 
     }
 
@@ -181,6 +160,7 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
 
     @Override
     public boolean onInterruptSelect(int index) {
+        indexs = index;
 //        if(index==2){
 //            //如果这里有需要阻止Tab被选中的话,可以return true
 //            return true;
@@ -209,7 +189,7 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
     @Override
     public void onResume() {
         super.onResume();
-
+        viewPager.setCurrentItem(indexs);
         if (isNeedCheck) {
             checkPermissions(needPermissions);
         }

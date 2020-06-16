@@ -3,6 +3,8 @@ package com.example.music;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
+import android.widget.Toast;
+
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheEntity;
 import com.lzy.okgo.cache.CacheMode;
@@ -37,10 +39,11 @@ public class MusicApp extends Application {
         XUI.debug(false);  //开启UI框架调试日志
         OkGo.getInstance().init(this);//网络请求
         initOkGo();
+        // 捕捉RxJava全局异常
         RxJavaPlugins.setErrorHandler(new Consumer<Throwable>() {
             @Override
             public void accept(Throwable throwable) throws Exception {
-                throwable.printStackTrace();//这里处理所有的Rxjava异常
+                System.out.println("异常处理"+throwable.getMessage());
             }
         });
     }

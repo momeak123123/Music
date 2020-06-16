@@ -50,6 +50,7 @@
         <activity android:name=".music.view.act.ArtistDetActivity" />
         <activity android:name=".music.view.act.UserEditActivity" />
         <activity android:name=".music.view.act.SongDetActivity" />
+        <activity android:name=".music.view.act.SongEditActivity" />
     </application>
 
 </manifest>

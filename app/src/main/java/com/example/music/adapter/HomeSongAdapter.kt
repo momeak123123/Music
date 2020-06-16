@@ -14,6 +14,8 @@ import com.example.music.bean.Music
 
 class HomeSongAdapter (val datas: List<Music>, val context: Context) : RecyclerView.Adapter<HomeSongAdapter.InnerHolder>() {
 
+    private var mItemClickListener: ItemClickListener? = null
+
 
     /**
      * 相当于getView()
@@ -43,7 +45,9 @@ class HomeSongAdapter (val datas: List<Music>, val context: Context) : RecyclerV
      */
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: InnerHolder, position: Int) {
-
+        holder.itemView.setOnClickListener { v ->
+            mItemClickListener?.onItemClick(v,position)
+        }
         Glide.with(context).load(datas[position].pic_url).placeholder(R.color.main_black_grey).into(holder.iv_cover)
         holder.title.text = datas[position].name
         val artist =  datas[position].all_artist
@@ -62,5 +66,12 @@ class HomeSongAdapter (val datas: List<Music>, val context: Context) : RecyclerV
         }
     }
 
+    interface ItemClickListener {
+        fun onItemClick(view:View,position: Int)
+    }
+
+    fun setOnItemClickListener(itemClickListener: ItemClickListener) {
+        this.mItemClickListener = itemClickListener
+    }
 
 }

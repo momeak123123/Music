@@ -75,38 +75,13 @@
             android:layout_weight="1"
             android:src="@drawable/shang" />
 
-        <FrameLayout
-            android:id="@+id/playlayout"
-            android:layout_width="wrap_content"
+        <ImageView
+            android:id="@+id/play"
+            android:layout_width="@dimen/dp_50"
             android:layout_height="@dimen/dp_50"
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
-            android:gravity="center">
-
-            <com.example.music.music.view.custom.PlayPauseView
-                android:id="@+id/playPauseIv"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_margin="@dimen/dp_2"
-                android:background="?android:attr/selectableItemBackgroundBorderless"
-                android:elevation="@dimen/dp_10"
-                android:scaleType="fitXY"
-                app:anim_duration="300"
-                app:loadingColor="@color/colorAccent"
-                app:bg_color="@color/colorPrimary"
-                app:btn_color="@color/colorAccent"
-                app:elevation="10dp" />
-
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/floatingActionButton"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:backgroundTint="@color/colorAccent"
-                android:layout_margin="0dp" />
-
-        </FrameLayout>
+            android:src="@drawable/play" />
 
         <ImageView
             android:id="@+id/next"

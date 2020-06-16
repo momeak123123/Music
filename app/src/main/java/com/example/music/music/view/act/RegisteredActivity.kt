@@ -59,13 +59,13 @@ class RegisteredActivity : BaseMvpActivity<RegisteredContract.IPresenter>(),
     override fun initView() {
         super.initView()
         RxView.clicks(register_flot)
-            .throttleFirst(1, TimeUnit.SECONDS)
+            .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
                 finish()
             }
 
         RxView.clicks(btn_captcha)
-            .throttleFirst(1, TimeUnit.SECONDS)
+            .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
                 if (re_username_number.text.toString() != "") {
                     getPresenter().registercode(context,re_username_number.text.toString())
@@ -75,7 +75,7 @@ class RegisteredActivity : BaseMvpActivity<RegisteredContract.IPresenter>(),
             }
 
         RxView.clicks(btn_register)
-            .throttleFirst(1, TimeUnit.SECONDS)
+            .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
                 if (re_username_number.text.toString() != "") {
                     if(isEmail(re_username_number.text.toString())){

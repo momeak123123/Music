@@ -16,9 +16,11 @@ interface SongDetContract {
 
     interface IPresenter : IPresenterContract {
         fun listdata(context: Context, id: Long)
+        fun deldata(context: Context, ids: Long,playids: Long)
     }
 
     interface IModel : IModelContract{
         fun listdata(context: Context,id: Long)
+        fun deldata(context: Context, ids: Long,playids: Long)
     }
 }

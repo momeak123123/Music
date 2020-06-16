@@ -7,6 +7,7 @@ import com.example.music.bean.*
 import com.example.music.common.Constants
 import com.example.music.music.contract.StartPageContract
 import com.example.music.music.view.act.StartPageActivity
+import com.example.music.music.view.fragment.HomeFragment
 import com.google.gson.Gson
 import com.lzy.okgo.OkGo
 import com.lzy.okgo.callback.StringCallback
@@ -36,6 +37,10 @@ class StartPageModel : BaseModel(), StartPageContract.IModel {
                             Gson().fromJson(response.body(), ResultBean::class.javaObjectType)
                         if (bean.code == 200) {
 
+                            val ads: List<Banner> = Gson().fromJson<Array<Banner>>(
+                                bean.data.getAsJsonArray("ads"),
+                                Array<Banner>::class.java
+                            ).toList()
                             val album: List<Album> = Gson().fromJson<Array<Album>>(
                                 bean.data.getAsJsonArray("album_list"),
                                 Array<Album>::class.java
@@ -52,6 +57,7 @@ class StartPageModel : BaseModel(), StartPageContract.IModel {
                                 bean.data.getAsJsonArray("top_list"),
                                 Array<TopList>::class.java
                             ).toList()
+                            val str = Gson().toJson(ads)
                             val str1 = Gson().toJson(album)
                             val str2 = Gson().toJson(artist)
                             val str3 = Gson().toJson(song)
@@ -60,6 +66,7 @@ class StartPageModel : BaseModel(), StartPageContract.IModel {
                             val sp: SharedPreferences =
                                 context.getSharedPreferences("Music", Context.MODE_PRIVATE)
 
+                            sp.edit().putString("ads", str).apply()
                             sp.edit().putString("album", str1).apply()
                             sp.edit().putString("artist", str2).apply()
                             sp.edit().putString("song", str3).apply()
@@ -73,11 +80,7 @@ class StartPageModel : BaseModel(), StartPageContract.IModel {
                             ).show()
                         }
                     } catch (e: Exception) {
-                        Toast.makeText(
-                            context,
-                            "程序出现了未知异常",
-                            Toast.LENGTH_LONG
-                        ).show()
+
                     }
                 }
             })

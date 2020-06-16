@@ -9,20 +9,22 @@ import android.text.style.AbsoluteSizeSpan
 import android.text.style.ForegroundColorSpan
 import android.view.Gravity
 import android.view.View
-import android.widget.ImageView
 import android.widget.SearchView
 import android.widget.TextView
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.music.R
+import com.example.music.adapter.PlaySongAdapter
 import com.example.music.adapter.SearchAdapter
-import com.example.music.config.ItemClickListener
 import com.example.music.music.contract.SearchContract
+import com.example.music.music.model.MusicPlayModel
 import com.example.music.music.presenter.SearchPresenter
 import com.example.music.sql.bean.Search
 import com.example.music.sql.config.Initialization
 import com.example.music.sql.dao.mSearchDao
 import com.jakewharton.rxbinding2.view.RxView
+import com.xuexiang.xui.widget.dialog.materialdialog.DialogAction
+import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
 import kotlinx.android.synthetic.main.search.*
 import mvp.ljb.kt.act.BaseMvpActivity
 import java.util.concurrent.TimeUnit
@@ -148,17 +150,11 @@ class SearchActivity : BaseMvpActivity<SearchContract.IPresenter>() , SearchCont
 
         adapter = SearchAdapter(datas,this)
         recyclerView3.adapter = adapter
-        recyclerView3.addOnItemTouchListener(
-            ItemClickListener(this,
-                object : ItemClickListener.OnItemClickListener {
-                    override fun onItemClick(view: View?, position: Int) {
+        adapter.setOnItemClickListener(object : SearchAdapter.ItemClickListener {
+            override fun onItemClick(view:View,position: Int) {
 
-                    }
 
-                    override fun onItemLongClick(view: View?, position: Int) {
-
-                    }
-                })
-        )
+            }
+        })
     }
 }

@@ -28,7 +28,7 @@ class ArtistDetAdapter  (val datas: List<Album>, val context: Context, val name 
     }
 
     var type = 0
-
+    private var mItemClickListener: ItemClickListener? = null
     var listdet = mutableListOf<SongDet>()
 
     override fun getItemViewType(position: Int): Int {
@@ -130,10 +130,21 @@ class ArtistDetAdapter  (val datas: List<Album>, val context: Context, val name 
         }
 
         fun bindData(position: Int) {
+            itemView.setOnClickListener { v ->
+                mItemClickListener?.onItemClick(v,position)
+            }
             Glide.with(context).load(datas[position].pic_url).placeholder(R.color.main_black_grey)
                 .into(iv_cover)
             title.text = datas[position].name
             txt.text =  datas[position].info
         }
+    }
+
+    interface ItemClickListener {
+        fun onItemClick(view:View,position: Int)
+    }
+
+    fun setOnItemClickListener(itemClickListener: ItemClickListener) {
+        this.mItemClickListener = itemClickListener
     }
 }

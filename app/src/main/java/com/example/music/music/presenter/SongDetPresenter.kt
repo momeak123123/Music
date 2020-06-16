@@ -17,4 +17,8 @@ class SongDetPresenter : BaseMvpPresenter<SongDetContract.IView, SongDetContract
         getModel().listdata(context,id)
     }
 
+    override fun deldata(context: Context, ids: Long,playids: Long) {
+        getModel().deldata(context,ids,playids)
+    }
+
 }

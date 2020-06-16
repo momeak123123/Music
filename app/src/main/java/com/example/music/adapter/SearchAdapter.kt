@@ -16,6 +16,14 @@ import com.example.music.sql.dao.mSearchDao
 class SearchAdapter  (val datas: MutableList<Search>, val context: Context) : RecyclerView.Adapter<SearchAdapter.InnerHolder>() {
 
 
+    private var mItemClickListener: ItemClickListener? = null
+    interface ItemClickListener {
+        fun onItemClick(view:View,position: Int)
+    }
+
+    fun setOnItemClickListener(itemClickListener: ItemClickListener) {
+        this.mItemClickListener = itemClickListener
+    }
 
     /**
      * 相当于getView()
@@ -43,6 +51,9 @@ class SearchAdapter  (val datas: MutableList<Search>, val context: Context) : Re
      * 绑定数据，View和数据绑定
      */
     override fun onBindViewHolder(holder: InnerHolder, position: Int) {
+        holder.itemView.setOnClickListener { v ->
+            mItemClickListener?.onItemClick(v,position)
+        }
         holder.txt.text = datas[position].txt
 
         holder.del.setOnClickListener {
