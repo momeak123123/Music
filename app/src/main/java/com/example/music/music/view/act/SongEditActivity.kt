@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Bundle
 import android.text.Editable
 import android.widget.Toast
+import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.music.contract.SongEditContract
 import com.example.music.music.presenter.SongEditPresenter
@@ -21,6 +22,7 @@ import java.util.concurrent.TimeUnit
  **/
 class SongEditActivity : BaseMvpActivity<SongEditContract.IPresenter>() , SongEditContract.IView {
 
+    private var playid: Long = 0
     private lateinit var context: Context
 
     override fun registerPresenter() = SongEditPresenter::class.java
@@ -49,7 +51,11 @@ class SongEditActivity : BaseMvpActivity<SongEditContract.IPresenter>() , SongEd
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
                 if (name.text.toString() != "") {
-
+                    getPresenter().registerdata(
+                        context,
+                        name.text.toString(),
+                        playid
+                    )
                 } else {
                     Toast.makeText(context, R.string.song_error_name, Toast.LENGTH_SHORT).show()
                 }
@@ -58,7 +64,12 @@ class SongEditActivity : BaseMvpActivity<SongEditContract.IPresenter>() , SongEd
 
     override fun initData() {
         super.initData()
-
+        val bundle = intent.extras
+        val urls = bundle?.get("url") as String
+        val names = bundle.get("name") as String
+        playid =  bundle.get("playid") as Long
+        Glide.with(context).load(urls).placeholder(R.color.main_black_grey).into(ima)
+        name.text = Editable.Factory.getInstance().newEditable(names)
     }
 
     override fun onResume() {

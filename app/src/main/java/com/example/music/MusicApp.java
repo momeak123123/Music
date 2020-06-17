@@ -29,6 +29,18 @@ public class MusicApp extends Application {
     @SuppressLint("StaticFieldLeak")
     public static Context mContext;
 
+
+    public static Long ablumid = 0L;
+
+
+    public static Long getAblumid() {
+        return ablumid;
+    }
+
+    public static void setAblumid(Long ablumid) {
+        MusicApp.ablumid = ablumid;
+    }
+
     @Override
     public void onCreate() {
         // TODO Auto-generated method stub

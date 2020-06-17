@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.example.music.MusicApp
 import com.example.music.R
 import com.example.music.adapter.ArtistListAdapter
 import com.example.music.adapter.PlayListAdapter
@@ -52,7 +53,6 @@ class MusicPlayActivity : AppCompatActivity() {
     companion object {
         var position: Int = 0
         var id: Int = 0
-        var album_id: Long = 0
         var song_id: Long = 0
         lateinit var wlMusic: WlMusic
         lateinit var observer: Observer<String>
@@ -86,7 +86,8 @@ class MusicPlayActivity : AppCompatActivity() {
         fragments.add(coverFragment)
         fragments.add(lyricFragment)
         viewPager.adapter = ViewPagerAdapter(supportFragmentManager, fragments)
-        floatingActionButton.backgroundTintList = ColorStateList.valueOf(Color.parseColor("#06b7ff"));
+        floatingActionButton.backgroundTintList =
+            ColorStateList.valueOf(Color.parseColor("#06b7ff"));
         initView()
         initData()
     }
@@ -95,7 +96,7 @@ class MusicPlayActivity : AppCompatActivity() {
     @SuppressLint("CheckResult")
     private fun initView() {
         playPauseIv.setOnClickListener {
-            if(bool){
+            if (bool) {
                 if (playPauseIv.isPlaying) {
                     playPauseIv.pause()
                     wlMusic.pause()
@@ -120,16 +121,16 @@ class MusicPlayActivity : AppCompatActivity() {
         RxView.clicks(icon1)
             .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
-                if(type<3){
+                if (type < 3) {
                     type++
-                    if(type==1){
+                    if (type == 1) {
                         Glide.with(context).load(R.drawable.sui).into(icon1)
-                    }else{
+                    } else {
                         Glide.with(context).load(R.drawable.xun).into(icon1)
                     }
 
-                }else{
-                    type=0
+                } else {
+                    type = 0
                     Glide.with(context).load(R.drawable.dan).into(icon1)
                 }
 
@@ -147,7 +148,7 @@ class MusicPlayActivity : AppCompatActivity() {
                 in_indel.visibility = View.VISIBLE
                 Glide.with(context).load("").into(del)
                 in_title.text = getText(R.string.song_but)
-                val list: MutableList<Playlist> =  mPlaylistDao.queryAll()
+                val list: MutableList<Playlist> = mPlaylistDao.queryAll()
                 initSongList(list)
             }
 
@@ -194,7 +195,7 @@ class MusicPlayActivity : AppCompatActivity() {
         if (song.isNotEmpty()) {
             id = pos
             song_id = song[pos].song_id
-            album_id = song[pos].album_id
+            MusicApp.setAblumid(song[pos].album_id)
             playingMusicList = song
             playingMusic = song[pos]
             start(playingMusic!!)
@@ -220,7 +221,7 @@ class MusicPlayActivity : AppCompatActivity() {
                 } else {
                     id = pos
                     song_id = song[pos].song_id
-                    album_id = song[pos].album_id
+                    MusicApp.setAblumid(song[pos].album_id)
                     playingMusicList = song
                     playingMusic = song[pos]
                     starts(playingMusic!!)
@@ -239,7 +240,7 @@ class MusicPlayActivity : AppCompatActivity() {
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(num: String) {
 
-                adapter.update(pos,num)
+                adapter.update(pos, num)
 
             }
 
@@ -322,7 +323,7 @@ class MusicPlayActivity : AppCompatActivity() {
         val adapter = playingMusicList?.let { PlayListAdapter(it, context) }
         in_list.adapter = adapter
         adapter!!.setOnItemClickListener(object : PlayListAdapter.ItemClickListener {
-            override fun onItemClick(view:View,position: Int) {
+            override fun onItemClick(view: View, position: Int) {
                 starts(playingMusicList!![position])
 
             }
@@ -336,10 +337,10 @@ class MusicPlayActivity : AppCompatActivity() {
     private fun initSongList(song: MutableList<Playlist>) {
         in_list.layoutManager = LinearLayoutManager(context)
         in_list.itemAnimator = DefaultItemAnimator()
-         adapter = PlaySongAdapter(song, context)
+        adapter = PlaySongAdapter(song, context)
         in_list.adapter = adapter
         adapter.setOnItemClickListener(object : PlaySongAdapter.ItemClickListener {
-            override fun onItemClick(view:View,position: Int) {
+            override fun onItemClick(view: View, position: Int) {
                 pos = position
                 MaterialDialog.Builder(context)
                     .title("添加音乐")
@@ -347,8 +348,8 @@ class MusicPlayActivity : AppCompatActivity() {
                     .positiveText("确认")
                     .negativeText("取消")
                     .onPositive { _: MaterialDialog?, _: DialogAction? ->
-                        val idmap : LongArray = longArrayOf(song_id)
-                        MusicPlayModel.addSong(context,idmap,song[position].play_list_id)
+                        val idmap: LongArray = longArrayOf(song_id)
+                        MusicPlayModel.addSong(context, idmap, song[position].play_list_id)
 
                     }
                     .show()
@@ -480,7 +481,7 @@ class MusicPlayActivity : AppCompatActivity() {
             }
 
             override fun onStopTrackingTouch(seekBar: SeekBar) {
-                wlMusic.seek(position , true, true) //表示seek已经完成，然后才回调时间，避免自己控制时间逻辑和时间显示不稳定问题。
+                wlMusic.seek(position, true, true) //表示seek已经完成，然后才回调时间，避免自己控制时间逻辑和时间显示不稳定问题。
                 Observable.just(position.toLong()).subscribe(observers)
             }
         })
@@ -496,7 +497,7 @@ class MusicPlayActivity : AppCompatActivity() {
                 val ms = t % 60
                 progressTv.text = unitFormat(fs.toInt()) + ":" + unitFormat(ms.toInt())
                 progressSb.progress = t.toInt()
-                lrcView.updateTime(t*1000)
+                lrcView.updateTime(t * 1000)
             }
             .doOnComplete {
                 playPauseIv.pause()
@@ -539,16 +540,11 @@ class MusicPlayActivity : AppCompatActivity() {
             }
             3 -> {
                 //列表循环
-                if(id>0){
+                if (id > 0) {
                     val ids = id - 1
-                    if (playingMusicList!!.size == ids) {
-                        id = 0
-                        starts(playingMusicList!![0])
-                    } else {
-                        id = ids
-                        starts(playingMusicList!![ids])
-                    }
-                }else{
+                    id = ids
+                    starts(playingMusicList!![ids])
+                } else {
                     val ids = playingMusicList!!.size
                     id = ids
                     starts(playingMusicList!![ids])

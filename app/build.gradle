@@ -11,8 +11,8 @@ android {
         applicationId "com.example.music"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 13
-        versionName "0.1.3"
+        versionCode 14
+        versionName "0.1.4"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
@@ -93,7 +93,7 @@ dependencies {
 }
 
 greendao {
-    schemaVersion 4
+    schemaVersion 5
     daoPackage 'com.example.music.sql.gen'
     targetGenDir 'src/main/java'
 }

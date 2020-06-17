@@ -37,15 +37,12 @@ class UserEditModel : BaseModel(), UserEditContract.IModel{
                      */
                     val bean =
                         Gson().fromJson(response.body(), ResultBeans::class.javaObjectType)
-                    if (bean.code == 200) {
 
-                    } else {
                         Toast.makeText(
                             context,
                             bean.msg,
                             Toast.LENGTH_SHORT
                         ).show()
-                    }
                 }
             })
     }

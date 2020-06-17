@@ -103,6 +103,9 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>() , SongDetC
                 set.visibility = View.GONE
                 val intent = Intent()
                 intent.setClass(context as SongDetActivity, SongEditActivity().javaClass)
+                intent.putExtra("url",imaurl)
+                intent.putExtra("name",names)
+                intent.putExtra("playid",playids)
                 startActivity(intent)
             }
         RxView.clicks(relat2)

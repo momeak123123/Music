@@ -11,6 +11,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.music.MusicApp
 import com.example.music.R
 import com.example.music.bean.Music
 import com.example.music.bean.SongDet
@@ -56,9 +57,7 @@ class AlbumDetAdapter(
      * 相当于getView()
      */
     override fun onCreateViewHolder(holder: ViewGroup, position: Int): RecyclerView.ViewHolder {
-        for (it in datas) {
-            listdet.add(SongDet(it, 0))
-        }
+
         //加载View
         return when (position) {
             TYPE_TITLE -> TitleHolder(
@@ -130,7 +129,7 @@ class AlbumDetAdapter(
             top_title.text = names
             Glide.with(context).load(R.drawable.mores).into(top_set)
             Glide.with(context).load(R.drawable.shang).into(pre)
-            if (MusicPlayActivity.album_id == id) {
+            if (MusicApp.getAblumid() == id) {
                 if (MusicPlayActivity.wlMusic.isPlaying) {
                     Glide.with(context).load(R.drawable.plays).into(play)
                 } else {
@@ -167,14 +166,14 @@ class AlbumDetAdapter(
             RxView.clicks(pre)
                 .throttleFirst(1, TimeUnit.SECONDS)
                 .subscribe {
-                    if (MusicPlayActivity.album_id == id) {
+                    if (MusicApp.getAblumid() == id) {
                         Observable.just(1).subscribe(MusicPlayActivity.observerset)
                     }
                 }
             RxView.clicks(play)
                 .throttleFirst(1, TimeUnit.SECONDS)
                 .subscribe {
-                    if (MusicPlayActivity.album_id == id) {
+                    if (MusicApp.getAblumid() == id) {
                         Observable.just(0).subscribe(MusicPlayActivity.observerset)
                     } else {
                         Observable.just(datas).subscribe(MusicPlayActivity.observerplay)
@@ -185,7 +184,7 @@ class AlbumDetAdapter(
             RxView.clicks(next)
                 .throttleFirst(1, TimeUnit.SECONDS)
                 .subscribe {
-                    if (MusicPlayActivity.album_id == id) {
+                    if (MusicApp.getAblumid() == id) {
                         Observable.just(2).subscribe(MusicPlayActivity.observerset)
                     }
 
@@ -267,12 +266,14 @@ class AlbumDetAdapter(
 
     fun update(bool: Boolean) {
         if (bool) {
-            for (i in 0..listdet.size) {
-                listdet[i].type = 1
+            listdet.clear()
+            for (it in datas) {
+                listdet.add(SongDet(it, 1))
             }
         } else {
-            for (i in 0..listdet.size) {
-                listdet[i].type = 0
+            listdet.clear()
+            for (it in datas) {
+                listdet.add(SongDet(it, 0))
             }
         }
         notifyDataSetChanged()

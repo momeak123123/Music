@@ -10,7 +10,7 @@ public class Initialization {
 
     private static DaoSession daoSessionsearch;
     private static DaoSession daoSessionplaylist;
-
+    private static DaoSession daoSessiondown;
 
 
     /**
@@ -46,6 +46,23 @@ public class Initialization {
 
     public static DaoSession getDaoInstantPlaylist() {
         return daoSessionplaylist;
+    }
+
+    /**
+     * 配置数据库
+     */
+    public static void setupDatabaseDown(Context context) {
+        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(context, "Down.db", null);
+        //获取可写数据库
+        SQLiteDatabase db = helper.getWritableDatabase();
+        //获取数据库对象
+        DaoMaster daoMaster = new DaoMaster(db);
+        //获取Dao对象管理者
+        daoSessiondown = daoMaster.newSession();
+    }
+
+    public static DaoSession getDaoInstantDown() {
+        return daoSessiondown;
     }
 
 }

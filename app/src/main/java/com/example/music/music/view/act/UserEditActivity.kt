@@ -2,15 +2,20 @@ package com.example.music.music.view.act
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.widget.Toast
+import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.music.contract.UserEditContract
 import com.example.music.music.presenter.UserEditPresenter
 import com.jakewharton.rxbinding2.view.RxView
+import kotlinx.android.synthetic.main.fragment_my.*
 import kotlinx.android.synthetic.main.head.*
 import kotlinx.android.synthetic.main.user_edit.*
+import kotlinx.android.synthetic.main.user_edit.city
+import kotlinx.android.synthetic.main.user_edit.name
 import mvp.ljb.kt.act.BaseMvpActivity
 import java.util.concurrent.TimeUnit
 
@@ -76,6 +81,7 @@ class UserEditActivity : BaseMvpActivity<UserEditContract.IPresenter>(), UserEdi
 
         val sp =
             getSharedPreferences("User", Context.MODE_PRIVATE)
+        Glide.with(context).load(sp.getString("url", "")).placeholder(R.color.main_black_grey).into(ima)
         name.text = Editable.Factory.getInstance().newEditable(sp.getString("name", ""))
         gender.text = Editable.Factory.getInstance().newEditable(sp.getString("gender", ""))
         city.text = Editable.Factory.getInstance().newEditable(sp.getString("city", ""))

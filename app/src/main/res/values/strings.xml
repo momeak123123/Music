@@ -95,6 +95,7 @@
     <string name="song_unall">全不选</string>
     <string name="song_collect">收藏到歌单</string>
     <string name="song_download">下载</string>
+    <string name="song_downloads">下载管理</string>
     <string name="song_carry">完成</string>
     <string name="song_edit">编辑歌单</string>
     <string name="song_alls">多选</string>
