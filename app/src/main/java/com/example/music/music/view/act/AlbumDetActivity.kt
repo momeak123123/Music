@@ -5,25 +5,35 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.adapter.AlbumDetAdapter
+import com.example.music.adapter.PlaySongAdapter
 import com.example.music.bean.Music
-import com.example.music.bean.SongDet
 import com.example.music.bean.artistlist
 import com.example.music.music.contract.AlbumDetContract
+import com.example.music.music.model.MusicPlayModel
 import com.example.music.music.presenter.AlbumDetPresenter
+import com.example.music.sql.bean.Playlist
+import com.example.music.sql.dao.mPlaylistDao
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import com.jakewharton.rxbinding2.view.RxView
+import com.xuexiang.xui.widget.dialog.materialdialog.DialogAction
+import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.album_index.*
+import kotlinx.android.synthetic.main.album_index.in_indel
 import kotlinx.android.synthetic.main.food.*
-import kotlinx.android.synthetic.main.song_set.all
+import kotlinx.android.synthetic.main.play_list.*
+import kotlinx.android.synthetic.main.play_list.del
+import kotlinx.android.synthetic.main.popule.*
 import mvp.ljb.kt.act.BaseMvpActivity
 import java.util.concurrent.TimeUnit
 
@@ -39,9 +49,11 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
         lateinit var observer: Observer<JsonObject>
         lateinit var observers: Observer<Boolean>
         lateinit var observerd: Observer<Int>
+        lateinit var observert: Observer<Int>
     }
 
 
+    private lateinit var adapters: PlaySongAdapter
     private var bools: Boolean = true
     private var album_time: Long = 0
     private lateinit var names: String
@@ -50,7 +62,6 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
     private lateinit var covers: String
     private lateinit var songdata: String
     private lateinit var txts: String
-
     var songlist = mutableListOf<Music>()
     private var type: Int = 0
     private lateinit var adapter: AlbumDetAdapter
@@ -64,36 +75,6 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
     override fun init(savedInstanceState: Bundle?) {
         super.init(savedInstanceState)
         context=this
-
-    }
-
-    override fun initData() {
-        super.initData()
-        refresh()
-    }
-
-    private fun refresh() {
-        swipe_refresh_layout.isRefreshing = true
-        val bundle = intent.extras
-        type =  bundle?.get("type") as Int
-        album_id = bundle.get("album_id") as Long
-        album_type = bundle.get("album_type") as Int
-        album_time = bundle.get("album_time") as Long
-        loadData()
-        names = bundle.get("palylist_name") as String
-        txts = bundle.get("info") as String
-        covers = bundle.get("cover") as String
-    }
-
-   fun loadData(){
-       if(type == 1){
-           getPresenter().songdatas(album_id,album_type,album_time,context)
-       }else{
-           getPresenter().songdata(album_id,album_type,context)
-       }
-   }
-
-    init {
         observer = object : Observer<JsonObject> {
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(data: JsonObject) {
@@ -125,6 +106,31 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
         }
     }
 
+    override fun initData() {
+        super.initData()
+        swipe_refresh_layout.isRefreshing = true
+        val bundle = intent.extras
+        type =  bundle?.get("type") as Int
+        album_id = bundle.get("album_id") as Long
+        album_type = bundle.get("album_type") as Int
+        album_time = bundle.get("album_time") as Long
+        names = bundle.get("palylist_name") as String
+        txts = bundle.get("info") as String
+        covers = bundle.get("cover") as String
+        loadData()
+
+
+    }
+
+
+   fun loadData(){
+       if(type == 1){
+           getPresenter().songdatas(album_id,album_type,album_time,context)
+       }else{
+           getPresenter().songdata(album_id,album_type,context)
+       }
+   }
+
     @SuppressLint("CheckResult")
     override fun initView() {
         super.initView()
@@ -154,19 +160,50 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
         RxView.clicks(cencel)
             .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
-                foods.visibility = View.GONE
+                val idmap = mutableListOf<Long>()
+                for(ite in adapter.listdet){
+                    if(ite.type == 1){
+                        idmap.add(ite.song.song_id)
+                    }
+                }
+                if(idmap.isNotEmpty()){
+                    in_indel.visibility = View.VISIBLE
+                    Glide.with(context).load("").into(del)
+                    in_title.text = getText(R.string.song_but)
+                    val list: MutableList<Playlist> = mPlaylistDao.queryAll()
+                    initSongLists(list,idmap)
+                }else{
+                    Toast.makeText(
+                        context,
+                        getText(R.string.song_collect_error),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
             }
+
         RxView.clicks(down)
             .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
 
             }
+
+
         RxView.clicks(deter)
             .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
                 foods.visibility = View.GONE
+                adapter.type = 0
+                adapter.notifyDataSetChanged()
 
             }
+
+        RxView.clicks(list_dow)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe {
+                in_indel.visibility = View.GONE
+            }
+
 
        /* if(isSDcardAvailable()){
             val request =
@@ -179,6 +216,35 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
         }*/
 
 
+    }
+
+
+    /**
+     * 初始化歌曲
+     */
+    private fun initSongLists(
+        song: MutableList<Playlist>,
+        idmap: MutableList<Long>
+    ) {
+        in_list.layoutManager = LinearLayoutManager(context)
+        in_list.itemAnimator = DefaultItemAnimator()
+        adapters = PlaySongAdapter(song, context)
+        in_list.adapter = adapters
+        adapters.setOnItemClickListener(object : PlaySongAdapter.ItemClickListener {
+            override fun onItemClick(view: View, position: Int) {
+                MaterialDialog.Builder(context)
+                    .title("添加音乐")
+                    .content("是否将音乐加入此歌单")
+                    .positiveText("确认")
+                    .negativeText("取消")
+                    .onPositive { _: MaterialDialog?, _: DialogAction? ->
+                        MusicPlayModel.addSong(context, idmap, song[position].play_list_id)
+
+                    }
+                    .show()
+
+            }
+        })
     }
 
     /**
@@ -241,6 +307,53 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
                     foods.visibility = View.GONE
                 }
 
+            }
+            override fun onError(e: Throwable) {}
+            override fun onComplete() {
+            }
+
+        }
+
+        observert = object : Observer<Int> {
+            override fun onSubscribe(d: Disposable) {}
+            @SuppressLint("SetTextI18n", "CheckResult")
+            override fun onNext(data: Int) {
+                poplue.visibility = View.VISIBLE
+                edit_song.text = getText(R.string.album).toString() +":"+ songlist[data].album_name
+                var srtist_name = ""
+                for(it in songlist[data].all_artist){
+                    if(srtist_name != ""){
+                        srtist_name += "/"+it.name
+                    }else{
+                        srtist_name = it.name
+                    }
+
+                }
+                artist_txt.text = getText(R.string.item3s).toString() +":"+ srtist_name
+                RxView.clicks(song_set_back)
+                    .throttleFirst(1, TimeUnit.SECONDS)
+                    .subscribe {
+                        poplue.visibility = View.GONE
+                    }
+
+                RxView.clicks(relat3)
+                    .throttleFirst(1, TimeUnit.SECONDS)
+                    .subscribe {
+                        foods.visibility = View.GONE
+                        in_indel.visibility = View.VISIBLE
+                        Glide.with(context).load("").into(del)
+                        in_title.text = getText(R.string.song_but)
+                        val list: MutableList<Playlist> = mPlaylistDao.queryAll()
+                        val idmap = mutableListOf<Long>()
+                        idmap.add(songlist[data].song_id)
+                        initSongLists(list,idmap)
+                    }
+
+                RxView.clicks(relat4)
+                    .throttleFirst(1, TimeUnit.SECONDS)
+                    .subscribe {
+
+                    }
             }
             override fun onError(e: Throwable) {}
             override fun onComplete() {

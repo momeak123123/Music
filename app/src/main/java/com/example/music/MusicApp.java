@@ -5,6 +5,7 @@ import android.app.Application;
 import android.content.Context;
 import android.widget.Toast;
 
+import com.example.music.bean.Music;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheEntity;
 import com.lzy.okgo.cache.CacheMode;
@@ -32,6 +33,25 @@ public class MusicApp extends Application {
 
     public static Long ablumid = 0L;
 
+    public static int position = 0;
+
+    public static List<Music> music;
+
+    public static int getPosition() {
+        return position;
+    }
+
+    public static void setPosition(int position) {
+        MusicApp.position = position;
+    }
+
+    public static List<Music> getMusic() {
+        return music;
+    }
+
+    public static void setMusic(List<Music> music) {
+        MusicApp.music = music;
+    }
 
     public static Long getAblumid() {
         return ablumid;

@@ -18,7 +18,7 @@ import io.reactivex.Observable
 
 class MusicPlayModel {
     companion object {
-        fun addSong(context: Context, songid: LongArray, playid: Long) {
+        fun addSong(context: Context, songid: MutableList<Long>, playid: Long) {
 
             val sp: SharedPreferences = context.getSharedPreferences("User", Context.MODE_PRIVATE)
                 println( Gson().toJson(songid))
@@ -35,7 +35,7 @@ class MusicPlayModel {
                             val bean =
                                 Gson().fromJson(response.body(), ResultBeans::class.javaObjectType)
                             val playlist: Playlist = mPlaylistDao.query(playid)[0]
-                            val num = ((playlist.song_num).toInt() + 1).toString()
+                            val num = ((playlist.song_num).toInt() + songid.size).toString()
                             playlist.song_num = num
                             mPlaylistDao.update(playlist)
                             Observable.just(num).subscribe(MusicPlayActivity.observer)

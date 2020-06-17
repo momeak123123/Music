@@ -1,11 +1,14 @@
 package com.example.music.music.view.fragment
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.music.MainActivity
 import com.example.music.R
 import com.example.music.adapter.SongListAdapter
@@ -23,6 +26,9 @@ import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_find.*
 import kotlinx.android.synthetic.main.fragment_find.back
+import kotlinx.android.synthetic.main.fragment_find.swipe_refresh_layout
+import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.fragment_my.*
 import mvp.ljb.kt.fragment.BaseMvpFragment
 import java.util.concurrent.TimeUnit
 
@@ -40,6 +46,7 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
         lateinit var observers: Observer<MutableList<Playlist>>
     }
 
+    private lateinit var sp: SharedPreferences
     override fun registerPresenter() = FindPresenter::class.java
 
     override fun getLayoutId(): Int {
@@ -53,18 +60,33 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
 
     override fun initData() {
         super.initData()
-        val list: MutableList<Playlist> = mPlaylistDao.queryAll()
-        if (list.size > 0) {
+         sp = requireContext().getSharedPreferences("User", Context.MODE_PRIVATE)
+        if(sp.getBoolean("login",false)){
             back.visibility = View.GONE
-            initSongList(list)
-        } else {
-            context?.let { getPresenter().listdata(it) }
+            val list: MutableList<Playlist> = mPlaylistDao.queryAll()
+            if (list.size > 0) {
+                back.visibility = View.GONE
+                initSongList(list)
+            } else {
+                context?.let { getPresenter().listdata(it) }
+            }
+
+            if (swipe_refresh_layout != null) {
+                swipe_refresh_layout.isRefreshing = false
+            }
+        }else{
+            back.visibility = View.VISIBLE
         }
+
     }
 
     @SuppressLint("CheckResult")
     override fun initView() {
         super.initView()
+
+        swipe_refresh_layout.setColorSchemeColors(-0xff6634, -0xbbbc, -0x996700, -0x559934, -0x7800)
+        //下拉刷新
+        swipe_refresh_layout.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener { initData() })
 
         RxView.clicks(add)
             .throttleFirst(1, TimeUnit.SECONDS)
@@ -78,11 +100,20 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
 
     override fun onResume() {
         super.onResume()
-
-        val list: MutableList<Playlist> = mPlaylistDao.queryAll()
-        if (list.size > 0) {
-            initSongList(list)
+        if(sp.getBoolean("login",false)){
+            back.visibility = View.GONE
+            val list: MutableList<Playlist> = mPlaylistDao.queryAll()
+            if (list.size > 0) {
+                back.visibility = View.GONE
+                initSongList(list)
+            } else {
+                back.visibility = View.VISIBLE
+            }
+        }else{
+            back.visibility = View.VISIBLE
         }
+
+
 
         observer = object : Observer<JsonObject> {
             override fun onSubscribe(d: Disposable) {}

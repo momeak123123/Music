@@ -49,8 +49,6 @@ class MyModel : BaseModel(), MyContract.IModel {
                             sp.edit().putString("nickname", user["nickname"]).apply()
                             sp.edit().putString("url", user["headimgurl"]).apply()
                             sp.edit().putString("countries", user["countries"]).apply()
-                            sp.edit().putString("province", user["province"]).apply()
-                            sp.edit().putString("city", user["city"]).apply()
                             sp.edit().putString("sex", user["sex"]).apply()
                             sp.edit().putString("token", user["token"]).apply()
                             sp.edit().putString("user_id", user["user_id"]).apply()

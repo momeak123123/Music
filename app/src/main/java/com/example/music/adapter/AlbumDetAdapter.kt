@@ -57,7 +57,9 @@ class AlbumDetAdapter(
      * 相当于getView()
      */
     override fun onCreateViewHolder(holder: ViewGroup, position: Int): RecyclerView.ViewHolder {
-
+        for (it in datas) {
+            listdet.add(SongDet(it, 0))
+        }
         //加载View
         return when (position) {
             TYPE_TITLE -> TitleHolder(
@@ -258,7 +260,7 @@ class AlbumDetAdapter(
             }
 
             more.setOnClickListener {
-
+                Observable.just(position).subscribe(AlbumDetActivity.observert)
             }
 
         }

@@ -13,11 +13,13 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.example.music.MusicApp
 import com.example.music.R
 import com.example.music.bean.Music
 import com.example.music.bean.SongDet
 import com.example.music.config.CornerTransform
 import com.example.music.music.view.act.AlbumDetActivity
+import com.example.music.music.view.act.MusicPlayActivity
 import com.example.music.music.view.act.SongDetActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.jakewharton.rxbinding2.view.RxView
@@ -28,6 +30,7 @@ import java.util.concurrent.TimeUnit
 
 class SongDetAdapter  (val datas: MutableList<Music>, val context: Context,
                        val covers: String,
+                       val id: Long,
                        val names:String,val num:String) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 
@@ -52,7 +55,9 @@ class SongDetAdapter  (val datas: MutableList<Music>, val context: Context,
      * 相当于getView()
      */
     override fun onCreateViewHolder(holder: ViewGroup, position: Int): RecyclerView.ViewHolder {
-        //加载View
+        for (it in datas) {
+            listdet.add(SongDet(it, 0))
+        }
         return when (position) {
             TYPE_TITLE -> TitleHolder(
                 LayoutInflater.from(context).inflate(R.layout.song_index_header, holder, false)
@@ -98,7 +103,9 @@ class SongDetAdapter  (val datas: MutableList<Music>, val context: Context,
         var top_flot: ImageView
         var title: TextView
         var top_set: ImageView
-
+        var pre: ImageView
+        var play: ImageView
+        var next: ImageView
 
         init {
             iv_cover = itemView.findViewById(R.id.iv_cover)
@@ -106,7 +113,9 @@ class SongDetAdapter  (val datas: MutableList<Music>, val context: Context,
             top_flot = itemView.findViewById(R.id.top_flot)
             title = itemView.findViewById(R.id.title)
             top_set = itemView.findViewById(R.id.top_set)
-
+            pre = itemView.findViewById(R.id.pre)
+            play = itemView.findViewById(R.id.play)
+            next = itemView.findViewById(R.id.next)
         }
 
         fun dip2px(context: Context, dpValue: Int): Float {
@@ -126,7 +135,19 @@ class SongDetAdapter  (val datas: MutableList<Music>, val context: Context,
            // Glide.with(context).load(covers).placeholder(R.color.main_black_grey).into(iv_cover)
             title.text = names
             txt.text = num+"首"
-            Glide.with(context).load(R.drawable.mores).placeholder(R.color.main_black_grey).into(top_set)
+            Glide.with(context).load(R.drawable.mores).into(top_set)
+            Glide.with(context).load(R.drawable.shang).into(pre)
+            if (MusicApp.getAblumid() == id) {
+                if (MusicPlayActivity.wlMusic.isPlaying) {
+                    Glide.with(context).load(R.drawable.plays).into(play)
+                } else {
+                    Glide.with(context).load(R.drawable.play).into(play)
+                }
+            }else{
+                Glide.with(context).load(R.drawable.play).into(play)
+            }
+
+            Glide.with(context).load(R.drawable.xia).into(next)
             RxView.clicks(top_flot)
                 .throttleFirst(1, TimeUnit.SECONDS)
                 .subscribe {
@@ -144,6 +165,33 @@ class SongDetAdapter  (val datas: MutableList<Music>, val context: Context,
                         type = 0
                         notifyDataSetChanged()
                         Observable.just(0).subscribe(SongDetActivity.observerd)
+                    }
+
+                }
+
+            RxView.clicks(pre)
+                .throttleFirst(1, TimeUnit.SECONDS)
+                .subscribe {
+                    if (MusicApp.getAblumid() == id) {
+                        Observable.just(1).subscribe(MusicPlayActivity.observerset)
+                    }
+                }
+            RxView.clicks(play)
+                .throttleFirst(1, TimeUnit.SECONDS)
+                .subscribe {
+                    if (MusicApp.getAblumid() == id) {
+                        Observable.just(0).subscribe(MusicPlayActivity.observerset)
+                    } else {
+                        Observable.just(datas).subscribe(MusicPlayActivity.observerplay)
+                    }
+
+
+                }
+            RxView.clicks(next)
+                .throttleFirst(1, TimeUnit.SECONDS)
+                .subscribe {
+                    if (MusicApp.getAblumid() == id) {
+                        Observable.just(2).subscribe(MusicPlayActivity.observerset)
                     }
 
                 }
@@ -191,23 +239,26 @@ class SongDetAdapter  (val datas: MutableList<Music>, val context: Context,
             txt.text =  srtist_name
 
 
-            if(type==0){
+
+            if (type == 0) {
                 num.visibility = View.VISIBLE
                 radio.visibility = View.GONE
                 num.text = (position).toString()
-            }else{
+            } else {
                 num.visibility = View.GONE
                 radio.visibility = View.VISIBLE
-                for(it in datas){
-                    listdet.add(SongDet(it,0))
+                if (listdet[position].type == 1) {
+                    Glide.with(context).load(R.drawable.select).into(radio)
+                } else {
+                    Glide.with(context).load(R.drawable.upselect).into(radio)
                 }
             }
 
             radio.setOnClickListener {
-                if(listdet[position].type==0){
+                if (listdet[position].type == 0) {
                     listdet[position].type = 1
                     Glide.with(context).load(R.drawable.select).into(radio)
-                }else{
+                } else {
                     listdet[position].type = 0
                     Glide.with(context).load(R.drawable.upselect).into(radio)
                 }
@@ -216,13 +267,29 @@ class SongDetAdapter  (val datas: MutableList<Music>, val context: Context,
 
 
             more.setOnClickListener {
-
+                Observable.just(position).subscribe(SongDetActivity.observert)
             }
 
             delete.setOnClickListener {
-                remove(adapterPosition)
+
+                Observable.just(position).subscribe(SongDetActivity.observerdel)
             }
         }
+    }
+
+    fun update(bool: Boolean) {
+        if (bool) {
+            listdet.clear()
+            for (it in datas) {
+                listdet.add(SongDet(it, 1))
+            }
+        } else {
+            listdet.clear()
+            for (it in datas) {
+                listdet.add(SongDet(it, 0))
+            }
+        }
+        notifyDataSetChanged()
     }
 
     interface ItemClickListener {

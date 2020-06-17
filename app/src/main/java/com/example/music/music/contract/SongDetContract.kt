@@ -17,10 +17,12 @@ interface SongDetContract {
     interface IPresenter : IPresenterContract {
         fun listdata(context: Context, id: Long)
         fun deldata(context: Context, ids: Long,playids: Long)
+        fun delsongs(context: Context, data: Int, songids: Long)
     }
 
     interface IModel : IModelContract{
         fun listdata(context: Context,id: Long)
         fun deldata(context: Context, ids: Long,playids: Long)
+        fun delsongs(context: Context, data: Int, songids: Long)
     }
 }

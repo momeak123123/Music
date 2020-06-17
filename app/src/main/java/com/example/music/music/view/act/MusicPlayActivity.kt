@@ -46,6 +46,7 @@ import kotlinx.android.synthetic.main.frag_player_lrcview.*
 import kotlinx.android.synthetic.main.head.*
 import kotlinx.android.synthetic.main.music_play.*
 import kotlinx.android.synthetic.main.play_list.*
+import java.lang.Exception
 import java.util.concurrent.TimeUnit
 
 class MusicPlayActivity : AppCompatActivity() {
@@ -348,7 +349,8 @@ class MusicPlayActivity : AppCompatActivity() {
                     .positiveText("确认")
                     .negativeText("取消")
                     .onPositive { _: MaterialDialog?, _: DialogAction? ->
-                        val idmap: LongArray = longArrayOf(song_id)
+                        val idmap = mutableListOf<Long>()
+                        idmap.add(song_id)
                         MusicPlayModel.addSong(context, idmap, song[position].play_list_id)
 
                     }
@@ -359,64 +361,75 @@ class MusicPlayActivity : AppCompatActivity() {
     }
 
     private fun start(music: Music) {
-        playPauseIv.setLoading(true)
-        playingMusic = music
-        //更新标题
-        titleIv.text = music.name
-        val artist = music.all_artist
-        var srtist_name = ""
-        for (it in artist) {
-            if (srtist_name != "") {
-                srtist_name += "/" + it.name
-            } else {
-                srtist_name = it.name
-            }
+        try{
+            playPauseIv.setLoading(true)
+            playingMusic = music
+            //更新标题
+            titleIv.text = music.name
+            MusicApp.setPosition(id)
 
-        }
-        subTitleTv.text = srtist_name
-        Ablemname.text = music.album_name
-        lyricFragment.lrcView(music.song_id)
-        object : Thread() {
-            override fun run() {
-                bitmap = BitmapUtils.netUrlPicToBmp(music.pic_url)
-                coverFragment.setImageBitmap(bitmap)
-                play(music.uri)
+            MusicApp.setMusic(playingMusicList)
+            val artist = music.all_artist
+            var srtist_name = ""
+            for (it in artist) {
+                if (srtist_name != "") {
+                    srtist_name += "/" + it.name
+                } else {
+                    srtist_name = it.name
+                }
+
             }
-        }.start()
+            subTitleTv.text = srtist_name
+            Ablemname.text = music.album_name
+            lyricFragment.lrcView(music.song_id)
+            object : Thread() {
+                override fun run() {
+                    bitmap = BitmapUtils.netUrlPicToBmp(music.pic_url)
+                    coverFragment.setImageBitmap(bitmap)
+                    play(music.uri)
+                }
+            }.start()
+        }catch (e:Exception){}
+
     }
 
     private fun starts(music: Music) {
-        wlMusic.stop()
-        playPauseIv.pause()
-        playPauseIv.setLoading(true)
-        mDisposable.dispose()
-        coverFragment.stopRotateAnimation()
-        Observable.just(0L).subscribe(observers)
-        song_id = music.song_id
-        playingMusic = music
-        //更新标题
-        titleIv.text = music.name
-        val artist = music.all_artist
-        var srtist_name = ""
-        for (it in artist) {
-            if (srtist_name != "") {
-                srtist_name += "/" + it.name
-            } else {
-                srtist_name = it.name
-            }
-
-        }
-        subTitleTv.text = srtist_name
-        Ablemname.text = music.album_name
-        lyricFragment.lrcView(music.song_id)
-        object : Thread() {
-            override fun run() {
-                bitmap = BitmapUtils.netUrlPicToBmp(music.pic_url)
-                coverFragment.setImageBitmap(bitmap)
-                wlMusic.playNext(music.uri)
+        try {
+            wlMusic.stop()
+            playPauseIv.pause()
+            playPauseIv.setLoading(true)
+            mDisposable.dispose()
+            coverFragment.stopRotateAnimation()
+            Observable.just(0L).subscribe(observers)
+            MusicApp.setPosition(id)
+            MusicApp.setMusic(playingMusicList)
+            song_id = music.song_id
+            playingMusic = music
+            //更新标题
+            titleIv.text = music.name
+            val artist = music.all_artist
+            var srtist_name = ""
+            for (it in artist) {
+                if (srtist_name != "") {
+                    srtist_name += "/" + it.name
+                } else {
+                    srtist_name = it.name
+                }
 
             }
-        }.start()
+            subTitleTv.text = srtist_name
+            Ablemname.text = music.album_name
+            lyricFragment.lrcView(music.song_id)
+            object : Thread() {
+                override fun run() {
+                    bitmap = BitmapUtils.netUrlPicToBmp(music.pic_url)
+                    coverFragment.setImageBitmap(bitmap)
+                    wlMusic.playNext(music.uri)
+
+                }
+            }.start()
+        }catch (e:Exception){}
+
 
     }
 

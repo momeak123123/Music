@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.example.music.MusicApp
 import com.example.music.R
 import com.example.music.adapter.*
 import com.example.music.bean.*
@@ -24,6 +25,7 @@ import com.xuexiang.xui.widget.banner.widget.banner.base.BaseBanner
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.song_set.*
 import mvp.ljb.kt.fragment.BaseMvpFragment
 import java.util.concurrent.TimeUnit
 
@@ -187,6 +189,18 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
         swipe_refresh_layout.setColorSchemeColors(-0xff6634, -0xbbbc, -0x996700, -0x559934, -0x7800)
         //下拉刷新
         swipe_refresh_layout.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener { loadData() })
+
+        RxView.clicks(music)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe {
+                val json: String = Gson().toJson(MusicApp.getMusic())
+                val intent = Intent()
+                context?.let { intent.setClass(it, MusicPlayActivity().javaClass) }
+                intent.putExtra("pos",MusicApp.getPosition())
+                intent.putExtra("list",json)
+                startActivity(intent)
+
+            }
 
         RxView.clicks(search)
             .throttleFirst(1, TimeUnit.SECONDS)

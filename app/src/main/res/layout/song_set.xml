@@ -19,7 +19,7 @@
 
 
     <RelativeLayout
-        android:id="@+id/relat"
+        android:id="@+id/item"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_180"
         android:background="@color/white"
@@ -29,7 +29,7 @@
 
 
         <RelativeLayout
-            android:id="@+id/relat1"
+            android:id="@+id/item1"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_60"
             android:layout_alignParentStart="true"
@@ -64,10 +64,10 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/relat2"
+            android:id="@+id/item2"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_60"
-            android:layout_below="@+id/relat1"
+            android:layout_below="@+id/item1"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -85,7 +85,7 @@
                 android:src="@drawable/upselect" />
 
             <TextView
-                android:id="@+id/all"
+                android:id="@+id/alltxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@+id/imageView3"
@@ -98,10 +98,10 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:id="@+id/relat3"
+            android:id="@+id/item3"
             android:layout_width="match_parent"
             android:layout_height="@dimen/dp_60"
-            android:layout_below="@+id/relat2"
+            android:layout_below="@+id/item2"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -119,7 +119,7 @@
                 android:src="@drawable/song_del" />
 
             <TextView
-                android:id="@+id/del"
+                android:id="@+id/deltxt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignTop="@+id/imageView4"
@@ -139,7 +139,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_30"
         android:background="@drawable/ima_radio"
-        app:layout_constraintBottom_toTopOf="@+id/relat"
+        app:layout_constraintBottom_toTopOf="@+id/item"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 

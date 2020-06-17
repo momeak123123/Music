@@ -52,6 +52,7 @@
     <string name="captchas">请输入验证码</string>
     <string name="succes_code">验证码发送成功，请登陆邮箱查看，如未找到，请注意查看垃圾邮件</string>
     <string name="go">登录</string>
+    <string name="ungo">未登录</string>
     <string name="delgo">退出登录</string>
     <string name="tip_name_number_error">无效的邮箱,请重新输入！</string>\
     <string name="tip_verify_code_error">请输入4位数验证码</string>
@@ -94,6 +95,7 @@
     <string name="song_all">全选</string>
     <string name="song_unall">全不选</string>
     <string name="song_collect">收藏到歌单</string>
+    <string name="song_collect_error">暂未选择歌曲，请选择</string>
     <string name="song_download">下载</string>
     <string name="song_downloads">下载管理</string>
     <string name="song_carry">完成</string>
@@ -105,8 +107,8 @@
     <string name="updown">编辑</string>
     <string name="user_updown">编辑资料</string>
     <string name="user_name">昵称</string>
-    <string name="user_gra">性别</string>
-    <string name="user_city">城市</string>
+    <string name="user_gra">性别(男/女)</string>
+    <string name="user_city">国家</string>
     <string name="attention">关注</string>
     <string name="collect">收藏</string>
     <string name="like">喜欢</string>

@@ -15,12 +15,12 @@ interface UserEditContract {
     interface IView : IViewContract
 
     interface IPresenter : IPresenterContract {
-        fun registerdata(context: Context, name: String, gender: String, city: String)
+        fun registerdata(context: Context, name: String, gender: Int, city: String, images: String)
 
     }
 
     interface IModel : IModelContract{
-        fun registerdata(context: Context, name: String, gender: String, city: String)
+        fun registerdata(context: Context, name: String, gender: Int, city: String, images: String)
 
     }
 }

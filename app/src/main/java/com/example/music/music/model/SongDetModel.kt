@@ -92,4 +92,39 @@ class SongDetModel : BaseModel(), SongDetContract.IModel {
                 }
             })
     }
+
+    override fun delsongs(context: Context, data: Int, songids: Long) {
+        val sp: SharedPreferences = context.getSharedPreferences("User", Context.MODE_PRIVATE)
+        OkGo.post<String>(Constants.URL + "api/user/del_song_list")
+            .params("song_list_id",songids)
+            .params("token",sp.getString("token", ""))
+            .execute(object : StringCallback() {
+                override fun onSuccess(response: Response<String>) {
+                    /**
+                     * 成功回调
+                     */
+                    try {
+                        val bean =
+                            Gson().fromJson(response.body(), ResultBeans::class.javaObjectType)
+                        if (bean.code == 200) {
+                            // mPlaylistDao.delete(ids)
+                            SongDetActivity.adapter.remove(data)
+                        } else {
+                            Toast.makeText(
+                                context,
+                                bean.msg,
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    } catch (e: Exception) {
+                        Toast.makeText(
+                            context,
+                            "程序出现了未知异常",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+                }
+            })
+    }
+
 }

@@ -216,7 +216,7 @@
                 android:layout_height="@dimen/dp_30"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
-                android:src="@drawable/xaizai" />
+                android:src="@drawable/xiazai" />
 
             <ImageView
                 android:id="@+id/icon3"
@@ -232,7 +232,7 @@
                 android:layout_height="@dimen/dp_30"
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1"
-                android:src="@drawable/list" />
+                android:src="@drawable/musiclist" />
 
         </LinearLayout>
 
