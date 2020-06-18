@@ -10,8 +10,10 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,6 +25,7 @@ import android.widget.Toast;
 
 import com.example.music.adapter.ViewPagerAdapter;
 import com.example.music.config.MainModel;
+import com.example.music.music.view.act.LoginActivity;
 import com.example.music.music.view.act.StartPageActivity;
 import com.example.music.music.view.fragment.FindFragment;
 import com.example.music.music.view.fragment.HomeFragment;
@@ -77,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
     private static TextView in_cancel;
     private static TextView in_deter;
     private int indexs = 0;
+    private SharedPreferences sp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,10 +99,7 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
 
         Initialization.setupDatabasePlaylist(this);
         Initialization.setupDatabaseDown(this);
-        if(bool){
-            Intent intent = new Intent(MainActivity.this, StartPageActivity.class);
-            startActivity(intent);
-        }
+
 
         initView();
         craet(false);
@@ -196,6 +197,19 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
     public void onResume() {
         super.onResume();
         viewPager.setCurrentItem(indexs);
+        if(bool){
+            Intent intent = new Intent(MainActivity.this, StartPageActivity.class);
+            startActivity(intent);
+        }else{
+            sp = getSharedPreferences("User", Context.MODE_PRIVATE);
+            String slogin = sp.getString("user_id", "");
+            if (slogin.equals("") ) {
+                Intent intent = new Intent();
+                intent.setClass(MainActivity.this, LoginActivity.class);
+                startActivity(intent);
+
+            }
+        }
         if (isNeedCheck) {
             checkPermissions(needPermissions);
         }

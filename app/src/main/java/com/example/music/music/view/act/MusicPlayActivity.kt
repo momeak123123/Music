@@ -11,6 +11,7 @@ import android.view.View
 import android.view.animation.Animation
 import android.view.animation.TranslateAnimation
 import android.widget.SeekBar
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -27,6 +28,7 @@ import com.example.music.music.model.MusicPlayModel
 import com.example.music.music.view.fragment.CoverFragment
 import com.example.music.music.view.fragment.LyricFragment
 import com.example.music.sql.bean.Playlist
+import com.example.music.sql.dao.mDownDao
 import com.example.music.sql.dao.mPlaylistDao
 import com.example.music.utils.BitmapUtils
 import com.google.gson.Gson
@@ -53,7 +55,6 @@ class MusicPlayActivity : AppCompatActivity() {
 
     companion object {
         var position: Int = 0
-        var id: Int = 0
         var song_id: Long = 0
         lateinit var wlMusic: WlMusic
         lateinit var observer: Observer<String>
@@ -68,7 +69,7 @@ class MusicPlayActivity : AppCompatActivity() {
     private var type: Int = 0
     lateinit var mDisposable: Disposable
     var max: Long = 0
-
+    var id: Int = 0
     private var min: Long = 0
     private var pos: Int = 0
     private var bitmap: Bitmap? = null
@@ -110,6 +111,12 @@ class MusicPlayActivity : AppCompatActivity() {
                     time(min, max - min)
                     coverFragment.resumeRotateAnimation()
                 }
+            }else{
+                Toast.makeText(
+                    context,
+                    getText(R.string.secret_num),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
 
         }
@@ -174,12 +181,30 @@ class MusicPlayActivity : AppCompatActivity() {
         RxView.clicks(pre)
             .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
-                Observable.just(1).subscribe(observerset)
+                if (bool) {
+                    Observable.just(1).subscribe(observerset)
+                }else{
+                    Toast.makeText(
+                        context,
+                        getText(R.string.secret_num),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
             }
         RxView.clicks(next)
             .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
-                Observable.just(2).subscribe(observerset)
+                if (bool) {
+                    Observable.just(2).subscribe(observerset)
+                }else{
+                    Toast.makeText(
+                        context,
+                        getText(R.string.secret_num),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
             }
     }
 
@@ -188,13 +213,13 @@ class MusicPlayActivity : AppCompatActivity() {
         val album_id = bundle?.get("album_id") as Long
         val pos = bundle.get("pos") as Int
         val list = bundle.get("list") as String
-
+        println(pos)
         val obj: JsonArray = Gson().fromJson(list, JsonArray::class.java)
         val song: MutableList<Music> = Gson().fromJson(
             obj,
             object : TypeToken<MutableList<Music>>() {}.type
         )
-
+        song.removeAt(0)
         if (song.isNotEmpty()) {
             id = pos
             song_id = song[pos].song_id
@@ -218,7 +243,7 @@ class MusicPlayActivity : AppCompatActivity() {
                 obj,
                 object : TypeToken<MutableList<Music>>() {}.type
             )
-
+            song.removeAt(0)
             if (song.isNotEmpty()) {
                 if (song[pos].song_id == song_id) {
                     playingMusicList = song
@@ -243,8 +268,6 @@ class MusicPlayActivity : AppCompatActivity() {
         observer = object : Observer<String> {
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(num: String) {
-
-                adapter.update(pos, num)
 
             }
 
@@ -316,6 +339,7 @@ class MusicPlayActivity : AppCompatActivity() {
                             mDisposable.dispose()
                             coverFragment.stopRotateAnimation()
                         }
+
                         type = 2
                         playtype()
 
@@ -375,8 +399,45 @@ class MusicPlayActivity : AppCompatActivity() {
                     .onPositive { _: MaterialDialog?, _: DialogAction? ->
                         val idmap = mutableListOf<Music>()
                         playingMusic?.let { idmap.add(it) }
-                        MusicPlayModel.addSong(context, idmap, song[position].play_list_id)
+                        val playsong = mDownDao.query(song[position].play_list_id)
+                        val songs = mutableListOf<Music>()
+                        songs.addAll(idmap)
+                        if (playsong.size > 0) {
+                            if(idmap.size>0){
+                                for (sea in idmap) {
+                                    for (det in playsong) {
+                                       if (sea.song_id == det.song_id) {
+                                            songs.remove(sea)
+                                        }
+                                    }
+                                }
+                                if(songs.size>0){
+                                    val num = (playsong.size + songs.size).toString()
+                                    MusicPlayModel.addSong(context, songs, num,song[position].play_list_id)
+                                    adapter.update(position, num)
+                                }else{
+                                    Toast.makeText(
+                                        context,
+                                        "歌曲已存在",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
 
+                            }
+
+                        }else{
+                            if(songs.size>0){
+                                val num = (playsong.size + songs.size).toString()
+                                MusicPlayModel.addSong(context, songs, num,song[position].play_list_id)
+                                adapter.update(position, num)
+                            }else{
+                                Toast.makeText(
+                                    context,
+                                    "歌曲已存在",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                        }
                     }
                     .show()
 
@@ -419,6 +480,7 @@ class MusicPlayActivity : AppCompatActivity() {
 
     private fun starts(music: Music) {
         try {
+            println("2/"+id)
             wlMusic.stop()
             playPauseIv.pause()
             playPauseIv.setLoading(true)
@@ -566,28 +628,25 @@ class MusicPlayActivity : AppCompatActivity() {
             }
             2 -> {
                 //列表循环
-                val ids = id + 1
-                if (playingMusicList!!.size == ids) {
+
+                if (playingMusicList!!.size-1 == id) {
                     id = 0
                     starts(playingMusicList!![0])
                 } else {
-                    id = ids
-                    starts(playingMusicList!![ids])
+                    id += 1
+                    starts(playingMusicList!![id])
                 }
             }
             3 -> {
                 //列表循环
-                println(id)
-                if (id > 0) {
-                    val ids = id - 1
-                    id = ids
-                    starts(playingMusicList!![ids])
-                } else {
-                    val ids = playingMusicList!!.size
-                    id = ids
-                    starts(playingMusicList!![ids])
-                }
 
+                if (id == 0) {
+                    id = playingMusicList!!.size-1
+                    starts(playingMusicList!![id])
+                } else {
+                    id -= 1
+                    starts(playingMusicList!![id])
+                }
             }
         }
     }

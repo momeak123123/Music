@@ -11,16 +11,21 @@ import android.view.WindowManager
 import android.widget.Toast
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
 import com.example.music.R
 import com.example.music.adapter.PlaySongAdapter
 import com.example.music.adapter.SongDetAdapter
+import com.example.music.bean.Artists
 import com.example.music.bean.Music
+import com.example.music.bean.SongList
 import com.example.music.bean.artistlist
 import com.example.music.music.contract.SongDetContract
 import com.example.music.music.model.MusicPlayModel
 import com.example.music.music.presenter.SongDetPresenter
+import com.example.music.sql.bean.Down
 import com.example.music.sql.bean.Playlist
+import com.example.music.sql.dao.mDownDao
 import com.example.music.sql.dao.mPlaylistDao
 import com.google.gson.Gson
 import com.google.gson.JsonArray
@@ -30,8 +35,8 @@ import com.xuexiang.xui.widget.dialog.materialdialog.DialogAction
 import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.album_index.*
 import kotlinx.android.synthetic.main.food.*
+import kotlinx.android.synthetic.main.fragment_find.*
 import kotlinx.android.synthetic.main.play_list.*
 import kotlinx.android.synthetic.main.play_list.del
 import kotlinx.android.synthetic.main.popule.*
@@ -40,6 +45,7 @@ import kotlinx.android.synthetic.main.song_index.foods
 import kotlinx.android.synthetic.main.song_index.in_indel
 import kotlinx.android.synthetic.main.song_index.poplue
 import kotlinx.android.synthetic.main.song_index.recyc_item
+import kotlinx.android.synthetic.main.song_index.swipe_refresh_layout
 import kotlinx.android.synthetic.main.song_set.*
 import kotlinx.android.synthetic.main.song_set.edit_song
 import kotlinx.android.synthetic.main.song_set.song_set_back
@@ -99,20 +105,44 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>() , SongDetC
 
     override fun initData() {
         super.initData()
-
-
-    }
-
-    @SuppressLint("CheckResult")
-    override fun initView() {
-        super.initView()
         val bundle = intent.extras
         names = bundle?.get("name") as String
         imaurl = bundle.get("url") as String
         nums = bundle.get("num") as String
         ids = bundle.get("id") as Long
         playids = bundle.get("playid") as Long
-        getPresenter().listdata(context,playids)
+        val data = mDownDao.query(playids)
+        val song  = mutableListOf<Music>()
+        val artist = mutableListOf<artistlist>()
+        for (it in data) {
+            artist.add(artistlist(0,it.artist))
+            val music = Music(it.name, it.album_name,it.album_id,it.song_id,it.uri,artist,it.pic_url,it.song_list_id,it.publish_time)
+            song.add(music)
+
+        }
+        if (song.isNotEmpty()) {
+            songlist.clear()
+            songlist = song
+            val one = mutableListOf<artistlist>()
+            val det =  Music("","",0,0,"", one,"",0,"")
+            songlist.add(0,det)
+            initSongList(songlist)
+        }else{
+            songlist.clear()
+            val one = mutableListOf<artistlist>()
+            val det =  Music("","",0,0,"", one,"",0,"")
+            songlist.add(0,det)
+            initSongList(songlist)
+        }
+    }
+
+    @SuppressLint("CheckResult")
+    override fun initView() {
+        super.initView()
+
+        swipe_refresh_layout.setColorSchemeColors(-0xff6634, -0xbbbc, -0x996700, -0x559934, -0x7800)
+        //下拉刷新
+        swipe_refresh_layout.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener { getPresenter().listdata(context,playids) })
 
 
         RxView.clicks(song_set_back)
@@ -234,15 +264,14 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>() , SongDetC
         try {
             adapter.notifyItemChanged(0)
         }catch (e:Exception){}
+
         observer = object : Observer<JsonArray> {
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(data: JsonArray) {
-
-                val song : MutableList<Music> = Gson().fromJson(
+                val song: MutableList<Music> = Gson().fromJson(
                     data,
                     object : TypeToken<MutableList<Music>>() {}.type
                 )
-
                 if (song.isNotEmpty()) {
                     songlist.clear()
                     songlist = song
@@ -256,7 +285,10 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>() , SongDetC
                     val det =  Music("","",0,0,"", one,"",0,"")
                     songlist.add(0,det)
                     initSongList(songlist)
-                    println(songlist.size)
+                }
+
+                if (swipe_refresh_layout != null) {
+                    swipe_refresh_layout.isRefreshing = false
                 }
             }
             override fun onError(e: Throwable) {}
@@ -283,6 +315,7 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>() , SongDetC
         observerdel = object : Observer<Int> {
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(data: Int) {
+                println(""+songlist[data].name)
                 getPresenter().delsongs(context,data,songlist[data].song_list_id)
 
             }
@@ -340,7 +373,7 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>() , SongDetC
                 RxView.clicks(relat3)
                     .throttleFirst(1, TimeUnit.SECONDS)
                     .subscribe {
-                        foods.visibility = View.GONE
+                        poplue.visibility = View.GONE
                         in_indel.visibility = View.VISIBLE
                         Glide.with(context).load("").into(del)
                         in_title.text = getText(R.string.song_but)
@@ -380,7 +413,45 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>() , SongDetC
                     .positiveText("确认")
                     .negativeText("取消")
                     .onPositive { _: MaterialDialog?, _: DialogAction? ->
-                        MusicPlayModel.addSong(context, idmap, song[position].play_list_id)
+                        val playsong = mDownDao.query(song[position].play_list_id)
+                        val songs = mutableListOf<Music>()
+                        songs.addAll(idmap)
+                        if (playsong.size > 0) {
+                            if(idmap.size>0){
+                                for (sea in idmap) {
+                                    for (det in playsong) {
+                                        if (sea.song_id == det.song_id) {
+                                            songs.remove(sea)
+                                        }
+                                    }
+                                }
+                                if(songs.size>0){
+                                    val num = (playsong.size + songs.size).toString()
+                                    MusicPlayModel.addSong(context, songs, num,song[position].play_list_id)
+                                    adapters.update(position, num)
+                                }else{
+                                    Toast.makeText(
+                                        context,
+                                        "歌曲已存在",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+
+                            }
+
+                        }else{
+                            if(songs.size>0){
+                                val num = (playsong.size + songs.size).toString()
+                                MusicPlayModel.addSong(context, songs, num,song[position].play_list_id)
+                                adapters.update(position, num)
+                            }else{
+                                Toast.makeText(
+                                    context,
+                                    "歌曲已存在",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                        }
 
                     }
                     .show()
@@ -400,7 +471,6 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>() , SongDetC
         adapter.setOnItemClickListener(object : SongDetAdapter.ItemClickListener {
             override fun onItemClick(view:View,position: Int) {
                 if(position>0){
-                    song.removeAt(0)
                     val json: String = Gson().toJson(song)
                     val intent = Intent()
                     intent.setClass(context, MusicPlayActivity().javaClass)

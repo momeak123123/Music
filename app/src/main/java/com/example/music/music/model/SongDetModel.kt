@@ -9,6 +9,7 @@ import com.example.music.common.Constants
 import com.example.music.music.contract.SongDetContract
 import com.example.music.music.view.act.AlbumDetActivity
 import com.example.music.music.view.act.SongDetActivity
+import com.example.music.sql.dao.mDownDao
 import com.example.music.sql.dao.mPlaylistDao
 import com.google.gson.Gson
 import com.lzy.okgo.OkGo
@@ -107,7 +108,7 @@ class SongDetModel : BaseModel(), SongDetContract.IModel {
                         val bean =
                             Gson().fromJson(response.body(), ResultBeans::class.javaObjectType)
                         if (bean.code == 200) {
-                            // mPlaylistDao.delete(ids)
+                             //mDownDao.delete(data)
                             SongDetActivity.adapter.remove(data)
                         } else {
                             Toast.makeText(

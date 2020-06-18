@@ -119,7 +119,7 @@ class AlbumActivity : BaseMvpActivity<AlbumContract.IPresenter>() , AlbumContrac
                 intent.setClass(context, AlbumDetActivity().javaClass)
                 intent.putExtra("album_id",album[position].album_id)
                 intent.putExtra("album_type",album[position].type)
-                intent.putExtra("album_time",0L)
+                intent.putExtra("album_time",album[position].publish_time)
                 intent.putExtra("palylist_name",album[position].name)
                 intent.putExtra("info",album[position].info)
                 intent.putExtra("cover",album[position].pic_url)

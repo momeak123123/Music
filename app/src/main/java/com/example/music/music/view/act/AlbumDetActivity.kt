@@ -19,6 +19,7 @@ import com.example.music.music.contract.AlbumDetContract
 import com.example.music.music.model.MusicPlayModel
 import com.example.music.music.presenter.AlbumDetPresenter
 import com.example.music.sql.bean.Playlist
+import com.example.music.sql.dao.mDownDao
 import com.example.music.sql.dao.mPlaylistDao
 import com.google.gson.Gson
 import com.google.gson.JsonObject
@@ -242,7 +243,45 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
                     .positiveText("确认")
                     .negativeText("取消")
                     .onPositive { _: MaterialDialog?, _: DialogAction? ->
-                        MusicPlayModel.addSong(context, idmap, song[position].play_list_id)
+                        val playsong = mDownDao.query(song[position].play_list_id)
+                        val songs = mutableListOf<Music>()
+                        songs.addAll(idmap)
+                        if (playsong.size > 0) {
+                            if(idmap.size>0){
+                                for (sea in idmap) {
+                                    for (det in playsong) {
+                                        if (sea.song_id == det.song_id) {
+                                            songs.remove(sea)
+                                        }
+                                    }
+                                }
+                                if(songs.size>0){
+                                    val num = (playsong.size + songs.size).toString()
+                                    MusicPlayModel.addSong(context, songs, num,song[position].play_list_id)
+                                    adapters.update(position, num)
+                                }else{
+                                    Toast.makeText(
+                                        context,
+                                        "歌曲已存在",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+
+                            }
+
+                        }else{
+                            if(songs.size>0){
+                                val num = (playsong.size + songs.size).toString()
+                                MusicPlayModel.addSong(context, songs, num,song[position].play_list_id)
+                                adapters.update(position, num)
+                            }else{
+                                Toast.makeText(
+                                    context,
+                                    "歌曲已存在",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                        }
 
                     }
                     .show()
@@ -261,13 +300,11 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
         recyc_item.layoutManager = layoutManager
         recyc_item.itemAnimator = DefaultItemAnimator()
         recyc_item.setHasFixedSize(true)
-
         adapter =  AlbumDetAdapter(song, context,album_id,txts,covers,names)
         recyc_item.adapter = adapter
         adapter.setOnItemClickListener(object : AlbumDetAdapter.ItemClickListener {
             override fun onItemClick(view:View,position: Int) {
                 if(position>0){
-                    song.removeAt(0)
                     val json: String = Gson().toJson(song)
                     val intent = Intent()
                     intent.setClass(context, MusicPlayActivity().javaClass)
@@ -357,7 +394,7 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
                 RxView.clicks(relat3)
                     .throttleFirst(1, TimeUnit.SECONDS)
                     .subscribe {
-                        foods.visibility = View.GONE
+                        poplue.visibility = View.GONE
                         in_indel.visibility = View.VISIBLE
                         Glide.with(context).load("").into(del)
                         in_title.text = getText(R.string.song_but)

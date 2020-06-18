@@ -144,8 +144,8 @@
 
             <ImageView
                 android:id="@+id/pre"
-                android:layout_width="@dimen/dp_30"
-                android:layout_height="@dimen/dp_30"
+                android:layout_width="@dimen/dp_40"
+                android:layout_height="@dimen/dp_40"
                 android:layout_gravity="center_vertical"
                 android:layout_marginStart="@dimen/dp_60"
                 android:layout_weight="1"
@@ -185,8 +185,8 @@
 
             <ImageView
                 android:id="@+id/next"
-                android:layout_width="@dimen/dp_30"
-                android:layout_height="@dimen/dp_30"
+                android:layout_width="@dimen/dp_40"
+                android:layout_height="@dimen/dp_40"
                 android:layout_gravity="center_vertical"
                 android:layout_marginEnd="@dimen/dp_60"
                 android:layout_weight="1"
@@ -254,13 +254,14 @@
         android:id="@+id/in_indel"
         layout="@layout/play_list"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/include" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

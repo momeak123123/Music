@@ -143,7 +143,18 @@ class ArtistDetActivity : BaseMvpActivity<ArtistDetContract.IPresenter>() , Arti
         recyc_item.adapter = adapter
         adapter.setOnItemClickListener(object : ArtistDetAdapter.ItemClickListener {
             override fun onItemClick(view:View,position: Int) {
-
+                if(position>0){
+                    val intent = Intent()
+                    intent.setClass(context, AlbumDetActivity().javaClass)
+                    intent.putExtra("album_id",artists[position].album_id)
+                    intent.putExtra("album_type",artists[position].type)
+                    intent.putExtra("album_time",artists[position].publish_time)
+                    intent.putExtra("palylist_name",artists[position].name)
+                    intent.putExtra("info",artists[position].info)
+                    intent.putExtra("cover",artists[position].pic_url)
+                    intent.putExtra("type",2)
+                    startActivity(intent)
+                }
 
             }
         })

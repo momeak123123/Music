@@ -66,18 +66,7 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>() , Star
                 time.text=(3-t).toString()
             }
             .doOnComplete {
-                val sp =
-                    getSharedPreferences("User", Context.MODE_PRIVATE)
-                val slogin = sp.getString("user_id", "")
-                if (slogin == "") {
-                    finish()
-                    val intent = Intent()
-                    intent.setClass(context, LoginActivity().javaClass)
-                    startActivity(intent)
-
-                }else{
-                    finish()
-                }
+                finish()
             }
             .subscribe()
 
@@ -85,18 +74,8 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>() , Star
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
                 mDisposable.dispose()
-                val sp =
-                    getSharedPreferences("User", Context.MODE_PRIVATE)
-                val slogin = sp.getString("user_id", "")
-                if (slogin == "") {
-                    finish()
-                    val intent = Intent()
-                    intent.setClass(context, LoginActivity().javaClass)
-                    startActivity(intent)
+                finish()
 
-                }else{
-                    finish()
-                }
             }
     }
 

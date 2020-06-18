@@ -2,6 +2,7 @@ package com.example.music.bean
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.example.music.sql.bean.Down
 
 
 data class SongDet(
@@ -9,10 +10,7 @@ data class SongDet(
     var type: Int
 )
 
-
 data class SongList(
-    val palylist_name: String,
-    var playlist_id: String,
-    var playlist_num: Int,
-    var cover: String
+    val song_list_id: Long,
+    var song_id: Long
 )

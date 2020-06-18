@@ -54,7 +54,7 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
 
         sp = requireContext().getSharedPreferences("Music", Context.MODE_PRIVATE)
         if (!sp.getString("ads", "").equals("")) {
-            bools = true
+
             loadData()
         }
 
@@ -201,6 +201,7 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
                 val json: String = Gson().toJson(MusicApp.getMusic())
                 val intent = Intent()
                 context?.let { intent.setClass(it, MusicPlayActivity().javaClass) }
+                intent.putExtra("album_id",MusicApp.getAblumid())
                 intent.putExtra("pos", MusicApp.getPosition())
                 intent.putExtra("list", json)
                 startActivity(intent)
@@ -247,9 +248,7 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
 
     override fun onResume() {
         super.onResume()
-        if (bools) {
-            loadData()
-        }
+
         try {
             if (MusicPlayActivity.wlMusic.isPlaying) {
                 music.visibility = View.VISIBLE
@@ -361,6 +360,7 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
                 val json: String = Gson().toJson(song)
                 val intent = Intent()
                 context?.let { intent.setClass(it, MusicPlayActivity().javaClass) }
+                intent.putExtra("album_id",0)
                 intent.putExtra("pos", position)
                 intent.putExtra("list", json)
                 startActivity(intent)
