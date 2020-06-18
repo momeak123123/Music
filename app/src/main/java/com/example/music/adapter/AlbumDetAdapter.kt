@@ -131,6 +131,7 @@ class AlbumDetAdapter(
             top_title.text = names
             Glide.with(context).load(R.drawable.mores).into(top_set)
             Glide.with(context).load(R.drawable.shang).into(pre)
+
             if (MusicApp.getAblumid() == id) {
                 if (MusicPlayActivity.wlMusic.isPlaying) {
                     Glide.with(context).load(R.drawable.plays).into(play)
@@ -168,27 +169,47 @@ class AlbumDetAdapter(
             RxView.clicks(pre)
                 .throttleFirst(1, TimeUnit.SECONDS)
                 .subscribe {
-                    if (MusicApp.getAblumid() == id) {
-                        Observable.just(1).subscribe(MusicPlayActivity.observerset)
+                    if(MusicPlayActivity.bool){
+                        if (MusicApp.getAblumid() == id) {
+                            Observable.just(1).subscribe(MusicPlayActivity.observerset)
+                        }
+                    }else{
+                        Observable.just(false).subscribe(AlbumDetActivity.observers)
                     }
+
                 }
             RxView.clicks(play)
                 .throttleFirst(1, TimeUnit.SECONDS)
                 .subscribe {
-                    if (MusicApp.getAblumid() == id) {
-                        Observable.just(0).subscribe(MusicPlayActivity.observerset)
-                    } else {
-                        Observable.just(datas).subscribe(MusicPlayActivity.observerplay)
+                    if(MusicPlayActivity.bool){
+                        if (MusicApp.getAblumid() == id) {
+                            if (MusicPlayActivity.wlMusic.isPlaying) {
+                                Observable.just(0).subscribe(MusicPlayActivity.observerset)
+                            } else {
+                                Observable.just(3).subscribe(MusicPlayActivity.observerset)
+                            }
+
+                        } else {
+                            Observable.just(datas).subscribe(MusicPlayActivity.observerplay)
+                        }
+                    }else{
+                        Observable.just(false).subscribe(AlbumDetActivity.observers)
                     }
 
+                    notifyItemChanged(0)
 
                 }
             RxView.clicks(next)
                 .throttleFirst(1, TimeUnit.SECONDS)
                 .subscribe {
-                    if (MusicApp.getAblumid() == id) {
-                        Observable.just(2).subscribe(MusicPlayActivity.observerset)
+                    if(MusicPlayActivity.bool){
+                        if (MusicApp.getAblumid() == id) {
+                            Observable.just(2).subscribe(MusicPlayActivity.observerset)
+                        }
+                    }else{
+                        Observable.just(false).subscribe(AlbumDetActivity.observers)
                     }
+
 
                 }
         }
@@ -212,11 +233,13 @@ class AlbumDetAdapter(
             num = itemView.findViewById(R.id.num)
         }
 
+        @SuppressLint("ResourceAsColor")
         fun bindData(position: Int) {
 
             itemView.setOnClickListener { v ->
                 mItemClickListener?.onItemClick(v, position)
             }
+
 
             Glide.with(context).load(datas[position].pic_url).placeholder(R.color.main_black_grey)
                 .into(iv_cover)
@@ -232,7 +255,6 @@ class AlbumDetAdapter(
 
             }
             txt.text = srtist_name
-
 
             if (type == 0) {
                 num.visibility = View.VISIBLE

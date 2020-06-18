@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
-        android:id="@+id/song_set_back"
+        android:id="@+id/popule_back"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/black_50p"

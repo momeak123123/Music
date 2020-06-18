@@ -27,6 +27,7 @@ import com.example.music.music.view.act.StartPageActivity;
 import com.example.music.music.view.fragment.FindFragment;
 import com.example.music.music.view.fragment.HomeFragment;
 import com.example.music.music.view.fragment.MyFragment;
+import com.example.music.sql.config.Initialization;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.jpeng.jptabbar.BadgeDismissListener;
 import com.jpeng.jptabbar.JPTabBar;
@@ -91,6 +92,9 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
         et_name = findViewById(R.id.et_name);
         in_cancel = findViewById(R.id.in_cancel);
         in_deter = findViewById(R.id.in_deter);
+
+        Initialization.setupDatabasePlaylist(this);
+        Initialization.setupDatabaseDown(this);
         if(bool){
             Intent intent = new Intent(MainActivity.this, StartPageActivity.class);
             startActivity(intent);
@@ -100,6 +104,8 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
         craet(false);
         MainModel.Companion.homedata(this);
     }
+
+
 
     @SuppressLint("CheckResult")
     private void initView(){

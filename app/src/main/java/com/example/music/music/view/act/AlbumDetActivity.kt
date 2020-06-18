@@ -88,13 +88,13 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
                     songlist.clear()
                     songlist = song
                     val one = mutableListOf<artistlist>()
-                    val det =  Music("","",0,0,"", one,"","")
+                    val det =  Music("","",0,0,"", one,"",0,"")
                     songlist.add(0,det)
                     initSongList(songlist)
                 }else{
                     songlist.clear()
                     val one = mutableListOf<artistlist>()
-                    val det =  Music("","",0,0,"", one,"","")
+                    val det =  Music("","",0,0,"", one,"",0,"")
                     songlist.add(0,det)
                     initSongList(songlist)
                 }
@@ -160,10 +160,10 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
         RxView.clicks(cencel)
             .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
-                val idmap = mutableListOf<Long>()
+                val idmap = mutableListOf<Music>()
                 for(ite in adapter.listdet){
                     if(ite.type == 1){
-                        idmap.add(ite.song.song_id)
+                        idmap.add(ite.song)
                     }
                 }
                 if(idmap.isNotEmpty()){
@@ -204,7 +204,11 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
                 in_indel.visibility = View.GONE
             }
 
-
+        RxView.clicks(play_list_back)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe {
+                in_title.visibility = View.GONE
+            }
        /* if(isSDcardAvailable()){
             val request =
                 OkGo.get<File>(apk.getUrl())
@@ -224,7 +228,7 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
      */
     private fun initSongLists(
         song: MutableList<Playlist>,
-        idmap: MutableList<Long>
+        idmap: MutableList<Music>
     ) {
         in_list.layoutManager = LinearLayoutManager(context)
         in_list.itemAnimator = DefaultItemAnimator()
@@ -267,6 +271,7 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
                     val json: String = Gson().toJson(song)
                     val intent = Intent()
                     intent.setClass(context, MusicPlayActivity().javaClass)
+                    intent.putExtra("album_id",album_id)
                     intent.putExtra("pos",position-1)
                     intent.putExtra("list",json)
                     startActivity(intent)
@@ -282,12 +287,25 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
 
     override fun onResume() {
         super.onResume()
+        try {
+            adapter.notifyItemChanged(0)
+        }catch (e:Exception){}
+
         observers = object : Observer<Boolean> {
             override fun onSubscribe(d: Disposable) {}
 
             override fun onNext(data: Boolean) {
                 if(data){
                     finish()
+                }else{
+                    songlist.removeAt(0)
+                    val json: String = Gson().toJson(songlist)
+                    val intent = Intent()
+                    intent.setClass(context, MusicPlayActivity().javaClass)
+                    intent.putExtra("album_id",album_id)
+                    intent.putExtra("pos",0)
+                    intent.putExtra("list",json)
+                    startActivity(intent)
                 }
 
             }
@@ -330,7 +348,7 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
 
                 }
                 artist_txt.text = getText(R.string.item3s).toString() +":"+ srtist_name
-                RxView.clicks(song_set_back)
+                RxView.clicks(popule_back)
                     .throttleFirst(1, TimeUnit.SECONDS)
                     .subscribe {
                         poplue.visibility = View.GONE
@@ -344,8 +362,8 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>() , AlbumD
                         Glide.with(context).load("").into(del)
                         in_title.text = getText(R.string.song_but)
                         val list: MutableList<Playlist> = mPlaylistDao.queryAll()
-                        val idmap = mutableListOf<Long>()
-                        idmap.add(songlist[data].song_id)
+                        val idmap = mutableListOf<Music>()
+                        idmap.add(songlist[data])
                         initSongLists(list,idmap)
                     }
 

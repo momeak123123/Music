@@ -104,7 +104,6 @@ class LoginActivity : BaseMvpActivity<LoginContract.IPresenter>(), LoginContract
                 if (bool) {
                     finish()
                 } else {
-
                     Toast.makeText(context, R.string.error_login, Toast.LENGTH_SHORT).show()
                 }
             }

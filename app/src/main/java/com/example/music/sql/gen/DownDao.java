@@ -29,11 +29,13 @@ public class DownDao extends AbstractDao<Down, Long> {
         public final static Property Song_id = new Property(2, Long.class, "song_id", false, "SONG_ID");
         public final static Property Name = new Property(3, String.class, "name", false, "NAME");
         public final static Property Album_name = new Property(4, String.class, "album_name", false, "ALBUM_NAME");
-        public final static Property Album_id = new Property(5, String.class, "album_id", false, "ALBUM_ID");
+        public final static Property Album_id = new Property(5, Long.class, "album_id", false, "ALBUM_ID");
         public final static Property Uri = new Property(6, String.class, "uri", false, "URI");
         public final static Property All_artist = new Property(7, String.class, "all_artist", false, "ALL_ARTIST");
         public final static Property Pic_url = new Property(8, String.class, "pic_url", false, "PIC_URL");
         public final static Property Publish_time = new Property(9, String.class, "publish_time", false, "PUBLISH_TIME");
+        public final static Property Song_list_id = new Property(10, Long.class, "song_list_id", false, "SONG_LIST_ID");
+        public final static Property Type = new Property(11, int.class, "type", false, "TYPE");
     }
 
 
@@ -54,11 +56,13 @@ public class DownDao extends AbstractDao<Down, Long> {
                 "\"SONG_ID\" INTEGER," + // 2: song_id
                 "\"NAME\" TEXT," + // 3: name
                 "\"ALBUM_NAME\" TEXT," + // 4: album_name
-                "\"ALBUM_ID\" TEXT," + // 5: album_id
+                "\"ALBUM_ID\" INTEGER," + // 5: album_id
                 "\"URI\" TEXT," + // 6: uri
                 "\"ALL_ARTIST\" TEXT," + // 7: all_artist
                 "\"PIC_URL\" TEXT," + // 8: pic_url
-                "\"PUBLISH_TIME\" TEXT);"); // 9: publish_time
+                "\"PUBLISH_TIME\" TEXT," + // 9: publish_time
+                "\"SONG_LIST_ID\" INTEGER," + // 10: song_list_id
+                "\"TYPE\" INTEGER NOT NULL );"); // 11: type
         // Add Indexes
         db.execSQL("CREATE UNIQUE INDEX " + constraint + "IDX_DOWN__id ON \"DOWN\"" +
                 " (\"_id\" ASC);");
@@ -99,9 +103,9 @@ public class DownDao extends AbstractDao<Down, Long> {
             stmt.bindString(5, album_name);
         }
  
-        String album_id = entity.getAlbum_id();
+        Long album_id = entity.getAlbum_id();
         if (album_id != null) {
-            stmt.bindString(6, album_id);
+            stmt.bindLong(6, album_id);
         }
  
         String uri = entity.getUri();
@@ -123,6 +127,12 @@ public class DownDao extends AbstractDao<Down, Long> {
         if (publish_time != null) {
             stmt.bindString(10, publish_time);
         }
+ 
+        Long song_list_id = entity.getSong_list_id();
+        if (song_list_id != null) {
+            stmt.bindLong(11, song_list_id);
+        }
+        stmt.bindLong(12, entity.getType());
     }
 
     @Override
@@ -154,9 +164,9 @@ public class DownDao extends AbstractDao<Down, Long> {
             stmt.bindString(5, album_name);
         }
  
-        String album_id = entity.getAlbum_id();
+        Long album_id = entity.getAlbum_id();
         if (album_id != null) {
-            stmt.bindString(6, album_id);
+            stmt.bindLong(6, album_id);
         }
  
         String uri = entity.getUri();
@@ -178,6 +188,12 @@ public class DownDao extends AbstractDao<Down, Long> {
         if (publish_time != null) {
             stmt.bindString(10, publish_time);
         }
+ 
+        Long song_list_id = entity.getSong_list_id();
+        if (song_list_id != null) {
+            stmt.bindLong(11, song_list_id);
+        }
+        stmt.bindLong(12, entity.getType());
     }
 
     @Override
@@ -193,11 +209,13 @@ public class DownDao extends AbstractDao<Down, Long> {
             cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2), // song_id
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // name
             cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // album_name
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // album_id
+            cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5), // album_id
             cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // uri
             cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // all_artist
             cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // pic_url
-            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9) // publish_time
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // publish_time
+            cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10), // song_list_id
+            cursor.getInt(offset + 11) // type
         );
         return entity;
     }
@@ -209,11 +227,13 @@ public class DownDao extends AbstractDao<Down, Long> {
         entity.setSong_id(cursor.isNull(offset + 2) ? null : cursor.getLong(offset + 2));
         entity.setName(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setAlbum_name(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setAlbum_id(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setAlbum_id(cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5));
         entity.setUri(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
         entity.setAll_artist(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
         entity.setPic_url(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
         entity.setPublish_time(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
+        entity.setSong_list_id(cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10));
+        entity.setType(cursor.getInt(offset + 11));
      }
     
     @Override

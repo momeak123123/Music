@@ -45,11 +45,7 @@ class AlbumDetModel : BaseModel(), AlbumDetContract.IModel {
                             ).show()
                         }
                     } catch (e: Exception) {
-                        Toast.makeText(
-                            context,
-                            "程序出现了未知异常",
-                            Toast.LENGTH_LONG
-                        ).show()
+
                     }
 
                 }

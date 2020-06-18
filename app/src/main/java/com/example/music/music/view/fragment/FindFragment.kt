@@ -39,6 +39,7 @@ import java.util.concurrent.TimeUnit
  **/
 class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IView {
 
+    private var bools: Boolean = false
     private var adapter: SongListAdapter? = null
 
     companion object {
@@ -55,7 +56,7 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
 
     override fun init(savedInstanceState: Bundle?) {
         super.init(savedInstanceState)
-        Initialization.setupDatabasePlaylist(context)
+
     }
 
     override fun initData() {
@@ -63,10 +64,12 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
          sp = requireContext().getSharedPreferences("User", Context.MODE_PRIVATE)
         if(sp.getBoolean("login",false)){
             back.visibility = View.GONE
+
             val list: MutableList<Playlist> = mPlaylistDao.queryAll()
             if (list.size > 0) {
                 back.visibility = View.GONE
                 initSongList(list)
+                bools = true
             } else {
                 context?.let { getPresenter().listdata(it) }
             }
@@ -100,6 +103,7 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
 
     override fun onResume() {
         super.onResume()
+
         if(sp.getBoolean("login",false)){
             back.visibility = View.GONE
             val list: MutableList<Playlist> = mPlaylistDao.queryAll()

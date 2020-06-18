@@ -16,6 +16,7 @@ import com.example.music.bean.*
 import com.example.music.music.contract.HomeContract
 import com.example.music.music.presenter.HomePresenter
 import com.example.music.music.view.act.*
+import com.example.music.music.view.act.SongDetActivity.Companion.adapter
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
@@ -36,6 +37,8 @@ import java.util.concurrent.TimeUnit
  * @Description input description
  **/
 class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IView {
+    private var bools: Boolean = false
+    private var adapters: HomeListAdapter? = null
     private lateinit var sp: SharedPreferences
 
 
@@ -51,6 +54,7 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
 
         sp = requireContext().getSharedPreferences("Music", Context.MODE_PRIVATE)
         if (!sp.getString("ads", "").equals("")) {
+            bools = true
             loadData()
         }
 
@@ -59,6 +63,7 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
     fun loadData() {
 
         if (!sp.getString("ads", "").equals("")) {
+
             val ads: List<Banner> = Gson().fromJson(
                 sp.getString("ads", ""),
                 object : TypeToken<List<Banner>>() {}.type
@@ -106,7 +111,7 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
     fun loadData1(list: List<Banner>) {
         if (list.isNotEmpty()) {
             val bannerdata = mutableListOf<BannerItem>()
-            for (it in list){
+            for (it in list) {
                 val item1 = BannerItem()
                 item1.imgUrl = it.url
                 item1.title = ""
@@ -196,8 +201,8 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
                 val json: String = Gson().toJson(MusicApp.getMusic())
                 val intent = Intent()
                 context?.let { intent.setClass(it, MusicPlayActivity().javaClass) }
-                intent.putExtra("pos",MusicApp.getPosition())
-                intent.putExtra("list",json)
+                intent.putExtra("pos", MusicApp.getPosition())
+                intent.putExtra("list", json)
                 startActivity(intent)
 
             }
@@ -242,11 +247,17 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
 
     override fun onResume() {
         super.onResume()
+        if (bools) {
+            loadData()
+        }
         try {
-            if(MusicPlayActivity.wlMusic.isPlaying){
+            if (MusicPlayActivity.wlMusic.isPlaying) {
                 music.visibility = View.VISIBLE
             }
-        }catch (e: Exception){ }
+
+
+        } catch (e: Exception) {
+        }
     }
 
     /**
@@ -269,15 +280,15 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
     private fun initTopList(list: List<TopList>) {
         recyc_item1.layoutManager = GridLayoutManager(context, 3)
         recyc_item1.itemAnimator = DefaultItemAnimator()
-        val adapter = context?.let { HomeListAdapter(list, it) }
-        recyc_item1.adapter = adapter
-        adapter!!.setOnItemClickListener(object : HomeListAdapter.ItemClickListener {
-            override fun onItemClick(view:View,position: Int) {
+        adapters = context?.let { HomeListAdapter(list, it) }
+        recyc_item1.adapter = adapters
+        adapters!!.setOnItemClickListener(object : HomeListAdapter.ItemClickListener {
+            override fun onItemClick(view: View, position: Int) {
                 val intent = Intent()
                 context?.let { intent.setClass(it, AlbumDetActivity().javaClass) }
                 intent.putExtra("album_id", list[position].from_id)
                 intent.putExtra("album_type", list[position].from)
-                intent.putExtra("album_time",list[position].update_time)
+                intent.putExtra("album_time", list[position].update_time)
                 intent.putExtra("palylist_name", list[position].name)
                 intent.putExtra("info", list[position].info)
                 intent.putExtra("cover", list[position].pic_url)
@@ -299,12 +310,12 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
         val adapter = context?.let { HomeAlbumAdapter(album, it) }
         recyc_item2.adapter = adapter
         adapter!!.setOnItemClickListener(object : HomeAlbumAdapter.ItemClickListener {
-            override fun onItemClick(view:View,position: Int) {
+            override fun onItemClick(view: View, position: Int) {
                 val intent = Intent()
                 context?.let { intent.setClass(it, AlbumDetActivity().javaClass) }
                 intent.putExtra("album_id", album[position].album_id)
                 intent.putExtra("album_type", album[position].type)
-                intent.putExtra("album_time",0L)
+                intent.putExtra("album_time", 0L)
                 intent.putExtra("palylist_name", album[position].name)
                 intent.putExtra("info", album[position].info)
                 intent.putExtra("cover", album[position].pic_url)
@@ -325,7 +336,7 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
         val adapter = context?.let { HomeSingerAdapter(artists, it) }
         recyc_item3.adapter = adapter
         adapter!!.setOnItemClickListener(object : HomeSingerAdapter.ItemClickListener {
-            override fun onItemClick(view:View,position: Int) {
+            override fun onItemClick(view: View, position: Int) {
                 val intent = Intent()
                 context?.let { intent.setClass(it, ArtistDetActivity().javaClass) }
                 intent.putExtra("id", artists[position].artist_id)
@@ -346,12 +357,12 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
         val adapter = context?.let { HomeSongAdapter(song, it) }
         recyc_item4.adapter = adapter
         adapter!!.setOnItemClickListener(object : HomeSongAdapter.ItemClickListener {
-            override fun onItemClick(view:View,position: Int) {
+            override fun onItemClick(view: View, position: Int) {
                 val json: String = Gson().toJson(song)
                 val intent = Intent()
                 context?.let { intent.setClass(it, MusicPlayActivity().javaClass) }
-                intent.putExtra("pos",position)
-                intent.putExtra("list",json)
+                intent.putExtra("pos", position)
+                intent.putExtra("list", json)
                 startActivity(intent)
 
             }

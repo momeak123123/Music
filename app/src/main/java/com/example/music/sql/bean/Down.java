@@ -19,16 +19,17 @@ public class Down {
     private Long song_id;
     private String name;
     private String album_name;
-    private String album_id;
+    private Long album_id;
     private String uri;
     private String all_artist;
     private String pic_url;
     private String publish_time;
-
-    @Generated(hash = 1909933011)
+    private Long song_list_id;
+    private int type;
+    @Generated(hash = 575255921)
     public Down(Long id, Long playid, Long song_id, String name, String album_name,
-            String album_id, String uri, String all_artist, String pic_url,
-            String publish_time) {
+            Long album_id, String uri, String all_artist, String pic_url,
+            String publish_time, Long song_list_id, int type) {
         this.id = id;
         this.playid = playid;
         this.song_id = song_id;
@@ -39,6 +40,8 @@ public class Down {
         this.all_artist = all_artist;
         this.pic_url = pic_url;
         this.publish_time = publish_time;
+        this.song_list_id = song_list_id;
+        this.type = type;
     }
     @Generated(hash = 1079473298)
     public Down() {
@@ -73,10 +76,10 @@ public class Down {
     public void setAlbum_name(String album_name) {
         this.album_name = album_name;
     }
-    public String getAlbum_id() {
+    public Long getAlbum_id() {
         return this.album_id;
     }
-    public void setAlbum_id(String album_id) {
+    public void setAlbum_id(Long album_id) {
         this.album_id = album_id;
     }
     public String getUri() {
@@ -102,6 +105,18 @@ public class Down {
     }
     public void setPublish_time(String publish_time) {
         this.publish_time = publish_time;
+    }
+    public Long getSong_list_id() {
+        return this.song_list_id;
+    }
+    public void setSong_list_id(Long song_list_id) {
+        this.song_list_id = song_list_id;
+    }
+    public int getType() {
+        return this.type;
+    }
+    public void setType(int type) {
+        this.type = type;
     }
 
 }

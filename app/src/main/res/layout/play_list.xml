@@ -6,6 +6,16 @@
     android:layout_height="match_parent">
 
     <RelativeLayout
+        android:id="@+id/play_list_back"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@color/black_50p"
+        app:layout_constraintBottom_toTopOf="@+id/relativeLayout4"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <RelativeLayout
         android:id="@+id/relativeLayout2"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_60"
@@ -51,6 +61,7 @@
     </RelativeLayout>
 
     <RelativeLayout
+        android:id="@+id/relativeLayout6"
         android:layout_width="match_parent"
         android:layout_height="@dimen/dp_60"
         android:background="@drawable/ima_radio"
@@ -67,8 +78,8 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:gravity="center_vertical|center"
-            android:textSize="@dimen/sp_20"
-            android:text="" />
+            android:text=""
+            android:textSize="@dimen/sp_20" />
 
         <ImageView
             android:id="@+id/del"

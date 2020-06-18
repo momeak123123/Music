@@ -60,6 +60,7 @@ class MusicPlayActivity : AppCompatActivity() {
         lateinit var observers: Observer<Long>
         lateinit var observerplay: Observer<MutableList<Music>>
         lateinit var observerset: Observer<Int>
+        var bool: Boolean = false
     }
 
 
@@ -67,7 +68,7 @@ class MusicPlayActivity : AppCompatActivity() {
     private var type: Int = 0
     lateinit var mDisposable: Disposable
     var max: Long = 0
-    private var bool: Boolean = false
+
     private var min: Long = 0
     private var pos: Int = 0
     private var bitmap: Bitmap? = null
@@ -184,7 +185,8 @@ class MusicPlayActivity : AppCompatActivity() {
 
     fun initData() {
         val bundle = intent.extras
-        val pos = bundle?.get("pos") as Int
+        val album_id = bundle?.get("album_id") as Long
+        val pos = bundle.get("pos") as Int
         val list = bundle.get("list") as String
 
         val obj: JsonArray = Gson().fromJson(list, JsonArray::class.java)
@@ -196,7 +198,7 @@ class MusicPlayActivity : AppCompatActivity() {
         if (song.isNotEmpty()) {
             id = pos
             song_id = song[pos].song_id
-            MusicApp.setAblumid(song[pos].album_id)
+            MusicApp.setAblumid(album_id)
             playingMusicList = song
             playingMusic = song[pos]
             start(playingMusic!!)
@@ -207,7 +209,8 @@ class MusicPlayActivity : AppCompatActivity() {
         super.onNewIntent(intent)
         if (intent != null) {
             val bundle = intent.extras
-            val pos = bundle?.get("pos") as Int
+            val album_id = bundle?.get("album_id") as Long
+            val pos = bundle.get("pos") as Int
             val list = bundle.get("list") as String
 
             val obj: JsonArray = Gson().fromJson(list, JsonArray::class.java)
@@ -222,7 +225,7 @@ class MusicPlayActivity : AppCompatActivity() {
                 } else {
                     id = pos
                     song_id = song[pos].song_id
-                    MusicApp.setAblumid(song[pos].album_id)
+                    MusicApp.setAblumid(album_id)
                     playingMusicList = song
                     playingMusic = song[pos]
                     starts(playingMusic!!)
@@ -297,12 +300,33 @@ class MusicPlayActivity : AppCompatActivity() {
                         }
                     }
                     1 -> {
+                        if (playPauseIv.isPlaying) {
+                            playPauseIv.pause()
+                            wlMusic.pause()
+                            mDisposable.dispose()
+                            coverFragment.stopRotateAnimation()
+                        }
                         type = 3
                         playtype()
                     }
                     2 -> {
+                        if (playPauseIv.isPlaying) {
+                            playPauseIv.pause()
+                            wlMusic.pause()
+                            mDisposable.dispose()
+                            coverFragment.stopRotateAnimation()
+                        }
                         type = 2
                         playtype()
+
+                    }
+                    3 -> {
+                        if (!playPauseIv.isPlaying) {
+                            playPauseIv.play()
+                            wlMusic.resume()
+                            time(min, max - min)
+                            coverFragment.resumeRotateAnimation()
+                        }
 
                     }
                 }
@@ -349,8 +373,8 @@ class MusicPlayActivity : AppCompatActivity() {
                     .positiveText("确认")
                     .negativeText("取消")
                     .onPositive { _: MaterialDialog?, _: DialogAction? ->
-                        val idmap = mutableListOf<Long>()
-                        idmap.add(song_id)
+                        val idmap = mutableListOf<Music>()
+                        playingMusic?.let { idmap.add(it) }
                         MusicPlayModel.addSong(context, idmap, song[position].play_list_id)
 
                     }
@@ -553,6 +577,7 @@ class MusicPlayActivity : AppCompatActivity() {
             }
             3 -> {
                 //列表循环
+                println(id)
                 if (id > 0) {
                     val ids = id - 1
                     id = ids
