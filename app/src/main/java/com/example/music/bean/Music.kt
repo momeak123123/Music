@@ -22,7 +22,7 @@ data class Music(
 )
 
 data class artistlist(
-    val id: Long,
-    val name: String
+    val artist_id: Long,
+    val artist_name: String
 )
 

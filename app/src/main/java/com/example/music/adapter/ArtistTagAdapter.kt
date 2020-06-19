@@ -77,7 +77,7 @@ class ArtistTagAdapter (val datas: List<Hierarchy>, val context: Context,val typ
                 .setUseShape()
         }else{
             holder.tag.setTextColor(getResources().getColor(R.color.white))
-            holder.tag.setShapeStrokeColor(getResources().getColor(R.color.app_color_apr))
+            holder.tag.setShapeStrokeColor(getResources().getColor(R.color.gray))
                 .setUseShape()
         }
 

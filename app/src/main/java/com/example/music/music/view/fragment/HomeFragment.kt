@@ -54,7 +54,6 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
 
         sp = requireContext().getSharedPreferences("Music", Context.MODE_PRIVATE)
         if (!sp.getString("ads", "").equals("")) {
-
             loadData()
         }
 
@@ -198,12 +197,12 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
         RxView.clicks(music)
             .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
-                val json: String = Gson().toJson(MusicApp.getMusic())
                 val intent = Intent()
                 context?.let { intent.setClass(it, MusicPlayActivity().javaClass) }
-                intent.putExtra("album_id",MusicApp.getAblumid())
-                intent.putExtra("pos", MusicApp.getPosition())
-                intent.putExtra("list", json)
+                intent.putExtra("album_id", 0L)
+                intent.putExtra("pos", 0)
+                intent.putExtra("list", "")
+                intent.putExtra("type", 0)
                 startActivity(intent)
 
             }
@@ -248,13 +247,13 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
 
     override fun onResume() {
         super.onResume()
-
+        if (!sp.getString("ads", "").equals("")) {
+            loadData()
+        }
         try {
             if (MusicPlayActivity.wlMusic.isPlaying) {
                 music.visibility = View.VISIBLE
             }
-
-
         } catch (e: Exception) {
         }
     }
@@ -360,9 +359,10 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
                 val json: String = Gson().toJson(song)
                 val intent = Intent()
                 context?.let { intent.setClass(it, MusicPlayActivity().javaClass) }
-                intent.putExtra("album_id",0)
+                intent.putExtra("album_id", 0L)
                 intent.putExtra("pos", position)
                 intent.putExtra("list", json)
+                intent.putExtra("type", 1)
                 startActivity(intent)
 
             }

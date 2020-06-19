@@ -15,12 +15,12 @@ interface RegisteredContract {
     interface IView : IViewContract
 
     interface IPresenter : IPresenterContract {
-        fun registerdata(context: Context, email:String, pass:String, code:String): Boolean
+        fun registerdata(context: Context, email:String, pass:String): Boolean
         fun registercode(context: Context, email: String)
     }
 
     interface IModel : IModelContract {
-        fun registerdata(context: Context,email:String,pass:String,code:String): Boolean
+        fun registerdata(context: Context,email:String,pass:String): Boolean
         fun registercode(context: Context, email: String)
     }
 }

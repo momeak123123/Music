@@ -1,6 +1,7 @@
 package com.example.music.music.view.act
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Spannable
@@ -11,8 +12,10 @@ import android.view.Gravity
 import android.view.View
 import android.widget.SearchView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.music.MusicApp
 import com.example.music.R
 import com.example.music.adapter.PlaySongAdapter
 import com.example.music.adapter.SearchAdapter
@@ -25,6 +28,7 @@ import com.example.music.sql.dao.mSearchDao
 import com.jakewharton.rxbinding2.view.RxView
 import com.xuexiang.xui.widget.dialog.materialdialog.DialogAction
 import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
+import kotlinx.android.synthetic.main.artist_index.*
 import kotlinx.android.synthetic.main.search.*
 import mvp.ljb.kt.act.BaseMvpActivity
 import java.util.concurrent.TimeUnit
@@ -36,6 +40,7 @@ import java.util.concurrent.TimeUnit
  **/
 class SearchActivity : BaseMvpActivity<SearchContract.IPresenter>() , SearchContract.IView {
 
+    private lateinit var context: Context
     private lateinit var adapter: SearchAdapter
     private  var sreachtxt: String = ""
     var Datas = mutableListOf<Search>()
@@ -49,6 +54,7 @@ class SearchActivity : BaseMvpActivity<SearchContract.IPresenter>() , SearchCont
     override fun init(savedInstanceState: Bundle?) {
         super.init(savedInstanceState)
         Initialization.setupDatabaseSearch(this)
+        context = this
     }
 
     override fun initData() {
@@ -128,14 +134,24 @@ class SearchActivity : BaseMvpActivity<SearchContract.IPresenter>() , SearchCont
 
             override fun onQueryTextSubmit(queryText: String): Boolean {
                 //点击搜索
+                if(MusicApp.getNetwork()){
+                    val sea = Search()
+                    sea.txt = queryText
+                    sea.state = 0
+                    mSearchDao.insert(sea)
 
-                val sea = Search()
-                sea.txt = queryText
-                sea.state = 0
+                }else{
+                    if (swipe_refresh_layout != null) {
+                        swipe_refresh_layout.isRefreshing = false
+                    }
+                    Toast.makeText(
+                        context,
+                        getText(R.string.nonet),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
 
-                mSearchDao.insert(sea)
 
-                adapter.add(sea)
                 return true
             }
         })

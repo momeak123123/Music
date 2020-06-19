@@ -6,10 +6,12 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.music.MainActivity
+import com.example.music.MusicApp
 import com.example.music.R
 import com.example.music.adapter.SongListAdapter
 import com.example.music.music.contract.FindContract
@@ -19,11 +21,13 @@ import com.example.music.sql.bean.Playlist
 import com.example.music.sql.config.Initialization
 import com.example.music.sql.dao.mPlaylistDao
 import com.google.gson.Gson
+import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.artist_index.*
 import kotlinx.android.synthetic.main.fragment_find.*
 import kotlinx.android.synthetic.main.fragment_find.back
 import kotlinx.android.synthetic.main.fragment_find.swipe_refresh_layout
@@ -44,7 +48,7 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
 
     companion object {
         lateinit var observer: Observer<JsonObject>
-        lateinit var observers: Observer<MutableList<Playlist>>
+        lateinit var observers: Observer<JsonArray>
     }
 
     private lateinit var sp: SharedPreferences
@@ -64,14 +68,22 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
         sp = requireContext().getSharedPreferences("User", Context.MODE_PRIVATE)
         if (sp.getBoolean("login", false)) {
             back.visibility = View.GONE
+            if (MusicApp.getNetwork()) {
+                val list: MutableList<Playlist> = mPlaylistDao.queryAll()
+                if (list.size > 0) {
+                    back.visibility = View.GONE
+                    initSongList(list)
+                    bools = true
+                } else {
+                    context?.let { getPresenter().listdata(it) }
+                }
 
-            val list: MutableList<Playlist> = mPlaylistDao.queryAll()
-            if (list.size > 0) {
-                back.visibility = View.GONE
-                initSongList(list)
-                bools = true
             } else {
-                context?.let { getPresenter().listdata(it) }
+                Toast.makeText(
+                    context,
+                    getText(R.string.nonet),
+                    Toast.LENGTH_LONG
+                ).show()
             }
 
             if (swipe_refresh_layout != null) {
@@ -90,10 +102,17 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
         swipe_refresh_layout.setColorSchemeColors(-0xff6634, -0xbbbc, -0x996700, -0x559934, -0x7800)
         //下拉刷新
         swipe_refresh_layout.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener {
-            context?.let {
-                getPresenter().listdata(
-                    it
-                )
+            if (MusicApp.getNetwork()) {
+               initData()
+            } else {
+                if (swipe_refresh_layout != null) {
+                    swipe_refresh_layout.isRefreshing = false
+                }
+                Toast.makeText(
+                    context,
+                    getText(R.string.nonet),
+                    Toast.LENGTH_LONG
+                ).show()
             }
         })
 
@@ -112,13 +131,7 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
 
         if (sp.getBoolean("login", false)) {
             back.visibility = View.GONE
-            val list: MutableList<Playlist> = mPlaylistDao.queryAll()
-            if (list.size > 0) {
-                back.visibility = View.GONE
-                initSongList(list)
-            } else {
-                back.visibility = View.VISIBLE
-            }
+           initData()
         } else {
             back.visibility = View.VISIBLE
         }
@@ -146,35 +159,25 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
 
         }
 
-        observers = object : Observer<MutableList<Playlist>> {
+        observers = object : Observer<JsonArray> {
             override fun onSubscribe(d: Disposable) {}
-            override fun onNext(data: MutableList<Playlist>) {
+            override fun onNext(listdata: JsonArray) {
+
+                val data: MutableList<Playlist> = Gson().fromJson(
+                    listdata,
+                    object : TypeToken<MutableList<Playlist>>() {}.type
+                )
+
+
                 if (data.size > 0) {
-                    initSongList(data)
-                    back.visibility = View.GONE
-
-                    val list = mPlaylistDao.queryAll()
                     for (it in data) {
-                        if (list.size > 0) {
-                            for (its in list) {
-                                if (it.play_list_id == its.play_list_id) {
-                                    mPlaylistDao.update(it)
-                                } else {
-                                    mPlaylistDao.insert(it)
-                                }
-
-                            }
-                        } else {
-                            mPlaylistDao.insert(it)
-                        }
+                        mPlaylistDao.insert(it)
                     }
 
-
+                    initData()
+                    back.visibility = View.GONE
                 } else {
                     back.visibility = View.VISIBLE
-                }
-                if (swipe_refresh_layout != null) {
-                    swipe_refresh_layout.isRefreshing = false
                 }
             }
 

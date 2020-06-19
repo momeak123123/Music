@@ -77,13 +77,7 @@ class FindModel : BaseModel(), FindContract.IModel {
                         val bean =
                             Gson().fromJson(response.body(), ResultBeans::class.javaObjectType)
                         if (bean.code == 200) {
-
-                            val list: MutableList<Playlist> = Gson().fromJson(
-                                bean.data,
-                                object : TypeToken<MutableList<Playlist>>() {}.type
-                            )
-
-                            Observable.just(list).subscribe(FindFragment.observers)
+                            Observable.just(bean.data).subscribe(FindFragment.observers)
                         } else {
                             Toast.makeText(
                                 context,

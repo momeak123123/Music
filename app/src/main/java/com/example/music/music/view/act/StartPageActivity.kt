@@ -3,12 +3,14 @@ package com.example.music.music.view.act
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
 import android.view.WindowManager
+import androidx.core.content.ContentProviderCompat.requireContext
 import com.example.music.MainActivity
 import com.example.music.R
 import com.example.music.music.contract.StartPageContract
@@ -29,10 +31,11 @@ import java.util.concurrent.TimeUnit
 class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>() , StartPageContract.IView {
 
 
+    private var slogin: String? = null
     private lateinit var mDisposable: Disposable
     private lateinit var context: Context
     private lateinit var countDownTimer: CountDownTimer
-
+    private lateinit var sp: SharedPreferences
     override fun registerPresenter() = StartPagePresenter::class.java
 
     override fun getLayoutId(): Int {
@@ -54,6 +57,8 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>() , Star
         }
         context=this
         MainActivity.bool = false
+        sp = getSharedPreferences("User", Context.MODE_PRIVATE)
+        slogin = sp.getString("user_id", "")
     }
 
     @SuppressLint("CheckResult")
@@ -67,6 +72,11 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>() , Star
             }
             .doOnComplete {
                 finish()
+                if (slogin == "") {
+                    val intent = Intent()
+                    intent.setClass(context, LoginActivity().javaClass)
+                    startActivity(intent)
+                }
             }
             .subscribe()
 
@@ -75,7 +85,11 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>() , Star
             .subscribe {
                 mDisposable.dispose()
                 finish()
-
+                if (slogin == "") {
+                    val intent = Intent()
+                    intent.setClass(context, LoginActivity().javaClass)
+                    startActivity(intent)
+                }
             }
     }
 

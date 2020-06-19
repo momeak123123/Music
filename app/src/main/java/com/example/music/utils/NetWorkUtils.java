@@ -18,7 +18,7 @@ public class NetWorkUtils {
     /**
      * 网络类型 - 无连接
      */
-    public static final int NETWORK_TYPE_NO_CONNECTION = -1231545315;
+    public static final int NETWORK_TYPE_NO_CONNECTION = -1;
 
     public static final String NETWORK_TYPE_WIFI = "wifi";
     public static final String NETWORK_TYPE_3G = "eg";

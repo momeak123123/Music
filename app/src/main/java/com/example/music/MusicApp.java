@@ -6,6 +6,7 @@ import android.content.Context;
 import android.widget.Toast;
 
 import com.example.music.bean.Music;
+import com.example.music.utils.NetWorkUtils;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheEntity;
 import com.lzy.okgo.cache.CacheMode;
@@ -35,6 +36,8 @@ public class MusicApp extends Application {
 
     public static int position = 0;
 
+    public static Boolean network = false;
+
     public static List<Music> music;
 
     public static int getPosition() {
@@ -61,12 +64,21 @@ public class MusicApp extends Application {
         MusicApp.ablumid = ablumid;
     }
 
+    public static Boolean getNetwork() {
+        return network;
+    }
+
+    public static void setNetwork(Boolean network) {
+        MusicApp.network = network;
+    }
+
     @Override
     public void onCreate() {
         // TODO Auto-generated method stub
         super.onCreate();
         sInstance = this;
         mContext = this;
+        setNetwork(NetWorkUtils.isConnectedByState(mContext));
         XUI.init(this); //初始化UI框架
         XUI.debug(false);  //开启UI框架调试日志
         OkGo.getInstance().init(this);//网络请求

@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import com.example.music.MainActivity
+import com.example.music.MusicApp
 import com.example.music.R
 import com.example.music.music.contract.RegisteredContract
 import com.example.music.music.presenter.RegisteredPresenter
@@ -64,7 +65,7 @@ class RegisteredActivity : BaseMvpActivity<RegisteredContract.IPresenter>(),
                 finish()
             }
 
-        RxView.clicks(btn_captcha)
+       /* RxView.clicks(btn_captcha)
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
                 if (re_username_number.text.toString() != "") {
@@ -72,36 +73,42 @@ class RegisteredActivity : BaseMvpActivity<RegisteredContract.IPresenter>(),
                 }else{
                     Toast.makeText(context, R.string.error_name, Toast.LENGTH_SHORT).show()
                 }
-            }
+            }*/
 
         RxView.clicks(btn_register)
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
-                if (re_username_number.text.toString() != "") {
-                    if(isEmail(re_username_number.text.toString())){
-                        if (re_pass_number.text.toString() != "") {
-                            if (re_passs_number.text.toString() == re_pass_number.text.toString()) {
-                                if (re_captcha_number.text.toString() != "") {
-                                    getPresenter().registerdata(context,re_username_number.text.toString(),re_pass_number.text.toString(),re_captcha_number.text.toString())
+                if(MusicApp.getNetwork()){
+                    if (re_username_number.text.toString() != "") {
+                        if(isEmail(re_username_number.text.toString())){
+                            if (re_pass_number.text.toString() != "") {
+                                if (re_passs_number.text.toString() == re_pass_number.text.toString()) {
+
+                                    getPresenter().registerdata(context,re_username_number.text.toString(),re_pass_number.text.toString())
+
                                 } else {
-                                    Toast.makeText(context, R.string.error_captcha, Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(context, R.string.error_passs, Toast.LENGTH_SHORT).show()
                                 }
 
                             } else {
-                                Toast.makeText(context, R.string.error_passs, Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, R.string.error_pass, Toast.LENGTH_SHORT).show()
                             }
-
-                        } else {
-                            Toast.makeText(context, R.string.error_pass, Toast.LENGTH_SHORT).show()
+                        }else{
+                            Toast.makeText(context, R.string.tip_name_number_error, Toast.LENGTH_SHORT).show()
                         }
-                    }else{
-                        Toast.makeText(context, R.string.tip_name_number_error, Toast.LENGTH_SHORT).show()
+
+
+                    } else {
+                        Toast.makeText(context, R.string.error_name, Toast.LENGTH_SHORT).show()
                     }
-
-
-                } else {
-                    Toast.makeText(context, R.string.error_name, Toast.LENGTH_SHORT).show()
+                }else{
+                    Toast.makeText(
+                        context,
+                        getText(R.string.nonet),
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
+
             }
     }
 
@@ -131,7 +138,7 @@ class RegisteredActivity : BaseMvpActivity<RegisteredContract.IPresenter>(),
 
         }
 
-        observers = object : Observer<Boolean> {
+       /* observers = object : Observer<Boolean> {
             override fun onSubscribe(d: Disposable) {}
             @SuppressLint("SetTextI18n")
             override fun onNext(bool: Boolean) {
@@ -153,7 +160,7 @@ class RegisteredActivity : BaseMvpActivity<RegisteredContract.IPresenter>(),
             override fun onError(e: Throwable) {}
             override fun onComplete() {}
 
-        }
+        }*/
 
 
     }

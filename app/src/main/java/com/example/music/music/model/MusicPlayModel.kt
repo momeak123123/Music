@@ -72,8 +72,8 @@ class MusicPlayModel {
                                             down.album_name = it.album_name
                                             down.album_id = it.album_id
                                             down.uri = it.uri
-                                            down.artist = it.all_artist[0].name
-                                            down.artist_id = it.all_artist[0].id
+                                            down.artist = it.all_artist[0].artist_name
+                                            down.artist_id = it.all_artist[0].artist_id
                                             down.pic_url = it.pic_url
                                             down.publish_time = it.publish_time
                                             down.song_list_id = i.song_list_id

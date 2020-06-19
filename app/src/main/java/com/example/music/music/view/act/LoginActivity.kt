@@ -6,6 +6,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import com.example.music.MainActivity
+import com.example.music.MusicApp
 import com.example.music.R
 import com.example.music.music.contract.LoginContract
 import com.example.music.music.presenter.LoginPresenter
@@ -13,6 +14,7 @@ import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.artist_index.*
 import mvp.ljb.kt.act.BaseMvpActivity
 import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
@@ -60,26 +62,35 @@ class LoginActivity : BaseMvpActivity<LoginContract.IPresenter>(), LoginContract
         RxView.clicks(btn_login)
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
-                if (et_username_number.text.toString() != "") {
-                    if(isEmail(et_username_number.text.toString())){
-                        if (et_passs_number.text.toString() != "") {
+                if(MusicApp.getNetwork()){
+                    if (et_username_number.text.toString() != "") {
+                        if(isEmail(et_username_number.text.toString())){
+                            if (et_passs_number.text.toString() != "") {
 
-                            getPresenter().logindata(
-                                context,
-                                et_username_number.text.toString(),
-                                et_passs_number.text.toString()
-                            )
-                        } else {
-                            Toast.makeText(context, R.string.error_pass, Toast.LENGTH_SHORT).show()
+                                getPresenter().logindata(
+                                    context,
+                                    et_username_number.text.toString(),
+                                    et_passs_number.text.toString()
+                                )
+                            } else {
+                                Toast.makeText(context, R.string.error_pass, Toast.LENGTH_SHORT).show()
+                            }
+                        }else{
+                            Toast.makeText(context, R.string.tip_name_number_error, Toast.LENGTH_SHORT).show()
                         }
-                    }else{
-                        Toast.makeText(context, R.string.tip_name_number_error, Toast.LENGTH_SHORT).show()
+
+
+                    } else {
+                        Toast.makeText(context, R.string.error_name, Toast.LENGTH_SHORT).show()
                     }
-
-
-                } else {
-                    Toast.makeText(context, R.string.error_name, Toast.LENGTH_SHORT).show()
+                }else{
+                    Toast.makeText(
+                        context,
+                        getText(R.string.nonet),
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
+
             }
     }
 

@@ -8,9 +8,11 @@ import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
+import android.widget.Toast
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.example.music.MusicApp
 import com.example.music.R
 import com.example.music.adapter.AlbumDetAdapter
 import com.example.music.adapter.ArtistDetAdapter
@@ -22,7 +24,9 @@ import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.album_index.*
 import kotlinx.android.synthetic.main.artist_index.*
+import kotlinx.android.synthetic.main.artist_index.recyc_item
 import kotlinx.android.synthetic.main.artist_index.swipe_refresh_layout
 import mvp.ljb.kt.act.BaseMvpActivity
 
@@ -68,7 +72,19 @@ class ArtistDetActivity : BaseMvpActivity<ArtistDetContract.IPresenter>() , Arti
         val bundle = intent.extras
         val id = bundle?.get("id") as Long
         val type = bundle.get("type") as Int
-        getPresenter().listdata(context,id,type)
+        if(MusicApp.getNetwork()){
+            getPresenter().listdata(context,id,type)
+        }else{
+            if (swipe_refresh_layout != null) {
+                swipe_refresh_layout.isRefreshing = false
+            }
+            Toast.makeText(
+                context,
+                getText(R.string.nonet),
+                Toast.LENGTH_LONG
+            ).show()
+        }
+
 
     }
 
@@ -148,7 +164,7 @@ class ArtistDetActivity : BaseMvpActivity<ArtistDetContract.IPresenter>() , Arti
                     intent.setClass(context, AlbumDetActivity().javaClass)
                     intent.putExtra("album_id",artists[position].album_id)
                     intent.putExtra("album_type",artists[position].type)
-                    intent.putExtra("album_time",artists[position].publish_time)
+                    intent.putExtra("album_time",0L)
                     intent.putExtra("palylist_name",artists[position].name)
                     intent.putExtra("info",artists[position].info)
                     intent.putExtra("cover",artists[position].pic_url)

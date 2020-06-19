@@ -62,6 +62,7 @@ class MusicPlayActivity : AppCompatActivity() {
         lateinit var observerplay: Observer<MutableList<Music>>
         lateinit var observerset: Observer<Int>
         var bool: Boolean = false
+        var play: Boolean = false
     }
 
 
@@ -102,16 +103,18 @@ class MusicPlayActivity : AppCompatActivity() {
             if (bool) {
                 if (playPauseIv.isPlaying) {
                     playPauseIv.pause()
+                    play = false
                     wlMusic.pause()
                     mDisposable.dispose()
                     coverFragment.stopRotateAnimation()
                 } else {
                     playPauseIv.play()
                     wlMusic.resume()
+                    play = true
                     time(min, max - min)
                     coverFragment.resumeRotateAnimation()
                 }
-            }else{
+            } else {
                 Toast.makeText(
                     context,
                     getText(R.string.secret_num),
@@ -183,7 +186,7 @@ class MusicPlayActivity : AppCompatActivity() {
             .subscribe {
                 if (bool) {
                     Observable.just(1).subscribe(observerset)
-                }else{
+                } else {
                     Toast.makeText(
                         context,
                         getText(R.string.secret_num),
@@ -197,7 +200,7 @@ class MusicPlayActivity : AppCompatActivity() {
             .subscribe {
                 if (bool) {
                     Observable.just(2).subscribe(observerset)
-                }else{
+                } else {
                     Toast.makeText(
                         context,
                         getText(R.string.secret_num),
@@ -213,7 +216,6 @@ class MusicPlayActivity : AppCompatActivity() {
         val album_id = bundle?.get("album_id") as Long
         val pos = bundle.get("pos") as Int
         val list = bundle.get("list") as String
-        println(pos)
         val obj: JsonArray = Gson().fromJson(list, JsonArray::class.java)
         val song: MutableList<Music> = Gson().fromJson(
             obj,
@@ -237,28 +239,32 @@ class MusicPlayActivity : AppCompatActivity() {
             val album_id = bundle?.get("album_id") as Long
             val pos = bundle.get("pos") as Int
             val list = bundle.get("list") as String
+            val type = bundle.get("type") as Int
 
-            val obj: JsonArray = Gson().fromJson(list, JsonArray::class.java)
-            val song: MutableList<Music> = Gson().fromJson(
-                obj,
-                object : TypeToken<MutableList<Music>>() {}.type
-            )
-            song.removeAt(0)
-            if (song.isNotEmpty()) {
-                if (song[pos].song_id == song_id) {
-                    playingMusicList = song
-                } else {
-                    id = pos
-                    song_id = song[pos].song_id
-                    MusicApp.setAblumid(album_id)
-                    playingMusicList = song
-                    playingMusic = song[pos]
-                    starts(playingMusic!!)
+            if (type == 1) {
+                val obj: JsonArray = Gson().fromJson(list, JsonArray::class.java)
+                val song: MutableList<Music> = Gson().fromJson(
+                    obj,
+                    object : TypeToken<MutableList<Music>>() {}.type
+                )
+                song.removeAt(0)
+                if (song.isNotEmpty()) {
+                    if (song[pos].song_id == song_id) {
+                        playingMusicList = song
+                    } else {
+                        id = pos
+                        song_id = song[pos].song_id
+                        MusicApp.setAblumid(album_id)
+                        playingMusicList = song
+                        playingMusic = song[pos]
+                        starts(playingMusic!!)
 
+
+                    }
 
                 }
-
             }
+
         }
     }
 
@@ -294,7 +300,7 @@ class MusicPlayActivity : AppCompatActivity() {
         observerplay = object : Observer<MutableList<Music>> {
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(song: MutableList<Music>) {
-
+                song.removeAt(0)
                 if (song.isNotEmpty()) {
                     id = 0
                     song_id = song[0].song_id
@@ -318,6 +324,7 @@ class MusicPlayActivity : AppCompatActivity() {
                         if (playPauseIv.isPlaying) {
                             playPauseIv.pause()
                             wlMusic.pause()
+                            play = false
                             mDisposable.dispose()
                             coverFragment.stopRotateAnimation()
                         }
@@ -325,7 +332,8 @@ class MusicPlayActivity : AppCompatActivity() {
                     1 -> {
                         if (playPauseIv.isPlaying) {
                             playPauseIv.pause()
-                            wlMusic.pause()
+                            wlMusic.stop()
+                            play = false
                             mDisposable.dispose()
                             coverFragment.stopRotateAnimation()
                         }
@@ -334,9 +342,10 @@ class MusicPlayActivity : AppCompatActivity() {
                     }
                     2 -> {
                         if (playPauseIv.isPlaying) {
-                            playPauseIv.pause()
-                            wlMusic.pause()
+                            wlMusic.stop()
                             mDisposable.dispose()
+                            playPauseIv.pause()
+                            play = false
                             coverFragment.stopRotateAnimation()
                         }
 
@@ -348,6 +357,7 @@ class MusicPlayActivity : AppCompatActivity() {
                         if (!playPauseIv.isPlaying) {
                             playPauseIv.play()
                             wlMusic.resume()
+                            play = true
                             time(min, max - min)
                             coverFragment.resumeRotateAnimation()
                         }
@@ -361,6 +371,11 @@ class MusicPlayActivity : AppCompatActivity() {
             override fun onComplete() {}
 
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+
     }
 
     /**
@@ -403,37 +418,47 @@ class MusicPlayActivity : AppCompatActivity() {
                         val songs = mutableListOf<Music>()
                         songs.addAll(idmap)
                         if (playsong.size > 0) {
-                            if(idmap.size>0){
+                            if (idmap.size > 0) {
                                 for (sea in idmap) {
                                     for (det in playsong) {
-                                       if (sea.song_id == det.song_id) {
+                                        if (sea.song_id == det.song_id) {
                                             songs.remove(sea)
                                         }
                                     }
                                 }
-                                if(songs.size>0){
+                                if (songs.size > 0) {
                                     val num = (playsong.size + songs.size).toString()
-                                    MusicPlayModel.addSong(context, songs, num,song[position].play_list_id)
+                                    MusicPlayModel.addSong(
+                                        context,
+                                        songs,
+                                        num,
+                                        song[position].play_list_id
+                                    )
                                     adapter.update(position, num)
-                                }else{
+                                } else {
                                     Toast.makeText(
                                         context,
-                                        "歌曲已存在",
+                                        getText(R.string.play_mode),
                                         Toast.LENGTH_LONG
                                     ).show()
                                 }
 
                             }
 
-                        }else{
-                            if(songs.size>0){
+                        } else {
+                            if (songs.size > 0) {
                                 val num = (playsong.size + songs.size).toString()
-                                MusicPlayModel.addSong(context, songs, num,song[position].play_list_id)
+                                MusicPlayModel.addSong(
+                                    context,
+                                    songs,
+                                    num,
+                                    song[position].play_list_id
+                                )
                                 adapter.update(position, num)
-                            }else{
+                            } else {
                                 Toast.makeText(
                                     context,
-                                    "歌曲已存在",
+                                    getText(R.string.play_mode),
                                     Toast.LENGTH_LONG
                                 ).show()
                             }
@@ -446,7 +471,7 @@ class MusicPlayActivity : AppCompatActivity() {
     }
 
     private fun start(music: Music) {
-        try{
+        try {
             playPauseIv.setLoading(true)
             playingMusic = music
             //更新标题
@@ -458,9 +483,9 @@ class MusicPlayActivity : AppCompatActivity() {
             var srtist_name = ""
             for (it in artist) {
                 if (srtist_name != "") {
-                    srtist_name += "/" + it.name
+                    srtist_name += "/" + it.artist_name
                 } else {
-                    srtist_name = it.name
+                    srtist_name = it.artist_name
                 }
 
             }
@@ -474,13 +499,13 @@ class MusicPlayActivity : AppCompatActivity() {
                     play(music.uri)
                 }
             }.start()
-        }catch (e:Exception){}
+        } catch (e: Exception) {
+        }
 
     }
 
     private fun starts(music: Music) {
         try {
-            println("2/"+id)
             wlMusic.stop()
             playPauseIv.pause()
             playPauseIv.setLoading(true)
@@ -497,9 +522,9 @@ class MusicPlayActivity : AppCompatActivity() {
             var srtist_name = ""
             for (it in artist) {
                 if (srtist_name != "") {
-                    srtist_name += "/" + it.name
+                    srtist_name += "/" + it.artist_name
                 } else {
-                    srtist_name = it.name
+                    srtist_name = it.artist_name
                 }
 
             }
@@ -514,7 +539,8 @@ class MusicPlayActivity : AppCompatActivity() {
 
                 }
             }.start()
-        }catch (e:Exception){}
+        } catch (e: Exception) {
+        }
 
 
     }
@@ -562,6 +588,7 @@ class MusicPlayActivity : AppCompatActivity() {
                     override fun onComplete() {
                         playPauseIv.play()
                         wlMusic.start() //准备完成开始播放
+                        play = true
                         coverFragment.startRotateAnimation(wlMusic.isPlaying)
                         time(0, max)
                     }
@@ -629,7 +656,7 @@ class MusicPlayActivity : AppCompatActivity() {
             2 -> {
                 //列表循环
 
-                if (playingMusicList!!.size-1 == id) {
+                if (playingMusicList!!.size - 1 == id) {
                     id = 0
                     starts(playingMusicList!![0])
                 } else {
@@ -641,7 +668,7 @@ class MusicPlayActivity : AppCompatActivity() {
                 //列表循环
 
                 if (id == 0) {
-                    id = playingMusicList!!.size-1
+                    id = playingMusicList!!.size - 1
                     starts(playingMusicList!![id])
                 } else {
                     id -= 1

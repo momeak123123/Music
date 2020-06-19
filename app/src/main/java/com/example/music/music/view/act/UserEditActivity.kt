@@ -8,6 +8,7 @@ import android.text.Editable
 import android.view.View
 import android.widget.Toast
 import com.bumptech.glide.Glide
+import com.example.music.MusicApp
 import com.example.music.R
 import com.example.music.music.contract.UserEditContract
 import com.example.music.music.presenter.UserEditPresenter
@@ -18,6 +19,7 @@ import com.xuexiang.xui.widget.picker.widget.builder.OptionsPickerBuilder
 import com.xuexiang.xui.widget.picker.widget.listener.OnOptionsSelectListener
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.artist_index.*
 import kotlinx.android.synthetic.main.head.*
 import kotlinx.android.synthetic.main.user_edit.*
 import mvp.ljb.kt.act.BaseMvpActivity
@@ -70,40 +72,49 @@ class UserEditActivity : BaseMvpActivity<UserEditContract.IPresenter>(), UserEdi
         RxView.clicks(btn_edit)
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
-                if (name.text.toString() != "") {
-                    if (gender.text.toString() != "") {
-                        if (city.text.toString() != "") {
-                            if(mSexOption[0] == gender.text.toString()){
-                                getPresenter().registerdata(
-                                    context,
-                                    name.text.toString(),
-                                    1,
-                                    city.text.toString(),
-                                    sp.getString("url", "").toString()
-                                )
-                            }else{
-                                getPresenter().registerdata(
-                                    context,
-                                    name.text.toString(),
-                                    2,
-                                    city.text.toString(),
-                                    sp.getString("url", "").toString()
-                                )
+                if(MusicApp.getNetwork()){
+                    if (name.text.toString() != "") {
+                        if (gender.text.toString() != "") {
+                            if (city.text.toString() != "") {
+                                if(mSexOption[0] == gender.text.toString()){
+                                    getPresenter().registerdata(
+                                        context,
+                                        name.text.toString(),
+                                        1,
+                                        city.text.toString(),
+                                        sp.getString("url", "").toString()
+                                    )
+                                }else{
+                                    getPresenter().registerdata(
+                                        context,
+                                        name.text.toString(),
+                                        2,
+                                        city.text.toString(),
+                                        sp.getString("url", "").toString()
+                                    )
+                                }
+                            } else {
+                                Toast.makeText(context, R.string.error_user, Toast.LENGTH_SHORT)
+                                    .show()
                             }
 
-
-
                         } else {
-                            Toast.makeText(context, R.string.error_user, Toast.LENGTH_SHORT)
-                                .show()
+                            Toast.makeText(context, R.string.error_user, Toast.LENGTH_SHORT).show()
                         }
-
                     } else {
                         Toast.makeText(context, R.string.error_user, Toast.LENGTH_SHORT).show()
                     }
-                } else {
-                    Toast.makeText(context, R.string.error_user, Toast.LENGTH_SHORT).show()
+                }else{
+                    if (swipe_refresh_layout != null) {
+                        swipe_refresh_layout.isRefreshing = false
+                    }
+                    Toast.makeText(
+                        context,
+                        getText(R.string.nonet),
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
+
             }
     }
 

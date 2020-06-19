@@ -6,8 +6,11 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.example.music.MusicApp
 import com.example.music.R
 import com.example.music.adapter.AlbumListAdapter
 import com.example.music.adapter.ArtistListAdapter
@@ -89,16 +92,50 @@ class ArtistActivity : BaseMvpActivity<ArtistContract.IPresenter>(), ArtistContr
             hierarchy2[0].cat_hierarchy = 0
             varieties = hierarchy1[0].cat_id
             letter = hierarchy2[0].cat_id
-            getPresenter().listdata(context, varieties, letter)
+            loaddata()
+
         }else{
-            getPresenter().taglist(context,true)
+            if(MusicApp.getNetwork()){
+                getPresenter().taglist(context,true)
+            }else{
+                if (swipe_refresh_layout != null) {
+                    swipe_refresh_layout.isRefreshing = false
+                }
+                Toast.makeText(
+                    context,
+                    getText(R.string.nonet),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+
         }
 
     }
 
+    fun loaddata(){
+        if (MusicApp.getNetwork()) {
+            getPresenter().listdata(context, varieties, letter)
+        } else {
+            if (swipe_refresh_layout != null) {
+                swipe_refresh_layout.isRefreshing = false
+            }
+            Toast.makeText(
+                context,
+                getText(R.string.nonet),
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
+
     @SuppressLint("CheckResult")
     override fun initView() {
         super.initView()
+
+        swipe_refresh_layout.setColorSchemeColors(-0xff6634, -0xbbbc, -0x996700, -0x559934, -0x7800)
+        //下拉刷新
+        swipe_refresh_layout.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener { loaddata() })
+
         RxView.clicks(top_flot)
             .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {

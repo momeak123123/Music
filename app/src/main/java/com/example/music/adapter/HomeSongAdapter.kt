@@ -54,9 +54,9 @@ class HomeSongAdapter (val datas: List<Music>, val context: Context) : RecyclerV
         var srtist_name = ""
         for(it in artist){
             if(srtist_name != ""){
-                srtist_name += "/"+it.name
+                srtist_name += "/"+it.artist_name
             }else{
-                srtist_name = it.name
+                srtist_name = it.artist_name
             }
 
         }

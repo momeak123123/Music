@@ -133,12 +133,16 @@ class AlbumDetAdapter(
             Glide.with(context).load(R.drawable.shang).into(pre)
 
             if (MusicApp.getAblumid() == id) {
-                if (MusicPlayActivity.wlMusic.isPlaying) {
+                println("0" + MusicPlayActivity.wlMusic.isPlaying + "/" + MusicPlayActivity.wlMusic.isPlayCircle)
+
+                if (MusicPlayActivity.play) {
+
                     Glide.with(context).load(R.drawable.plays).into(play)
                 } else {
                     Glide.with(context).load(R.drawable.play).into(play)
                 }
-            }else{
+
+            } else {
                 Glide.with(context).load(R.drawable.play).into(play)
             }
 
@@ -156,11 +160,11 @@ class AlbumDetAdapter(
                 .subscribe {
                     if (type == 0) {
                         type = 1
-                        notifyDataSetChanged()
+                        notifyItemRangeChanged(1, datas.size)
                         Observable.just(1).subscribe(AlbumDetActivity.observerd)
                     } else {
                         type = 0
-                        notifyDataSetChanged()
+                        notifyItemRangeChanged(1, datas.size)
                         Observable.just(0).subscribe(AlbumDetActivity.observerd)
                     }
 
@@ -169,11 +173,11 @@ class AlbumDetAdapter(
             RxView.clicks(pre)
                 .throttleFirst(1, TimeUnit.SECONDS)
                 .subscribe {
-                    if(MusicPlayActivity.bool){
+                    if (MusicPlayActivity.bool) {
                         if (MusicApp.getAblumid() == id) {
                             Observable.just(1).subscribe(MusicPlayActivity.observerset)
                         }
-                    }else{
+                    } else {
                         Observable.just(false).subscribe(AlbumDetActivity.observers)
                     }
 
@@ -181,32 +185,34 @@ class AlbumDetAdapter(
             RxView.clicks(play)
                 .throttleFirst(1, TimeUnit.SECONDS)
                 .subscribe {
-                    if(MusicPlayActivity.bool){
+                    if (MusicPlayActivity.bool) {
                         if (MusicApp.getAblumid() == id) {
-                            if (MusicPlayActivity.wlMusic.isPlaying) {
+                            if (MusicPlayActivity.play) {
                                 Observable.just(0).subscribe(MusicPlayActivity.observerset)
+                                Glide.with(context).load(R.drawable.play).into(play)
                             } else {
                                 Observable.just(3).subscribe(MusicPlayActivity.observerset)
+                                Glide.with(context).load(R.drawable.plays).into(play)
                             }
 
                         } else {
                             Observable.just(datas).subscribe(MusicPlayActivity.observerplay)
+                            Glide.with(context).load(R.drawable.plays).into(play)
                         }
-                    }else{
+                    } else {
                         Observable.just(false).subscribe(AlbumDetActivity.observers)
+                        Glide.with(context).load(R.drawable.plays).into(play)
                     }
-
-                    notifyItemChanged(0)
 
                 }
             RxView.clicks(next)
                 .throttleFirst(1, TimeUnit.SECONDS)
                 .subscribe {
-                    if(MusicPlayActivity.bool){
+                    if (MusicPlayActivity.bool) {
                         if (MusicApp.getAblumid() == id) {
                             Observable.just(2).subscribe(MusicPlayActivity.observerset)
                         }
-                    }else{
+                    } else {
                         Observable.just(false).subscribe(AlbumDetActivity.observers)
                     }
 
@@ -248,9 +254,9 @@ class AlbumDetAdapter(
             var srtist_name = ""
             for (it in artist) {
                 if (srtist_name != "") {
-                    srtist_name += "/" + it.name
+                    srtist_name += "/" + it.artist_name
                 } else {
-                    srtist_name = it.name
+                    srtist_name = it.artist_name
                 }
 
             }
@@ -300,7 +306,7 @@ class AlbumDetAdapter(
                 listdet.add(SongDet(it, 0))
             }
         }
-        notifyDataSetChanged()
+        notifyItemRangeChanged(1, datas.size)
     }
 
     interface ItemClickListener {

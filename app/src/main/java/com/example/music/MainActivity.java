@@ -200,15 +200,6 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
         if(bool){
             Intent intent = new Intent(MainActivity.this, StartPageActivity.class);
             startActivity(intent);
-        }else{
-            sp = getSharedPreferences("User", Context.MODE_PRIVATE);
-            String slogin = sp.getString("user_id", "");
-            if (slogin.equals("") ) {
-                Intent intent = new Intent();
-                intent.setClass(MainActivity.this, LoginActivity.class);
-                startActivity(intent);
-
-            }
         }
         if (isNeedCheck) {
             checkPermissions(needPermissions);

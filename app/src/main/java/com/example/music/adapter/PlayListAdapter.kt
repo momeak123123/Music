@@ -55,9 +55,9 @@ class PlayListAdapter  (val datas: MutableList<Music>, val context: Context) : R
         var srtist_name = ""
         for(it in artist){
             if(srtist_name != ""){
-                srtist_name += "/"+it.name
+                srtist_name += "/"+it.artist_name
             }else{
-                srtist_name = it.name
+                srtist_name = it.artist_name
             }
 
         }

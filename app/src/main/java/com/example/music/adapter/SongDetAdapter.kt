@@ -28,10 +28,12 @@ import kotlinx.android.synthetic.main.head.*
 import java.security.AccessController.getContext
 import java.util.concurrent.TimeUnit
 
-class SongDetAdapter  (val datas: MutableList<Music>, val context: Context,
-                       val covers: String,
-                       val id: Long,
-                       val names:String,val num:String) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class SongDetAdapter(
+    val datas: MutableList<Music>, val context: Context,
+    val covers: String,
+    val id: Long,
+    val names: String, val num: String
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
 
     companion object {
@@ -127,25 +129,26 @@ class SongDetAdapter  (val datas: MutableList<Music>, val context: Context,
         fun bindData() {
             val transformation = CornerTransform(context, dip2px(context, 40))
             transformation.setExceptCorner(true, true, false, false)
-            Glide.with(context).load(covers).
-            skipMemoryCache(true).
-            diskCacheStrategy(DiskCacheStrategy.NONE)
+            Glide.with(context).load(covers).skipMemoryCache(true)
+                .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .transform(transformation).into(iv_cover)
 
-           // Glide.with(context).load(covers).placeholder(R.color.main_black_grey).into(iv_cover)
+            // Glide.with(context).load(covers).placeholder(R.color.main_black_grey).into(iv_cover)
             title.text = names
-            txt.text = num+"首"
+            txt.text = num + "首"
             Glide.with(context).load(R.drawable.mores).into(top_set)
             Glide.with(context).load(R.drawable.shang).into(pre)
             if (MusicApp.getAblumid() == id) {
-                if (MusicPlayActivity.wlMusic.isPlaying) {
+                if (MusicPlayActivity.play) {
                     Glide.with(context).load(R.drawable.plays).into(play)
                 } else {
                     Glide.with(context).load(R.drawable.play).into(play)
                 }
-            }else{
+
+            } else {
                 Glide.with(context).load(R.drawable.play).into(play)
             }
+
 
             Glide.with(context).load(R.drawable.xia).into(next)
             RxView.clicks(top_flot)
@@ -159,11 +162,11 @@ class SongDetAdapter  (val datas: MutableList<Music>, val context: Context,
                 .subscribe {
                     if (type == 0) {
                         type = 1
-                        notifyDataSetChanged()
+                        notifyItemRangeChanged(1, datas.size)
                         Observable.just(1).subscribe(SongDetActivity.observerd)
                     } else {
                         type = 0
-                        notifyDataSetChanged()
+                        notifyItemRangeChanged(1, datas.size)
                         Observable.just(0).subscribe(SongDetActivity.observerd)
                     }
 
@@ -172,27 +175,56 @@ class SongDetAdapter  (val datas: MutableList<Music>, val context: Context,
             RxView.clicks(pre)
                 .throttleFirst(1, TimeUnit.SECONDS)
                 .subscribe {
-                    if (MusicApp.getAblumid() == id) {
-                        Observable.just(1).subscribe(MusicPlayActivity.observerset)
+                    if (MusicPlayActivity.bool) {
+                        if (MusicApp.getAblumid() == id) {
+                            Observable.just(1).subscribe(MusicPlayActivity.observerset)
+                        }
+                    } else {
+                        Observable.just(false).subscribe(SongDetActivity.observers)
                     }
+
                 }
             RxView.clicks(play)
                 .throttleFirst(1, TimeUnit.SECONDS)
                 .subscribe {
-                    if (MusicApp.getAblumid() == id) {
-                        Observable.just(0).subscribe(MusicPlayActivity.observerset)
-                    } else {
-                        Observable.just(datas).subscribe(MusicPlayActivity.observerplay)
-                    }
+                    if (MusicPlayActivity.bool) {
+                        if (MusicApp.getAblumid() == id) {
+                            try {
+                                if (MusicPlayActivity.play) {
+                                    Observable.just(0).subscribe(MusicPlayActivity.observerset)
+                                    Glide.with(context).load(R.drawable.play).into(play)
+                                } else {
+                                    Observable.just(3).subscribe(MusicPlayActivity.observerset)
+                                    Glide.with(context).load(R.drawable.plays).into(play)
+                                }
 
+                            } catch (e: Exception) {
+                                Observable.just(false).subscribe(SongDetActivity.observers)
+                            }
+
+
+                        } else {
+                            Observable.just(datas).subscribe(MusicPlayActivity.observerplay)
+                            Glide.with(context).load(R.drawable.plays).into(play)
+                        }
+                    } else {
+                        Observable.just(false).subscribe(SongDetActivity.observers)
+                        Glide.with(context).load(R.drawable.plays).into(play)
+
+                    }
 
                 }
             RxView.clicks(next)
                 .throttleFirst(1, TimeUnit.SECONDS)
                 .subscribe {
-                    if (MusicApp.getAblumid() == id) {
-                        Observable.just(2).subscribe(MusicPlayActivity.observerset)
+                    if (MusicPlayActivity.bool) {
+                        if (MusicApp.getAblumid() == id) {
+                            Observable.just(2).subscribe(MusicPlayActivity.observerset)
+                        }
+                    } else {
+                        Observable.just(false).subscribe(SongDetActivity.observers)
                     }
+
 
                 }
 
@@ -210,33 +242,34 @@ class SongDetAdapter  (val datas: MutableList<Music>, val context: Context,
         var delete: Button
 
         init {
-             iv_cover = itemView.findViewById(R.id.iv_cover)
-             title = itemView.findViewById(R.id.title)
-             txt = itemView.findViewById(R.id.txt)
-             more = itemView.findViewById(R.id.more)
-             radio = itemView.findViewById(R.id.radio)
-             num = itemView.findViewById(R.id.num)
-             delete = itemView.findViewById(R.id.delete)
+            iv_cover = itemView.findViewById(R.id.iv_cover)
+            title = itemView.findViewById(R.id.title)
+            txt = itemView.findViewById(R.id.txt)
+            more = itemView.findViewById(R.id.more)
+            radio = itemView.findViewById(R.id.radio)
+            num = itemView.findViewById(R.id.num)
+            delete = itemView.findViewById(R.id.delete)
         }
 
         fun bindData(position: Int) {
             itemView.setOnClickListener { v ->
-                mItemClickListener?.onItemClick(v,position)
+                mItemClickListener?.onItemClick(v, position)
             }
-            Glide.with(context).load(datas[position].pic_url).placeholder(R.color.main_black_grey).into(iv_cover)
+            Glide.with(context).load(datas[position].pic_url).placeholder(R.color.main_black_grey)
+                .into(iv_cover)
 
             title.text = datas[position].name
-            val artist =  datas[position].all_artist
+            val artist = datas[position].all_artist
             var srtist_name = ""
-            for(it in artist){
-                if(srtist_name != ""){
-                    srtist_name += "/"+it.name
-                }else{
-                    srtist_name = it.name
+            for (it in artist) {
+                if (srtist_name != "") {
+                    srtist_name += "/" + it.artist_name
+                } else {
+                    srtist_name = it.artist_name
                 }
 
             }
-            txt.text =  srtist_name
+            txt.text = srtist_name
 
 
 
@@ -289,11 +322,11 @@ class SongDetAdapter  (val datas: MutableList<Music>, val context: Context,
                 listdet.add(SongDet(it, 0))
             }
         }
-        notifyDataSetChanged()
+        notifyItemRangeChanged(1, datas.size)
     }
 
     interface ItemClickListener {
-        fun onItemClick(view:View,position: Int)
+        fun onItemClick(view: View, position: Int)
     }
 
     fun setOnItemClickListener(itemClickListener: ItemClickListener) {
