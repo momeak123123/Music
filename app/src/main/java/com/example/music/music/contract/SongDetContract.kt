@@ -12,17 +12,18 @@ import mvp.ljb.kt.contract.IModelContract
  **/
 interface SongDetContract {
 
-    interface IView : IViewContract
+    interface IView : IViewContract {
+    }
 
     interface IPresenter : IPresenterContract {
         fun listdata(context: Context, id: Long)
         fun deldata(context: Context, ids: Long,playids: Long)
-        fun delsongs(context: Context, data: Int, songids: Long)
+        fun delsongs(context: Context, data: Long, songids: Long)
     }
 
     interface IModel : IModelContract{
         fun listdata(context: Context,id: Long)
         fun deldata(context: Context, ids: Long,playids: Long)
-        fun delsongs(context: Context, data: Int, songids: Long)
+        fun delsongs(context: Context, data: Long, songids: Long)
     }
 }

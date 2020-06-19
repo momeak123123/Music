@@ -9,6 +9,7 @@ import com.example.music.common.Constants
 import com.example.music.music.contract.SongDetContract
 import com.example.music.music.view.act.AlbumDetActivity
 import com.example.music.music.view.act.SongDetActivity
+import com.example.music.sql.bean.Playlist
 import com.example.music.sql.dao.mDownDao
 import com.example.music.sql.dao.mPlaylistDao
 import com.google.gson.Gson
@@ -74,7 +75,7 @@ class SongDetModel : BaseModel(), SongDetContract.IModel {
                         val bean =
                             Gson().fromJson(response.body(), ResultBeans::class.javaObjectType)
                         if (bean.code == 200) {
-                            mPlaylistDao.delete(ids)
+                           // mPlaylistDao.delete(ids)
                             Observable.just(true).subscribe(SongDetActivity.observers)
                         } else {
                             Toast.makeText(
@@ -94,7 +95,7 @@ class SongDetModel : BaseModel(), SongDetContract.IModel {
             })
     }
 
-    override fun delsongs(context: Context, data: Int, songids: Long) {
+    override fun delsongs(context: Context, data: Long, songids: Long) {
         val sp: SharedPreferences = context.getSharedPreferences("User", Context.MODE_PRIVATE)
         OkGo.post<String>(Constants.URL + "api/user/del_song_list")
             .params("song_list_id",songids)
@@ -108,8 +109,8 @@ class SongDetModel : BaseModel(), SongDetContract.IModel {
                         val bean =
                             Gson().fromJson(response.body(), ResultBeans::class.javaObjectType)
                         if (bean.code == 200) {
-                             //mDownDao.delete(data)
-                            SongDetActivity.adapter.remove(data)
+                             mDownDao.delete(data)
+
                         } else {
                             Toast.makeText(
                                 context,

@@ -253,6 +253,8 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
         try {
             if (MusicPlayActivity.wlMusic.isPlaying) {
                 music.visibility = View.VISIBLE
+            }else{
+                music.visibility = View.GONE
             }
         } catch (e: Exception) {
         }

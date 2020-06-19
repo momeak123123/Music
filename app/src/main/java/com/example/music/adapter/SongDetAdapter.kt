@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -239,6 +240,7 @@ class SongDetAdapter(
         var more: ImageView
         var radio: ImageView
         var num: TextView
+        var main: RelativeLayout
         var delete: Button
 
         init {
@@ -248,13 +250,12 @@ class SongDetAdapter(
             more = itemView.findViewById(R.id.more)
             radio = itemView.findViewById(R.id.radio)
             num = itemView.findViewById(R.id.num)
+            main = itemView.findViewById(R.id.main)
             delete = itemView.findViewById(R.id.delete)
         }
 
         fun bindData(position: Int) {
-            itemView.setOnClickListener { v ->
-                mItemClickListener?.onItemClick(v, position)
-            }
+
             Glide.with(context).load(datas[position].pic_url).placeholder(R.color.main_black_grey)
                 .into(iv_cover)
 
@@ -286,6 +287,11 @@ class SongDetAdapter(
                     Glide.with(context).load(R.drawable.upselect).into(radio)
                 }
             }
+
+            main.setOnClickListener {
+                mItemClickListener?.onItemClick(position)
+            }
+
 
             radio.setOnClickListener {
                 if (listdet[position].type == 0) {
@@ -326,7 +332,7 @@ class SongDetAdapter(
     }
 
     interface ItemClickListener {
-        fun onItemClick(view: View, position: Int)
+        fun onItemClick(position: Int)
     }
 
     fun setOnItemClickListener(itemClickListener: ItemClickListener) {

@@ -71,6 +71,7 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
             if (MusicApp.getNetwork()) {
                 val list: MutableList<Playlist> = mPlaylistDao.queryAll()
                 if (list.size > 0) {
+                    println(list[0].id)
                     back.visibility = View.GONE
                     initSongList(list)
                     bools = true

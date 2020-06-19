@@ -53,6 +53,15 @@ public class mDownDao {
         return Initialization.getDaoInstantDown().getDownDao().queryBuilder().where(DownDao.Properties.Playid.eq(playid)).list();
     }
 
+    /**
+     * 查询条件为Type=TYPE_LOVE的数据
+     *
+     * @return
+     */
+    public static List<Down> querys(Long songid) {
+        return Initialization.getDaoInstantDown().getDownDao().queryBuilder().where(DownDao.Properties.Song_id.eq(songid)).list();
+    }
+
 
     /**
      * 查询全部数据

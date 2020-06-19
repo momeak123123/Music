@@ -13,6 +13,11 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
+
+
+
+
 
     <application
         android:name=".MusicApp"
@@ -26,6 +31,7 @@
         android:theme="@style/AppTheme"
         tools:replace="android:allowBackup"
         tools:targetApi="n">
+
         <activity android:name=".music.view.act.MusicPlayActivity"
             android:configChanges="orientation|keyboardHidden|keyboard"
             android:launchMode="singleInstance"
@@ -51,6 +57,7 @@
         <activity android:name=".music.view.act.UserEditActivity" />
         <activity android:name=".music.view.act.SongDetActivity" />
         <activity android:name=".music.view.act.SongEditActivity" />
+
     </application>
 
 </manifest>

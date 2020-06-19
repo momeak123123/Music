@@ -17,14 +17,11 @@ import com.example.music.MusicApp
 import com.example.music.R
 import com.example.music.adapter.PlaySongAdapter
 import com.example.music.adapter.SongDetAdapter
-import com.example.music.bean.Artists
 import com.example.music.bean.Music
-import com.example.music.bean.SongList
 import com.example.music.bean.artistlist
 import com.example.music.music.contract.SongDetContract
 import com.example.music.music.model.MusicPlayModel
 import com.example.music.music.presenter.SongDetPresenter
-import com.example.music.sql.bean.Down
 import com.example.music.sql.bean.Playlist
 import com.example.music.sql.dao.mDownDao
 import com.example.music.sql.dao.mPlaylistDao
@@ -37,19 +34,12 @@ import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.food.*
-import kotlinx.android.synthetic.main.fragment_find.*
 import kotlinx.android.synthetic.main.play_list.*
 import kotlinx.android.synthetic.main.play_list.del
 import kotlinx.android.synthetic.main.popule.*
 import kotlinx.android.synthetic.main.song_index.*
-import kotlinx.android.synthetic.main.song_index.foods
-import kotlinx.android.synthetic.main.song_index.in_indel
-import kotlinx.android.synthetic.main.song_index.poplue
-import kotlinx.android.synthetic.main.song_index.recyc_item
-import kotlinx.android.synthetic.main.song_index.swipe_refresh_layout
 import kotlinx.android.synthetic.main.song_set.*
 import kotlinx.android.synthetic.main.song_set.edit_song
-import kotlinx.android.synthetic.main.song_set.song_set_back
 import mvp.ljb.kt.act.BaseMvpActivity
 import java.util.concurrent.TimeUnit
 
@@ -102,6 +92,7 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
             window.statusBarColor = Color.TRANSPARENT
         }
         context = this
+
     }
 
     override fun initData() {
@@ -357,7 +348,15 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
         observerdel = object : Observer<Int> {
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(data: Int) {
-                getPresenter().delsongs(context, data, songlist[data].song_list_id)
+               val list =  mDownDao.querys(songlist[data].song_id)
+                if(list.size>0){
+                    adapter.remove(data)
+                    val playlist: Playlist = mPlaylistDao.query(playids)[0]
+                    playlist.song_num = (playlist.song_num.toInt()-1).toString()
+                    mPlaylistDao.update(playlist)
+                    getPresenter().delsongs(context, list[0].id, list[0].song_list_id)
+                }
+
 
             }
 
@@ -374,8 +373,7 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
             override fun onNext(data: Int) {
                 if (data == 1) {
                     set.visibility = View.VISIBLE
-                    println(ids)
-                    if (ids == 0L) {
+                    if (ids == 1L) {
                         item1.visibility = View.GONE
                         item3.visibility = View.GONE
                     }
@@ -526,7 +524,7 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
         adapter = SongDetAdapter(song, context, imaurl, playids, names, nums)
         recyc_item.adapter = adapter
         adapter.setOnItemClickListener(object : SongDetAdapter.ItemClickListener {
-            override fun onItemClick(view: View, position: Int) {
+            override fun onItemClick(position: Int) {
                 if (position > 0) {
                     val json: String = Gson().toJson(song)
                     val intent = Intent()
