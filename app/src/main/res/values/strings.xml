@@ -53,6 +53,7 @@
     <string name="captchas">请输入验证码</string>
     <string name="succes_code">验证码发送成功，请登陆邮箱查看，如未找到，请注意查看垃圾邮件</string>
     <string name="go">登录</string>
+    <string name="goset">登录后显示歌单</string>
     <string name="ungo">未登录</string>
     <string name="delgo">退出登录</string>
     <string name="tip_name_number_error">无效的邮箱,请重新输入！</string>\

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.music">
+    package="com.example.music.xiaobai">
 
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -32,7 +32,7 @@
         tools:replace="android:allowBackup"
         tools:targetApi="n">
 
-        <activity android:name=".music.view.act.MusicPlayActivity"
+        <activity android:name="com.example.music.xiaobai.music.view.act.MusicPlayActivity"
             android:configChanges="orientation|keyboardHidden|keyboard"
             android:launchMode="singleInstance"
             android:windowSoftInputMode="adjustResize"/>
@@ -43,21 +43,21 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".music.view.act.StartPageActivity"
+        <activity android:name="com.example.music.xiaobai.music.view.act.StartPageActivity"
             android:theme="@style/AppTheme.Full">
 
         </activity>
-        <activity android:name=".music.view.act.SearchActivity" />
-        <activity android:name=".music.view.act.LoginActivity" />
-        <activity android:name=".music.view.act.RegisteredActivity" />
-        <activity android:name=".music.view.act.AlbumActivity" />
-        <activity android:name=".music.view.act.AlbumDetActivity" />
-        <activity android:name=".music.view.act.ArtistActivity" />
-        <activity android:name=".music.view.act.ArtistDetActivity" />
-        <activity android:name=".music.view.act.UserEditActivity" />
-        <activity android:name=".music.view.act.SongDetActivity" />
-        <activity android:name=".music.view.act.SongEditActivity" />
-
+        <activity android:name="com.example.music.xiaobai.music.view.act.SearchActivity" />
+        <activity android:name="com.example.music.xiaobai.music.view.act.LoginActivity" />
+        <activity android:name="com.example.music.xiaobai.music.view.act.RegisteredActivity" />
+        <activity android:name="com.example.music.xiaobai.music.view.act.AlbumActivity" />
+        <activity android:name="com.example.music.xiaobai.music.view.act.AlbumDetActivity" />
+        <activity android:name="com.example.music.xiaobai.music.view.act.ArtistActivity" />
+        <activity android:name="com.example.music.xiaobai.music.view.act.ArtistDetActivity" />
+        <activity android:name="com.example.music.xiaobai.music.view.act.UserEditActivity" />
+        <activity android:name="com.example.music.xiaobai.music.view.act.SongDetActivity" />
+        <activity android:name="com.example.music.xiaobai.music.view.act.SongEditActivity" />
+        <activity android:name="com.example.music.xiaobai.music.view.act.DownloadActivity" />
     </application>
 
 </manifest>
