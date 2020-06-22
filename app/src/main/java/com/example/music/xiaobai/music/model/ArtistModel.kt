@@ -85,6 +85,7 @@ class ArtistModel : BaseModel(), ArtistContract.IModel {
                         val bean =
                             Gson().fromJson(response.body(), ResultBeans::class.javaObjectType)
                         if (bean.code == 200) {
+
                             Observable.just(bean.data).subscribe(ArtistActivity.observers)
                         } else {
                             Toast.makeText(

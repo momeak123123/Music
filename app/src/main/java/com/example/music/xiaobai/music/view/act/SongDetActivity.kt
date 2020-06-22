@@ -18,6 +18,7 @@ import com.example.music.xiaobai.R
 import com.example.music.xiaobai.adapter.SongDetAdapter
 import com.example.music.xiaobai.bean.Music
 import com.example.music.xiaobai.bean.artistlist
+import com.example.music.xiaobai.config.LogDownloadListener
 import com.example.music.xiaobai.music.contract.SongDetContract
 import com.example.music.xiaobai.music.presenter.SongDetPresenter
 import com.example.music.xiaobai.sql.bean.Playlist
@@ -27,6 +28,8 @@ import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.reflect.TypeToken
 import com.jakewharton.rxbinding2.view.RxView
+import com.lzy.okgo.OkGo
+import com.lzy.okserver.OkDownload
 import com.xuexiang.xui.widget.dialog.materialdialog.DialogAction
 import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
 import io.reactivex.Observer
@@ -44,6 +47,7 @@ import kotlinx.android.synthetic.main.song_index.swipe_refresh_layout
 import kotlinx.android.synthetic.main.song_set.*
 import kotlinx.android.synthetic.main.song_set.edit_song
 import mvp.ljb.kt.act.BaseMvpActivity
+import java.io.File
 import java.util.concurrent.TimeUnit
 
 
@@ -253,6 +257,67 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
 
+                MaterialDialog.Builder(context)
+                    .title("下载音乐")
+                    .content("是否下载音乐")
+                    .positiveText("确认")
+                    .negativeText("取消")
+                    .onPositive { _: MaterialDialog?, _: DialogAction? ->
+
+                        val idmap = mutableListOf<Music>()
+
+                        for (ite in SongDetActivity.adapter.listdet) {
+                            if (ite.type == 1) {
+                                idmap.add(ite.song)
+                            }
+                        }
+                        if (idmap.isNotEmpty()) {
+                            for(its in idmap){
+
+                                val downs = mDownDao.querys(its.song_id)
+                                if(downs.size>0){
+                                    for(itd in downs){
+                                        if(itd.type==0){
+                                            val request = OkGo.get<File>(its.uri)
+                                            OkDownload.request(its.uri, request) //
+                                                .priority(0)
+                                                .fileName("music" + its.song_id + ".mp3") //
+                                                .save() //
+                                                .register(LogDownloadListener(its, context, 0,downs,0)) //
+                                                .start()
+                                        }else{
+                                            Toast.makeText(
+                                                context,
+                                                getText(R.string.download_carry),
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    }
+                                }else{
+                                    val request = OkGo.get<File>(its.uri)
+                                    OkDownload.request(its.uri, request) //
+                                        .priority(0)
+                                        .fileName("music" + its.song_id + ".mp3") //
+                                        .save() //
+                                        .register(LogDownloadListener(its, context, 0,downs,0)) //
+                                        .start()
+                                }
+
+
+                            }
+
+                        } else {
+                            Toast.makeText(
+                                context,
+                                getText(R.string.song_collect_error),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+
+
+                    }
+                    .show()
+
             }
 
 
@@ -397,9 +462,9 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
                 var srtist_name = ""
                 for (it in songlist[data].all_artist) {
                     if (srtist_name != "") {
-                        srtist_name += "/" + it.artist_name
+                        srtist_name += "/" + it.name
                     } else {
-                        srtist_name = it.artist_name
+                        srtist_name = it.name
                     }
 
                 }

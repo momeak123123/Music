@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import com.example.music.xiaobai.adapter.ViewPagerAdapter;
 import com.example.music.xiaobai.common.Constants;
+import com.example.music.xiaobai.config.GlideEngine;
 import com.example.music.xiaobai.music.model.MainModel;
 import com.example.music.xiaobai.config.OkGoUpdateHttpUtil;
 import com.example.music.xiaobai.music.view.act.StartPageActivity;
@@ -41,6 +42,11 @@ import com.jakewharton.rxbinding2.view.RxView;
 import com.jpeng.jptabbar.BadgeDismissListener;
 import com.jpeng.jptabbar.JPTabBar;
 import com.jpeng.jptabbar.OnTabSelectListener;
+import com.luck.picture.lib.PictureSelector;
+import com.luck.picture.lib.config.PictureConfig;
+import com.luck.picture.lib.config.PictureMimeType;
+import com.luck.picture.lib.entity.LocalMedia;
+import com.luck.picture.lib.listener.OnResultCallbackListener;
 import com.vector.update_app.UpdateAppBean;
 import com.vector.update_app.UpdateAppManager;
 import com.vector.update_app.UpdateCallback;
@@ -76,7 +82,8 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
             Manifest.permission.INTERNET,
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WAKE_LOCK
+            Manifest.permission.WAKE_LOCK,
+            Manifest.permission.CAMERA
 
     };
     public static Boolean bool = true;
@@ -120,7 +127,9 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
         craet(false);
         MainModel.Companion.homedata(this);
 
-        //updateDiy();
+
+
+        updateDiy();
     }
 
 
@@ -219,12 +228,12 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
         if (isNeedCheck) {
             checkPermissions(needPermissions);
         }
-       /* if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             boolean hasInstallPermission = isHasInstallPermissionWithO(this);
             if (!hasInstallPermission) {
                 startInstallPermissionSettingActivity(this);
             }
-        }*/
+        }
     }
 
     @RequiresApi (api = Build.VERSION_CODES.O)
@@ -281,8 +290,8 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
         String token = sp.getString("token", "");
         Map<String, String> params = new HashMap<String, String>();
 
-        params.put("appKey", token);
-        params.put("appVersion", AppUpdateUtils.getVersionName(this));
+       // params.put("appKey", token);
+        params.put("version", AppUpdateUtils.getVersionName(this));
 
         new UpdateAppManager
                 .Builder()
@@ -295,7 +304,7 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
 
                 //以下设置，都是可选
                 //设置请求方式，默认get
-                .setPost(true)
+                .setPost(false)
                 //添加自定义参数，默认version=1.0.0（app的versionName）；apkKey=唯一表示（在AndroidManifest.xml配置）
                 .setParams(params)
                 //设置apk下砸路径，默认是在下载到sd卡下/Download/1.0.0/test.apk

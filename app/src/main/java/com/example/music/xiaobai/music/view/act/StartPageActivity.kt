@@ -71,11 +71,6 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>() , Star
             }
             .doOnComplete {
                 finish()
-                if (slogin == "") {
-                    val intent = Intent()
-                    intent.setClass(context, LoginActivity().javaClass)
-                    startActivity(intent)
-                }
             }
             .subscribe()
 
@@ -84,11 +79,6 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>() , Star
             .subscribe {
                 mDisposable.dispose()
                 finish()
-                if (slogin == "") {
-                    val intent = Intent()
-                    intent.setClass(context, LoginActivity().javaClass)
-                    startActivity(intent)
-                }
             }
     }
 

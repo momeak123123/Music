@@ -258,9 +258,9 @@ class SongDetAdapter(
             var srtist_name = ""
             for (it in artist) {
                 if (srtist_name != "") {
-                    srtist_name += "/" + it.artist_name
+                    srtist_name += "/" + it.name
                 } else {
-                    srtist_name = it.artist_name
+                    srtist_name = it.name
                 }
 
             }

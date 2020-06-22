@@ -3,6 +3,7 @@ package  com.example.music.xiaobai.music.model
 import android.content.Context
 import android.widget.Toast
 import com.example.music.xiaobai.bean.ResultBean
+import com.example.music.xiaobai.bean.ResultBeans
 import com.example.music.xiaobai.common.Constants
 import com.example.music.xiaobai.music.contract.AlbumDetContract
 import com.example.music.xiaobai.music.view.act.AlbumDetActivity
@@ -31,7 +32,7 @@ class AlbumDetModel : BaseModel(), AlbumDetContract.IModel {
                      */
                     try {
                         val bean =
-                            Gson().fromJson(response.body(), ResultBean::class.javaObjectType)
+                            Gson().fromJson(response.body(), ResultBeans::class.javaObjectType)
                         if (bean.code == 200) {
                             Observable.just(bean.data).subscribe(AlbumDetActivity.observer)
                         } else {
@@ -65,7 +66,7 @@ class AlbumDetModel : BaseModel(), AlbumDetContract.IModel {
                      */
                     try {
                         val bean =
-                            Gson().fromJson(response.body(), ResultBean::class.javaObjectType)
+                            Gson().fromJson(response.body(), ResultBeans::class.javaObjectType)
                         if (bean.code == 200) {
                             Observable.just(bean.data).subscribe(AlbumDetActivity.observer)
                         } else {

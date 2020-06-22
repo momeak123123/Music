@@ -16,6 +16,7 @@ import com.example.music.xiaobai.adapter.ArtistListAdapter
 import com.example.music.xiaobai.adapter.ArtistTagAdapter
 import com.example.music.xiaobai.bean.Artists
 import com.example.music.xiaobai.bean.Hierarchy
+import com.example.music.xiaobai.config.ItemClickListener
 import com.example.music.xiaobai.music.contract.ArtistContract
 import com.example.music.xiaobai.music.presenter.ArtistPresenter
 import com.google.gson.Gson
@@ -25,6 +26,7 @@ import com.google.gson.reflect.TypeToken
 import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.activity_download_list.*
 import kotlinx.android.synthetic.main.head.*
 import kotlinx.android.synthetic.main.music_artist.*
 import mvp.ljb.kt.act.BaseMvpActivity
@@ -209,16 +211,20 @@ class ArtistActivity : BaseMvpActivity<ArtistContract.IPresenter>(), ArtistContr
         recyc_tab1.itemAnimator = DefaultItemAnimator()
         val adapter = ArtistTagAdapter(list, context, 1)
         recyc_tab1.adapter = adapter
-        adapter.setOnItemClickListener(object : ArtistTagAdapter.ItemClickListener {
-            override fun onItemClick(view:View,position: Int) {
-                bool = true
-                varieties = list[position].cat_id
-                getPresenter().listdata(context, varieties, letter)
+        recyc_tab1.addOnItemTouchListener(
+            ItemClickListener(recyc_tab1,
+                object : ItemClickListener.OnItemClickListener {
+                    override fun onItemClick(view: View?, position: Int) {
+                        bool = true
+                        varieties = list[position].cat_id
+                        getPresenter().listdata(context, varieties, letter)
+                    }
 
-            }
-        })
+                    override fun onItemLongClick(view: View?, position: Int) {
 
-
+                    }
+                })
+        )
     }
 
 
@@ -229,14 +235,20 @@ class ArtistActivity : BaseMvpActivity<ArtistContract.IPresenter>(), ArtistContr
         recyc_tab2.itemAnimator = DefaultItemAnimator()
         val adapter = ArtistTagAdapter(album, context, 2)
         recyc_tab2.adapter = adapter
-        adapter.setOnItemClickListener(object : ArtistTagAdapter.ItemClickListener {
-            override fun onItemClick(view:View,position: Int) {
-                bool = true
-                letter = album[position].cat_id
-                getPresenter().listdata(context, varieties, letter)
+        recyc_tab2.addOnItemTouchListener(
+            ItemClickListener(recyc_tab2,
+                object : ItemClickListener.OnItemClickListener {
+                    override fun onItemClick(view: View?, position: Int) {
+                        bool = true
+                        letter = album[position].cat_id
+                        getPresenter().listdata(context, varieties, letter)
+                    }
 
-            }
-        })
+                    override fun onItemLongClick(view: View?, position: Int) {
+
+                    }
+                })
+        )
 
     }
 
@@ -245,16 +257,23 @@ class ArtistActivity : BaseMvpActivity<ArtistContract.IPresenter>(), ArtistContr
         recyc_list.itemAnimator = DefaultItemAnimator()
         adapter = ArtistListAdapter(artists, context)
         recyc_list.adapter = adapter
-        adapter.setOnItemClickListener(object : ArtistListAdapter.ItemClickListener {
-            override fun onItemClick(view:View,position: Int) {
-                val intent = Intent()
-                context.let { intent.setClass(it, ArtistDetActivity().javaClass) }
-                intent.putExtra("id", artists[position].artist_id)
-                intent.putExtra("type", artists[position].type)
-                startActivity(intent)
+        recyc_list.addOnItemTouchListener(
+            ItemClickListener(recyc_list,
+                object : ItemClickListener.OnItemClickListener {
+                    override fun onItemClick(view: View?, position: Int) {
+                        println(artists)
+                        val intent = Intent()
+                        context.let { intent.setClass(it, ArtistDetActivity().javaClass) }
+                        intent.putExtra("id", artists[position].artsit_id)
+                        intent.putExtra("type", artists[position].type)
+                        startActivity(intent)
+                    }
 
-            }
-        })
+                    override fun onItemLongClick(view: View?, position: Int) {
+
+                    }
+                })
+        )
 
     }
 

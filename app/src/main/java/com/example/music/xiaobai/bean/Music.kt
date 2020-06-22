@@ -1,5 +1,7 @@
 package com.example.music.xiaobai.bean
 
+import java.io.Serializable
+
 
 /**
  * 作者：yonglong on 2016/8/9 10:50
@@ -16,10 +18,10 @@ data class Music(
     val pic_url: String,
     val song_list_id: Long,
     val publish_time: String
-)
+) : Serializable
 
 data class artistlist(
-    val artist_id: Long,
-    val artist_name: String
+    val id: Long,
+    val name: String
 )
 

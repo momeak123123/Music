@@ -88,11 +88,20 @@ public class MusicApp extends Application {
         super.onCreate();
         sInstance = this;
         mContext = this;
-        setNetwork(NetWorkUtils.isConnectedByState(mContext));
-        XUI.init(this); //初始化UI框架
-        XUI.debug(false);  //开启UI框架调试日志
-        OkGo.getInstance().init(this);//网络请求
-        initOkGo();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                XUI.init(MusicApp.this); //初始化UI框架
+                XUI.debug(false);  //开启UI框架调试日志
+                OkGo.getInstance().init(MusicApp.this);//网络请求
+                setNetwork(NetWorkUtils.isConnectedByState(mContext));
+                initOkGo();
+            }
+        }).start();
+
+
+
         // 捕捉RxJava全局异常
         RxJavaPlugins.setErrorHandler(new Consumer<Throwable>() {
             @Override

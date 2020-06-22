@@ -66,16 +66,16 @@ class DownloadListAdapter (val datas: List<ApkModel>, val context: Context) : Re
             .subscribe {
 
                 //这里只是演示，表示请求可以传参，怎么传都行，和okgo使用方法一样
-                val request = OkGo.get<File>(datas[position].uri)
+               /* val request = OkGo.get<File>(datas[position].uri)
 
                 //这里第一个参数是tag，代表下载任务的唯一标识，传任意字符串都行，需要保证唯一,我这里用url作为了tag
                 OkDownload.request(datas[position].uri, request) //
                     .priority(datas[position].priority) //
                     .extra1(datas[position]) //
                     .save() //
-                    .register(LogDownloadListener()) //
+                    .register(LogDownloadListener(datas[position],context,0)) //
                     .start()
-                notifyDataSetChanged()
+                notifyDataSetChanged()*/
             }
     }
     interface ItemClickListener {

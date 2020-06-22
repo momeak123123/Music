@@ -23,6 +23,7 @@ import com.example.music.xiaobai.adapter.PlayListAdapter
 import com.example.music.xiaobai.adapter.PlaySongAdapter
 import com.example.music.xiaobai.adapter.ViewPagerAdapter
 import com.example.music.xiaobai.bean.Music
+import com.example.music.xiaobai.config.LogDownloadListener
 import com.example.music.xiaobai.music.model.MusicPlayModel
 import com.example.music.xiaobai.music.view.fragment.CoverFragment
 import com.example.music.xiaobai.music.view.fragment.LyricFragment
@@ -34,6 +35,8 @@ import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.reflect.TypeToken
 import com.jakewharton.rxbinding2.view.RxView
+import com.lzy.okgo.OkGo
+import com.lzy.okserver.OkDownload
 import com.xuexiang.xui.widget.dialog.materialdialog.DialogAction
 import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
 import com.ywl5320.libenum.MuteEnum
@@ -47,7 +50,7 @@ import kotlinx.android.synthetic.main.frag_player_lrcview.*
 import kotlinx.android.synthetic.main.head.*
 import kotlinx.android.synthetic.main.music_play.*
 import kotlinx.android.synthetic.main.play_list.*
-import java.lang.Exception
+import java.io.File
 import java.util.concurrent.TimeUnit
 
 class MusicPlayActivity : AppCompatActivity() {
@@ -62,13 +65,15 @@ class MusicPlayActivity : AppCompatActivity() {
         lateinit var observerset: Observer<Int>
         var bool: Boolean = false
         var play: Boolean = false
+        var id: Int = 0
         lateinit var adapter: PlaySongAdapter
     }
 
-    private var type: Int = 0
+    private var adaptert: PlayListAdapter? = null
+    private var type: Int = 2
     lateinit var mDisposable: Disposable
     var max: Long = 0
-    var id: Int = 0
+
     private var min: Long = 0
     private var pos: Int = 0
     private var bitmap: Bitmap? = null
@@ -100,17 +105,9 @@ class MusicPlayActivity : AppCompatActivity() {
         playPauseIv.setOnClickListener {
             if (bool) {
                 if (playPauseIv.isPlaying) {
-                    playPauseIv.pause()
-                    play = false
-                    wlMusic.pause()
-                    mDisposable.dispose()
-                    coverFragment.stopRotateAnimation()
+                    Observable.just(0).subscribe(observerset)
                 } else {
-                    playPauseIv.play()
-                    wlMusic.resume()
-                    play = true
-                    time(min, max - min)
-                    coverFragment.resumeRotateAnimation()
+                    Observable.just(3).subscribe(observerset)
                 }
             } else {
                 Toast.makeText(
@@ -123,13 +120,13 @@ class MusicPlayActivity : AppCompatActivity() {
         }
 
         RxView.clicks(top_flot)
-            .throttleFirst(3, TimeUnit.SECONDS)
+            .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
                 moveTaskToBack(true)
             }
 
         RxView.clicks(icon1)
-            .throttleFirst(3, TimeUnit.SECONDS)
+            .throttleFirst(0, TimeUnit.SECONDS)
             .subscribe {
                 if (type < 2) {
                     type++
@@ -147,13 +144,52 @@ class MusicPlayActivity : AppCompatActivity() {
             }
 
         RxView.clicks(icon2)
-            .throttleFirst(3, TimeUnit.SECONDS)
+            .throttleFirst(0, TimeUnit.SECONDS)
             .subscribe {
 
+                MaterialDialog.Builder(context)
+                    .title("下载音乐")
+                    .content("是否下载音乐")
+                    .positiveText("确认")
+                    .negativeText("取消")
+                    .onPositive { _: MaterialDialog?, _: DialogAction? ->
+
+                        val downs = mDownDao.querys(playingMusic!!.song_id)
+                        if(downs.size>0){
+                            for(its in downs){
+                                if(its.type==0){
+                                    val request = OkGo.get<File>(playingMusic!!.uri)
+                                    OkDownload.request(playingMusic!!.uri, request) //
+                                        .priority(0)
+                                        .fileName("music" + playingMusic!!.song_id + ".mp3") //
+                                        .save() //
+                                        .register(LogDownloadListener(playingMusic, context, 0,downs,0)) //
+                                        .start()
+                                }else{
+                                    Toast.makeText(
+                                        context,
+                                        getText(R.string.download_carry),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }
+                        }else{
+                            val request = OkGo.get<File>(playingMusic!!.uri)
+                            OkDownload.request(playingMusic!!.uri, request) //
+                                .priority(0)
+                                .fileName("music" + playingMusic!!.song_id + ".mp3") //
+                                .save() //
+                                .register(LogDownloadListener(playingMusic, context, 1,downs,1)) //
+                                .start()
+                        }
+
+
+                    }
+                    .show()
             }
 
         RxView.clicks(icon3)
-            .throttleFirst(3, TimeUnit.SECONDS)
+            .throttleFirst(0, TimeUnit.SECONDS)
             .subscribe {
                 in_indel.visibility = View.VISIBLE
                 Glide.with(context).load("").into(del)
@@ -163,7 +199,7 @@ class MusicPlayActivity : AppCompatActivity() {
             }
 
         RxView.clicks(icon4)
-            .throttleFirst(3, TimeUnit.SECONDS)
+            .throttleFirst(0, TimeUnit.SECONDS)
             .subscribe {
                 in_indel.visibility = View.VISIBLE
                 Glide.with(this).load(R.drawable.list_del).placeholder(R.color.main_black_grey)
@@ -173,14 +209,14 @@ class MusicPlayActivity : AppCompatActivity() {
             }
 
         RxView.clicks(list_dow)
-            .throttleFirst(3, TimeUnit.SECONDS)
+            .throttleFirst(0, TimeUnit.SECONDS)
             .subscribe {
                 in_indel.visibility = View.GONE
             }
 
 
         RxView.clicks(pre)
-            .throttleFirst(3, TimeUnit.SECONDS)
+            .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
                 if (bool) {
                     Observable.just(1).subscribe(observerset)
@@ -194,7 +230,7 @@ class MusicPlayActivity : AppCompatActivity() {
 
             }
         RxView.clicks(next)
-            .throttleFirst(3, TimeUnit.SECONDS)
+            .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
                 if (bool) {
                     Observable.just(2).subscribe(observerset)
@@ -231,8 +267,9 @@ class MusicPlayActivity : AppCompatActivity() {
                 playingMusicList = song
                 playingMusic = song[pos]
                 start(playingMusic!!)
+
             }
-        }else{
+        } else if(types==2){
             val obj: JsonArray = Gson().fromJson(list, JsonArray::class.java)
             val song: MutableList<Music> = Gson().fromJson(
                 obj,
@@ -284,7 +321,7 @@ class MusicPlayActivity : AppCompatActivity() {
                     }
 
                 }
-            }else{
+            } else if(types==2) {
                 val obj: JsonArray = Gson().fromJson(list, JsonArray::class.java)
                 val song: MutableList<Music> = Gson().fromJson(
                     obj,
@@ -307,7 +344,6 @@ class MusicPlayActivity : AppCompatActivity() {
 
                 }
             }
-
 
 
         }
@@ -368,22 +404,13 @@ class MusicPlayActivity : AppCompatActivity() {
                     0 -> {
                         if (playPauseIv.isPlaying) {
                             playPauseIv.pause()
-                            wlMusic.pause()
-                            play = false
+                            wlMusic.stop()
                             mDisposable.dispose()
+                            play = false
                             coverFragment.stopRotateAnimation()
                         }
                     }
                     1 -> {
-                        if (playingMusicList!!.size - 1 == id) {
-                            id = 0
-                            starts(playingMusicList!![0])
-                        } else {
-                            id += 1
-                            starts(playingMusicList!![id])
-                        }
-                    }
-                    2 -> {
                         if (id == 0) {
                             id = playingMusicList!!.size - 1
                             starts(playingMusicList!![id])
@@ -392,6 +419,15 @@ class MusicPlayActivity : AppCompatActivity() {
                             starts(playingMusicList!![id])
                         }
 
+                    }
+                    2 -> {
+                        if (playingMusicList!!.size - 1 == id) {
+                            id = 0
+                            starts(playingMusicList!![0])
+                        } else {
+                            id += 1
+                            starts(playingMusicList!![id])
+                        }
                     }
                     3 -> {
                         if (!playPauseIv.isPlaying) {
@@ -424,10 +460,13 @@ class MusicPlayActivity : AppCompatActivity() {
     private fun initPlayList() {
         in_list.layoutManager = LinearLayoutManager(context)
         in_list.itemAnimator = DefaultItemAnimator()
-        val adapter = playingMusicList?.let { PlayListAdapter(it, context) }
-        in_list.adapter = adapter
-        adapter!!.setOnItemClickListener(object : PlayListAdapter.ItemClickListener {
+        adaptert = playingMusicList?.let { PlayListAdapter(it, context) }
+        in_list.adapter = adaptert
+        adaptert!!.setOnItemClickListener(object : PlayListAdapter.ItemClickListener {
             override fun onItemClick(view: View, position: Int) {
+                println(position)
+                id = position
+                adaptert!!.notifyItemChanged(id)
                 starts(playingMusicList!![position])
 
             }
@@ -516,15 +555,14 @@ class MusicPlayActivity : AppCompatActivity() {
             //更新标题
             titleIv.text = music.name
             MusicApp.setPosition(id)
-
             MusicApp.setMusic(playingMusicList)
             val artist = music.all_artist
             var srtist_name = ""
             for (it in artist) {
                 if (srtist_name != "") {
-                    srtist_name += "/" + it.artist_name
+                    srtist_name += "/" + it.name
                 } else {
-                    srtist_name = it.artist_name
+                    srtist_name = it.name
                 }
 
             }
@@ -546,12 +584,13 @@ class MusicPlayActivity : AppCompatActivity() {
     private fun starts(music: Music) {
         try {
             if (playPauseIv.isPlaying) {
-                wlMusic.stop()
-                mDisposable.dispose()
                 playPauseIv.pause()
                 play = false
                 coverFragment.stopRotateAnimation()
             }
+            wlMusic.stop()
+            mDisposable.dispose()
+
             playPauseIv.setLoading(true)
             Observable.just(0L).subscribe(observers)
             MusicApp.setPosition(id)
@@ -564,9 +603,9 @@ class MusicPlayActivity : AppCompatActivity() {
             var srtist_name = ""
             for (it in artist) {
                 if (srtist_name != "") {
-                    srtist_name += "/" + it.artist_name
+                    srtist_name += "/" + it.name
                 } else {
-                    srtist_name = it.artist_name
+                    srtist_name = it.name
                 }
 
             }
@@ -597,73 +636,73 @@ class MusicPlayActivity : AppCompatActivity() {
 
     @SuppressLint("SetTextI18n")
     fun play(uri: String?) {
-            wlMusic = WlMusic.getInstance()
-            wlMusic.source = uri //设置音频源
-            wlMusic.setCallBackPcmData(false) //是否返回音频PCM数据
-            wlMusic.setShowPCMDB(false) //是否返回音频分贝大小
-            wlMusic.isPlayCircle = false //设置不间断循环播放音频
-            wlMusic.volume = 100 //设置音量 65%
-            wlMusic.playSpeed = 1.0f //设置播放速度 (1.0正常) 范围：0.25---4.0f
-            wlMusic.playPitch = 1.0f //设置播放速度 (1.0正常) 范围：0.25---4.0f
-            wlMusic.mute = MuteEnum.MUTE_CENTER //设置立体声（左声道、右声道和立体声）
-            wlMusic.setConvertSampleRate(null) //设定恒定采样率（null为取消）
-            wlMusic.prePared()
-            wlMusic.setOnPreparedListener {
-                if(wlMusic.duration>0){
-                    Observable.just((wlMusic.duration).toLong())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(object : Observer<Long> {
-                            override fun onSubscribe(d: Disposable) {}
-                            override fun onNext(aLong: Long) {
-                                max = aLong
-                                bool = true
-                                progressSb.max = aLong.toInt()
-                                val f = aLong / 60
-                                val m = aLong % 60
-                                progressTv.text = "00:00"
-                                durationTv.text = unitFormat(f.toInt()) + ":" + unitFormat(m.toInt())
-                                lrcView.updateTime(0)
-                                playPauseIv.setLoading(false)
+        wlMusic = WlMusic.getInstance()
+        wlMusic.source = uri //设置音频源
+        wlMusic.setCallBackPcmData(false) //是否返回音频PCM数据
+        wlMusic.setShowPCMDB(false) //是否返回音频分贝大小
+        wlMusic.isPlayCircle = false //设置不间断循环播放音频
+        wlMusic.volume = 100 //设置音量 65%
+        wlMusic.playSpeed = 1.0f //设置播放速度 (1.0正常) 范围：0.25---4.0f
+        wlMusic.playPitch = 1.0f //设置播放速度 (1.0正常) 范围：0.25---4.0f
+        wlMusic.mute = MuteEnum.MUTE_CENTER //设置立体声（左声道、右声道和立体声）
+        wlMusic.setConvertSampleRate(null) //设定恒定采样率（null为取消）
+        wlMusic.prePared()
+        wlMusic.setOnPreparedListener {
+            if (wlMusic.duration > 0) {
+                Observable.just((wlMusic.duration).toLong())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(object : Observer<Long> {
+                        override fun onSubscribe(d: Disposable) {}
+                        override fun onNext(aLong: Long) {
+                            max = aLong
+                            bool = true
+                            progressSb.max = aLong.toInt()
+                            val f = aLong / 60
+                            val m = aLong % 60
+                            progressTv.text = "00:00"
+                            durationTv.text = unitFormat(f.toInt()) + ":" + unitFormat(m.toInt())
+                            lrcView.updateTime(0)
+                            playPauseIv.setLoading(false)
 
-                            }
+                        }
 
-                            override fun onError(e: Throwable) {}
-                            override fun onComplete() {
-                                playPauseIv.play()
-                                wlMusic.start() //准备完成开始播放
-                                play = true
-                                coverFragment.startRotateAnimation(wlMusic.isPlaying)
-                                time(0, max)
-                            }
-                        })
-                }else{
-                    if (playingMusicList!!.size - 1 == id) {
-                        id = 0
-                        starts(playingMusicList!![0])
-                    } else {
-                        id += 1
-                        starts(playingMusicList!![id])
-                    }
+                        override fun onError(e: Throwable) {}
+                        override fun onComplete() {
+                            playPauseIv.play()
+                            wlMusic.start() //准备完成开始播放
+                            play = true
+                            coverFragment.startRotateAnimation(wlMusic.isPlaying)
+                            time(0, max)
+                        }
+                    })
+            } else {
+                if (playingMusicList!!.size - 1 == id) {
+                    id = 0
+                    starts(playingMusicList!![0])
+                } else {
+                    id += 1
+                    starts(playingMusicList!![id])
                 }
-
-
             }
 
 
-            progressSb.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-                override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                    position = progress
-                }
+        }
 
-                override fun onStartTrackingTouch(seekBar: SeekBar) {
-                    wlMusic.seek(position, false, false) // 表示在seeking中，此时不回调时间
-                }
 
-                override fun onStopTrackingTouch(seekBar: SeekBar) {
-                    wlMusic.seek(position, true, true) //表示seek已经完成，然后才回调时间，避免自己控制时间逻辑和时间显示不稳定问题。
-                    Observable.just(position.toLong()).subscribe(observers)
-                }
-            })
+        progressSb.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                position = progress
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar) {
+                wlMusic.seek(position, false, false) // 表示在seeking中，此时不回调时间
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar) {
+                wlMusic.seek(position, true, true) //表示seek已经完成，然后才回调时间，避免自己控制时间逻辑和时间显示不稳定问题。
+                Observable.just(position.toLong()).subscribe(observers)
+            }
+        })
 
     }
 
@@ -705,6 +744,7 @@ class MusicPlayActivity : AppCompatActivity() {
                 //随机播放
                 val randoms = (0 until playingMusicList!!.size).random()
                 id = randoms
+                adaptert!!.notifyItemChanged(id)
                 starts(playingMusicList!![randoms])
             }
             2 -> {
@@ -713,9 +753,11 @@ class MusicPlayActivity : AppCompatActivity() {
                 if (playingMusicList!!.size - 1 == id) {
                     id = 0
                     starts(playingMusicList!![0])
+                    adaptert!!.notifyItemChanged(id)
                 } else {
                     id += 1
                     starts(playingMusicList!![id])
+                    adaptert!!.notifyItemChanged(id)
                 }
             }
         }

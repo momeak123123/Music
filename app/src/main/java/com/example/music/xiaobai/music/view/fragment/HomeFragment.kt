@@ -31,7 +31,7 @@ import java.util.concurrent.TimeUnit
  * @Description input description
  **/
 class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IView {
-    private var bools: Boolean = false
+    private lateinit var bannerdata: MutableList<BannerItem>
     private var adapters: HomeListAdapter? = null
     private lateinit var sp: SharedPreferences
 
@@ -103,7 +103,7 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
 
     fun loadData1(list: List<Banner>) {
         if (list.isNotEmpty()) {
-            val bannerdata = mutableListOf<BannerItem>()
+             bannerdata = mutableListOf<BannerItem>()
             for (it in list) {
                 val item1 = BannerItem()
                 item1.imgUrl = it.url
@@ -237,11 +237,11 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
 
     override fun onResume() {
         super.onResume()
-        if (!sp.getString("ads", "").equals("")) {
+        if (bannerdata.size==0) {
             loadData()
         }
         try {
-            if (MusicPlayActivity.wlMusic.isPlaying) {
+            if (MusicPlayActivity.bool) {
                 music.visibility = View.VISIBLE
             }else{
                 music.visibility = View.GONE
@@ -329,7 +329,7 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
             override fun onItemClick(view: View, position: Int) {
                 val intent = Intent()
                 context?.let { intent.setClass(it, ArtistDetActivity().javaClass) }
-                intent.putExtra("id", artists[position].artist_id)
+                intent.putExtra("id", artists[position].artsit_id)
                 intent.putExtra("type", artists[position].type)
                 startActivity(intent)
 

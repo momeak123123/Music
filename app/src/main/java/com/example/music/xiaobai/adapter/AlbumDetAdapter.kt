@@ -128,7 +128,6 @@ class AlbumDetAdapter(
             Glide.with(context).load(R.drawable.shang).into(pre)
 
             if (MusicApp.getAblumid() == id) {
-                println("0" + MusicPlayActivity.wlMusic.isPlaying + "/" + MusicPlayActivity.wlMusic.isPlayCircle)
 
                 if (MusicPlayActivity.play) {
 
@@ -249,9 +248,9 @@ class AlbumDetAdapter(
             var srtist_name = ""
             for (it in artist) {
                 if (srtist_name != "") {
-                    srtist_name += "/" + it.artist_name
+                    srtist_name += "/" + it.name
                 } else {
-                    srtist_name = it.artist_name
+                    srtist_name = it.name
                 }
 
             }

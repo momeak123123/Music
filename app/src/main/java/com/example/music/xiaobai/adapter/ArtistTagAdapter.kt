@@ -16,13 +16,7 @@ import com.xuexiang.xui.widget.textview.supertextview.SuperButton
 class ArtistTagAdapter (val datas: List<Hierarchy>, val context: Context,val type:Int) : RecyclerView.Adapter<ArtistTagAdapter.InnerHolder>() {
 
     private var mItemClickListener: ItemClickListener? = null
-    interface ItemClickListener {
-        fun onItemClick(view:View,position: Int)
-    }
 
-    fun setOnItemClickListener(itemClickListener: ItemClickListener) {
-        this.mItemClickListener = itemClickListener
-    }
 
     /**
      * 相当于getView()
@@ -47,8 +41,6 @@ class ArtistTagAdapter (val datas: List<Hierarchy>, val context: Context,val typ
     /**
      * 绑定数据，View和数据绑定
      */
-    @RequiresApi(Build.VERSION_CODES.M)
-    @SuppressLint("ResourceAsColor")
     override fun onBindViewHolder(holder: InnerHolder, position: Int) {
         holder.itemView.setOnClickListener { v ->
             mItemClickListener?.onItemClick(v,position)
@@ -85,7 +77,13 @@ class ArtistTagAdapter (val datas: List<Hierarchy>, val context: Context,val typ
     }
 
 
+    interface ItemClickListener {
+        fun onItemClick(view:View,position: Int)
+    }
 
+    fun setOnItemClickListener(itemClickListener: ItemClickListener) {
+        this.mItemClickListener = itemClickListener
+    }
 
 
 }

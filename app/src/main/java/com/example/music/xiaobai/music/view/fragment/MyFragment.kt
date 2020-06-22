@@ -108,8 +108,6 @@ class MyFragment : BaseMvpFragment<MyContract.IPresenter>(), MyContract.IView {
             like_num.text = sp.getString("like", "")
         }else{
             include.visibility = View.VISIBLE
-
-
         }
 
         observer = object : Observer<Boolean> {

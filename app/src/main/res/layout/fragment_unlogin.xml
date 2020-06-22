@@ -26,11 +26,11 @@
         android:layout_height="@dimen/dp_40"
         android:layout_marginTop="@dimen/dp_40"
         android:text="@string/ungo"
-        android:textColor="@color/white_pressed"
+        android:textColor="@color/black"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/iv_cover"
-        app:rb_backgroundColor="@color/gray"
-        app:rb_borderColor="@color/gray"
+        app:rb_backgroundColor="@color/white"
+        app:rb_borderColor="@color/white"
         app:rb_isRadiusAdjustBounds="true" />
 </androidx.constraintlayout.widget.ConstraintLayout>

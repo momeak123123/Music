@@ -16,15 +16,6 @@ class ArtistListAdapter (var datas:MutableList<Artists>, val context: Context) :
 
 
     private var mItemClickListener: ItemClickListener? = null
-    interface ItemClickListener {
-        fun onItemClick(view:View,position: Int)
-    }
-
-    fun setOnItemClickListener(itemClickListener: ItemClickListener) {
-        this.mItemClickListener = itemClickListener
-    }
-
-
 
     /**
      * 相当于getView()
@@ -33,7 +24,6 @@ class ArtistListAdapter (var datas:MutableList<Artists>, val context: Context) :
         //加载View
         val itemView: View =
             LayoutInflater.from(context).inflate(R.layout.artist_list_item, holder, false)
-
         return InnerHolder(itemView)
 
     }
@@ -53,7 +43,6 @@ class ArtistListAdapter (var datas:MutableList<Artists>, val context: Context) :
     /**
      * 绑定数据，View和数据绑定
      */
-    @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(holder: InnerHolder, position: Int) {
         holder.itemView.setOnClickListener { v ->
             mItemClickListener?.onItemClick(v,position)
@@ -62,7 +51,13 @@ class ArtistListAdapter (var datas:MutableList<Artists>, val context: Context) :
         holder.title.text = datas[position].name
     }
 
+    interface ItemClickListener {
+        fun onItemClick(view:View,position: Int)
+    }
 
+    fun setOnItemClickListener(itemClickListener: ItemClickListener) {
+        this.mItemClickListener = itemClickListener
+    }
 
     fun removeAll(){
         datas.removeAll(datas)
