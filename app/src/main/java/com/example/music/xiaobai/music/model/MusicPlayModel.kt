@@ -3,10 +3,11 @@ package com.example.music.xiaobai.music.model
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
+import android.view.View
+import android.widget.TextView
 import android.widget.Toast
-import com.example.music.xiaobai.bean.Music
-import com.example.music.xiaobai.bean.ResultBeans
-import com.example.music.xiaobai.bean.SongList
+import com.example.music.xiaobai.R
+import com.example.music.xiaobai.bean.*
 import com.example.music.xiaobai.common.Constants
 import com.example.music.xiaobai.music.view.act.AlbumDetActivity
 import com.example.music.xiaobai.music.view.act.MusicPlayActivity
@@ -19,17 +20,40 @@ import com.google.gson.reflect.TypeToken
 import com.lzy.okgo.OkGo
 import com.lzy.okgo.callback.StringCallback
 import com.lzy.okgo.model.Response
+import constant.UiType
+import io.reactivex.Observable
+import io.reactivex.Observer
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
+import listener.OnInitUiListener
+import model.UiConfig
+import model.UpdateConfig
+import update.UpdateAppUtils
+import java.util.concurrent.TimeUnit
 
 class MusicPlayModel {
     companion object {
+
+        private var apkUrl = ""
+        private var updateTitle = ""
+        private var updateContent = "1、各种音乐随便听\n2、优化app性能\n3、增加搜索功能\n4、更多功能等你探索"
+
+
         @SuppressLint("CheckResult")
-        fun addSong(context: Context, song: MutableList<Music>,num:String, playid: Long,type :Int,position:Int) {
+        fun addSong(
+            context: Context,
+            song: MutableList<Music>,
+            num: String,
+            playid: Long,
+            type: Int,
+            position: Int
+        ) {
 
             val sp: SharedPreferences = context.getSharedPreferences("User", Context.MODE_PRIVATE)
 
             val idmap = mutableListOf<Long>()
 
-            for(it in song){
+            for (it in song) {
                 idmap.add(it.song_id)
             }
             OkGo.post<String>(Constants.URL + "api/user/add_play_list")
@@ -47,15 +71,15 @@ class MusicPlayModel {
                                     response.body(),
                                     ResultBeans::class.javaObjectType
                                 )
-                            if(bean.code==200){
+                            if (bean.code == 200) {
 
                                 val playlist: Playlist = mPlaylistDao.query(playid)[0]
                                 playlist.song_num = num
                                 mPlaylistDao.update(playlist)
 
-                                if(type==0){
+                                if (type == 0) {
                                     AlbumDetActivity.adapters.update(position, num)
-                                }else{
+                                } else {
                                     MusicPlayActivity.adapter.update(position, num)
                                 }
 
@@ -63,7 +87,7 @@ class MusicPlayModel {
                                     bean.data,
                                     object : TypeToken<List<SongList>>() {}.type
                                 )
-                                for(i in list){
+                                for (i in list) {
                                     for (it in song) {
                                         if (i.song_id == it.song_id) {
                                             val down = Down()
@@ -96,6 +120,77 @@ class MusicPlayModel {
                     }
                 })
         }
+
+
+        fun updateapp(version: String) {
+
+            OkGo.get<String>(Constants.URL + "api/Version/index")
+                //.params("token", sp.getString("token", ""))
+                .params("version", version)
+                .execute(object : StringCallback() {
+                    override fun onSuccess(response: Response<String>) {
+                        /**
+                         * 成功回调
+                         */
+                        try {
+                            val bean =
+                                Gson().fromJson(
+                                    response.body(),
+                                    UpdateApp::class.javaObjectType
+                                )
+
+                            val update = bean.update
+                            if (update == "YES") {
+                                apkUrl = bean.apk_file_url
+                                val versions = bean.new_version
+                                updateTitle = "发现新版本V$versions"
+                                updateContent = bean.update_log
+                                val force = bean.constraint
+                                UpdateAppUtils
+                                    .getInstance()
+                                    .apkUrl(apkUrl)
+                                    .updateTitle(updateTitle)
+                                    .updateContent(updateContent)
+                                    .updateConfig(
+                                        UpdateConfig(
+                                            alwaysShowDownLoadDialog = true,
+                                            force = force,
+                                            notifyImgRes = R.mipmap.ic_launcher,
+                                            serverVersionName = versions
+                                        )
+                                    )
+                                    .uiConfig(
+                                        UiConfig(
+                                            uiType = UiType.CUSTOM,
+                                            customLayoutId = R.layout.view_update_dialog_custom
+                                        )
+                                    )
+                                    .setOnInitUiListener(object : OnInitUiListener {
+                                        @SuppressLint("SetTextI18n")
+                                        override fun onInitUpdateUi(
+                                            view: View?,
+                                            updateConfig: UpdateConfig,
+                                            uiConfig: UiConfig
+                                        ) {
+                                            view?.findViewById<TextView>(R.id.tv_update_title)?.text =
+                                                "版本更新啦"
+                                            view?.findViewById<TextView>(R.id.tv_version_name)?.text =
+                                                "V$versions"
+                                            view?.findViewById<TextView>(R.id.tv_update_content)?.text =
+                                                updateContent
+                                        }
+                                    })
+                                    .update()
+                            }
+
+                        } catch (e: Exception) {
+                        }
+                    }
+                })
+        }
+
     }
+
+
 }
 

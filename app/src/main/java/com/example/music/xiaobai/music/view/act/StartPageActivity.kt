@@ -10,16 +10,24 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.view.View
 import android.view.WindowManager
+import android.widget.TextView
 import com.example.music.xiaobai.MainActivity
 import com.example.music.xiaobai.R
 import com.example.music.xiaobai.music.contract.StartPageContract
 import com.example.music.xiaobai.music.presenter.StartPagePresenter
 import com.jakewharton.rxbinding2.view.RxView
+import constant.UiType
 import io.reactivex.Flowable
+import io.reactivex.Observable
+import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.start_page.*
+import listener.OnInitUiListener
+import model.UiConfig
+import model.UpdateConfig
 import mvp.ljb.kt.act.BaseMvpActivity
+import update.UpdateAppUtils
 import java.util.concurrent.TimeUnit
 
 /**
@@ -27,7 +35,7 @@ import java.util.concurrent.TimeUnit
  * @Date 2020/05/18
  * @Description input description
  **/
-class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>() , StartPageContract.IView {
+class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>(), StartPageContract.IView {
 
 
     private var slogin: String? = null
@@ -35,6 +43,8 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>() , Star
     private lateinit var context: Context
     private lateinit var countDownTimer: CountDownTimer
     private lateinit var sp: SharedPreferences
+
+
     override fun registerPresenter() = StartPagePresenter::class.java
 
     override fun getLayoutId(): Int {
@@ -54,7 +64,7 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>() , Star
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
             window.statusBarColor = Color.TRANSPARENT
         }
-        context=this
+        context = this
         MainActivity.bool = false
         sp = getSharedPreferences("User", Context.MODE_PRIVATE)
         slogin = sp.getString("user_id", "")
@@ -67,10 +77,12 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>() , Star
         mDisposable = Flowable.intervalRange(0, 4, 0, 1, TimeUnit.SECONDS)
             .observeOn(AndroidSchedulers.mainThread())
             .doOnNext { t ->
-                time.text=(3-t).toString()
+                time.text = (3 - t).toString()
             }
             .doOnComplete {
-                finish()
+                val intent = Intent()
+                intent.setClass(context, MainActivity().javaClass)
+                startActivity(intent)
             }
             .subscribe()
 
@@ -78,13 +90,15 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>() , Star
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
                 mDisposable.dispose()
-                finish()
+                val intent = Intent()
+                intent.setClass(context, MainActivity().javaClass)
+                startActivity(intent)
             }
     }
 
     override fun initData() {
         super.initData()
-       // context.let { getPresenter().homedata(it) }
+        // context.let { getPresenter().homedata(it) }
         //Toast.makeText(context, NetWorkUtils.getNetworkTypeName(context), Toast.LENGTH_SHORT).show()
     }
 

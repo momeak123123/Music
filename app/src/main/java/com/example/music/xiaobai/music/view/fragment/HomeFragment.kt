@@ -45,11 +45,9 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
 
     override fun initData() {
         super.initData()
-
+        bannerdata = mutableListOf<BannerItem>()
         sp = requireContext().getSharedPreferences("Music", Context.MODE_PRIVATE)
-        if (!sp.getString("ads", "").equals("")) {
-            loadData()
-        }
+
 
     }
 
@@ -103,7 +101,7 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
 
     fun loadData1(list: List<Banner>) {
         if (list.isNotEmpty()) {
-             bannerdata = mutableListOf<BannerItem>()
+
             for (it in list) {
                 val item1 = BannerItem()
                 item1.imgUrl = it.url
@@ -237,6 +235,7 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
 
     override fun onResume() {
         super.onResume()
+
         if (bannerdata.size==0) {
             loadData()
         }

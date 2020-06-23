@@ -14,3 +14,12 @@ data class ResultBeans (
     val msg: String,
     val data: JsonArray
 )
+
+data class UpdateApp(
+    val update: String,
+    val new_version: String,
+    val apk_file_url: String,
+    val target_size: String,
+    val constraint: Boolean,
+    val update_log: String
+)

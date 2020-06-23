@@ -3,6 +3,7 @@ package com.example.music.xiaobai.music.view.act
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -46,9 +47,11 @@ import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.album_index.*
 import kotlinx.android.synthetic.main.frag_player_lrcview.*
 import kotlinx.android.synthetic.main.head.*
 import kotlinx.android.synthetic.main.music_play.*
+import kotlinx.android.synthetic.main.music_play.in_indel
 import kotlinx.android.synthetic.main.play_list.*
 import java.io.File
 import java.util.concurrent.TimeUnit
@@ -73,7 +76,7 @@ class MusicPlayActivity : AppCompatActivity() {
     private var type: Int = 2
     lateinit var mDisposable: Disposable
     var max: Long = 0
-
+    private lateinit var sp: SharedPreferences
     private var min: Long = 0
     private var pos: Int = 0
     private var bitmap: Bitmap? = null
@@ -97,6 +100,7 @@ class MusicPlayActivity : AppCompatActivity() {
             ColorStateList.valueOf(Color.parseColor("#06b7ff"));
         initView()
         initData()
+        sp = getSharedPreferences("User", Context.MODE_PRIVATE)
     }
 
 
@@ -191,11 +195,27 @@ class MusicPlayActivity : AppCompatActivity() {
         RxView.clicks(icon3)
             .throttleFirst(0, TimeUnit.SECONDS)
             .subscribe {
-                in_indel.visibility = View.VISIBLE
-                Glide.with(context).load("").into(del)
-                in_title.text = getText(R.string.song_but)
-                val list: MutableList<Playlist> = mPlaylistDao.queryAll()
-                initSongList(list)
+                if (sp.getBoolean("login", false)) {
+                    in_indel.visibility = View.VISIBLE
+                    Glide.with(context).load("").into(del)
+                    in_title.text = getText(R.string.song_but)
+                    val list: MutableList<Playlist> = mPlaylistDao.queryAll()
+                    initSongList(list)
+
+                } else {
+                    MaterialDialog.Builder(context)
+                        .title("登录")
+                        .content("未登陆账号，是否登录")
+                        .positiveText("确认")
+                        .negativeText("取消")
+                        .onPositive { _: MaterialDialog?, _: DialogAction? ->
+                            val intent = Intent()
+                            context.let { intent.setClass(it, LoginActivity().javaClass) }
+                            startActivity(intent)
+                        }
+                        .show()
+                }
+
             }
 
         RxView.clicks(icon4)

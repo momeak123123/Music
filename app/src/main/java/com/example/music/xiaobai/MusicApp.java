@@ -23,6 +23,7 @@ import java.util.logging.Level;
 import io.reactivex.functions.Consumer;
 import io.reactivex.plugins.RxJavaPlugins;
 import okhttp3.OkHttpClient;
+import update.UpdateAppUtils;
 
 public class MusicApp extends Application {
     @SuppressLint("StaticFieldLeak")
@@ -92,6 +93,7 @@ public class MusicApp extends Application {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                UpdateAppUtils.init(mContext);
                 XUI.init(MusicApp.this); //初始化UI框架
                 XUI.debug(false);  //开启UI框架调试日志
                 OkGo.getInstance().init(MusicApp.this);//网络请求

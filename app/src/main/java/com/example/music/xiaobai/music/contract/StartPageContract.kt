@@ -12,7 +12,9 @@ import mvp.ljb.kt.contract.IModelContract
  **/
 interface StartPageContract {
 
-    interface IView : IViewContract
+    interface IView : IViewContract {
+
+    }
 
     interface IPresenter : IPresenterContract {
         fun homedata(context: Context)

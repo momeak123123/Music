@@ -63,32 +63,13 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
     override fun initData() {
         super.initData()
         sp = requireContext().getSharedPreferences("User", Context.MODE_PRIVATE)
+
         if (sp.getBoolean("login", false)) {
             unfild.visibility = View.GONE
-            if (MusicApp.getNetwork()) {
-                val list: MutableList<Playlist> = mPlaylistDao.queryAll()
-                if (list.size > 0) {
-                    initSongList(list)
-                    bools = true
-                } else {
-                    context?.let { getPresenter().listdata(it) }
-                }
 
-            } else {
-                Toast.makeText(
-                    context,
-                    getText(R.string.nonet),
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-
-            if (swipe_refresh_layout != null) {
-                swipe_refresh_layout.isRefreshing = false
-            }
         } else {
             unfild.visibility = View.VISIBLE
         }
-
     }
 
     @SuppressLint("CheckResult")
@@ -99,7 +80,7 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
         //下拉刷新
         swipe_refresh_layout.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener {
             if (MusicApp.getNetwork()) {
-               initData()
+                loaddata()
             } else {
                 if (swipe_refresh_layout != null) {
                     swipe_refresh_layout.isRefreshing = false
@@ -129,16 +110,41 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
 
     }
 
+    fun loaddata(){
+        if (MusicApp.getNetwork()) {
+            val list: MutableList<Playlist> = mPlaylistDao.queryAll()
+            if (list.size > 0) {
+                initSongList(list)
+                bools = true
+            } else {
+                context?.let { getPresenter().listdata(it) }
+            }
+
+        } else {
+            Toast.makeText(
+                context,
+                getText(R.string.nonet),
+                Toast.LENGTH_LONG
+            ).show()
+        }
+
+        if (swipe_refresh_layout != null) {
+            swipe_refresh_layout.isRefreshing = false
+        }
+    }
+
 
     override fun onResume() {
         super.onResume()
 
         if (sp.getBoolean("login", false)) {
             unfild.visibility = View.GONE
-           initData()
+            loaddata()
         } else {
             unfild.visibility = View.VISIBLE
         }
+
+
 
 
 

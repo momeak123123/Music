@@ -3,9 +3,11 @@ package com.example.music.xiaobai.music.view.act
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -40,6 +42,7 @@ import kotlinx.android.synthetic.main.album_index.poplue
 import kotlinx.android.synthetic.main.album_index.recyc_item
 import kotlinx.android.synthetic.main.album_index.swipe_refresh_layout
 import kotlinx.android.synthetic.main.food.*
+import kotlinx.android.synthetic.main.fragment_find.*
 import kotlinx.android.synthetic.main.play_list.*
 import kotlinx.android.synthetic.main.play_list.del
 import kotlinx.android.synthetic.main.popule.*
@@ -64,7 +67,7 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
     }
 
 
-
+    private lateinit var sp: SharedPreferences
     private var bools: Boolean = true
     private var album_time: Long = 0
     private lateinit var names: String
@@ -120,6 +123,7 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
 
     override fun initData() {
         super.initData()
+        sp = getSharedPreferences("User", Context.MODE_PRIVATE)
         swipe_refresh_layout.isRefreshing = true
         val bundle = intent.extras
         type = bundle?.get("type") as Int
@@ -184,25 +188,41 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
         RxView.clicks(cencel)
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
-                val idmap = mutableListOf<Music>()
-                for (ite in adapter.listdet) {
-                    if (ite.type == 1) {
-                        idmap.add(ite.song)
+                if (sp.getBoolean("login", false)) {
+                    val idmap = mutableListOf<Music>()
+                    for (ite in adapter.listdet) {
+                        if (ite.type == 1) {
+                            idmap.add(ite.song)
+                        }
                     }
-                }
-                if (idmap.isNotEmpty()) {
-                    in_indel.visibility = View.VISIBLE
-                    Glide.with(context).load("").into(del)
-                    in_title.text = getText(R.string.song_but)
-                    val list: MutableList<Playlist> = mPlaylistDao.queryAll()
-                    initSongLists(list, idmap)
+                    if (idmap.isNotEmpty()) {
+                        in_indel.visibility = View.VISIBLE
+                        Glide.with(context).load("").into(del)
+                        in_title.text = getText(R.string.song_but)
+                        val list: MutableList<Playlist> = mPlaylistDao.queryAll()
+                        initSongLists(list, idmap)
+                    } else {
+                        Toast.makeText(
+                            context,
+                            getText(R.string.song_collect_error),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+
                 } else {
-                    Toast.makeText(
-                        context,
-                        getText(R.string.song_collect_error),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    MaterialDialog.Builder(context)
+                        .title("登录")
+                        .content("未登陆账号，是否登录")
+                        .positiveText("确认")
+                        .negativeText("取消")
+                        .onPositive { _: MaterialDialog?, _: DialogAction? ->
+                            val intent = Intent()
+                            context.let { intent.setClass(it, LoginActivity().javaClass) }
+                            startActivity(intent)
+                        }
+                        .show()
                 }
+
 
             }
 
