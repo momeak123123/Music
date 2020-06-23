@@ -43,11 +43,6 @@ class AlbumActivity : BaseMvpActivity<AlbumContract.IPresenter>() , AlbumContrac
 
     override fun initData() {
         super.initData()
-    }
-
-    @SuppressLint("CheckResult")
-    override fun initView() {
-        super.initView()
         val sp: SharedPreferences =
             context.getSharedPreferences("Music", Context.MODE_PRIVATE)
         val bundle = intent.extras
@@ -75,6 +70,12 @@ class AlbumActivity : BaseMvpActivity<AlbumContract.IPresenter>() , AlbumContrac
                 }
             }
         }
+
+    }
+
+    @SuppressLint("CheckResult")
+    override fun initView() {
+        super.initView()
 
         RxView.clicks(top_flot)
             .throttleFirst(3, TimeUnit.SECONDS)
@@ -119,7 +120,7 @@ class AlbumActivity : BaseMvpActivity<AlbumContract.IPresenter>() , AlbumContrac
                 intent.setClass(context, AlbumDetActivity().javaClass)
                 intent.putExtra("album_id",album[position].album_id)
                 intent.putExtra("album_type",album[position].type)
-                intent.putExtra("album_time",album[position].publish_time)
+                intent.putExtra("album_time",0L)
                 intent.putExtra("palylist_name",album[position].name)
                 intent.putExtra("info",album[position].info)
                 intent.putExtra("cover",album[position].pic_url)

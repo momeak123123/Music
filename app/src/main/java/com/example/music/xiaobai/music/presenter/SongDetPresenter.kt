@@ -27,8 +27,8 @@ class SongDetPresenter : BaseMvpPresenter<SongDetContract.IView, SongDetContract
         getModel().delsong(context,song,playids)
     }
 
-    override fun delsongs(context: Context, id:Long,  song: MutableList<Down>,data:Int,playids: Long) {
-        getModel().delsongs(context,id,song,data,playids)
+    override fun delsongs(context: Context,  song: Music,data:Int,playids: Long) {
+        getModel().delsongs(context,song,data,playids)
     }
 
 }

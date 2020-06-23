@@ -53,21 +53,17 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>(), Start
 
     override fun init(savedInstanceState: Bundle?) {
         super.init(savedInstanceState)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            val window = window
-            window.clearFlags(
-                WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
-                        or WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION
-            )
-            window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    or View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            window.statusBarColor = Color.TRANSPARENT
-        }
+        val window = window
+        window.clearFlags(
+            WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
+                    or WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION
+        )
+        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.statusBarColor = Color.TRANSPARENT
         context = this
         MainActivity.bool = false
-        sp = getSharedPreferences("User", Context.MODE_PRIVATE)
-        slogin = sp.getString("user_id", "")
     }
 
     @SuppressLint("CheckResult")
@@ -80,9 +76,7 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>(), Start
                 time.text = (3 - t).toString()
             }
             .doOnComplete {
-                val intent = Intent()
-                intent.setClass(context, MainActivity().javaClass)
-                startActivity(intent)
+                finish()
             }
             .subscribe()
 
@@ -90,16 +84,13 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>(), Start
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
                 mDisposable.dispose()
-                val intent = Intent()
-                intent.setClass(context, MainActivity().javaClass)
-                startActivity(intent)
+                finish()
             }
     }
 
     override fun initData() {
         super.initData()
-        // context.let { getPresenter().homedata(it) }
-        //Toast.makeText(context, NetWorkUtils.getNetworkTypeName(context), Toast.LENGTH_SHORT).show()
+
     }
 
     override fun onResume() {

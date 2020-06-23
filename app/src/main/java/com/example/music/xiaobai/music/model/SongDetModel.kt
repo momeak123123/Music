@@ -26,16 +26,16 @@ import mvp.ljb.kt.model.BaseModel
  **/
 class SongDetModel : BaseModel(), SongDetContract.IModel {
     override fun listdata(context: Context, id: Long) {
-            val sp: SharedPreferences = context.getSharedPreferences("User", Context.MODE_PRIVATE)
-            OkGo.post<String>(Constants.URL + "api/user/get_song_list")
-                .params("play_list_id",id)
-                .params("token",sp.getString("token", ""))
-                .execute(object : StringCallback() {
-                    override fun onSuccess(response: Response<String>) {
-                        /**
-                         * 成功回调
-                         */
-                        try {
+        val sp: SharedPreferences = context.getSharedPreferences("User", Context.MODE_PRIVATE)
+        OkGo.post<String>(Constants.URL + "api/user/get_song_list")
+            .params("play_list_id", id)
+            .params("token", sp.getString("token", ""))
+            .execute(object : StringCallback() {
+                override fun onSuccess(response: Response<String>) {
+                    /**
+                     * 成功回调
+                     */
+                    try {
                         val bean =
                             Gson().fromJson(response.body(), ResultBeans::class.javaObjectType)
                         if (bean.code == 200) {
@@ -47,25 +47,24 @@ class SongDetModel : BaseModel(), SongDetContract.IModel {
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
-                        } catch (e: Exception) {
-                            Toast.makeText(
-                                context,
-                                "程序出现了未知异常",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
+                    } catch (e: Exception) {
+                        Toast.makeText(
+                            context,
+                            "程序出现了未知异常",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
-                })
-
+                }
+            })
 
 
     }
 
-    override fun deldata(context: Context, ids: Long,playids:Long) {
+    override fun deldata(context: Context, ids: Long, playids: Long) {
         val sp: SharedPreferences = context.getSharedPreferences("User", Context.MODE_PRIVATE)
         OkGo.post<String>(Constants.URL + "api/user/del_play_list")
-            .params("play_list_id",playids)
-            .params("token",sp.getString("token", ""))
+            .params("play_list_id", playids)
+            .params("token", sp.getString("token", ""))
             .execute(object : StringCallback() {
                 override fun onSuccess(response: Response<String>) {
                     /**
@@ -75,7 +74,7 @@ class SongDetModel : BaseModel(), SongDetContract.IModel {
                         val bean =
                             Gson().fromJson(response.body(), ResultBeans::class.javaObjectType)
                         if (bean.code == 200) {
-                           // mPlaylistDao.delete(ids)
+                            // mPlaylistDao.delete(ids)
                             Observable.just(true).subscribe(SongDetActivity.observers)
                         } else {
                             Toast.makeText(
@@ -95,15 +94,15 @@ class SongDetModel : BaseModel(), SongDetContract.IModel {
             })
     }
 
-    override fun delsong(context: Context, song: MutableList<Music>,playids: Long) {
+    override fun delsong(context: Context, song: MutableList<Music>, playids: Long) {
         val sp: SharedPreferences = context.getSharedPreferences("User", Context.MODE_PRIVATE)
         val idmap = mutableListOf<Long>()
-        for(it in song){
+        for (it in song) {
             idmap.add(it.song_list_id)
         }
         OkGo.post<String>(Constants.URL + "api/user/del_song_list")
-            .params("song_list_id",Gson().toJson(idmap))
-            .params("token",sp.getString("token", ""))
+            .params("song_list_id", Gson().toJson(idmap))
+            .params("token", sp.getString("token", ""))
             .execute(object : StringCallback() {
                 override fun onSuccess(response: Response<String>) {
                     /**
@@ -115,16 +114,16 @@ class SongDetModel : BaseModel(), SongDetContract.IModel {
                         if (bean.code == 200) {
 
                             val playlist: Playlist = mPlaylistDao.query(playids)[0]
-                            val num  = (playlist.song_num.toInt()-song.size).toString()
+                            val num = (playlist.song_num.toInt() - song.size).toString()
                             playlist.song_num = num
-                            SongDetActivity.adapter.num =num
+                            SongDetActivity.adapter.num = num
                             mPlaylistDao.update(playlist)
 
-                            for(it in song){
+                            for (it in song) {
                                 SongDetActivity.adapter.removedata(it)
                                 SongDetActivity.adapter.notifyDataSetChanged()
-                                val lists =   mDownDao.querys(it.song_id)
-                                if(lists.size>0){
+                                val lists = mDownDao.querys(it.song_id)
+                                if (lists.size > 0) {
                                     mDownDao.delete(lists[0].id)
                                 }
 
@@ -146,15 +145,13 @@ class SongDetModel : BaseModel(), SongDetContract.IModel {
 
     }
 
-    override fun delsongs(context: Context, id: Long, song: MutableList<Down>,data:Int,playids: Long) {
+    override fun delsongs(context: Context, song: Music, data: Int, playids: Long) {
         val sp: SharedPreferences = context.getSharedPreferences("User", Context.MODE_PRIVATE)
         val idmap = mutableListOf<Long>()
-        for(it in song){
-            idmap.add(it.song_list_id)
-        }
+        idmap.add(song.song_list_id)
         OkGo.post<String>(Constants.URL + "api/user/del_song_list")
-            .params("song_list_id",Gson().toJson(idmap))
-            .params("token",sp.getString("token", ""))
+            .params("song_list_id", Gson().toJson(idmap))
+            .params("token", sp.getString("token", ""))
             .execute(object : StringCallback() {
                 override fun onSuccess(response: Response<String>) {
                     /**
@@ -166,7 +163,7 @@ class SongDetModel : BaseModel(), SongDetContract.IModel {
                         if (bean.code == 200) {
 
                             val playlist: Playlist = mPlaylistDao.query(playids)[0]
-                            val num  = (playlist.song_num.toInt()-1).toString()
+                            val num = (playlist.song_num.toInt() - 1).toString()
                             playlist.song_num = num
                             mPlaylistDao.update(playlist)
                             SongDetActivity.adapter.remove(data)
@@ -174,7 +171,11 @@ class SongDetModel : BaseModel(), SongDetContract.IModel {
                             SongDetActivity.adapter.notifyItemChanged(0)
 
 
-                            mDownDao.delete(id)
+                            val lists = mDownDao.querys(song.song_id)
+                            if (lists.size > 0) {
+                                mDownDao.delete(lists[0].id)
+                            }
+
 
                         } else {
                             Toast.makeText(

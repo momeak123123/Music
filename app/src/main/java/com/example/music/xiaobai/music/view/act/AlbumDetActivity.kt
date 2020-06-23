@@ -36,10 +36,7 @@ import com.xuexiang.xui.widget.dialog.materialdialog.DialogAction
 import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.album_index.foods
-import kotlinx.android.synthetic.main.album_index.in_indel
-import kotlinx.android.synthetic.main.album_index.poplue
-import kotlinx.android.synthetic.main.album_index.recyc_item
+import kotlinx.android.synthetic.main.album_index.*
 import kotlinx.android.synthetic.main.album_index.swipe_refresh_layout
 import kotlinx.android.synthetic.main.food.*
 import kotlinx.android.synthetic.main.fragment_find.*
@@ -77,7 +74,7 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
     private lateinit var songdata: String
     private lateinit var txts: String
     var songlist = mutableListOf<Music>()
-    private var type: Int = 0
+    private var activity_type: Int = 0
     private lateinit var adapter: AlbumDetAdapter
     private lateinit var context: Context
     override fun registerPresenter() = AlbumDetPresenter::class.java
@@ -126,7 +123,7 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
         sp = getSharedPreferences("User", Context.MODE_PRIVATE)
         swipe_refresh_layout.isRefreshing = true
         val bundle = intent.extras
-        type = bundle?.get("type") as Int
+        activity_type = bundle?.get("type") as Int
         album_id = bundle.get("album_id") as Long
         album_type = bundle.get("album_type") as Int
         album_time = bundle.get("album_time") as Long
@@ -141,7 +138,7 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
 
     fun loadData() {
         if (MusicApp.getNetwork()) {
-            if (type == 1) {
+            if (activity_type == 1) {
                 getPresenter().songdatas(album_id, album_type, album_time, context)
             } else {
                 getPresenter().songdata(album_id, album_type, context)
@@ -172,7 +169,7 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
             .subscribe {}
 
         RxView.clicks(all)
-            .throttleFirst(3, TimeUnit.SECONDS)
+            .throttleFirst(0, TimeUnit.SECONDS)
             .subscribe {
                 if (bools) {
                     all.text = getText(R.string.song_unall)
@@ -186,7 +183,7 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
 
             }
         RxView.clicks(cencel)
-            .throttleFirst(3, TimeUnit.SECONDS)
+            .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
                 if (sp.getBoolean("login", false)) {
                     val idmap = mutableListOf<Music>()
@@ -227,7 +224,7 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
             }
 
         RxView.clicks(down)
-            .throttleFirst(3, TimeUnit.SECONDS)
+            .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
 
                 MaterialDialog.Builder(context)
@@ -294,9 +291,10 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
 
 
         RxView.clicks(deter)
-            .throttleFirst(3, TimeUnit.SECONDS)
+            .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
                 foods.visibility = View.GONE
+                view.visibility = View.GONE
                 adapter.type = 0
                 adapter.notifyItemRangeChanged(1, songlist.size)
 
@@ -311,7 +309,7 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
         RxView.clicks(play_list_back)
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
-                in_title.visibility = View.GONE
+                in_indel.visibility = View.GONE
             }
 
 
@@ -338,6 +336,7 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
                     .positiveText("确认")
                     .negativeText("取消")
                     .onPositive { _: MaterialDialog?, _: DialogAction? ->
+                        val playlist: Playlist = mPlaylistDao.query(song[position].play_list_id)[0]
                         val playsong = mDownDao.query(song[position].play_list_id)
                         val songs = mutableListOf<Music>()
                         songs.addAll(idmap)
@@ -351,12 +350,12 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
                                     }
                                 }
                                 if (songs.size > 0) {
-                                    val num = (playsong.size + songs.size).toString()
+                                    val num = (playlist.song_num.toInt() + songs.size).toString()
                                     MusicPlayModel.addSong(
                                         context,
                                         songs,
                                         num,
-                                        song[position].play_list_id,0,position
+                                        song[position].play_list_id,1,position
                                     )
                                 } else {
                                     Toast.makeText(
@@ -370,12 +369,12 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
 
                         } else {
                             if (songs.size > 0) {
-                                val num = (playsong.size + songs.size).toString()
+                                val num = (playlist.song_num.toInt() + songs.size).toString()
                                 MusicPlayModel.addSong(
                                     context,
                                     songs,
                                     num,
-                                    song[position].play_list_id,0,position
+                                    song[position].play_list_id,1,position
                                 )
                             } else {
                                 Toast.makeText(
@@ -408,14 +407,17 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
         adapter.setOnItemClickListener(object : AlbumDetAdapter.ItemClickListener {
             override fun onItemClick(view: View, position: Int) {
                 if (position > 0) {
-                    val json: String = Gson().toJson(song)
-                    val intent = Intent()
-                    intent.setClass(context, MusicPlayActivity().javaClass)
-                    intent.putExtra("album_id", album_id)
-                    intent.putExtra("pos", position - 1)
-                    intent.putExtra("list", json)
-                    intent.putExtra("type", 1)
-                    startActivity(intent)
+                    if(adapter.type == 0){
+                        val json: String = Gson().toJson(song)
+                        val intent = Intent()
+                        intent.setClass(context, MusicPlayActivity().javaClass)
+                        intent.putExtra("album_id", album_id)
+                        intent.putExtra("pos", position - 1)
+                        intent.putExtra("list", json)
+                        intent.putExtra("type", 1)
+                        startActivity(intent)
+                    }
+
                 }
 
             }
@@ -465,8 +467,10 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
             override fun onNext(data: Int) {
                 if (data == 1) {
                     foods.visibility = View.VISIBLE
+                    view.visibility = View.VISIBLE
                 } else {
                     foods.visibility = View.GONE
+                    view.visibility = View.GONE
                 }
 
             }
@@ -501,23 +505,110 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
                         poplue.visibility = View.GONE
                     }
 
+                RxView.clicks(relat1)
+                    .throttleFirst(3, TimeUnit.SECONDS)
+                    .subscribe {
+
+                    }
+                RxView.clicks(relat2)
+                    .throttleFirst(3, TimeUnit.SECONDS)
+                    .subscribe {
+
+                    }
+
                 RxView.clicks(relat3)
                     .throttleFirst(3, TimeUnit.SECONDS)
                     .subscribe {
-                        poplue.visibility = View.GONE
-                        in_indel.visibility = View.VISIBLE
-                        Glide.with(context).load("").into(del)
-                        in_title.text = getText(R.string.song_but)
-                        val list: MutableList<Playlist> = mPlaylistDao.queryAll()
-                        val idmap = mutableListOf<Music>()
-                        idmap.add(songlist[data])
-                        initSongLists(list, idmap)
+                        if (sp.getBoolean("login", false)) {
+                            poplue.visibility = View.GONE
+                            in_indel.visibility = View.VISIBLE
+                            Glide.with(context).load("").into(del)
+                            in_title.text = getText(R.string.song_but)
+                            val list: MutableList<Playlist> = mPlaylistDao.queryAll()
+                            val idmap = mutableListOf<Music>()
+                            idmap.add(songlist[data])
+                            initSongLists(list, idmap)
+                        } else {
+                            MaterialDialog.Builder(context)
+                                .title("登录")
+                                .content("未登陆账号，是否登录")
+                                .positiveText("确认")
+                                .negativeText("取消")
+                                .onPositive { _: MaterialDialog?, _: DialogAction? ->
+                                    val intent = Intent()
+                                    context.let { intent.setClass(it, LoginActivity().javaClass) }
+                                    startActivity(intent)
+                                }
+                                .show()
+                        }
+
                     }
+
+
 
                 RxView.clicks(relat4)
                     .throttleFirst(3, TimeUnit.SECONDS)
                     .subscribe {
+                        MaterialDialog.Builder(context)
+                            .title("下载音乐")
+                            .content("是否下载音乐")
+                            .positiveText("确认")
+                            .negativeText("取消")
+                            .onPositive { _: MaterialDialog?, _: DialogAction? ->
 
+                                val idmap = mutableListOf<Music>()
+
+                                for (ite in SongDetActivity.adapter.listdet) {
+                                    if (ite.type == 1) {
+                                        idmap.add(ite.song)
+                                    }
+                                }
+                                if (idmap.isNotEmpty()) {
+                                    for(its in idmap){
+
+                                        val downs = mDownDao.querys(its.song_id)
+                                        if(downs.size>0){
+                                            for(itd in downs){
+                                                if(itd.type==0){
+                                                    val request = OkGo.get<File>(its.uri)
+                                                    OkDownload.request(its.uri, request) //
+                                                        .priority(0)
+                                                        .fileName("music" + its.song_id + ".mp3") //
+                                                        .save() //
+                                                        .register(LogDownloadListener(its, context, 0,downs,0)) //
+                                                        .start()
+                                                }else{
+                                                    Toast.makeText(
+                                                        context,
+                                                        getText(R.string.download_carry),
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                }
+                                            }
+                                        }else{
+                                            val request = OkGo.get<File>(its.uri)
+                                            OkDownload.request(its.uri, request) //
+                                                .priority(0)
+                                                .fileName("music" + its.song_id + ".mp3") //
+                                                .save() //
+                                                .register(LogDownloadListener(its, context, 0,downs,0)) //
+                                                .start()
+                                        }
+
+
+                                    }
+
+                                } else {
+                                    Toast.makeText(
+                                        context,
+                                        getText(R.string.song_collect_error),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+
+
+                            }
+                            .show()
                     }
             }
 

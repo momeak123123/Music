@@ -11,6 +11,7 @@ import com.example.music.xiaobai.bean.*
 import com.example.music.xiaobai.common.Constants
 import com.example.music.xiaobai.music.view.act.AlbumDetActivity
 import com.example.music.xiaobai.music.view.act.MusicPlayActivity
+import com.example.music.xiaobai.music.view.fragment.HomeFragment
 import com.example.music.xiaobai.sql.bean.Down
 import com.example.music.xiaobai.sql.bean.Playlist
 import com.example.music.xiaobai.sql.dao.mDownDao
@@ -77,10 +78,16 @@ class MusicPlayModel {
                                 playlist.song_num = num
                                 mPlaylistDao.update(playlist)
 
-                                if (type == 0) {
-                                    AlbumDetActivity.adapters.update(position, num)
-                                } else {
-                                    MusicPlayActivity.adapter.update(position, num)
+                                when (type) {
+                                    1 -> {
+                                        AlbumDetActivity.adapters.update(position, num)
+                                    }
+                                    2 -> {
+                                        HomeFragment.adaptert.update(position, num)
+                                    }
+                                    else -> {
+                                        MusicPlayActivity.adapter.update(position, num)
+                                    }
                                 }
 
                                 val list: List<SongList> = Gson().fromJson(
@@ -93,7 +100,6 @@ class MusicPlayModel {
                                             val down = Down()
                                             down.playid = playid
                                             down.song_id = it.song_id
-                                            idmap.add(it.song_id)
                                             down.name = it.name
                                             down.album_name = it.album_name
                                             down.album_id = it.album_id
@@ -102,7 +108,7 @@ class MusicPlayModel {
                                             down.artist_id = it.all_artist[0].id
                                             down.pic_url = it.pic_url
                                             down.publish_time = it.publish_time
-                                            down.song_list_id = i.song_list_id
+                                            down.song_list_id = it.song_list_id
                                             down.type = 0
                                             mDownDao.insert(down)
                                         }

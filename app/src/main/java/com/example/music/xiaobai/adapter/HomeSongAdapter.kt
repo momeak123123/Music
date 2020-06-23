@@ -11,6 +11,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.music.xiaobai.R
 import com.example.music.xiaobai.bean.Music
+import com.example.music.xiaobai.music.view.act.AlbumDetActivity
+import com.example.music.xiaobai.music.view.fragment.HomeFragment
+import io.reactivex.Observable
 
 class HomeSongAdapter (val datas: List<Music>, val context: Context) : RecyclerView.Adapter<HomeSongAdapter.InnerHolder>() {
 
@@ -62,7 +65,8 @@ class HomeSongAdapter (val datas: List<Music>, val context: Context) : RecyclerV
         }
         holder.txt.text = srtist_name
         holder.more.setOnClickListener {
-
+            println(0)
+            Observable.just(position).subscribe(HomeFragment.observert)
         }
     }
 

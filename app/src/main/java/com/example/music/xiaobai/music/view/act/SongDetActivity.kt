@@ -21,6 +21,7 @@ import com.example.music.xiaobai.bean.artistlist
 import com.example.music.xiaobai.config.LogDownloadListener
 import com.example.music.xiaobai.music.contract.SongDetContract
 import com.example.music.xiaobai.music.presenter.SongDetPresenter
+import com.example.music.xiaobai.sql.bean.Down
 import com.example.music.xiaobai.sql.bean.Playlist
 import com.example.music.xiaobai.sql.dao.mDownDao
 import com.example.music.xiaobai.sql.dao.mPlaylistDao
@@ -34,11 +35,9 @@ import com.xuexiang.xui.widget.dialog.materialdialog.DialogAction
 import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.album_index.*
 import kotlinx.android.synthetic.main.food.*
 import kotlinx.android.synthetic.main.play_list.*
 import kotlinx.android.synthetic.main.popule.*
-import kotlinx.android.synthetic.main.popule.del
 import kotlinx.android.synthetic.main.song_index.*
 import kotlinx.android.synthetic.main.song_index.foods
 import kotlinx.android.synthetic.main.song_index.poplue
@@ -87,17 +86,15 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
 
     override fun init(savedInstanceState: Bundle?) {
         super.init(savedInstanceState)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            val window = window
-            window.clearFlags(
-                WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
-                        or WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION
-            )
-            window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    or View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            window.statusBarColor = Color.TRANSPARENT
-        }
+        val window = window
+        window.clearFlags(
+            WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
+                    or WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION
+        )
+        window.decorView.systemUiVisibility = (View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                or View.SYSTEM_UI_FLAG_LAYOUT_STABLE)
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+        window.statusBarColor = Color.TRANSPARENT
         context = this
         cencel.text = getText(R.string.delete)
         relat3.visibility = View.GONE
@@ -199,6 +196,7 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
             .subscribe {
                 set.visibility = View.GONE
                 foods.visibility = View.VISIBLE
+                view.visibility = View.VISIBLE
             }
         RxView.clicks(item3)
             .throttleFirst(3, TimeUnit.SECONDS)
@@ -208,7 +206,7 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
             }
 
         RxView.clicks(alltxt)
-            .throttleFirst(3, TimeUnit.SECONDS)
+            .throttleFirst(0, TimeUnit.SECONDS)
             .subscribe {
                 if (bools) {
                     all.text = getText(R.string.song_unall)
@@ -222,7 +220,7 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
 
             }
         RxView.clicks(cencel)
-            .throttleFirst(3, TimeUnit.SECONDS)
+            .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
                 MaterialDialog.Builder(context)
                     .title("删除音乐")
@@ -239,7 +237,9 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
                             }
                         }
                         if (idmap.isNotEmpty()) {
-                            getPresenter().delsong(context, idmap,playids)
+                            getPresenter().delsong(context, idmap, playids)
+                            adapter.update(true)
+                            bools = false
                         } else {
                             Toast.makeText(
                                 context,
@@ -254,7 +254,7 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
             }
 
         RxView.clicks(down)
-            .throttleFirst(3, TimeUnit.SECONDS)
+            .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
 
                 MaterialDialog.Builder(context)
@@ -272,20 +272,28 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
                             }
                         }
                         if (idmap.isNotEmpty()) {
-                            for(its in idmap){
+                            for (its in idmap) {
 
                                 val downs = mDownDao.querys(its.song_id)
-                                if(downs.size>0){
-                                    for(itd in downs){
-                                        if(itd.type==0){
+                                if (downs.size > 0) {
+                                    for (itd in downs) {
+                                        if (itd.type == 0) {
                                             val request = OkGo.get<File>(its.uri)
                                             OkDownload.request(its.uri, request) //
                                                 .priority(0)
                                                 .fileName("music" + its.song_id + ".mp3") //
                                                 .save() //
-                                                .register(LogDownloadListener(its, context, 0,downs,0)) //
+                                                .register(
+                                                    LogDownloadListener(
+                                                        its,
+                                                        context,
+                                                        0,
+                                                        downs,
+                                                        0
+                                                    )
+                                                ) //
                                                 .start()
-                                        }else{
+                                        } else {
                                             Toast.makeText(
                                                 context,
                                                 getText(R.string.download_carry),
@@ -293,13 +301,13 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
                                             ).show()
                                         }
                                     }
-                                }else{
+                                } else {
                                     val request = OkGo.get<File>(its.uri)
                                     OkDownload.request(its.uri, request) //
                                         .priority(0)
                                         .fileName("music" + its.song_id + ".mp3") //
                                         .save() //
-                                        .register(LogDownloadListener(its, context, 0,downs,0)) //
+                                        .register(LogDownloadListener(its, context, 0, downs, 0)) //
                                         .start()
                                 }
 
@@ -325,20 +333,11 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
                 foods.visibility = View.GONE
+                view.visibility = View.GONE
                 adapter.type = 0
                 adapter.notifyItemRangeChanged(1, songlist.size)
 
             }
-
-        /* if(isSDcardAvailable()){
-             val request =
-                 OkGo.get<File>(apk.getUrl())
-             OkDownload.request(apk.getId().toString(), request)
-                 .save()
-                 .folder(getMusicDir())
-                 .register(LogDownloadListener(apk, context))
-                 .start()
-         }*/
 
 
     }
@@ -361,6 +360,27 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
                 if (song.isNotEmpty()) {
                     songlist.clear()
                     songlist = song
+
+                    val datas = mDownDao.query(playids)
+                    if(datas.size==0){
+                        for (it in song) {
+                            val down = Down()
+                            down.playid = playids
+                            down.song_id = it.song_id
+                            down.name = it.name
+                            down.album_name = it.album_name
+                            down.album_id = it.album_id
+                            down.uri = it.uri
+                            down.artist = it.all_artist[0].name
+                            down.artist_id = it.all_artist[0].id
+                            down.pic_url = it.pic_url
+                            down.publish_time = it.publish_time
+                            down.song_list_id = it.song_list_id
+                            down.type = 0
+                            mDownDao.insert(down)
+                        }
+                    }
+
                     val one = mutableListOf<artistlist>()
                     val det = Music("", "", 0, 0, "", one, "", 0, "")
                     songlist.add(0, det)
@@ -413,12 +433,7 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
         observerdel = object : Observer<Int> {
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(data: Int) {
-               val list =  mDownDao.querys(songlist[data].song_id)
-                if(list.size>0){
-                    getPresenter().delsongs(context, list[0].id, list,data,playids)
-                }
-
-
+                getPresenter().delsongs(context, songlist[data], data, playids)
             }
 
             override fun onError(e: Throwable) {}
@@ -440,6 +455,7 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
                     }
                 } else {
                     foods.visibility = View.GONE
+                    view.visibility = View.GONE
                     set.visibility = View.GONE
                 }
 
@@ -479,7 +495,82 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
                 RxView.clicks(relat4)
                     .throttleFirst(1, TimeUnit.SECONDS)
                     .subscribe {
+                        MaterialDialog.Builder(context)
+                            .title("下载音乐")
+                            .content("是否下载音乐")
+                            .positiveText("确认")
+                            .negativeText("取消")
+                            .onPositive { _: MaterialDialog?, _: DialogAction? ->
 
+                                val idmap = mutableListOf<Music>()
+
+                                for (ite in SongDetActivity.adapter.listdet) {
+                                    if (ite.type == 1) {
+                                        idmap.add(ite.song)
+                                    }
+                                }
+                                if (idmap.isNotEmpty()) {
+                                    for (its in idmap) {
+
+                                        val downs = mDownDao.querys(its.song_id)
+                                        if (downs.size > 0) {
+                                            for (itd in downs) {
+                                                if (itd.type == 0) {
+                                                    val request = OkGo.get<File>(its.uri)
+                                                    OkDownload.request(its.uri, request) //
+                                                        .priority(0)
+                                                        .fileName("music" + its.song_id + ".mp3") //
+                                                        .save() //
+                                                        .register(
+                                                            LogDownloadListener(
+                                                                its,
+                                                                context,
+                                                                0,
+                                                                downs,
+                                                                0
+                                                            )
+                                                        ) //
+                                                        .start()
+                                                } else {
+                                                    Toast.makeText(
+                                                        context,
+                                                        getText(R.string.download_carry),
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                }
+                                            }
+                                        } else {
+                                            val request = OkGo.get<File>(its.uri)
+                                            OkDownload.request(its.uri, request) //
+                                                .priority(0)
+                                                .fileName("music" + its.song_id + ".mp3") //
+                                                .save() //
+                                                .register(
+                                                    LogDownloadListener(
+                                                        its,
+                                                        context,
+                                                        0,
+                                                        downs,
+                                                        0
+                                                    )
+                                                ) //
+                                                .start()
+                                        }
+
+
+                                    }
+
+                                } else {
+                                    Toast.makeText(
+                                        context,
+                                        getText(R.string.song_collect_error),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+
+
+                            }
+                            .show()
                     }
             }
 
@@ -502,14 +593,17 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
         adapter.setOnItemClickListener(object : SongDetAdapter.ItemClickListener {
             override fun onItemClick(position: Int) {
                 if (position > 0) {
-                    val json: String = Gson().toJson(song)
-                    val intent = Intent()
-                    intent.setClass(context, MusicPlayActivity().javaClass)
-                    intent.putExtra("album_id", playids)
-                    intent.putExtra("pos", position - 1)
-                    intent.putExtra("list", json)
-                    intent.putExtra("type", 1)
-                    startActivity(intent)
+                    if (adapter.type == 0) {
+                        val json: String = Gson().toJson(song)
+                        val intent = Intent()
+                        intent.setClass(context, MusicPlayActivity().javaClass)
+                        intent.putExtra("album_id", playids)
+                        intent.putExtra("pos", position - 1)
+                        intent.putExtra("list", json)
+                        intent.putExtra("type", 1)
+                        startActivity(intent)
+                    }
+
                 }
 
             }

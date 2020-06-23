@@ -15,6 +15,7 @@ import com.example.music.xiaobai.MusicApp
 import com.example.music.xiaobai.R
 import com.example.music.xiaobai.adapter.SongListAdapter
 import com.example.music.xiaobai.music.contract.FindContract
+import com.example.music.xiaobai.music.model.MainModel.Companion.addsonglist
 import com.example.music.xiaobai.music.presenter.FindPresenter
 import com.example.music.xiaobai.music.view.act.LoginActivity
 import com.example.music.xiaobai.music.view.act.SongDetActivity
@@ -28,8 +29,8 @@ import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_find.*
-import kotlinx.android.synthetic.main.fragment_find.swipe_refresh_layout
 import kotlinx.android.synthetic.main.fragment_unfild.*
+import kotlinx.android.synthetic.main.song_add.*
 import mvp.ljb.kt.fragment.BaseMvpFragment
 import java.util.concurrent.TimeUnit
 
@@ -96,10 +97,33 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
         RxView.clicks(add)
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
-                MainActivity.craet(true)
+                in_add.visibility = View.VISIBLE
+                MainActivity.craet(false)
 
             }
 
+        RxView.clicks(in_deter)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe { o: Any? ->
+                if (et_name.isNotEmpty) {
+                    context?.let { addsonglist(it, et_name.editValue) }
+                    et_name.clear()
+                    in_add.visibility = View.GONE
+                    MainActivity.craet(true)
+                } else {
+                    Toast.makeText(
+                        context,
+                        getText(R.string.song_error_name),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+        RxView.clicks(in_cancel)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe{ o: Any? ->
+                in_add.visibility = View.GONE
+                MainActivity.craet(true)
+            }
         RxView.clicks(login)
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {

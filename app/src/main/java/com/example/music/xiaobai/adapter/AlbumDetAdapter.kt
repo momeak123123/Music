@@ -300,7 +300,7 @@ class AlbumDetAdapter(
                 listdet.add(SongDet(it, 0))
             }
         }
-        notifyItemRangeChanged(1, datas.size)
+        notifyDataSetChanged()
     }
 
     interface ItemClickListener {

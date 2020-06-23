@@ -26,6 +26,8 @@ import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.bumptech.glide.Glide;
 import com.example.music.xiaobai.adapter.ViewPagerAdapter;
 import com.example.music.xiaobai.common.Constants;
 import com.example.music.xiaobai.music.model.MainModel;
@@ -81,9 +83,7 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
      */
     private boolean isNeedCheck = true;
     private ViewPager viewPager;
-    private JPTabBar mTabbar;
-    private static RelativeLayout relat1;
-    private static RelativeLayout relat2;
+    private static JPTabBar mTabbar;
     private static MaterialEditText et_name;
     private static TextView in_cancel;
     private static TextView in_deter;
@@ -98,8 +98,6 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
 
         viewPager = findViewById(R.id.viewPager);
         mTabbar = findViewById(R.id.tabbar);
-         relat1 = findViewById(R.id.relat1);
-         relat2 = findViewById(R.id.relat2);
         et_name = findViewById(R.id.et_name);
         in_cancel = findViewById(R.id.in_cancel);
         in_deter = findViewById(R.id.in_deter);
@@ -107,9 +105,36 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
         Initialization.setupDatabasePlaylist(this);
         Initialization.setupDatabaseDown(this);
 
+        if(bool){
+            Intent intent = new Intent(MainActivity.this, StartPageActivity.class);
+            startActivity(intent);
 
-        initView();
-        craet(false);
+            Observable.timer(5, TimeUnit.SECONDS)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<Long>() {
+                        @Override
+                        public void onSubscribe(@NonNull Disposable disposable) {
+
+                        }
+
+                        @Override
+                        public void onNext(@NonNull Long number) {
+                            MusicPlayModel.Companion.updateapp(getVersionName());
+                        }
+
+                        @Override
+                        public void onError(@NonNull Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    });
+        }
+
+
         MainModel.Companion.homedata(MainActivity.this);
 
 
@@ -130,31 +155,6 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
         }
         return "";
     }
-
-
-    @SuppressLint("CheckResult")
-    private void initView(){
-        RxView.clicks(in_deter)
-                .throttleFirst(1, TimeUnit.SECONDS)
-                .subscribe(o -> {
-                    if(et_name.isNotEmpty()){
-                        MainModel.Companion.addsonglist(this,et_name.getEditValue());
-                        et_name.clear();
-                        craet(false);
-                    }else{
-                        Toast.makeText(this, R.string.song_error_name, Toast.LENGTH_LONG).show();
-                    }
-                });
-        RxView.clicks(in_cancel)
-                .throttleFirst(1, TimeUnit.SECONDS)
-                .subscribe(o -> {
-                    craet(false);
-                });
-
-    }
-
-
-
 
     private void initData() {
         List<Fragment> list = new ArrayList<>();
@@ -219,37 +219,12 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
     public void onResume() {
         super.onResume();
         viewPager.setCurrentItem(indexs);
-        if(bool){
-            Intent intent = new Intent(MainActivity.this, StartPageActivity.class);
-            startActivity(intent);
-        }
+
         if (isNeedCheck) {
             checkPermissions(needPermissions);
         }
 
-        Observable.timer(3, TimeUnit.SECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Long>() {
-                    @Override
-                    public void onSubscribe(@NonNull Disposable disposable) {
 
-                    }
-
-                    @Override
-                    public void onNext(@NonNull Long number) {
-                        MusicPlayModel.Companion.updateapp(getVersionName());
-                    }
-
-                    @Override
-                    public void onError(@NonNull Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
 
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 //            boolean hasInstallPermission = isHasInstallPermissionWithO(this);
@@ -282,14 +257,13 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
     
     public static void craet(Boolean bool){
         if(bool){
-            relat1.setVisibility(View.VISIBLE);
-            relat2.setVisibility(View.VISIBLE);
+            mTabbar.setVisibility(View.VISIBLE);
 
         }else{
-            relat1.setVisibility(View.GONE);
-            relat2.setVisibility(View.GONE);
+            mTabbar.setVisibility(View.GONE);
         }
     }
+
 
 
     public static String add(){

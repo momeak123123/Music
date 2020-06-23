@@ -513,6 +513,7 @@ class MusicPlayActivity : AppCompatActivity() {
                     .onPositive { _: MaterialDialog?, _: DialogAction? ->
                         val idmap = mutableListOf<Music>()
                         playingMusic?.let { idmap.add(it) }
+                        val playlist: Playlist = mPlaylistDao.query(song[position].play_list_id)[0]
                         val playsong = mDownDao.query(song[position].play_list_id)
                         val songs = mutableListOf<Music>()
                         songs.addAll(idmap)
@@ -526,12 +527,12 @@ class MusicPlayActivity : AppCompatActivity() {
                                     }
                                 }
                                 if (songs.size > 0) {
-                                    val num = (playsong.size + songs.size).toString()
+                                    val num = (playlist.song_num.toInt() + songs.size).toString()
                                     MusicPlayModel.addSong(
                                         context,
                                         songs,
                                         num,
-                                        song[position].play_list_id, 1, position
+                                        song[position].play_list_id, 0, position
                                     )
                                 } else {
                                     Toast.makeText(
@@ -545,12 +546,12 @@ class MusicPlayActivity : AppCompatActivity() {
 
                         } else {
                             if (songs.size > 0) {
-                                val num = (playsong.size + songs.size).toString()
+                                val num = (playlist.song_num.toInt() + songs.size).toString()
                                 MusicPlayModel.addSong(
                                     context,
                                     songs,
                                     num,
-                                    song[position].play_list_id, 1, position
+                                    song[position].play_list_id, 0, position
                                 )
                                 adapter.update(position, num)
                             } else {

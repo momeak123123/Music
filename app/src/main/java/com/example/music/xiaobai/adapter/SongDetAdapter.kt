@@ -304,7 +304,6 @@ class SongDetAdapter(
             }
 
             delete.setOnClickListener {
-
                 Observable.just(position).subscribe(SongDetActivity.observerdel)
             }
         }

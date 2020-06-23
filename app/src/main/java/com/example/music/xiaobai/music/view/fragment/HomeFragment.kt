@@ -5,23 +5,46 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.view.View
+import android.widget.Toast
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.bumptech.glide.Glide
+import com.example.music.xiaobai.MainActivity
 import com.example.music.xiaobai.R
 import com.example.music.xiaobai.adapter.*
 import com.example.music.xiaobai.bean.*
+import com.example.music.xiaobai.config.LogDownloadListener
 import com.example.music.xiaobai.music.contract.HomeContract
+import com.example.music.xiaobai.music.model.MusicPlayModel
 import com.example.music.xiaobai.music.presenter.HomePresenter
 import com.example.music.xiaobai.music.view.act.*
+import com.example.music.xiaobai.sql.bean.Playlist
+import com.example.music.xiaobai.sql.dao.mDownDao
+import com.example.music.xiaobai.sql.dao.mPlaylistDao
 import com.google.gson.Gson
+import com.google.gson.JsonArray
 import com.google.gson.reflect.TypeToken
 import com.jakewharton.rxbinding2.view.RxView
+import com.lzy.okgo.OkGo
+import com.lzy.okserver.OkDownload
 import com.xuexiang.xui.widget.banner.widget.banner.BannerItem
 import com.xuexiang.xui.widget.banner.widget.banner.base.BaseBanner
+import com.xuexiang.xui.widget.dialog.materialdialog.DialogAction
+import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
+import io.reactivex.Observer
+import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.album_index.*
 import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.fragment_home.in_indel
+import kotlinx.android.synthetic.main.fragment_home.poplue
+import kotlinx.android.synthetic.main.fragment_home.swipe_refresh_layout
+import kotlinx.android.synthetic.main.music_play.*
+import kotlinx.android.synthetic.main.play_list.*
+import kotlinx.android.synthetic.main.popule.*
 import mvp.ljb.kt.fragment.BaseMvpFragment
+import java.io.File
 import java.util.concurrent.TimeUnit
 
 
@@ -31,10 +54,16 @@ import java.util.concurrent.TimeUnit
  * @Description input description
  **/
 class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IView {
+
+    private lateinit var data_song: MutableList<Music>
     private lateinit var bannerdata: MutableList<BannerItem>
     private var adapters: HomeListAdapter? = null
     private lateinit var sp: SharedPreferences
 
+    companion object {
+        lateinit var adaptert: PlaySongAdapter
+        lateinit var observert: Observer<Int>
+    }
 
     override fun registerPresenter() = HomePresenter::class.java
 
@@ -163,7 +192,7 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
     }
 
     fun loadData5(song: List<Music>) {
-        val data_song = mutableListOf<Music>()
+         data_song = mutableListOf<Music>()
         if (song.isNotEmpty()) {
             if (song.size > 8) {
                 for (i in 0..7) {
@@ -230,6 +259,19 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
                 startActivity(intent)
             }
 
+        RxView.clicks(list_dow)
+            .throttleFirst(3, TimeUnit.SECONDS)
+            .subscribe {
+                in_indel.visibility = View.GONE
+                MainActivity.craet(true)
+            }
+
+        RxView.clicks(play_list_back)
+            .throttleFirst(3, TimeUnit.SECONDS)
+            .subscribe {
+                in_indel.visibility = View.GONE
+                MainActivity.craet(true)
+            }
     }
 
 
@@ -247,7 +289,243 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
             }
         } catch (e: Exception) {
         }
+
+
+        observert = object : Observer<Int> {
+            override fun onSubscribe(d: Disposable) {}
+
+            @SuppressLint("SetTextI18n", "CheckResult")
+            override fun onNext(data: Int) {
+                poplue.visibility = View.VISIBLE
+                MainActivity.craet(false)
+                edit_song.text =
+                    getText(R.string.album).toString() + ":" + data_song[data].album_name
+                var srtist_name = ""
+                for (it in data_song[data].all_artist) {
+                    if (srtist_name != "") {
+                        srtist_name += "/" + it.name
+                    } else {
+                        srtist_name = it.name
+                    }
+
+                }
+                artist_txt.text = getText(R.string.item3s).toString() + ":" + srtist_name
+                RxView.clicks(popule_back)
+                    .throttleFirst(3, TimeUnit.SECONDS)
+                    .subscribe {
+                        poplue.visibility = View.GONE
+                        MainActivity.craet(true)
+                    }
+
+                RxView.clicks(relat1)
+                    .throttleFirst(3, TimeUnit.SECONDS)
+                    .subscribe {
+
+                    }
+                RxView.clicks(relat2)
+                    .throttleFirst(3, TimeUnit.SECONDS)
+                    .subscribe {
+
+                    }
+
+                RxView.clicks(relat3)
+                    .throttleFirst(3, TimeUnit.SECONDS)
+                    .subscribe {
+                       val sps  = requireContext().getSharedPreferences("User", Context.MODE_PRIVATE)
+                        if (sps.getBoolean("login", false)) {
+                            poplue.visibility = View.GONE
+                            in_indel.visibility = View.VISIBLE
+                            context?.let { it1 -> Glide.with(it1).load("").into(del) }
+                            in_title.text = getText(R.string.song_but)
+                            val list: MutableList<Playlist> = mPlaylistDao.queryAll()
+                            val idmap = mutableListOf<Music>()
+                            idmap.add(data_song[data])
+                            initSongLists(list, idmap)
+
+                        } else {
+                            context?.let { it1 ->
+                                MaterialDialog.Builder(it1)
+                                    .title("登录")
+                                    .content("未登陆账号，是否登录")
+                                    .positiveText("确认")
+                                    .negativeText("取消")
+                                    .onPositive { _: MaterialDialog?, _: DialogAction? ->
+                                        val intent = Intent()
+                                        context.let {
+                                            intent.setClass(it1, LoginActivity().javaClass)
+                                        }
+                                        startActivity(intent)
+                                    }
+                                    .show()
+                            }
+                        }
+
+                    }
+
+
+
+                RxView.clicks(relat4)
+                    .throttleFirst(3, TimeUnit.SECONDS)
+                    .subscribe {
+                        context?.let { it1 ->
+                            MaterialDialog.Builder(it1)
+                                .title("下载音乐")
+                                .content("是否下载音乐")
+                                .positiveText("确认")
+                                .negativeText("取消")
+                                .onPositive { _: MaterialDialog?, _: DialogAction? ->
+
+                                    val idmap = mutableListOf<Music>()
+
+                                    for (ite in SongDetActivity.adapter.listdet) {
+                                        if (ite.type == 1) {
+                                            idmap.add(ite.song)
+                                        }
+                                    }
+                                    if (idmap.isNotEmpty()) {
+                                        for(its in idmap){
+
+                                            val downs = mDownDao.querys(its.song_id)
+                                            if(downs.size>0){
+                                                for(itd in downs){
+                                                    if(itd.type==0){
+                                                        val request = OkGo.get<File>(its.uri)
+                                                        OkDownload.request(its.uri, request) //
+                                                            .priority(0)
+                                                            .fileName("music" + its.song_id + ".mp3") //
+                                                            .save() //
+                                                            .register(LogDownloadListener(
+                                                                its,
+                                                                context,
+                                                                0,
+                                                                downs,
+                                                                0
+                                                            )) //
+                                                            .start()
+                                                    }else{
+                                                        Toast.makeText(
+                                                            context,
+                                                            getText(R.string.download_carry),
+                                                            Toast.LENGTH_SHORT
+                                                        ).show()
+                                                    }
+                                                }
+                                            }else{
+                                                val request = OkGo.get<File>(its.uri)
+                                                OkDownload.request(its.uri, request) //
+                                                    .priority(0)
+                                                    .fileName("music" + its.song_id + ".mp3") //
+                                                    .save() //
+                                                    .register(LogDownloadListener(
+                                                        its,
+                                                        context,
+                                                        0,
+                                                        downs,
+                                                        0
+                                                    )) //
+                                                    .start()
+                                            }
+
+
+                                        }
+
+                                    } else {
+                                        Toast.makeText(
+                                            context,
+                                            getText(R.string.song_collect_error),
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+
+
+                                }
+                                .show()
+                        }
+                    }
+            }
+
+            override fun onError(e: Throwable) {}
+            override fun onComplete() {
+            }
+
+        }
     }
+
+    /**
+     * 初始化歌曲
+     */
+    private fun initSongLists(
+        song: MutableList<Playlist>,
+        idmap: MutableList<Music>
+    ) {
+        in_list.layoutManager = LinearLayoutManager(context)
+        in_list.itemAnimator = DefaultItemAnimator()
+        adaptert = context?.let { PlaySongAdapter(song, it) }!!
+        in_list.adapter = adaptert
+        adaptert.setOnItemClickListener(object : PlaySongAdapter.ItemClickListener {
+            override fun onItemClick(view: View, position: Int) {
+                MaterialDialog.Builder(context!!)
+                    .title("添加音乐")
+                    .content("是否将音乐加入此歌单")
+                    .positiveText("确认")
+                    .negativeText("取消")
+                    .onPositive { _: MaterialDialog?, _: DialogAction? ->
+                        val playlist: Playlist = mPlaylistDao.query(song[position].play_list_id)[0]
+                        val playsong = mDownDao.query(song[position].play_list_id)
+                        val songs = mutableListOf<Music>()
+                        songs.addAll(idmap)
+                        if (playsong.size > 0) {
+                            if (idmap.size > 0) {
+                                for (sea in idmap) {
+                                    for (det in playsong) {
+                                        if (sea.song_id == det.song_id) {
+                                            songs.remove(sea)
+                                        }
+                                    }
+                                }
+                                if (songs.size > 0) {
+                                    val num = (playlist.song_num.toInt() + songs.size).toString()
+                                    MusicPlayModel.addSong(
+                                        context!!,
+                                        songs,
+                                        num,
+                                        song[position].play_list_id,2,position
+                                    )
+                                } else {
+                                    Toast.makeText(
+                                        context,
+                                        getText(R.string.play_mode),
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+
+                            }
+
+                        } else {
+                            if (songs.size > 0) {
+                                val num = (playlist.song_num.toInt() + songs.size).toString()
+                                MusicPlayModel.addSong(
+                                    context!!,
+                                    songs,
+                                    num,
+                                    song[position].play_list_id,2,position
+                                )
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    getText(R.string.play_mode),
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                        }
+
+                    }
+                    .show()
+
+            }
+        })
+    }
+
 
     /**
      * 初始化轮播图

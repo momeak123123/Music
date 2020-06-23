@@ -21,13 +21,13 @@ interface SongDetContract {
         fun listdata(context: Context, id: Long)
         fun deldata(context: Context, ids: Long,playids: Long)
         fun delsong(context: Context,  song: MutableList<Music>,playids: Long)
-        fun delsongs(context: Context, id:Long,  song: MutableList<Down>,data:Int,playids: Long)
+        fun delsongs(context: Context,  song: Music,data:Int,playids: Long)
     }
 
     interface IModel : IModelContract{
         fun listdata(context: Context,id: Long)
         fun deldata(context: Context, ids: Long,playids: Long)
         fun delsong(context: Context ,song: MutableList<Music>,playids: Long)
-        fun delsongs(context: Context , id:Long,song: MutableList<Down>,data:Int,playids: Long)
+        fun delsongs(context: Context, song: Music,data:Int,playids: Long)
     }
 }
