@@ -8,7 +8,7 @@ android {
     buildToolsVersion "29.0.3"
 
     defaultConfig {
-        applicationId "com.example.music.xiaobai"
+        applicationId "com.example.xiaobai.music"
         minSdkVersion 24
         targetSdkVersion 29
         versionCode 16
@@ -102,6 +102,6 @@ dependencies {
 
 greendao {
     schemaVersion 8
-    daoPackage 'com.example.music.xiaobai.sql.gen'
+    daoPackage 'com.example.xiaobai.music.sql.gen'
     targetGenDir 'src/main/java'
 }

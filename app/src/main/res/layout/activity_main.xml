@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:jp="http://schemas.android.com/apk/res-auto"
-    tools:context=".MainActivity">
+    tools:context="com.example.xiaobai.music.MainActivity">
 
 
     <androidx.viewpager.widget.ViewPager
