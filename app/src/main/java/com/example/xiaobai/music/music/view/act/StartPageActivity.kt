@@ -64,10 +64,10 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>(), Start
     override fun initView() {
         super.initView()
 
-        mDisposable = Flowable.intervalRange(0, 6, 0, 1, TimeUnit.SECONDS)
+        mDisposable = Flowable.intervalRange(0, 4, 0, 1, TimeUnit.SECONDS)
             .observeOn(AndroidSchedulers.mainThread())
             .doOnNext { t ->
-                time.text = (5 - t).toString()
+                time.text = (3 - t).toString()
             }
             .doOnComplete {
                 finish()

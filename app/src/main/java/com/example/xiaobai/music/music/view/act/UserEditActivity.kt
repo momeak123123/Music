@@ -70,11 +70,6 @@ class UserEditActivity : BaseMvpActivity<UserEditContract.IPresenter>(), UserEdi
                 finish()
             }
 
-        RxView.clicks(gender)
-            .throttleFirst(3, TimeUnit.SECONDS)
-            .subscribe {
-                finish()
-            }
 
         RxView.clicks(ima)
             .throttleFirst(3, TimeUnit.SECONDS)
@@ -125,8 +120,7 @@ class UserEditActivity : BaseMvpActivity<UserEditContract.IPresenter>(), UserEdi
                                     )
                                 }
                             } else {
-                                Toast.makeText(context, R.string.error_user, Toast.LENGTH_SHORT)
-                                    .show()
+                                Toast.makeText(context, R.string.error_user, Toast.LENGTH_SHORT).show()
                             }
 
                         } else {
@@ -149,22 +143,6 @@ class UserEditActivity : BaseMvpActivity<UserEditContract.IPresenter>(), UserEdi
             }
     }
 
-  /*  override fun onActivityResult(
-        requestCode: Int,
-        resultCode: Int,
-        data: Intent?
-    ) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == RESULT_OK) {
-            if (requestCode == PictureConfig.CHOOSE_REQUEST) { // 图片选择结果回调
-                if (PictureSelector.obtainMultipleResult(data)[0].isCompressed) {
-                    picturePath =
-                        PictureSelector.obtainMultipleResult(data)[0].compressPath
-                   // Glide.with(context).load(picturePath).placeholder(R.color.main_black_grey).into(ima)
-                }
-            }
-        }
-    }*/
 
     /**
      * 返回结果回调
@@ -198,8 +176,14 @@ class UserEditActivity : BaseMvpActivity<UserEditContract.IPresenter>(), UserEdi
             getSharedPreferences("User", Context.MODE_PRIVATE)
         Glide.with(context).load(sp.getString("url", "")).placeholder(R.color.main_black_grey)
             .into(ima)
-        name.text = Editable.Factory.getInstance().newEditable(sp.getString("name", ""))
-        gender.text = Editable.Factory.getInstance().newEditable(sp.getString("gender", ""))
+        name.text = Editable.Factory.getInstance().newEditable(sp.getString("nickname", ""))
+
+        if(sp.getString("sex", "")=="1"){
+            gender.text = Editable.Factory.getInstance().newEditable(getText(R.string.man))
+        }else{
+            gender.text = Editable.Factory.getInstance().newEditable(getText(R.string.girl))
+        }
+
         city.text = Editable.Factory.getInstance().newEditable(sp.getString("countries", ""))
     }
 

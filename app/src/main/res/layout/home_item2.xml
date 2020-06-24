@@ -1,36 +1,400 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/album"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.xuexiang.xui.widget.imageview.RadiusImageView
-        android:id="@+id/iv_cover"
-        android:layout_width="@dimen/dp_60"
-        android:layout_height="@dimen/dp_60"
-        android:layout_marginTop="@dimen/dp_10"
-        android:scaleType="centerCrop"
-        android:src="@color/white"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:riv_is_circle="true" />
-
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="0dp"
+    <LinearLayout
+        android:id="@+id/frameLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_10"
-        android:gravity="center_vertical|center"
-        android:singleLine="true"
-        android:ellipsize="end"
-        android:maxLines="1"
-        android:text=""
-        android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="@+id/iv_cover"
-        app:layout_constraintStart_toStartOf="@+id/iv_cover"
-        app:layout_constraintTop_toBottomOf="@+id/iv_cover" />
+        android:layout_marginStart="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_10"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RelativeLayout
+            android:id="@+id/idea"
+            android:layout_width="@dimen/dp_80"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.xuexiang.xui.widget.imageview.RadiusImageView
+                android:id="@+id/iv_cover"
+                android:layout_width="@dimen/dp_80"
+                android:layout_height="@dimen/dp_80"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:scaleType="centerCrop"
+                android:src="@color/app_color_apr"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:riv_corner_radius="@dimen/dp_10"
+                app:riv_is_circle="true" />
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/iv_cover"
+                android:layout_alignStart="@+id/iv_cover"
+                android:layout_alignEnd="@+id/iv_cover"
+                android:layout_marginTop="@dimen/dp_10"
+                android:ellipsize="end"
+                android:gravity="center_vertical|center"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text=""
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="@+id/iv_cover"
+                app:layout_constraintStart_toStartOf="@+id/iv_cover"
+                app:layout_constraintTop_toBottomOf="@+id/iv_cover" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/idea1"
+            android:layout_width="@dimen/dp_80"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:layout_constraintStart_toEndOf="@+id/idea"
+            app:layout_constraintTop_toTopOf="@+id/idea">
+
+            <com.xuexiang.xui.widget.imageview.RadiusImageView
+                android:id="@+id/iv_cover1"
+                android:layout_width="@dimen/dp_80"
+                android:layout_height="@dimen/dp_80"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:scaleType="centerCrop"
+                android:src="@color/app_color_apr"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:riv_corner_radius="@dimen/dp_10"
+                app:riv_is_circle="true" />
+
+            <TextView
+                android:id="@+id/title1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/iv_cover1"
+                android:layout_alignStart="@+id/iv_cover1"
+                android:layout_alignEnd="@+id/iv_cover1"
+                android:layout_marginTop="@dimen/dp_10"
+                android:ellipsize="end"
+                android:gravity="center_vertical|center"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text=""
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="@+id/iv_cover1"
+                app:layout_constraintStart_toStartOf="@+id/iv_cover1"
+                app:layout_constraintTop_toBottomOf="@+id/iv_cover1" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/idea2"
+            android:layout_width="@dimen/dp_80"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:layout_constraintStart_toEndOf="@+id/idea1"
+            app:layout_constraintTop_toTopOf="@+id/idea">
+
+            <com.xuexiang.xui.widget.imageview.RadiusImageView
+                android:id="@+id/iv_cover2"
+                android:layout_width="@dimen/dp_80"
+                android:layout_height="@dimen/dp_80"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginEnd="@dimen/dp_10"
+
+                android:scaleType="centerCrop"
+                android:src="@color/app_color_apr"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:riv_corner_radius="@dimen/dp_10"
+                app:riv_is_circle="true" />
+
+            <TextView
+                android:id="@+id/title2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/iv_cover2"
+                android:layout_alignStart="@+id/iv_cover2"
+                android:layout_alignEnd="@+id/iv_cover2"
+                android:layout_marginTop="@dimen/dp_10"
+                android:ellipsize="end"
+                android:gravity="center_vertical|center"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text=""
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="@+id/iv_cover2"
+                app:layout_constraintStart_toStartOf="@+id/iv_cover2"
+                app:layout_constraintTop_toBottomOf="@+id/iv_cover2" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/idea3"
+            android:layout_width="@dimen/dp_80"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/idea2"
+            app:layout_constraintTop_toTopOf="@+id/idea">
+
+            <com.xuexiang.xui.widget.imageview.RadiusImageView
+                android:id="@+id/iv_cover3"
+                android:layout_width="@dimen/dp_80"
+                android:layout_height="@dimen/dp_80"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginEnd="@dimen/dp_10"
+
+                android:scaleType="centerCrop"
+                android:src="@color/app_color_apr"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:riv_corner_radius="@dimen/dp_10"
+                app:riv_is_circle="true" />
+
+            <TextView
+                android:id="@+id/title3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/iv_cover3"
+                android:layout_alignStart="@+id/iv_cover3"
+                android:layout_alignEnd="@+id/iv_cover3"
+                android:layout_marginTop="@dimen/dp_10"
+                android:ellipsize="end"
+                android:gravity="center_vertical|center"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text=""
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="@+id/iv_cover3"
+                app:layout_constraintStart_toStartOf="@+id/iv_cover3"
+                app:layout_constraintTop_toBottomOf="@+id/iv_cover3" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_10"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/frameLayout">
+
+        <RelativeLayout
+            android:id="@+id/idea4"
+            android:layout_width="@dimen/dp_80"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:layout_constraintStart_toStartOf="@+id/idea"
+            app:layout_constraintTop_toBottomOf="@+id/idea">
+
+            <com.xuexiang.xui.widget.imageview.RadiusImageView
+                android:id="@+id/iv_cover4"
+                android:layout_width="@dimen/dp_80"
+                android:layout_height="@dimen/dp_80"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginEnd="@dimen/dp_10"
+
+                android:scaleType="centerCrop"
+                android:src="@color/app_color_apr"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:riv_corner_radius="@dimen/dp_10"
+                app:riv_is_circle="true" />
+
+            <TextView
+                android:id="@+id/title4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/iv_cover4"
+                android:layout_alignStart="@+id/iv_cover4"
+                android:layout_alignEnd="@+id/iv_cover4"
+                android:layout_marginTop="@dimen/dp_10"
+                android:ellipsize="end"
+                android:gravity="center_vertical|center"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text=""
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="@+id/iv_cover4"
+                app:layout_constraintStart_toStartOf="@+id/iv_cover4"
+                app:layout_constraintTop_toBottomOf="@+id/iv_cover4" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/idea5"
+            android:layout_width="@dimen/dp_80"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:layout_constraintStart_toStartOf="@+id/idea1"
+            app:layout_constraintTop_toTopOf="@+id/idea4">
+
+            <com.xuexiang.xui.widget.imageview.RadiusImageView
+                android:id="@+id/iv_cover5"
+                android:layout_width="@dimen/dp_80"
+                android:layout_height="@dimen/dp_80"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginEnd="@dimen/dp_10"
+
+                android:scaleType="centerCrop"
+                android:src="@color/app_color_apr"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:riv_corner_radius="@dimen/dp_10"
+                app:riv_is_circle="true" />
+
+            <TextView
+                android:id="@+id/title5"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/iv_cover5"
+                android:layout_alignStart="@+id/iv_cover5"
+                android:layout_alignEnd="@+id/iv_cover5"
+                android:layout_marginTop="@dimen/dp_10"
+                android:ellipsize="end"
+                android:gravity="center_vertical|center"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text=""
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="@+id/iv_cover5"
+                app:layout_constraintStart_toStartOf="@+id/iv_cover5"
+                app:layout_constraintTop_toBottomOf="@+id/iv_cover5" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/idea6"
+            android:layout_width="@dimen/dp_80"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:layout_constraintStart_toStartOf="@+id/idea2"
+            app:layout_constraintTop_toTopOf="@+id/idea4">
+
+            <com.xuexiang.xui.widget.imageview.RadiusImageView
+                android:id="@+id/iv_cover6"
+                android:layout_width="@dimen/dp_80"
+                android:layout_height="@dimen/dp_80"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginEnd="@dimen/dp_10"
+
+                android:scaleType="centerCrop"
+                android:src="@color/app_color_apr"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:riv_corner_radius="@dimen/dp_10"
+                app:riv_is_circle="true" />
+
+            <TextView
+                android:id="@+id/title6"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/iv_cover6"
+                android:layout_alignStart="@+id/iv_cover6"
+                android:layout_alignEnd="@+id/iv_cover6"
+                android:layout_marginTop="@dimen/dp_10"
+                android:ellipsize="end"
+                android:gravity="center_vertical|center"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text=""
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="@+id/iv_cover6"
+                app:layout_constraintStart_toStartOf="@+id/iv_cover6"
+                app:layout_constraintTop_toBottomOf="@+id/iv_cover6" />
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/idea7"
+            android:layout_width="@dimen/dp_80"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            app:layout_constraintStart_toStartOf="@+id/idea3"
+            app:layout_constraintTop_toTopOf="@+id/idea4">
+
+            <com.xuexiang.xui.widget.imageview.RadiusImageView
+                android:id="@+id/iv_cover7"
+                android:layout_width="@dimen/dp_80"
+                android:layout_height="@dimen/dp_80"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="@dimen/dp_10"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginEnd="@dimen/dp_10"
+                android:scaleType="centerCrop"
+                android:src="@color/app_color_apr"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:riv_corner_radius="@dimen/dp_10"
+                app:riv_is_circle="true" />
+
+            <TextView
+                android:id="@+id/title7"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/iv_cover7"
+                android:layout_alignStart="@+id/iv_cover7"
+                android:layout_alignEnd="@+id/iv_cover7"
+                android:layout_marginTop="@dimen/dp_10"
+                android:ellipsize="end"
+                android:gravity="center_vertical|center"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:text=""
+                android:textColor="@color/white"
+                app:layout_constraintEnd_toEndOf="@+id/iv_cover7"
+                app:layout_constraintStart_toStartOf="@+id/iv_cover7"
+                app:layout_constraintTop_toBottomOf="@+id/iv_cover7" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,53 +1,383 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/list"
-    android:layout_width="wrap_content"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.xuexiang.xui.widget.imageview.RadiusImageView
-        android:id="@+id/iv_cover"
-        android:layout_width="@dimen/dp_90"
-        android:layout_height="@dimen/dp_90"
-        android:layout_marginTop="@dimen/dp_10"
-        android:scaleType="centerCrop"
-        android:src="@color/app_color_apr"
+    <RelativeLayout
+        android:id="@+id/idea"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toStartOf="@+id/idea1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:riv_corner_radius="@dimen/dp_10"
-        app:riv_is_circle="false" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="0dp"
+        <com.xuexiang.xui.widget.imageview.RadiusImageView
+            android:id="@+id/iv_cover"
+            android:layout_width="@dimen/dp_90"
+            android:layout_height="@dimen/dp_90"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="@dimen/dp_10"
+            android:scaleType="centerCrop"
+            android:src="@color/app_color_apr"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:riv_corner_radius="@dimen/dp_10"
+            app:riv_is_circle="false" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/iv_cover"
+            android:layout_alignStart="@+id/iv_cover"
+            android:layout_alignEnd="@+id/iv_cover"
+            android:layout_marginTop="@dimen/dp_10"
+            android:ellipsize="end"
+            android:gravity="center_vertical|left"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:text=""
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/iv_cover"
+            app:layout_constraintTop_toBottomOf="@+id/iv_cover"
+            tools:ignore="RtlHardcoded" />
+
+        <TextView
+            android:id="@+id/txt"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/title"
+            android:layout_alignStart="@+id/iv_cover"
+            android:layout_alignEnd="@+id/title"
+            android:layout_marginTop="@dimen/dp_5"
+            android:ellipsize="end"
+            android:gravity="center_vertical|left"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:text=""
+            android:textColor="@color/gray"
+            app:layout_constraintEnd_toEndOf="@+id/iv_cover"
+            app:layout_constraintStart_toStartOf="@+id/iv_cover"
+            app:layout_constraintTop_toBottomOf="@+id/title"
+            tools:ignore="RtlHardcoded" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/idea1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/idea">
+
+        <com.xuexiang.xui.widget.imageview.RadiusImageView
+            android:id="@+id/iv_cover1"
+            android:layout_width="@dimen/dp_90"
+            android:layout_height="@dimen/dp_90"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="@dimen/dp_10"
+            android:scaleType="centerCrop"
+            android:src="@color/app_color_apr"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:riv_corner_radius="@dimen/dp_10"
+            app:riv_is_circle="false" />
+
+        <TextView
+            android:id="@+id/title1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/iv_cover1"
+            android:layout_alignStart="@+id/iv_cover1"
+            android:layout_alignEnd="@+id/iv_cover1"
+            android:layout_marginTop="@dimen/dp_10"
+            android:ellipsize="end"
+            android:gravity="center_vertical|left"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:text=""
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/iv_cover1"
+            app:layout_constraintTop_toBottomOf="@+id/iv_cover1"
+            tools:ignore="RtlHardcoded" />
+
+        <TextView
+            android:id="@+id/txt1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/title1"
+            android:layout_alignStart="@+id/iv_cover1"
+            android:layout_alignEnd="@+id/title1"
+            android:layout_marginTop="@dimen/dp_5"
+            android:ellipsize="end"
+            android:gravity="center_vertical|left"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:text=""
+            android:textColor="@color/gray"
+            app:layout_constraintEnd_toEndOf="@+id/iv_cover1"
+            app:layout_constraintStart_toStartOf="@+id/iv_cover1"
+            app:layout_constraintTop_toBottomOf="@+id/title1"
+            tools:ignore="RtlHardcoded" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/idea2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/idea1"
+        app:layout_constraintTop_toTopOf="@+id/idea1">
+
+        <com.xuexiang.xui.widget.imageview.RadiusImageView
+            android:id="@+id/iv_cover2"
+            android:layout_width="@dimen/dp_90"
+            android:layout_height="@dimen/dp_90"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="@dimen/dp_10"
+            android:scaleType="centerCrop"
+            android:src="@color/app_color_apr"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:riv_corner_radius="@dimen/dp_10"
+            app:riv_is_circle="false" />
+
+        <TextView
+            android:id="@+id/title2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/iv_cover2"
+            android:layout_alignStart="@+id/iv_cover2"
+            android:layout_alignEnd="@+id/iv_cover2"
+            android:layout_marginTop="@dimen/dp_10"
+            android:ellipsize="end"
+            android:gravity="center_vertical|left"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:text=""
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/iv_cover2"
+            app:layout_constraintTop_toBottomOf="@+id/iv_cover2"
+            tools:ignore="RtlHardcoded" />
+
+        <TextView
+            android:id="@+id/txt2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/title2"
+            android:layout_alignStart="@+id/iv_cover2"
+            android:layout_alignEnd="@+id/title2"
+            android:layout_marginTop="@dimen/dp_5"
+            android:ellipsize="end"
+            android:gravity="center_vertical|left"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:text=""
+            android:textColor="@color/gray"
+            app:layout_constraintEnd_toEndOf="@+id/iv_cover2"
+            app:layout_constraintStart_toStartOf="@+id/iv_cover2"
+            app:layout_constraintTop_toBottomOf="@+id/title2"
+            tools:ignore="RtlHardcoded" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/idea3"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dp_10"
-        android:ellipsize="end"
-        android:gravity="center_vertical|left"
-        android:maxLines="1"
-        android:singleLine="true"
-        android:text=""
-        android:textColor="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@+id/iv_cover"
-        app:layout_constraintTop_toBottomOf="@+id/iv_cover"
-        tools:ignore="RtlHardcoded" />
+        app:layout_constraintEnd_toStartOf="@+id/idea4"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/idea">
 
-    <TextView
-        android:id="@+id/txt"
-        android:layout_width="0dp"
+        <com.xuexiang.xui.widget.imageview.RadiusImageView
+            android:id="@+id/iv_cover3"
+            android:layout_width="@dimen/dp_90"
+            android:layout_height="@dimen/dp_90"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="@dimen/dp_10"
+            android:scaleType="centerCrop"
+            android:src="@color/app_color_apr"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:riv_corner_radius="@dimen/dp_10"
+            app:riv_is_circle="false" />
+
+        <TextView
+            android:id="@+id/title3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/iv_cover3"
+            android:layout_alignStart="@+id/iv_cover3"
+            android:layout_alignEnd="@+id/iv_cover3"
+            android:layout_marginTop="@dimen/dp_10"
+            android:ellipsize="end"
+            android:gravity="center_vertical|left"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:text=""
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/iv_cover3"
+            app:layout_constraintTop_toBottomOf="@+id/iv_cover3"
+            tools:ignore="RtlHardcoded" />
+
+        <TextView
+            android:id="@+id/txt3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/title3"
+            android:layout_alignStart="@+id/iv_cover3"
+            android:layout_alignEnd="@+id/title3"
+            android:layout_marginTop="@dimen/dp_5"
+            android:ellipsize="end"
+            android:gravity="center_vertical|left"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:text=""
+            android:textColor="@color/gray"
+            app:layout_constraintEnd_toEndOf="@+id/iv_cover3"
+            app:layout_constraintStart_toStartOf="@+id/iv_cover3"
+            app:layout_constraintTop_toBottomOf="@+id/title3"
+            tools:ignore="RtlHardcoded" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/idea4"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_5"
-        android:ellipsize="end"
-        android:gravity="center_vertical|left"
-        android:maxLines="1"
-        android:singleLine="true"
-        android:text=""
-        android:textColor="@color/gray"
-        app:layout_constraintEnd_toEndOf="@+id/iv_cover"
-        app:layout_constraintStart_toStartOf="@+id/iv_cover"
-        app:layout_constraintTop_toBottomOf="@+id/title"
-        tools:ignore="RtlHardcoded" />
+        app:layout_constraintEnd_toEndOf="@+id/idea1"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/idea1"
+        app:layout_constraintTop_toTopOf="@+id/idea3">
+
+        <com.xuexiang.xui.widget.imageview.RadiusImageView
+            android:id="@+id/iv_cover4"
+            android:layout_width="@dimen/dp_90"
+            android:layout_height="@dimen/dp_90"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="@dimen/dp_10"
+            android:scaleType="centerCrop"
+            android:src="@color/app_color_apr"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:riv_corner_radius="@dimen/dp_10"
+            app:riv_is_circle="false" />
+
+        <TextView
+            android:id="@+id/title4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/iv_cover4"
+            android:layout_alignStart="@+id/iv_cover4"
+            android:layout_alignEnd="@+id/iv_cover4"
+            android:layout_marginTop="@dimen/dp_10"
+            android:ellipsize="end"
+            android:gravity="center_vertical|left"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:text=""
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/iv_cover4"
+            app:layout_constraintTop_toBottomOf="@+id/iv_cover4"
+            tools:ignore="RtlHardcoded" />
+
+        <TextView
+            android:id="@+id/txt4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/title4"
+            android:layout_alignStart="@+id/iv_cover4"
+            android:layout_alignEnd="@+id/title4"
+            android:layout_marginTop="@dimen/dp_5"
+            android:ellipsize="end"
+            android:gravity="center_vertical|left"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:text=""
+            android:textColor="@color/gray"
+            app:layout_constraintEnd_toEndOf="@+id/iv_cover4"
+            app:layout_constraintStart_toStartOf="@+id/iv_cover4"
+            app:layout_constraintTop_toBottomOf="@+id/title4"
+            tools:ignore="RtlHardcoded" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/idea5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/idea4"
+        app:layout_constraintTop_toTopOf="@+id/idea4">
+
+        <com.xuexiang.xui.widget.imageview.RadiusImageView
+            android:id="@+id/iv_cover5"
+            android:layout_width="@dimen/dp_90"
+            android:layout_height="@dimen/dp_90"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="@dimen/dp_10"
+            android:scaleType="centerCrop"
+            android:src="@color/app_color_apr"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:riv_corner_radius="@dimen/dp_10"
+            app:riv_is_circle="false" />
+
+        <TextView
+            android:id="@+id/title5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/iv_cover5"
+            android:layout_alignStart="@+id/iv_cover5"
+            android:layout_alignEnd="@+id/iv_cover5"
+            android:layout_marginTop="@dimen/dp_10"
+            android:ellipsize="end"
+            android:gravity="center_vertical|left"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:text=""
+            android:textColor="@color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/iv_cover5"
+            app:layout_constraintTop_toBottomOf="@+id/iv_cover5"
+            tools:ignore="RtlHardcoded" />
+
+        <TextView
+            android:id="@+id/txt5"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/title5"
+            android:layout_alignStart="@+id/iv_cover5"
+            android:layout_alignEnd="@+id/title5"
+            android:layout_marginTop="@dimen/dp_5"
+            android:ellipsize="end"
+            android:gravity="center_vertical|left"
+            android:maxLines="1"
+            android:singleLine="true"
+            android:text=""
+            android:textColor="@color/gray"
+            app:layout_constraintEnd_toEndOf="@+id/iv_cover5"
+            app:layout_constraintStart_toStartOf="@+id/iv_cover5"
+            app:layout_constraintTop_toBottomOf="@+id/title5"
+            tools:ignore="RtlHardcoded" />
+
+    </RelativeLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

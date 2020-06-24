@@ -99,38 +99,10 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
 
         Initialization.setupDatabasePlaylist(this);
         Initialization.setupDatabaseDown(this);
-
-        if(bool){
-            Intent intent = new Intent(MainActivity.this, StartPageActivity.class);
-            startActivity(intent);
-
-            Observable.timer(10, TimeUnit.SECONDS)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<Long>() {
-                        @Override
-                        public void onSubscribe(@NonNull Disposable disposable) {
-
-                        }
-
-                        @Override
-                        public void onNext(@NonNull Long number) {
-                            MusicPlayModel.Companion.updateapp(getVersionName());
-                        }
-
-                        @Override
-                        public void onError(@NonNull Throwable e) {
-
-                        }
-
-                        @Override
-                        public void onComplete() {
-
-                        }
-                    });
-        }
+        initData();
 
 
-        MainModel.Companion.homedata(MainActivity.this);
+
 
 
     }
@@ -153,6 +125,8 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
     }
 
     private void initData() {
+        MainModel.Companion.homedata(MainActivity.this);
+
         List<Fragment> list = new ArrayList<>();
         mTabbar.setTitles(R.string.tab1, R.string.tab2, R.string.tab3)
                 .setNormalIcons(R.drawable.tab_icon_shouye_normal, R.drawable.tab_icon_faxian_normal, R.drawable.tab_icon_me_normal)
@@ -196,7 +170,7 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
     @Override
     protected void onStart() {
         super.onStart();
-        initData();
+
 
        /* blurLayout.setFPS(0);
         blurLayout.setBlurRadius(20);
@@ -216,10 +190,40 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
         super.onResume();
         viewPager.setCurrentItem(indexs);
 
+
+
+        if(bool){
+            Intent intent = new Intent(MainActivity.this, StartPageActivity.class);
+            startActivity(intent);
+
+            Observable.timer(8, TimeUnit.SECONDS)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<Long>() {
+                        @Override
+                        public void onSubscribe(@NonNull Disposable disposable) {
+
+                        }
+
+                        @Override
+                        public void onNext(@NonNull Long number) {
+                            MusicPlayModel.Companion.updateapp(getVersionName());
+                        }
+
+                        @Override
+                        public void onError(@NonNull Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onComplete() {
+
+                        }
+                    });
+        }
+
         if (isNeedCheck) {
             checkPermissions(needPermissions);
         }
-
 
 
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

@@ -8,6 +8,7 @@ import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.animation.Animation
 import android.view.animation.TranslateAnimation
@@ -40,8 +41,10 @@ import com.lzy.okgo.OkGo
 import com.lzy.okserver.OkDownload
 import com.xuexiang.xui.widget.dialog.materialdialog.DialogAction
 import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
+import com.ywl5320.bean.TimeBean
 import com.ywl5320.libenum.MuteEnum
 import com.ywl5320.libmusic.WlMusic
+import com.ywl5320.listener.*
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Observer
@@ -50,7 +53,6 @@ import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.frag_player_lrcview.*
 import kotlinx.android.synthetic.main.head.*
 import kotlinx.android.synthetic.main.music_play.*
-import kotlinx.android.synthetic.main.music_play.in_indel
 import kotlinx.android.synthetic.main.play_list.*
 import java.io.File
 import java.util.concurrent.TimeUnit
@@ -667,6 +669,8 @@ class MusicPlayActivity : AppCompatActivity() {
         wlMusic.mute = MuteEnum.MUTE_CENTER //设置立体声（左声道、右声道和立体声）
         wlMusic.setConvertSampleRate(null) //设定恒定采样率（null为取消）
         wlMusic.prePared()
+
+
         wlMusic.setOnPreparedListener {
             if (wlMusic.duration > 0) {
                 Observable.just((wlMusic.duration).toLong())
@@ -707,6 +711,21 @@ class MusicPlayActivity : AppCompatActivity() {
 
 
         }
+
+        wlMusic.setOnErrorListener { code, msg ->
+            Log.d("ywl5320","code :$code, msg :$msg")
+            Log.d("ywl5320", "code :$code, msg :$msg")
+        }
+
+        wlMusic.setOnLoadListener { load -> Log.d("ywl5320","load --> $load") }
+
+
+        wlMusic.setOnCompleteListener { Log.d("ywl5320","complete") }
+
+        wlMusic.setOnVolumeDBListener { db -> Log.d("ywl5320","db is : $db") }
+
+
+
 
 
         progressSb.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {

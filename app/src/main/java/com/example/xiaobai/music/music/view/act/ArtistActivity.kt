@@ -196,6 +196,9 @@ class ArtistActivity : BaseMvpActivity<ArtistContract.IPresenter>(), ArtistContr
                     }
 
                 }
+                if (swipe_refresh_layout != null) {
+                    swipe_refresh_layout.isRefreshing = false
+                }
             }
 
             override fun onError(e: Throwable) {}
@@ -260,10 +263,10 @@ class ArtistActivity : BaseMvpActivity<ArtistContract.IPresenter>(), ArtistContr
             ItemClickListener(recyc_list,
                 object : ItemClickListener.OnItemClickListener {
                     override fun onItemClick(view: View?, position: Int) {
-                        println(artists)
+                        println(artists[position].artist_id)
                         val intent = Intent()
                         context.let { intent.setClass(it, ArtistDetActivity().javaClass) }
-                        intent.putExtra("id", artists[position].artsit_id)
+                        intent.putExtra("id", artists[position].artist_id)
                         intent.putExtra("type", artists[position].type)
                         startActivity(intent)
                     }

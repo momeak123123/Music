@@ -34,6 +34,8 @@ import com.xuexiang.xui.widget.dialog.materialdialog.DialogAction
 import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.album_item.*
+import kotlinx.android.synthetic.main.fragment_find.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.in_indel
 import kotlinx.android.synthetic.main.fragment_home.poplue
@@ -52,14 +54,13 @@ import java.util.concurrent.TimeUnit
  **/
 class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IView {
 
-    private lateinit var data_song: MutableList<Music>
-    private lateinit var bannerdata: MutableList<BannerItem>
-    private var adapters: HomeListAdapter? = null
+    private lateinit var lists: List<TopList>
+    private var adapter: HomeDetAdapter? = null
     private lateinit var sp: SharedPreferences
 
     companion object {
         lateinit var adaptert: PlaySongAdapter
-        lateinit var observert: Observer<Int>
+        lateinit var observert: Observer<Music>
     }
 
     override fun registerPresenter() = HomePresenter::class.java
@@ -71,53 +72,36 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
 
     override fun initData() {
         super.initData()
-        bannerdata = mutableListOf<BannerItem>()
+        lists = listOf()
         sp = requireContext().getSharedPreferences("Music", Context.MODE_PRIVATE)
-
-
-    }
-
-    fun loadData() {
-
-        if (!sp.getString("ads", "").equals("")) {
-
-            val ads: List<Banner> = Gson().fromJson(
-                sp.getString("ads", ""),
-                object : TypeToken<List<Banner>>() {}.type
-            )
-            loadData1(ads)
-        }
-
         if (!sp.getString("list", "").equals("")) {
-            val list: List<TopList> = Gson().fromJson(
+
+                val ads: List<Banner> = Gson().fromJson(
+                    sp.getString("ads", ""),
+                    object : TypeToken<List<Banner>>() {}.type
+                )
+
+             lists = Gson().fromJson(
                 sp.getString("list", ""),
                 object : TypeToken<List<TopList>>() {}.type
             )
-            loadData2(list)
-        }
 
-        if (!sp.getString("album", "").equals("")) {
             val album: List<Album> = Gson().fromJson(
                 sp.getString("album", ""),
                 object : TypeToken<List<Album>>() {}.type
             )
-            loadData3(album)
-        }
 
-        if (!sp.getString("artist", "").equals("")) {
             val artist: List<Artists> = Gson().fromJson(
                 sp.getString("artist", ""),
                 object : TypeToken<List<Artists>>() {}.type
             )
-            loadData4(artist)
-        }
 
-        if (!sp.getString("song", "").equals("")) {
             val song: List<Music> = Gson().fromJson(
                 sp.getString("song", ""),
                 object : TypeToken<List<Music>>() {}.type
             )
-            loadData5(song)
+
+            initList(ads,lists, album, artist, song)
         }
 
         if (swipe_refresh_layout != null) {
@@ -125,84 +109,6 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
         }
     }
 
-    fun loadData1(list: List<Banner>) {
-        if (list.isNotEmpty()) {
-
-            for (it in list) {
-                val item1 = BannerItem()
-                item1.imgUrl = it.url
-                item1.title = ""
-                bannerdata.add(item1)
-
-            }
-            initbanner(bannerdata)
-        }
-    }
-
-    fun loadData2(list: List<TopList>) {
-        val data_toplist = mutableListOf<TopList>()
-        if (list.isNotEmpty()) {
-            if (list.size > 6) {
-                for (i in 0..5) {
-                    data_toplist.add(list[i])
-                }
-            } else {
-                for (i in list) {
-                    data_toplist.add(i)
-                }
-            }
-
-            initTopList(data_toplist)
-        }
-    }
-
-    fun loadData3(album: List<Album>) {
-        val data_ablum = mutableListOf<Album>()
-        if (album.isNotEmpty()) {
-            if (album.size > 6) {
-                for (i in 0..5) {
-                    data_ablum.add(album[i])
-                }
-            } else {
-                for (i in album) {
-                    data_ablum.add(i)
-                }
-            }
-            initAlbumList(data_ablum)
-        }
-    }
-
-    fun loadData4(artist: List<Artists>) {
-        val data_artist = mutableListOf<Artists>()
-        if (artist.isNotEmpty()) {
-            if (artist.size > 8) {
-                for (i in 0..7) {
-                    data_artist.add(artist[i])
-                }
-            } else {
-                for (i in artist) {
-                    data_artist.add(i)
-                }
-            }
-            initSingerList(data_artist)
-        }
-    }
-
-    fun loadData5(song: List<Music>) {
-         data_song = mutableListOf<Music>()
-        if (song.isNotEmpty()) {
-            if (song.size > 8) {
-                for (i in 0..7) {
-                    data_song.add(song[i])
-                }
-            } else {
-                for (i in song) {
-                    data_song.add(i)
-                }
-            }
-            initSongList(data_song)
-        }
-    }
 
     @SuppressLint("CheckResult")
     override fun initView() {
@@ -210,51 +116,8 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
 
         swipe_refresh_layout.setColorSchemeColors(-0xff6634, -0xbbbc, -0x996700, -0x559934, -0x7800)
         //下拉刷新
-        swipe_refresh_layout.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener { loadData() })
+        swipe_refresh_layout.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener { initData() })
 
-        RxView.clicks(music)
-            .throttleFirst(3, TimeUnit.SECONDS)
-            .subscribe {
-                val intent = Intent()
-                context?.let { intent.setClass(it, MusicPlayActivity().javaClass) }
-                intent.putExtra("album_id", 0L)
-                intent.putExtra("pos", 0)
-                intent.putExtra("list", "")
-                intent.putExtra("type", 0)
-                startActivity(intent)
-
-            }
-
-        RxView.clicks(search)
-            .throttleFirst(3, TimeUnit.SECONDS)
-            .subscribe {
-                val intent = Intent()
-                context?.let { it1 -> intent.setClass(it1, SearchActivity().javaClass) }
-                startActivity(intent)
-            }
-        RxView.clicks(more1)
-            .throttleFirst(3, TimeUnit.SECONDS)
-            .subscribe {
-                val intent = Intent()
-                context?.let { intent.setClass(it, AlbumActivity().javaClass) }
-                intent.putExtra("album_type", 0)
-                startActivity(intent)
-            }
-        RxView.clicks(more2)
-            .throttleFirst(3, TimeUnit.SECONDS)
-            .subscribe {
-                val intent = Intent()
-                context?.let { intent.setClass(it, AlbumActivity().javaClass) }
-                intent.putExtra("album_type", 1)
-                startActivity(intent)
-            }
-        RxView.clicks(more3)
-            .throttleFirst(3, TimeUnit.SECONDS)
-            .subscribe {
-                val intent = Intent()
-                context?.let { intent.setClass(it, ArtistActivity().javaClass) }
-                startActivity(intent)
-            }
 
         RxView.clicks(list_dow)
             .throttleFirst(3, TimeUnit.SECONDS)
@@ -275,30 +138,21 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
     override fun onResume() {
         super.onResume()
 
-        if (bannerdata.size==0) {
-            loadData()
-        }
-        try {
-            if (MusicPlayActivity.bool) {
-                music.visibility = View.VISIBLE
-            }else{
-                music.visibility = View.GONE
-            }
-        } catch (e: Exception) {
+        if (lists.isEmpty()) {
+            initData()
         }
 
-
-        observert = object : Observer<Int> {
+        observert = object : Observer<Music> {
             override fun onSubscribe(d: Disposable) {}
 
             @SuppressLint("SetTextI18n", "CheckResult")
-            override fun onNext(data: Int) {
+            override fun onNext(data: Music) {
                 poplue.visibility = View.VISIBLE
                 MainActivity.craet(false)
                 edit_song.text =
-                    getText(R.string.album).toString() + ":" + data_song[data].album_name
+                    getText(R.string.album).toString() + ":" + data.album_name
                 var srtist_name = ""
-                for (it in data_song[data].all_artist) {
+                for (it in data.all_artist) {
                     if (srtist_name != "") {
                         srtist_name += "/" + it.name
                     } else {
@@ -328,7 +182,8 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
                 RxView.clicks(relat3)
                     .throttleFirst(3, TimeUnit.SECONDS)
                     .subscribe {
-                       val sps  = requireContext().getSharedPreferences("User", Context.MODE_PRIVATE)
+                        val sps =
+                            requireContext().getSharedPreferences("User", Context.MODE_PRIVATE)
                         if (sps.getBoolean("login", false)) {
                             poplue.visibility = View.GONE
                             in_indel.visibility = View.VISIBLE
@@ -336,7 +191,7 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
                             in_title.text = getText(R.string.song_but)
                             val list: MutableList<Playlist> = mPlaylistDao.queryAll()
                             val idmap = mutableListOf<Music>()
-                            idmap.add(data_song[data])
+                            idmap.add(data)
                             initSongLists(list, idmap)
 
                         } else {
@@ -380,26 +235,28 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
                                         }
                                     }
                                     if (idmap.isNotEmpty()) {
-                                        for(its in idmap){
+                                        for (its in idmap) {
 
                                             val downs = mDownDao.querys(its.song_id)
-                                            if(downs.size>0){
-                                                for(itd in downs){
-                                                    if(itd.type==0){
+                                            if (downs.size > 0) {
+                                                for (itd in downs) {
+                                                    if (itd.type == 0) {
                                                         val request = OkGo.get<File>(its.uri)
                                                         OkDownload.request(its.uri, request) //
                                                             .priority(0)
                                                             .fileName("music" + its.song_id + ".mp3") //
                                                             .save() //
-                                                            .register(LogDownloadListener(
-                                                                its,
-                                                                context,
-                                                                0,
-                                                                downs,
-                                                                0
-                                                            )) //
+                                                            .register(
+                                                                LogDownloadListener(
+                                                                    its,
+                                                                    context,
+                                                                    0,
+                                                                    downs,
+                                                                    0
+                                                                )
+                                                            ) //
                                                             .start()
-                                                    }else{
+                                                    } else {
                                                         Toast.makeText(
                                                             context,
                                                             getText(R.string.download_carry),
@@ -407,19 +264,21 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
                                                         ).show()
                                                     }
                                                 }
-                                            }else{
+                                            } else {
                                                 val request = OkGo.get<File>(its.uri)
                                                 OkDownload.request(its.uri, request) //
                                                     .priority(0)
                                                     .fileName("music" + its.song_id + ".mp3") //
                                                     .save() //
-                                                    .register(LogDownloadListener(
-                                                        its,
-                                                        context,
-                                                        0,
-                                                        downs,
-                                                        0
-                                                    )) //
+                                                    .register(
+                                                        LogDownloadListener(
+                                                            its,
+                                                            context,
+                                                            0,
+                                                            downs,
+                                                            0
+                                                        )
+                                                    ) //
                                                     .start()
                                             }
 
@@ -486,7 +345,7 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
                                         context!!,
                                         songs,
                                         num,
-                                        song[position].play_list_id,2,position
+                                        song[position].play_list_id, 2, position
                                     )
                                 } else {
                                     Toast.makeText(
@@ -505,7 +364,7 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
                                     context!!,
                                     songs,
                                     num,
-                                    song[position].play_list_id,2,position
+                                    song[position].play_list_id, 2, position
                                 )
                             } else {
                                 Toast.makeText(
@@ -525,116 +384,26 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
 
 
     /**
-     * 初始化轮播图
-     */
-    private fun initbanner(bannerdata: List<BannerItem>) {
-        //设置banner样式
-        banner.setSource(bannerdata)
-            .setOnItemClickListener(BaseBanner.OnItemClickListener<BannerItem?> { _, _, position ->
-                println(
-                    position
-                )
-            })
-            .setIsOnePageLoop(false).startScroll()
-    }
-
-    /**
      * 初始化排行榜
      */
-    private fun initTopList(list: List<TopList>) {
-        recyc_item1.layoutManager = GridLayoutManager(context, 3)
-        recyc_item1.itemAnimator = DefaultItemAnimator()
-        adapters = context?.let { HomeListAdapter(list, it) }
-        recyc_item1.adapter = adapters
-        adapters!!.setOnItemClickListener(object : HomeListAdapter.ItemClickListener {
+    private fun initList(
+        ads: List<Banner>,
+        list: List<TopList>,
+        album: List<Album>,
+        artist: List<Artists>,
+        song: List<Music>
+    ) {
+        recyc_item.layoutManager = LinearLayoutManager(context)
+        recyc_item.itemAnimator = DefaultItemAnimator()
+        adapter = context?.let { HomeDetAdapter(it,ads, list, album, artist, song) }
+        recyc_item.adapter = adapter
+        adapter!!.setOnItemClickListener(object : HomeDetAdapter.ItemClickListener {
             override fun onItemClick(view: View, position: Int) {
-                val intent = Intent()
-                context?.let { intent.setClass(it, AlbumDetActivity().javaClass) }
-                intent.putExtra("album_id", list[position].from_id)
-                intent.putExtra("album_type", list[position].from)
-                intent.putExtra("album_time", list[position].update_time)
-                intent.putExtra("palylist_name", list[position].name)
-                intent.putExtra("info", list[position].info)
-                intent.putExtra("cover", list[position].pic_url)
-                intent.putExtra("type", 1)
-                startActivity(intent)
-
             }
         })
 
     }
 
-
-    /**
-     * 初始化专辑
-     */
-    private fun initAlbumList(album: List<Album>) {
-        recyc_item2.layoutManager = GridLayoutManager(context, 3)
-        recyc_item2.itemAnimator = DefaultItemAnimator()
-        val adapter = context?.let { HomeAlbumAdapter(album, it) }
-        recyc_item2.adapter = adapter
-        adapter!!.setOnItemClickListener(object : HomeAlbumAdapter.ItemClickListener {
-            override fun onItemClick(view: View, position: Int) {
-                val intent = Intent()
-                context?.let { intent.setClass(it, AlbumDetActivity().javaClass) }
-                intent.putExtra("album_id", album[position].album_id)
-                intent.putExtra("album_type", album[position].type)
-                intent.putExtra("album_time", 0L)
-                intent.putExtra("palylist_name", album[position].name)
-                intent.putExtra("info", album[position].info)
-                intent.putExtra("cover", album[position].pic_url)
-                intent.putExtra("type", 2)
-                startActivity(intent)
-
-            }
-        })
-
-    }
-
-    /**
-     * 初始化歌手
-     */
-    private fun initSingerList(artists: List<Artists>) {
-        recyc_item3.layoutManager = GridLayoutManager(context, 4)
-        recyc_item3.itemAnimator = DefaultItemAnimator()
-        val adapter = context?.let { HomeSingerAdapter(artists, it) }
-        recyc_item3.adapter = adapter
-        adapter!!.setOnItemClickListener(object : HomeSingerAdapter.ItemClickListener {
-            override fun onItemClick(view: View, position: Int) {
-                val intent = Intent()
-                context?.let { intent.setClass(it, ArtistDetActivity().javaClass) }
-                intent.putExtra("id", artists[position].artsit_id)
-                intent.putExtra("type", artists[position].type)
-                startActivity(intent)
-
-            }
-        })
-
-    }
-
-    /**
-     * 初始化歌曲
-     */
-    private fun initSongList(song: MutableList<Music>) {
-        recyc_item4.layoutManager = LinearLayoutManager(context)
-        recyc_item4.itemAnimator = DefaultItemAnimator()
-        val adapter = context?.let { HomeSongAdapter(song, it) }
-        recyc_item4.adapter = adapter
-        adapter!!.setOnItemClickListener(object : HomeSongAdapter.ItemClickListener {
-            override fun onItemClick(view: View, position: Int) {
-                val json: String = Gson().toJson(song)
-                val intent = Intent()
-                context?.let { intent.setClass(it, MusicPlayActivity().javaClass) }
-                intent.putExtra("album_id", 0L)
-                intent.putExtra("pos", position)
-                intent.putExtra("list", json)
-                intent.putExtra("type", 2)
-                startActivity(intent)
-
-            }
-        })
-
-    }
 
 }
 

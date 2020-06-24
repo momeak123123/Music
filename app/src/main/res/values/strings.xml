@@ -111,6 +111,8 @@
     <string name="user_updown">编辑资料</string>
     <string name="user_name">昵称</string>
     <string name="user_gra">性别(男/女)</string>
+    <string name="man">男</string>
+    <string name="girl">女</string>
     <string name="user_city">国家</string>
     <string name="attention">关注</string>
     <string name="collect">收藏</string>

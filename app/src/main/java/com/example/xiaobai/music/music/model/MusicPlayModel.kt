@@ -32,7 +32,7 @@ class MusicPlayModel {
 
         private var apkUrl = ""
         private var updateTitle = ""
-        private var updateContent = "1、各种音乐随便听\n2、优化app性能\n3、增加搜索功能\n4、更多功能等你探索"
+        private var updateContent = ""
 
 
         @SuppressLint("CheckResult")
@@ -145,7 +145,15 @@ class MusicPlayModel {
                                 apkUrl = bean.apk_file_url
                                 val versions = bean.new_version
                                 updateTitle = "发现新版本V$versions"
-                                updateContent = bean.update_log
+                                val context = bean.update_log.split("|")
+                                for(it in context){
+                                    if(updateContent==""){
+                                        updateContent = it+"\n"
+                                    }else{
+                                        updateContent += it+"\n"
+                                    }
+
+                                }
                                 val force = bean.constraint
                                 UpdateAppUtils
                                     .getInstance()
