@@ -157,9 +157,11 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
     override fun initView() {
         super.initView()
 
-        swipe_refresh_layout.setColorSchemeColors(-0xff6634, -0xbbbc, -0x996700, -0x559934, -0x7800)
-        //下拉刷新
-        swipe_refresh_layout.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener { loadData() })
+            swipe_refresh_layout.setColorSchemeColors(-0xff6634, -0xbbbc, -0x996700, -0x559934, -0x7800)
+            //下拉刷新
+            swipe_refresh_layout.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener { loadData() })
+
+
 
         RxView.clicks(foods)
             .throttleFirst(3, TimeUnit.SECONDS)
@@ -413,6 +415,14 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
                         intent.putExtra("list", json)
                         intent.putExtra("type", 1)
                         startActivity(intent)
+                    }else{
+                        if (adapter.listdet[position].type == 0) {
+                            adapter.listdet[position].type = 1
+                            adapter.notifyItemChanged(position)
+                        } else {
+                            adapter.listdet[position].type = 0
+                            adapter.notifyItemChanged(position)
+                        }
                     }
 
                 }

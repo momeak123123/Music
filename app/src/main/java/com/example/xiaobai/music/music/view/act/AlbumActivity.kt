@@ -43,33 +43,7 @@ class AlbumActivity : BaseMvpActivity<AlbumContract.IPresenter>() , AlbumContrac
 
     override fun initData() {
         super.initData()
-        val sp: SharedPreferences =
-            context.getSharedPreferences("Music", Context.MODE_PRIVATE)
-        val bundle = intent.extras
-        val int = bundle?.get("album_type") as Int
-        if(int==0){
-            top_title.text=getString(R.string.item1)
-            if (!sp.getString("list", "").equals("")) {
-                val list: List<TopList> = Gson().fromJson(
-                    sp.getString("list", ""),
-                    object : TypeToken<List<TopList>>() {}.type
-                )
-                if (list.isNotEmpty()) {
-                    initTopList(list)
-                }
-            }
-        }else{
-            top_title.text=getString(R.string.item2)
-            if (!sp.getString("album", "").equals("")) {
-                val album: List<Album> = Gson().fromJson(
-                    sp.getString("album", ""),
-                    object : TypeToken<List<Album>>() {}.type
-                )
-                if (album.isNotEmpty()) {
-                    initAlbumList(album)
-                }
-            }
-        }
+
 
     }
 
@@ -135,6 +109,37 @@ class AlbumActivity : BaseMvpActivity<AlbumContract.IPresenter>() , AlbumContrac
 
     override fun onStart() {
         super.onStart()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val sp: SharedPreferences =
+            context.getSharedPreferences("Music", Context.MODE_PRIVATE)
+        val bundle = intent.extras
+        val int = bundle?.get("album_type") as Int
+        if(int==0){
+            top_title.text=getString(R.string.item1)
+            if (!sp.getString("list", "").equals("")) {
+                val list: List<TopList> = Gson().fromJson(
+                    sp.getString("list", ""),
+                    object : TypeToken<List<TopList>>() {}.type
+                )
+                if (list.isNotEmpty()) {
+                    initTopList(list)
+                }
+            }
+        }else{
+            top_title.text=getString(R.string.item2)
+            if (!sp.getString("album", "").equals("")) {
+                val album: List<Album> = Gson().fromJson(
+                    sp.getString("album", ""),
+                    object : TypeToken<List<Album>>() {}.type
+                )
+                if (album.isNotEmpty()) {
+                    initAlbumList(album)
+                }
+            }
+        }
     }
 
     override fun onDestroy() {

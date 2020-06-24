@@ -23,3 +23,12 @@ data class UpdateApp(
     val constraint: Boolean,
     val update_log: String
 )
+
+data class SearchBean(
+    val code: Int,
+    val message: String,
+    val notice: String,
+    val tips: String,
+    val subcode: Int,
+    val data: JsonObject
+)

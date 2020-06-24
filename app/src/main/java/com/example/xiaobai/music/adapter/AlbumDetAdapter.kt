@@ -270,16 +270,6 @@ class AlbumDetAdapter(
                 }
             }
 
-            radio.setOnClickListener {
-                if (listdet[position].type == 0) {
-                    listdet[position].type = 1
-                    Glide.with(context).load(R.drawable.select).into(radio)
-                } else {
-                    listdet[position].type = 0
-                    Glide.with(context).load(R.drawable.upselect).into(radio)
-                }
-
-            }
 
             more.setOnClickListener {
                 Observable.just(position).subscribe(AlbumDetActivity.observert)

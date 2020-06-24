@@ -3,6 +3,7 @@ package  com.example.xiaobai.music.music.model
 import android.content.Context
 import android.content.SharedPreferences
 import android.widget.Toast
+import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.bean.ResultBean
 import com.example.xiaobai.music.bean.ResultBeans
@@ -28,7 +29,7 @@ class RegisteredModel : BaseModel(), RegisteredContract.IModel {
         email: String,
         pass: String
     ): Boolean {
-        
+
         OkGo.post<String>(Constants.URL + "api/login/registered")
             .params("user_email", email)
             .params("password", pass)
@@ -40,6 +41,7 @@ class RegisteredModel : BaseModel(), RegisteredContract.IModel {
                     try {
                         val bean =
                             Gson().fromJson(response.body(), ResultBean::class.javaObjectType)
+
                         if (bean.code == 200) {
                             val user: Map<String, String> = Gson().fromJson(
                                 bean.data,
@@ -59,20 +61,21 @@ class RegisteredModel : BaseModel(), RegisteredContract.IModel {
                             sp.edit().putString("collect", user["collect"]).apply()
                             sp.edit().putString("like", user["like"]).apply()
                             Observable.just(true).subscribe(RegisteredActivity.observer)
-                        } else {
+
+                        }else{
                             Toast.makeText(
                                 context,
                                 bean.msg,
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
+
+
                     } catch (e: Exception) {
 
                     }
                 }
             })
-
-
 
         return false
     }

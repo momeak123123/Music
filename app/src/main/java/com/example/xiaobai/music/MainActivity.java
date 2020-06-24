@@ -136,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
     }
 
 
+
     private String getVersionName() {
         // 包管理器 可以获取清单文件信息
         PackageManager packageManager = getPackageManager();

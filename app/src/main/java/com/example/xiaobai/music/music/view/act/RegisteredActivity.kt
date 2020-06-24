@@ -3,6 +3,7 @@ package com.example.xiaobai.music.music.view.act
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
+import android.widget.RadioGroup
 import android.widget.Toast
 import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
@@ -73,7 +74,11 @@ class RegisteredActivity : BaseMvpActivity<RegisteredContract.IPresenter>(),
                             if (re_pass_number.text.toString() != "") {
                                 if (re_passs_number.text.toString() == re_pass_number.text.toString()) {
 
-                                    getPresenter().registerdata(context,re_username_number.text.toString(),re_pass_number.text.toString())
+                                    if(radioButton.isChecked){
+                                        getPresenter().registerdata(context,re_username_number.text.toString(),re_pass_number.text.toString())
+                                    } else {
+                                        Toast.makeText(context, R.string.error_captchas, Toast.LENGTH_SHORT).show()
+                                    }
 
                                 } else {
                                     Toast.makeText(context, R.string.error_passs, Toast.LENGTH_SHORT).show()

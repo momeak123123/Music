@@ -96,17 +96,24 @@
             android:textColorHint="@color/gray"
             tools:ignore="TextFields" />
 
-
-        <RadioButton
-            android:id="@+id/radioButton"
+        <RadioGroup
+            android:id="@+id/radio_group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/re_passs_number"
             android:layout_alignStart="@+id/re_passs_number"
-            android:layout_marginTop="@dimen/dp_20"
-            android:text="@string/protocol"
-            android:textColor="@color/white"
-            android:textSize="@dimen/sp_18" />
+            android:layout_marginTop="@dimen/dp_20">
+
+            <RadioButton
+                android:id="@+id/radioButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="@string/protocol"
+                android:textColor="@color/white"
+                android:textSize="@dimen/sp_18" />
+        </RadioGroup>
+
 
     </RelativeLayout>
 
@@ -127,6 +134,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/relativeLayout3" />
+
 
 
 
