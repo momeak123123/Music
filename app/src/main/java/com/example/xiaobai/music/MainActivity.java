@@ -101,10 +101,6 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
         Initialization.setupDatabaseDown(this);
         initData();
 
-
-
-
-
     }
 
 
@@ -170,18 +166,10 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
     @Override
     protected void onStart() {
         super.onStart();
-
-
-       /* blurLayout.setFPS(0);
-        blurLayout.setBlurRadius(20);
-        blurLayout.setDownscaleFactor(0.12f);
-        blurLayout.startBlur();*/
-
     }
 
     @Override
     protected void onStop() {
-        //blurLayout.pauseBlur();
         super.onStop();
     }
 
@@ -189,8 +177,6 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
     public void onResume() {
         super.onResume();
         viewPager.setCurrentItem(indexs);
-
-
 
         if(bool){
             Intent intent = new Intent(MainActivity.this, StartPageActivity.class);
@@ -226,34 +212,9 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
         }
 
 
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            boolean hasInstallPermission = isHasInstallPermissionWithO(this);
-//            if (!hasInstallPermission) {
-//                startInstallPermissionSettingActivity(this);
-//            }
-//        }
+
     }
 
-    @RequiresApi (api = Build.VERSION_CODES.O)
-    private boolean isHasInstallPermissionWithO(Context context){
-        if (context == null){
-            return false;
-        }
-        return context.getPackageManager().canRequestPackageInstalls();
-    }
-
-    /**
-     * 开启设置安装未知来源应用权限界面
-     * @param context
-     */
-    @RequiresApi (api = Build.VERSION_CODES.O)
-    private void startInstallPermissionSettingActivity(Context context) {
-        if (context == null){
-            return;
-        }
-        Intent intent = new Intent(Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES);
-        ((Activity)context).startActivityForResult(intent,REQUEST_INSTALL_PACKAGES);
-    }
     
     public static void craet(Boolean bool){
         if(bool){

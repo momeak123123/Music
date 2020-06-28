@@ -1,9 +1,7 @@
 package com.example.xiaobai.music.music.view.act
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
+import android.content.*
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Color
@@ -26,6 +24,7 @@ import com.example.xiaobai.music.adapter.PlaySongAdapter
 import com.example.xiaobai.music.adapter.ViewPagerAdapter
 import com.example.xiaobai.music.bean.Music
 import com.example.xiaobai.music.config.LogDownloadListener
+import com.example.xiaobai.music.config.Notification
 import com.example.xiaobai.music.music.model.MusicPlayModel
 import com.example.xiaobai.music.music.view.fragment.CoverFragment
 import com.example.xiaobai.music.music.view.fragment.LyricFragment
@@ -41,10 +40,9 @@ import com.lzy.okgo.OkGo
 import com.lzy.okserver.OkDownload
 import com.xuexiang.xui.widget.dialog.materialdialog.DialogAction
 import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
-import com.ywl5320.bean.TimeBean
-import com.ywl5320.libenum.MuteEnum
-import com.ywl5320.libmusic.WlMusic
-import com.ywl5320.listener.*
+import com.ywl5320.wlmedia.WlMedia
+import com.ywl5320.wlmedia.enums.WlPlayModel
+import com.ywl5320.wlmedia.enums.WlSourceType
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Observer
@@ -55,6 +53,7 @@ import kotlinx.android.synthetic.main.head.*
 import kotlinx.android.synthetic.main.music_play.*
 import kotlinx.android.synthetic.main.play_list.*
 import java.io.File
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 class MusicPlayActivity : AppCompatActivity() {
@@ -62,20 +61,23 @@ class MusicPlayActivity : AppCompatActivity() {
     companion object {
         var position: Int = 0
         var song_id: Long = 0
-        lateinit var wlMusic: WlMusic
+        lateinit var wlMedia: WlMedia
         lateinit var observer: Observer<String>
         lateinit var observers: Observer<Long>
         lateinit var observerplay: Observer<MutableList<Music>>
         lateinit var observerset: Observer<Int>
+        lateinit var observerno: Observer<Boolean>
         var bool: Boolean = false
         var play: Boolean = false
         var id: Int = 0
         lateinit var adapter: PlaySongAdapter
     }
 
+    private var loadster: Boolean = false
     private var adaptert: PlayListAdapter? = null
     private var type: Int = 2
     lateinit var mDisposable: Disposable
+    lateinit var mDisposables: Disposable
     var max: Long = 0
     private lateinit var sp: SharedPreferences
     private var min: Long = 0
@@ -87,7 +89,9 @@ class MusicPlayActivity : AppCompatActivity() {
     private var lyricFragment = LyricFragment()
     private val fragments = mutableListOf<Fragment>()
     private lateinit var context: Context
-
+    private lateinit var t1: String
+    private lateinit var t2: String
+    private var m1: Bitmap? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -102,6 +106,63 @@ class MusicPlayActivity : AppCompatActivity() {
         initView()
         initData()
         sp = getSharedPreferences("User", Context.MODE_PRIVATE)
+
+        //广播 添加广播的action
+
+        val intentFilter = IntentFilter()
+        intentFilter.addAction("del")
+        intentFilter.addAction("pre")
+        intentFilter.addAction("play")
+        intentFilter.addAction("next")
+        registerReceiver(broadcastReceiver, intentFilter)
+
+
+    }
+
+
+    var broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            when (Objects.requireNonNull(intent.action)) {
+                "del" -> Notification.deleteNotification()
+                "pre" ->
+                    if (bool) {
+                        Observable.just(1).subscribe(observerset)
+                    } else {
+
+                        Toast.makeText(
+                            context,
+                            getText(R.string.secret_num),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                "play" ->
+                    if (bool) {
+                        if (playPauseIv.isPlaying) {
+                            Observable.just(0).subscribe(observerset)
+                        } else {
+                            Observable.just(3).subscribe(observerset)
+                        }
+                    } else {
+                        Toast.makeText(
+                            context,
+                            getText(R.string.secret_num),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                "next" ->
+                    if (bool) {
+                        Observable.just(2).subscribe(observerset)
+                    } else {
+                        Toast.makeText(
+                            context,
+                            getText(R.string.secret_num),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                else -> {
+                }
+            }
+        }
     }
 
 
@@ -160,17 +221,25 @@ class MusicPlayActivity : AppCompatActivity() {
                     .onPositive { _: MaterialDialog?, _: DialogAction? ->
 
                         val downs = mDownDao.querys(playingMusic!!.song_id)
-                        if(downs.size>0){
-                            for(its in downs){
-                                if(its.type==0){
+                        if (downs.size > 0) {
+                            for (its in downs) {
+                                if (its.type == 0) {
                                     val request = OkGo.get<File>(playingMusic!!.uri)
                                     OkDownload.request(playingMusic!!.uri, request) //
                                         .priority(0)
                                         .fileName("music" + playingMusic!!.song_id + ".mp3") //
                                         .save() //
-                                        .register(LogDownloadListener(playingMusic, context, 0,downs,0)) //
+                                        .register(
+                                            LogDownloadListener(
+                                                playingMusic,
+                                                context,
+                                                0,
+                                                downs,
+                                                0
+                                            )
+                                        ) //
                                         .start()
-                                }else{
+                                } else {
                                     Toast.makeText(
                                         context,
                                         getText(R.string.download_carry),
@@ -178,13 +247,21 @@ class MusicPlayActivity : AppCompatActivity() {
                                     ).show()
                                 }
                             }
-                        }else{
+                        } else {
                             val request = OkGo.get<File>(playingMusic!!.uri)
                             OkDownload.request(playingMusic!!.uri, request) //
                                 .priority(0)
                                 .fileName("music" + playingMusic!!.song_id + ".mp3") //
                                 .save() //
-                                .register(LogDownloadListener(playingMusic, context, 1,downs,1)) //
+                                .register(
+                                    LogDownloadListener(
+                                        playingMusic,
+                                        context,
+                                        1,
+                                        downs,
+                                        1
+                                    )
+                                ) //
                                 .start()
                         }
 
@@ -242,6 +319,7 @@ class MusicPlayActivity : AppCompatActivity() {
                 if (bool) {
                     Observable.just(1).subscribe(observerset)
                 } else {
+
                     Toast.makeText(
                         context,
                         getText(R.string.secret_num),
@@ -264,6 +342,23 @@ class MusicPlayActivity : AppCompatActivity() {
                 }
 
             }
+
+        progressSb.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                position = progress
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar) {
+                wlMedia.seek(position.toDouble())
+                wlMedia.seekTimeCallBack(false)
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar) {
+                wlMedia.seek(position.toDouble())
+                wlMedia.seekTimeCallBack(true)
+                Observable.just(position.toLong()).subscribe(observers)
+            }
+        })
     }
 
     fun initData() {
@@ -290,7 +385,7 @@ class MusicPlayActivity : AppCompatActivity() {
                 start(playingMusic!!)
 
             }
-        } else if(types==2){
+        } else if (types == 2) {
             val obj: JsonArray = Gson().fromJson(list, JsonArray::class.java)
             val song: MutableList<Music> = Gson().fromJson(
                 obj,
@@ -313,60 +408,60 @@ class MusicPlayActivity : AppCompatActivity() {
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         if (intent != null) {
-            val bundle = intent.extras
-            val album_id = bundle?.get("album_id") as Long
-            val pos = bundle.get("pos") as Int
-            val list = bundle.get("list") as String
-            val types = bundle.get("type") as Int
+            try {
+                val bundle = intent.extras
+                val album_id = bundle?.get("album_id") as Long
+                val pos = bundle.get("pos") as Int
+                val list = bundle.get("list") as String
+                val types = bundle.get("type") as Int
 
-            if (types == 1) {
-                val obj: JsonArray = Gson().fromJson(list, JsonArray::class.java)
-                val song: MutableList<Music> = Gson().fromJson(
-                    obj,
-                    object : TypeToken<MutableList<Music>>() {}.type
-                )
-                song.removeAt(0)
-                if (song.isNotEmpty()) {
+                if (types == 1) {
+                    val obj: JsonArray = Gson().fromJson(list, JsonArray::class.java)
+                    val song: MutableList<Music> = Gson().fromJson(
+                        obj,
+                        object : TypeToken<MutableList<Music>>() {}.type
+                    )
+                    song.removeAt(0)
+                    if (song.isNotEmpty()) {
 
-                    if (song[pos].song_id == song_id) {
-                        playingMusicList = song
-                    } else {
-                        id = pos
-                        song_id = song[pos].song_id
-                        MusicApp.setAblumid(album_id)
-                        playingMusicList = song
-                        playingMusic = song[pos]
-                        starts(playingMusic!!)
+                        if (song[pos].song_id == song_id) {
+                            playingMusicList = song
+                        } else {
+                            id = pos
+                            song_id = song[pos].song_id
+                            MusicApp.setAblumid(album_id)
+                            playingMusicList = song
+                            playingMusic = song[pos]
+                            starts(playingMusic!!)
 
 
-                    }
-
-                }
-            } else if(types==2) {
-                val obj: JsonArray = Gson().fromJson(list, JsonArray::class.java)
-                val song: MutableList<Music> = Gson().fromJson(
-                    obj,
-                    object : TypeToken<MutableList<Music>>() {}.type
-                )
-                if (song.isNotEmpty()) {
-
-                    if (song[pos].song_id == song_id) {
-                        playingMusicList = song
-                    } else {
-                        id = pos
-                        song_id = song[pos].song_id
-                        MusicApp.setAblumid(album_id)
-                        playingMusicList = song
-                        playingMusic = song[pos]
-                        starts(playingMusic!!)
-
+                        }
 
                     }
+                } else if (types == 2) {
+                    val obj: JsonArray = Gson().fromJson(list, JsonArray::class.java)
+                    val song: MutableList<Music> = Gson().fromJson(
+                        obj,
+                        object : TypeToken<MutableList<Music>>() {}.type
+                    )
+                    if (song.isNotEmpty()) {
 
+                        if (song[pos].song_id == song_id) {
+                            playingMusicList = song
+                        } else {
+                            id = pos
+                            song_id = song[pos].song_id
+                            MusicApp.setAblumid(album_id)
+                            playingMusicList = song
+                            playingMusic = song[pos]
+                            starts(playingMusic!!)
+
+
+                        }
+
+                    }
                 }
-            }
-
-
+            }catch (e:Exception){ }
         }
     }
 
@@ -390,6 +485,22 @@ class MusicPlayActivity : AppCompatActivity() {
                 if (!mDisposable.isDisposed) {
                     mDisposable.dispose()
                     time(bool, max - bool)
+                }
+
+            }
+
+            override fun onError(e: Throwable) {}
+            override fun onComplete() {}
+
+        }
+
+        observerno = object : Observer<Boolean> {
+            override fun onSubscribe(d: Disposable) {}
+            override fun onNext(bool: Boolean) {
+                if(bool){
+                    Notification.init(context,t1 ,t2, m1,1)
+                }else{
+                    Notification.init(context,t1 ,t2, m1,0)
                 }
 
             }
@@ -425,9 +536,10 @@ class MusicPlayActivity : AppCompatActivity() {
                     0 -> {
                         if (playPauseIv.isPlaying) {
                             playPauseIv.pause()
-                            wlMusic.stop()
+                            wlMedia.pause()
                             mDisposable.dispose()
                             play = false
+                            Observable.just(false).subscribe(observerno)
                             coverFragment.stopRotateAnimation()
                         }
                     }
@@ -453,9 +565,10 @@ class MusicPlayActivity : AppCompatActivity() {
                     3 -> {
                         if (!playPauseIv.isPlaying) {
                             playPauseIv.play()
-                            wlMusic.resume()
+                            wlMedia.resume()
                             play = true
-                            time(min, max - min)
+                            Observable.just(true).subscribe(observerno)
+                            Observable.just(position.toLong()).subscribe(observers)
                             coverFragment.resumeRotateAnimation()
                         }
 
@@ -591,13 +704,19 @@ class MusicPlayActivity : AppCompatActivity() {
             subTitleTv.text = srtist_name
             Ablemname.text = music.album_name
             lyricFragment.lrcView(music.song_id)
+
             object : Thread() {
                 override fun run() {
                     bitmap = BitmapUtils.netUrlPicToBmp(music.pic_url)
                     coverFragment.setImageBitmap(bitmap)
-                    play(music.uri)
+                    t1 = music.name
+                    t2 = srtist_name
+                    m1 = bitmap
+                    Observable.just(true).subscribe(observerno)
                 }
             }.start()
+
+            play(music.uri)
         } catch (e: Exception) {
         }
 
@@ -605,14 +724,14 @@ class MusicPlayActivity : AppCompatActivity() {
 
     private fun starts(music: Music) {
         try {
-            if (playPauseIv.isPlaying) {
-                playPauseIv.pause()
-                play = false
-                coverFragment.stopRotateAnimation()
-            }
-            wlMusic.stop()
-            mDisposable.dispose()
 
+            playPauseIv.pause()
+            coverFragment.stopRotateAnimation()
+            play = false
+            wlMedia.stop()
+            mDisposable.dispose()
+            wlMedia.seek(0.00)
+            wlMedia.seekTimeCallBack(false)
             playPauseIv.setLoading(true)
             Observable.just(0L).subscribe(observers)
             MusicApp.setPosition(id)
@@ -638,10 +757,16 @@ class MusicPlayActivity : AppCompatActivity() {
                 override fun run() {
                     bitmap = BitmapUtils.netUrlPicToBmp(music.pic_url)
                     coverFragment.setImageBitmap(bitmap)
-                    wlMusic.playNext(music.uri)
-
+                    t1 = music.name
+                    t2 = srtist_name
+                    m1 = bitmap
+                    Observable.just(true).subscribe(observerno)
                 }
             }.start()
+
+            wlMedia.source = music.uri
+            wlMedia.next()
+
         } catch (e: Exception) {
         }
 
@@ -650,30 +775,24 @@ class MusicPlayActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        if (wlMusic.isPlaying) {
-            wlMusic.stop()
+        if (wlMedia.isPlaying) {
+            wlMedia.exit()
         }
+        Notification.deleteNotification()
+        unregisterReceiver(broadcastReceiver) // 注销广播
     }
 
 
     @SuppressLint("SetTextI18n")
     fun play(uri: String?) {
-        wlMusic = WlMusic.getInstance()
-        wlMusic.source = uri //设置音频源
-        wlMusic.setCallBackPcmData(false) //是否返回音频PCM数据
-        wlMusic.setShowPCMDB(false) //是否返回音频分贝大小
-        wlMusic.isPlayCircle = false //设置不间断循环播放音频
-        wlMusic.volume = 100 //设置音量 65%
-        wlMusic.playSpeed = 1.0f //设置播放速度 (1.0正常) 范围：0.25---4.0f
-        wlMusic.playPitch = 1.0f //设置播放速度 (1.0正常) 范围：0.25---4.0f
-        wlMusic.mute = MuteEnum.MUTE_CENTER //设置立体声（左声道、右声道和立体声）
-        wlMusic.setConvertSampleRate(null) //设定恒定采样率（null为取消）
-        wlMusic.prePared()
+        wlMedia = WlMedia()
+        wlMedia.setPlayModel(WlPlayModel.PLAYMODEL_ONLY_AUDIO) //设置只播放音频（必须）
+        wlMedia.setSourceType(WlSourceType.NORMAL) //url源模式
+        wlMedia.source = uri //设置数据源
 
-
-        wlMusic.setOnPreparedListener {
-            if (wlMusic.duration > 0) {
-                Observable.just((wlMusic.duration).toLong())
+        wlMedia.setOnPreparedListener {
+            if (wlMedia.duration > 0) {
+                Observable.just((wlMedia.duration).toLong())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe(object : Observer<Long> {
                         override fun onSubscribe(d: Disposable) {}
@@ -693,9 +812,9 @@ class MusicPlayActivity : AppCompatActivity() {
                         override fun onError(e: Throwable) {}
                         override fun onComplete() {
                             playPauseIv.play()
-                            wlMusic.start() //准备完成开始播放
+                            wlMedia.start() //准备完成开始播放
                             play = true
-                            coverFragment.startRotateAnimation(wlMusic.isPlaying)
+                            coverFragment.startRotateAnimation(wlMedia.isPlaying)
                             time(0, max)
                         }
                     })
@@ -712,36 +831,29 @@ class MusicPlayActivity : AppCompatActivity() {
 
         }
 
-        wlMusic.setOnErrorListener { code, msg ->
-            Log.d("ywl5320","code :$code, msg :$msg")
+        wlMedia.setOnErrorListener { code, msg ->
             Log.d("ywl5320", "code :$code, msg :$msg")
         }
 
-        wlMusic.setOnLoadListener { load -> Log.d("ywl5320","load --> $load") }
+        wlMedia.setOnLoadListener { load ->
+            Log.d("ywl5320", "load --> $load")
+            loadster = !load
 
+        }
 
-        wlMusic.setOnCompleteListener { Log.d("ywl5320","complete") }
-
-        wlMusic.setOnVolumeDBListener { db -> Log.d("ywl5320","db is : $db") }
-
-
-
-
-
-        progressSb.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
-            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
-                position = progress
+        wlMedia.setOnCompleteListener {
+            Log.d("ywl5320", "complete")
+            if (!loadster) {
+                Toast.makeText(
+                    context,
+                    getText(R.string.secret_erro),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
+        }
 
-            override fun onStartTrackingTouch(seekBar: SeekBar) {
-                wlMusic.seek(position, false, false) // 表示在seeking中，此时不回调时间
-            }
+        wlMedia.prepared()
 
-            override fun onStopTrackingTouch(seekBar: SeekBar) {
-                wlMusic.seek(position, true, true) //表示seek已经完成，然后才回调时间，避免自己控制时间逻辑和时间显示不稳定问题。
-                Observable.just(position.toLong()).subscribe(observers)
-            }
-        })
 
     }
 

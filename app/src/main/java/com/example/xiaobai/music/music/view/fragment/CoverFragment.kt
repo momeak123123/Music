@@ -112,7 +112,7 @@ class CoverFragment : BaseMvpFragment<CoverContract.IPresenter>(), CoverContract
 
     override fun onResume() {
         super.onResume()
-        if (coverAnimator != null && coverAnimator?.isPaused!! && MusicPlayActivity.wlMusic.isPlaying) {
+        if (coverAnimator != null && coverAnimator?.isPaused!! && MusicPlayActivity.wlMedia.isPlaying) {
             coverAnimator?.resume()
         }
     }

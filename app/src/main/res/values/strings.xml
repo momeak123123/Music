@@ -76,7 +76,7 @@
     <string name="play_mode_repeat">单曲播放</string>
     <string name="play_mode_loop">顺序播放</string>
     <string name="title_activity_index">IndexActivity</string>
-    <string name="title_home">Home</string>
+    <string name="secret_erro">加载失败</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">图片分辨率太高，无法加载</string>
 

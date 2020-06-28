@@ -36,9 +36,10 @@ class LyricFragment : BaseMvpFragment<LyricContract.IPresenter>(), LyricContract
     override fun onResume() {
         super.onResume()
         lrcView.setDraggable(true, LrcView.OnPlayClickListener { time: Long ->
-            MusicPlayActivity.wlMusic.seek((time/1000).toInt(), true, true)
-            if (!MusicPlayActivity.wlMusic.isPlaying) {
-                MusicPlayActivity.wlMusic.start()
+            MusicPlayActivity.wlMedia.seek((time/1000).toDouble())
+            MusicPlayActivity.wlMedia.seekTimeCallBack(true)
+            if (!MusicPlayActivity.wlMedia.isPlaying) {
+                MusicPlayActivity.wlMedia.start()
             }
             Observable.just(time/1000).subscribe(MusicPlayActivity.observers)
 
