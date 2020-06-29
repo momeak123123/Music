@@ -54,7 +54,7 @@ class CoverFragment : BaseMvpFragment<CoverContract.IPresenter>(), CoverContract
                 override fun onSubscribe(d: Disposable) {}
                 override fun onNext(cover: String) {
                     Glide.with(context).load(cover).placeholder(R.color.white_8p)
-                        .into(iv_cover)
+                        .into(iv_covers)
                 }
                 override fun onError(e: Throwable) {}
                 override fun onComplete() {}
@@ -65,7 +65,7 @@ class CoverFragment : BaseMvpFragment<CoverContract.IPresenter>(), CoverContract
 
 
     fun initAnimator() {
-        mAnimator = ObjectAnimator.ofFloat(iv_cover, "rotation", 0.0f, 360.0f)
+        mAnimator = ObjectAnimator.ofFloat(iv_covers, "rotation", 0.0f, 360.0f)
         mAnimator.duration = 9600//设定转一圈的时间
         mAnimator.repeatCount = Animation.INFINITE//设定无限循环
         mAnimator.repeatMode = ObjectAnimator.RESTART// 循环模式
