@@ -15,7 +15,7 @@ import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.frag_player_coverview.*
+import kotlinx.android.synthetic.main.frag_player_coverviews.*
 import mvp.ljb.kt.fragment.BaseMvpFragment
 
 
@@ -29,7 +29,7 @@ class CoverFragment : BaseMvpFragment<CoverContract.IPresenter>(), CoverContract
     override fun registerPresenter() = CoverPresenter::class.java
 
     override fun getLayoutId(): Int {
-        return R.layout.frag_player_coverview
+        return R.layout.frag_player_coverviews
     }
 
     private lateinit var mAnimator: ObjectAnimator
@@ -54,7 +54,7 @@ class CoverFragment : BaseMvpFragment<CoverContract.IPresenter>(), CoverContract
                 override fun onSubscribe(d: Disposable) {}
                 override fun onNext(cover: String) {
                     Glide.with(context).load(cover).placeholder(R.color.white_8p)
-                        .into(iv_covers)
+                        .into(iv_cover)
                 }
                 override fun onError(e: Throwable) {}
                 override fun onComplete() {}
@@ -65,7 +65,7 @@ class CoverFragment : BaseMvpFragment<CoverContract.IPresenter>(), CoverContract
 
 
     fun initAnimator() {
-        mAnimator = ObjectAnimator.ofFloat(iv_covers, "rotation", 0.0f, 360.0f)
+        mAnimator = ObjectAnimator.ofFloat(iv_cover, "rotation", 0.0f, 360.0f)
         mAnimator.duration = 9600//设定转一圈的时间
         mAnimator.repeatCount = Animation.INFINITE//设定无限循环
         mAnimator.repeatMode = ObjectAnimator.RESTART// 循环模式
