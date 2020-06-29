@@ -5,10 +5,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.RelativeLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -232,7 +229,7 @@ class SongDetAdapter(
         var title: TextView
         var txt: TextView
         var more: ImageView
-        var radio: ImageView
+        var radio: RadioButton
         var num: TextView
         var main: RelativeLayout
         var delete: Button
@@ -275,11 +272,7 @@ class SongDetAdapter(
             } else {
                 num.visibility = View.GONE
                 radio.visibility = View.VISIBLE
-                if (listdet[position].type == 1) {
-                    Glide.with(context).load(R.drawable.select).into(radio)
-                } else {
-                    Glide.with(context).load(R.drawable.upselect).into(radio)
-                }
+                radio.isChecked = listdet[position].type == 1
             }
 
             main.setOnClickListener {

@@ -169,9 +169,6 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
         }
 
 
-
-
-
         observer = object : Observer<JsonObject> {
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(data: JsonObject) {

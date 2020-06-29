@@ -24,6 +24,7 @@ import com.example.xiaobai.music.sql.bean.Playlist
 import com.example.xiaobai.music.sql.dao.mDownDao
 import com.example.xiaobai.music.sql.dao.mPlaylistDao
 import com.google.gson.Gson
+import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import com.jakewharton.rxbinding2.view.RxView
 import com.lzy.okgo.OkGo
@@ -60,6 +61,7 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
 
     companion object {
         lateinit var adaptert: PlaySongAdapter
+        lateinit var observer: Observer<JsonObject>
         lateinit var observert: Observer<Music>
     }
 
@@ -76,12 +78,12 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
         sp = requireContext().getSharedPreferences("Music", Context.MODE_PRIVATE)
         if (!sp.getString("list", "").equals("")) {
 
-                val ads: List<Banner> = Gson().fromJson(
-                    sp.getString("ads", ""),
-                    object : TypeToken<List<Banner>>() {}.type
-                )
+            val ads: List<Banner> = Gson().fromJson(
+                sp.getString("ads", ""),
+                object : TypeToken<List<Banner>>() {}.type
+            )
 
-             lists = Gson().fromJson(
+            lists = Gson().fromJson(
                 sp.getString("list", ""),
                 object : TypeToken<List<TopList>>() {}.type
             )
@@ -101,11 +103,9 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
                 object : TypeToken<List<Music>>() {}.type
             )
 
-            initList(ads,lists, album, artist, song)
-        }
-
-        if (swipe_refresh_layout != null) {
-            swipe_refresh_layout.isRefreshing = false
+            initList(ads, lists, album, artist, song)
+        }else{
+            context?.let { getPresenter().homedata(it) }
         }
     }
 
@@ -116,7 +116,9 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
 
         swipe_refresh_layout.setColorSchemeColors(-0xff6634, -0xbbbc, -0x996700, -0x559934, -0x7800)
         //下拉刷新
-        swipe_refresh_layout.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener { initData() })
+        swipe_refresh_layout.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener {
+            context?.let { getPresenter().homedata(it) }
+        })
 
 
         RxView.clicks(list_dow)
@@ -142,6 +144,43 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
         if (lists.isEmpty()) {
             initData()
         }
+
+        observer = object : Observer<JsonObject> {
+            override fun onSubscribe(d: Disposable) {}
+            override fun onNext(data: JsonObject) {
+                val ads: List<Banner> = Gson().fromJson<Array<Banner>>(
+                    data.getAsJsonArray("ads"),
+                    Array<Banner>::class.java
+                ).toList()
+
+                val album: List<Album> = Gson().fromJson<Array<Album>>(
+                    data.getAsJsonArray("album_list"),
+                    Array<Album>::class.java
+                ).toList()
+                val artist: List<Artists> = Gson().fromJson<Array<Artists>>(
+                    data.getAsJsonArray("hot_artist"),
+                    Array<Artists>::class.java
+                ).toList()
+                val song: List<Music> = Gson().fromJson<Array<Music>>(
+                    data.getAsJsonArray("hot_song"),
+                    Array<Music>::class.java
+                ).toList()
+                val list: List<TopList> = Gson().fromJson<Array<TopList>>(
+                    data.getAsJsonArray("top_list"),
+                    Array<TopList>::class.java
+                ).toList()
+
+                initList(ads, list, album, artist, song)
+
+
+
+            }
+
+            override fun onError(e: Throwable) {}
+            override fun onComplete() {}
+
+        }
+
 
         observert = object : Observer<Music> {
             override fun onSubscribe(d: Disposable) {}
@@ -394,9 +433,12 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
         artist: List<Artists>,
         song: List<Music>
     ) {
+        if (swipe_refresh_layout != null) {
+            swipe_refresh_layout.isRefreshing = false
+        }
         recyc_item.layoutManager = LinearLayoutManager(context)
         recyc_item.itemAnimator = DefaultItemAnimator()
-        adapter = context?.let { HomeDetAdapter(it,ads, list, album, artist, song) }
+        adapter = context?.let { HomeDetAdapter(it, ads, list, album, artist, song) }
         recyc_item.adapter = adapter
         adapter!!.setOnItemClickListener(object : HomeDetAdapter.ItemClickListener {
             override fun onItemClick(view: View, position: Int) {

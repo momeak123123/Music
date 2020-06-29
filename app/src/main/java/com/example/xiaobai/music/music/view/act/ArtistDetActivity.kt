@@ -63,22 +63,23 @@ class ArtistDetActivity : BaseMvpActivity<ArtistDetContract.IPresenter>() , Arti
 
     override fun initData() {
         super.initData()
-        val bundle = intent.extras
-        val id = bundle?.get("id") as Long
-        val type = bundle.get("type") as Int
-        if(MusicApp.getNetwork()){
-            getPresenter().listdata(context,id,type)
-        }else{
-            if (swipe_refresh_layout != null) {
-                swipe_refresh_layout.isRefreshing = false
+        try {
+            val bundle = intent.extras
+            val id = bundle?.get("id") as Long
+            val type = bundle.get("type") as Int
+            if(MusicApp.getNetwork()){
+                getPresenter().listdata(context,id,type)
+            }else{
+                if (swipe_refresh_layout != null) {
+                    swipe_refresh_layout.isRefreshing = false
+                }
+                Toast.makeText(
+                    context,
+                    getText(R.string.nonet),
+                    Toast.LENGTH_LONG
+                ).show()
             }
-            Toast.makeText(
-                context,
-                getText(R.string.nonet),
-                Toast.LENGTH_LONG
-            ).show()
-        }
-
+        }catch (e:Exception){}
 
     }
 

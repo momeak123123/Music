@@ -203,7 +203,7 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
                 getPresenter().deldata(context, ids, playids)
             }
 
-        RxView.clicks(alltxt)
+        RxView.clicks(all)
             .throttleFirst(0, TimeUnit.SECONDS)
             .subscribe {
                 if (bools) {

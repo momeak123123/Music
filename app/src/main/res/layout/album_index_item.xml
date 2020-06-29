@@ -18,20 +18,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/item" />
 
-    <com.xuexiang.xui.widget.imageview.RadiusImageView
+    <RadioButton
         android:id="@+id/radio"
         android:layout_width="@dimen/dp_20"
-        android:layout_height="@dimen/dp_20"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentBottom="true"
-        android:src="@drawable/upselect"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/item"
+        android:layout_height="@dimen/dp_21"
+        android:background="@drawable/radio"
+        android:button="@null"
+        android:clickable="false"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/item"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/item"
-        app:riv_is_circle="true" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <RelativeLayout
         android:id="@+id/item"
@@ -114,6 +111,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/item"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/item" />
+
 
 
 

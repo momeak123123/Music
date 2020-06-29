@@ -121,7 +121,7 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
     }
 
     private void initData() {
-        MainModel.Companion.homedata(MainActivity.this);
+       // MainModel.Companion.homedata(MainActivity.this);
 
         List<Fragment> list = new ArrayList<>();
         mTabbar.setTitles(R.string.tab1, R.string.tab2, R.string.tab3)

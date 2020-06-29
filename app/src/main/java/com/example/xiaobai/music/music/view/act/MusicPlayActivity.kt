@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.example.xiaobai.music.LockActivity
 import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.adapter.PlayListAdapter
@@ -28,6 +29,7 @@ import com.example.xiaobai.music.config.Notification
 import com.example.xiaobai.music.music.model.MusicPlayModel
 import com.example.xiaobai.music.music.view.fragment.CoverFragment
 import com.example.xiaobai.music.music.view.fragment.LyricFragment
+import com.example.xiaobai.music.service.LockService
 import com.example.xiaobai.music.sql.bean.Playlist
 import com.example.xiaobai.music.sql.dao.mDownDao
 import com.example.xiaobai.music.sql.dao.mPlaylistDao
@@ -71,9 +73,11 @@ class MusicPlayActivity : AppCompatActivity() {
         var play: Boolean = false
         var id: Int = 0
         lateinit var adapter: PlaySongAdapter
+         lateinit var t1: String
+         lateinit var t2: String
+         lateinit var m1: Bitmap
     }
 
-    private var loadster: Boolean = false
     private var adaptert: PlayListAdapter? = null
     private var type: Int = 2
     lateinit var mDisposable: Disposable
@@ -89,9 +93,7 @@ class MusicPlayActivity : AppCompatActivity() {
     private var lyricFragment = LyricFragment()
     private val fragments = mutableListOf<Fragment>()
     private lateinit var context: Context
-    private lateinit var t1: String
-    private lateinit var t2: String
-    private var m1: Bitmap? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,6 +109,8 @@ class MusicPlayActivity : AppCompatActivity() {
         initData()
         sp = getSharedPreferences("User", Context.MODE_PRIVATE)
 
+        val intent = Intent(this, LockService::class.java)
+        startService(intent)
         //广播 添加广播的action
 
         val intentFilter = IntentFilter()
@@ -704,19 +708,19 @@ class MusicPlayActivity : AppCompatActivity() {
             subTitleTv.text = srtist_name
             Ablemname.text = music.album_name
             lyricFragment.lrcView(music.song_id)
-
+            coverFragment.setImageBitmap(context,music.pic_url)
+            play(music.uri)
             object : Thread() {
                 override fun run() {
                     bitmap = BitmapUtils.netUrlPicToBmp(music.pic_url)
-                    coverFragment.setImageBitmap(bitmap)
                     t1 = music.name
                     t2 = srtist_name
-                    m1 = bitmap
+                    m1 = bitmap!!
                     Observable.just(true).subscribe(observerno)
                 }
             }.start()
 
-            play(music.uri)
+
         } catch (e: Exception) {
         }
 
@@ -753,20 +757,18 @@ class MusicPlayActivity : AppCompatActivity() {
             subTitleTv.text = srtist_name
             Ablemname.text = music.album_name
             lyricFragment.lrcView(music.song_id)
+            coverFragment.setImageBitmap(context,music.pic_url)
+            wlMedia.source = music.uri
+            wlMedia.next()
             object : Thread() {
                 override fun run() {
                     bitmap = BitmapUtils.netUrlPicToBmp(music.pic_url)
-                    coverFragment.setImageBitmap(bitmap)
                     t1 = music.name
                     t2 = srtist_name
-                    m1 = bitmap
+                    m1 = bitmap!!
                     Observable.just(true).subscribe(observerno)
                 }
             }.start()
-
-            wlMedia.source = music.uri
-            wlMedia.next()
-
         } catch (e: Exception) {
         }
 
@@ -837,19 +839,10 @@ class MusicPlayActivity : AppCompatActivity() {
 
         wlMedia.setOnLoadListener { load ->
             Log.d("ywl5320", "load --> $load")
-            loadster = !load
-
         }
 
         wlMedia.setOnCompleteListener {
             Log.d("ywl5320", "complete")
-            if (!loadster) {
-                Toast.makeText(
-                    context,
-                    getText(R.string.secret_erro),
-                    Toast.LENGTH_SHORT
-                ).show()
-            }
         }
 
         wlMedia.prepared()

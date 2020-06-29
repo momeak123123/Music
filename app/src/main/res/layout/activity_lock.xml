@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.example.xiaobai.music.music.view.custom.SlidingFinishLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/half_black">
+    android:id="@+id/lock_root"
+    android:background="@color/colorPrimaryDark">
 
     <ImageView
-        android:id="@+id/playerBackgroundIv"
+        android:id="@+id/iv_audio"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentBottom="true"
         android:scaleType="centerCrop"
-        app:layout_constraintBottom_toTopOf="@+id/lyricView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -20,14 +23,16 @@
         android:id="@+id/linearLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="@dimen/dp_30"
+        android:layout_marginTop="@dimen/dp_30"
         android:orientation="vertical"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/timeTv"
+            android:id="@+id/lock_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:letterSpacing="0.01"
@@ -38,7 +43,7 @@
             tools:text="19:56" />
 
         <TextView
-            android:id="@+id/dateTv"
+            android:id="@+id/lock_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
@@ -75,11 +80,13 @@
                 android:id="@+id/singerTv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dp_5"
                 android:layout_marginBottom="@dimen/dp_24"
                 android:ellipsize="end"
                 android:gravity="center_horizontal"
                 android:letterSpacing="0.02"
                 android:maxLines="1"
+                android:textColor="@color/white"
                 android:textSize="@dimen/sp_14"
                 android:textStyle="normal"
                 tools:text="林俊杰" />
@@ -89,19 +96,38 @@
 
     </LinearLayout>
 
-    <com.cyl.musiclake.ui.widget.LyricView
-        android:id="@+id/lyricView"
+    <me.wcy.lrcview.LrcView
+        android:id="@+id/lrcView"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_200"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/bottom"
+        android:layout_height="0dp"
+        android:layout_above="@+id/bottom"
+        android:layout_below="@+id/linearLayout"
+        android:layout_marginTop="@dimen/dp_40"
+        android:layout_marginBottom="@dimen/dp_40"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:lrcAnimationDuration="1000"
+        app:lrcCurrentTextColor="#ffffff"
+        app:lrcDividerHeight="20dp"
+        app:lrcLabel="找不到歌词(@_@)"
+        app:lrcNormalTextColor="#BDBDBD"
+        app:lrcNormalTextSize="15sp"
+        app:lrcPadding="16dp"
+        app:lrcTextGravity="center"
+        app:lrcTextSize="15sp"
+        app:lrcTimeTextColor="#BDBDBD"
+        app:lrcTimelineColor="#80BDBDBD"
+        app:lrcTimelineTextColor="#9FA8DA" />
 
     <LinearLayout
         android:id="@+id/bottom"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
         android:gravity="center"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -112,7 +138,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/dp_8"
+            android:layout_marginBottom="@dimen/dp_40"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
@@ -126,8 +152,8 @@
 
             <ImageView
                 android:id="@+id/playPauseIv"
-                android:layout_width="@dimen/dp_48"
-                android:layout_height="@dimen/dp_48"
+                android:layout_width="@dimen/dp_50"
+                android:layout_height="@dimen/dp_50"
                 android:src="@drawable/play" />
 
             <ImageView
@@ -139,12 +165,13 @@
 
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/slideTv"
-            android:layout_width="@dimen/dp_72"
-            android:layout_height="@dimen/dp_24"
-            android:layout_margin="@dimen/dp_16"
-            android:gravity="center"
-            android:text="滑动解锁" />
+        <com.example.xiaobai.music.music.view.custom.HintTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dp_40"
+            android:includeFontPadding="false"
+            android:text=">>> 滑动解锁"
+            android:textColor="#ffffff"
+            android:textSize="18sp" />
     </LinearLayout>
-</androidx.constraintlayout.widget.ConstraintLayout>
+</com.example.xiaobai.music.music.view.custom.SlidingFinishLayout>

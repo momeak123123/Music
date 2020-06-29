@@ -14,43 +14,33 @@
         android:layout_height="match_parent"
         android:descendantFocusability="blocksDescendants">
 
-        <com.xuexiang.xui.widget.imageview.RadiusImageView
+        <RadioButton
             android:id="@+id/radio"
+            android:layout_width="@dimen/dp_20"
+            android:layout_height="@dimen/dp_21"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_marginStart="@dimen/dp_15"
+            android:layout_marginTop="@dimen/dp_25"
+            android:background="@drawable/radio"
+            android:button="@null"
+            android:clickable="false" />
+
+        <TextView
+            android:id="@+id/num"
             android:layout_width="@dimen/dp_20"
             android:layout_height="@dimen/dp_20"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="@dimen/dp_10"
-            android:layout_marginTop="@dimen/dp_25"
-            android:layout_marginBottom="@dimen/dp_25"
-            android:scaleType="centerCrop"
-            android:src="@drawable/upselect"
-            android:visibility="gone"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.2"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:riv_border_width="0dp"
-            app:riv_corner_radius="@dimen/dp_10"
-            app:riv_is_circle="false" />
-
-        <TextView
-            android:id="@+id/num"
-            android:layout_width="@dimen/dp_20"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentBottom="true"
-            android:layout_marginStart="@dimen/dp_10"
+            android:layout_marginStart="@dimen/dp_15"
             android:layout_marginTop="@dimen/dp_25"
             android:layout_marginBottom="@dimen/dp_25"
             android:gravity="center_vertical|center"
             android:text=""
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <RelativeLayout
             android:id="@+id/item"

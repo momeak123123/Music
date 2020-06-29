@@ -1,9 +1,12 @@
 package com.example.xiaobai.music.music.view.fragment
 
 import android.animation.ObjectAnimator
+import android.content.Context
 import android.graphics.Bitmap
+import android.net.Uri
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
+import com.bumptech.glide.Glide
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.music.contract.CoverContract
 import com.example.xiaobai.music.music.presenter.CoverPresenter
@@ -31,10 +34,6 @@ class CoverFragment : BaseMvpFragment<CoverContract.IPresenter>(), CoverContract
 
     private lateinit var mAnimator: ObjectAnimator
 
-    //当前专辑图片
-    var currentBitmap: Bitmap? = null
-
-
     //旋转属性动画
     private var coverAnimator: ObjectAnimator? = null
 
@@ -46,25 +45,20 @@ class CoverFragment : BaseMvpFragment<CoverContract.IPresenter>(), CoverContract
     /**
      * 设置Bitmap
      */
-    fun setImageBitmap(bm: Bitmap?) {
+    fun setImageBitmap(context: Context, bm: String) {
 
-        if (bm != null) {
-            Observable.just(bm)
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(object : Observer<Bitmap?> {
-                    override fun onSubscribe(d: Disposable) {}
-                    override fun onNext(cover: Bitmap) {
-
-                        iv_cover.setImageBitmap(cover)
-                        currentBitmap = cover
-                    }
-
-                    override fun onError(e: Throwable) {}
-                    override fun onComplete() {
-
-                    }
-                })
-        }
+        //iv_cover.setImageURI(Uri.parse(bm))
+        Observable.just(bm)
+            .subscribeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Observer<String> {
+                override fun onSubscribe(d: Disposable) {}
+                override fun onNext(cover: String) {
+                    Glide.with(context).load(cover).placeholder(R.color.white_8p)
+                        .into(iv_cover)
+                }
+                override fun onError(e: Throwable) {}
+                override fun onComplete() {}
+            })
 
 
     }

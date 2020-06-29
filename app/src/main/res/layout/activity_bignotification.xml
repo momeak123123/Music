@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:background="@color/colorPrimaryDark"
-    android:layout_height="@dimen/dp_140">
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/ima"
@@ -13,8 +13,7 @@
         android:layout_height="@dimen/dp_120"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:layout_marginStart="@dimen/dp_10"
-        android:layout_marginTop="@dimen/dp_10"
+        android:scaleType="centerCrop"
         android:src="@drawable/avatar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -23,12 +22,13 @@
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignTop="@+id/ima"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="@dimen/dp_140"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_10"
+        android:layout_toEndOf="@+id/ima"
         android:text=""
         android:textColor="@color/white"
+        android:textSize="@dimen/sp_16"
         app:layout_constraintStart_toEndOf="@+id/ima"
         app:layout_constraintTop_toTopOf="@+id/ima" />
 
@@ -38,8 +38,9 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/title"
         android:layout_alignStart="@+id/title"
-        android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_5"
         android:text=""
+        android:textSize="@dimen/sp_14"
         android:textColor="@color/white_50p"
         app:layout_constraintStart_toStartOf="@+id/title"
         app:layout_constraintTop_toBottomOf="@+id/title" />
@@ -66,8 +67,7 @@
         android:layout_alignStart="@+id/txt"
         android:layout_alignEnd="@+id/del"
         android:layout_alignBottom="@+id/ima"
-        android:layout_marginTop="@dimen/dp_10"
-        android:layout_marginBottom="@dimen/dp_10"
+        android:layout_marginTop="@dimen/dp_5"
         app:layout_constraintBottom_toBottomOf="@+id/ima"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/txt"
@@ -78,7 +78,6 @@
             android:layout_width="@dimen/dp_30"
             android:layout_height="@dimen/dp_30"
             android:layout_gravity="center_vertical"
-            android:layout_marginStart="@dimen/dp_40"
             android:layout_weight="1"
             android:src="@drawable/shang" />
 
@@ -95,7 +94,6 @@
             android:layout_width="@dimen/dp_30"
             android:layout_height="@dimen/dp_30"
             android:layout_gravity="center_vertical"
-            android:layout_marginEnd="@dimen/dp_40"
             android:layout_weight="1"
             android:src="@drawable/xia" />
 

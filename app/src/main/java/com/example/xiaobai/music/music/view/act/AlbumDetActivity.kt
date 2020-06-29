@@ -119,15 +119,18 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
         super.initData()
         sp = getSharedPreferences("User", Context.MODE_PRIVATE)
         swipe_refresh_layout.isRefreshing = true
-        val bundle = intent.extras
-        activity_type = bundle?.get("type") as Int
-        album_id = bundle.get("album_id") as Long
-        album_type = bundle.get("album_type") as Int
-        album_time = bundle.get("album_time") as Long
-        names = bundle.get("palylist_name") as String
-        txts = bundle.get("info") as String
-        covers = bundle.get("cover") as String
-        loadData()
+        try {
+            val bundle = intent.extras
+            activity_type = bundle?.get("type") as Int
+            album_id = bundle.get("album_id") as Long
+            album_type = bundle.get("album_type") as Int
+            album_time = bundle.get("album_time") as Long
+            names = bundle.get("palylist_name") as String
+            txts = bundle.get("info") as String
+            covers = bundle.get("cover") as String
+            loadData()
+        }catch (e:Exception){}
+
 
 
     }
