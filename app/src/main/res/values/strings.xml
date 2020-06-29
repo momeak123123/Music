@@ -101,6 +101,7 @@
     <string name="song_collect_error">暂未选择歌曲，请选择</string>
     <string name="song_download">下载</string>
     <string name="song_downloads">下载管理</string>
+    <string name="song_download_error">暂未下载歌曲，请先下载</string>
     <string name="song_carry">完成</string>
     <string name="song_edit">编辑歌单</string>
     <string name="song_alls">多选</string>
@@ -116,7 +117,7 @@
     <string name="user_city">国家</string>
     <string name="attention">关注</string>
     <string name="collect">收藏</string>
-    <string name="like">喜欢</string>
+    <string name="like">本地</string>
     <string name="user_save">保存</string>
     <string name="error_user">资料不能为空</string>
 

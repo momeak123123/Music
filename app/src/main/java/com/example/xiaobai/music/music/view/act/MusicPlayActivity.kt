@@ -437,8 +437,6 @@ class MusicPlayActivity : AppCompatActivity() {
                             playingMusicList = song
                             playingMusic = song[pos]
                             starts(playingMusic!!)
-
-
                         }
 
                     }
@@ -459,10 +457,7 @@ class MusicPlayActivity : AppCompatActivity() {
                             playingMusicList = song
                             playingMusic = song[pos]
                             starts(playingMusic!!)
-
-
                         }
-
                     }
                 }
             }catch (e:Exception){ }

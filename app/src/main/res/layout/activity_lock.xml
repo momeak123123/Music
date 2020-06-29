@@ -8,27 +8,29 @@
     android:background="@color/colorPrimaryDark">
 
     <TextView
-        android:textColor="#ffffff"
-        android:layout_marginTop="@dimen/dp_50"
-        android:layout_marginLeft="@dimen/dp_40"
-        android:layout_alignParentTop="true"
-        android:text="17:30"
-        android:textSize="38sp"
         android:id="@+id/lock_time"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginStart="@dimen/dp_40"
+        android:layout_marginTop="@dimen/dp_50"
+        android:text="17:30"
+        android:textColor="#ffffff"
+        android:textSize="@dimen/sp_38" />
 
     <TextView
-        android:textColor="#ffffff"
-        android:layout_marginTop="@dimen/dp_5"
-        android:layout_alignLeft="@+id/lock_time"
-        android:layout_below="@+id/lock_time"
-        android:text="12月21日 星期三"
-        android:includeFontPadding="false"
-        android:textSize="20sp"
         android:id="@+id/lock_date"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/lock_time"
+        android:layout_alignStart="@+id/lock_time"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="@dimen/dp_5"
+        android:includeFontPadding="false"
+        android:text="12月21日 星期三"
+        android:textColor="#ffffff"
+        android:textSize="@dimen/sp_20" />
 
     <ImageView
         android:id="@+id/iv_audio"
@@ -44,22 +46,34 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/iv_audio"
-        android:layout_centerHorizontal="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="@dimen/dp_40"
         android:layout_marginTop="@dimen/dp_50"
-        android:text="专辑名称"
+        android:layout_marginEnd="@dimen/dp_40"
+        android:ellipsize="end"
+        android:gravity="center_vertical|center"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:text=""
         android:textColor="#ffffff"
-        android:textSize="20sp" />
+        android:textSize="@dimen/sp_20" />
 
     <TextView
         android:id="@+id/tv_audio"
-        android:layout_below="@+id/tv_audio_name"
-        android:layout_marginTop="@dimen/dp_10"
-        android:layout_centerHorizontal="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="演唱者"
-        android:textSize="16sp"
-        android:textColor="#ffffff"/>
+        android:layout_below="@+id/tv_audio_name"
+        android:layout_alignStart="@+id/tv_audio_name"
+        android:layout_alignEnd="@+id/tv_audio_name"
+        android:layout_marginTop="@dimen/dp_10"
+        android:ellipsize="end"
+        android:gravity="center_vertical|center"
+        android:maxLines="1"
+        android:singleLine="true"
+        android:text=""
+        android:textColor="#ffffff"
+        android:textSize="@dimen/sp_16" />
 
     <LinearLayout
         android:id="@+id/bottom"

@@ -499,53 +499,18 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
                             .positiveText("确认")
                             .negativeText("取消")
                             .onPositive { _: MaterialDialog?, _: DialogAction? ->
-
-                                val idmap = mutableListOf<Music>()
-
-                                for (ite in SongDetActivity.adapter.listdet) {
-                                    if (ite.type == 1) {
-                                        idmap.add(ite.song)
-                                    }
-                                }
-                                if (idmap.isNotEmpty()) {
-                                    for (its in idmap) {
-
-                                        val downs = mDownDao.querys(its.song_id)
-                                        if (downs.size > 0) {
-                                            for (itd in downs) {
-                                                if (itd.type == 0) {
-                                                    val request = OkGo.get<File>(its.uri)
-                                                    OkDownload.request(its.uri, request) //
-                                                        .priority(0)
-                                                        .fileName("music" + its.song_id + ".mp3") //
-                                                        .save() //
-                                                        .register(
-                                                            LogDownloadListener(
-                                                                its,
-                                                                context,
-                                                                0,
-                                                                downs,
-                                                                0
-                                                            )
-                                                        ) //
-                                                        .start()
-                                                } else {
-                                                    Toast.makeText(
-                                                        context,
-                                                        getText(R.string.download_carry),
-                                                        Toast.LENGTH_SHORT
-                                                    ).show()
-                                                }
-                                            }
-                                        } else {
-                                            val request = OkGo.get<File>(its.uri)
-                                            OkDownload.request(its.uri, request) //
+                                val downs = mDownDao.querys(songlist[data].song_id)
+                                if (downs.size > 0) {
+                                    for (itd in downs) {
+                                        if (itd.type == 0) {
+                                            val request = OkGo.get<File>(songlist[data].uri)
+                                            OkDownload.request(songlist[data].uri, request) //
                                                 .priority(0)
-                                                .fileName("music" + its.song_id + ".mp3") //
+                                                .fileName("music" + songlist[data].song_id + ".mp3") //
                                                 .save() //
                                                 .register(
                                                     LogDownloadListener(
-                                                        its,
+                                                        songlist[data],
                                                         context,
                                                         0,
                                                         downs,
@@ -553,20 +518,31 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
                                                     )
                                                 ) //
                                                 .start()
+                                        } else {
+                                            Toast.makeText(
+                                                context,
+                                                getText(R.string.download_carry),
+                                                Toast.LENGTH_SHORT
+                                            ).show()
                                         }
-
-
                                     }
-
                                 } else {
-                                    Toast.makeText(
-                                        context,
-                                        getText(R.string.song_collect_error),
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                    val request = OkGo.get<File>(songlist[data].uri)
+                                    OkDownload.request(songlist[data].uri, request) //
+                                        .priority(0)
+                                        .fileName("music" + songlist[data].song_id + ".mp3") //
+                                        .save() //
+                                        .register(
+                                            LogDownloadListener(
+                                                songlist[data],
+                                                context,
+                                                0,
+                                                downs,
+                                                0
+                                            )
+                                        )
+                                        .start()
                                 }
-
-
                             }
                             .show()
                     }

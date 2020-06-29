@@ -25,7 +25,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        jp:TabAnimate="Scale2"
+        jp:TabAnimate="Scale"
         jp:TabMargin = "@dimen/dp_12"
         jp:TabTextSize = "@dimen/sp_12"
         jp:TabIconSize = "@dimen/dp_18"

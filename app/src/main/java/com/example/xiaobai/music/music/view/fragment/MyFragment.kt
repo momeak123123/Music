@@ -6,12 +6,16 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.music.contract.MyContract
 import com.example.xiaobai.music.music.presenter.MyPresenter
+import com.example.xiaobai.music.music.view.act.DownloadActivity
 import com.example.xiaobai.music.music.view.act.LoginActivity
+import com.example.xiaobai.music.music.view.act.MusicPlayActivity
 import com.example.xiaobai.music.music.view.act.UserEditActivity
+import com.example.xiaobai.music.sql.dao.mDownDao
 import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
@@ -28,6 +32,7 @@ import java.util.concurrent.TimeUnit
  **/
 class MyFragment : BaseMvpFragment<MyContract.IPresenter>(), MyContract.IView {
 
+    private var nums: Int = 0
     private lateinit var sp: SharedPreferences
 
     companion object {
@@ -55,7 +60,9 @@ class MyFragment : BaseMvpFragment<MyContract.IPresenter>(), MyContract.IView {
         city.text = sp.getString("countries", "")
         attention_num.text = sp.getString("follow", "")
         collect_num.text = sp.getString("collect", "")
-        like_num.text = sp.getString("like", "")
+         nums = mDownDao.queryt(1).count()
+        println(nums)
+        like_num.text = nums.toString()
     }
 
     @SuppressLint("CheckResult")
@@ -63,13 +70,33 @@ class MyFragment : BaseMvpFragment<MyContract.IPresenter>(), MyContract.IView {
         super.initView()
 
 
-        /*RxView.clicks(item1)
+        RxView.clicks(item1)
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
-                val intent = Intent()
-                context?.let { intent.setClass(it, DownloadActivity().javaClass) }
-                startActivity(intent)
-            }*/
+
+            }
+        RxView.clicks(item2)
+            .throttleFirst(3, TimeUnit.SECONDS)
+            .subscribe {
+
+            }
+        RxView.clicks(item3)
+            .throttleFirst(3, TimeUnit.SECONDS)
+            .subscribe {
+                if(nums>0){
+                    val intent = Intent()
+                    context?.let { it1 -> intent.setClass(it1, DownloadActivity().javaClass) }
+                    startActivity(intent)
+                }else{
+                    Toast.makeText(
+                        context,
+                        getText(R.string.song_download_error),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+            }
+
         RxView.clicks(btn_up)
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {

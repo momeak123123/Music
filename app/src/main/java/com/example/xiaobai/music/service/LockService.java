@@ -11,6 +11,8 @@ import androidx.annotation.Nullable;
 
 import com.example.xiaobai.music.LockActivity;
 
+import java.util.Objects;
+
 public class LockService extends Service {
     private BroadcastReceiver receiver;
 
@@ -27,7 +29,7 @@ public class LockService extends Service {
 
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (intent.getAction() == Intent.ACTION_SCREEN_OFF) {
+                if (Objects.equals(intent.getAction(), Intent.ACTION_SCREEN_OFF)) {
                     System.out.println("收到锁屏广播");
                     Intent lockscreen = new Intent(LockService.this, LockActivity.class);
                     lockscreen.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

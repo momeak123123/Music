@@ -129,8 +129,8 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
             txts = bundle.get("info") as String
             covers = bundle.get("cover") as String
             loadData()
-        }catch (e:Exception){}
-
+        } catch (e: Exception) {
+        }
 
 
     }
@@ -160,9 +160,9 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
     override fun initView() {
         super.initView()
 
-            swipe_refresh_layout.setColorSchemeColors(-0xff6634, -0xbbbc, -0x996700, -0x559934, -0x7800)
-            //下拉刷新
-            swipe_refresh_layout.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener { loadData() })
+        swipe_refresh_layout.setColorSchemeColors(-0xff6634, -0xbbbc, -0x996700, -0x559934, -0x7800)
+        //下拉刷新
+        swipe_refresh_layout.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener { loadData() })
 
 
 
@@ -244,20 +244,28 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
                             }
                         }
                         if (idmap.isNotEmpty()) {
-                            for(its in idmap){
+                            for (its in idmap) {
 
                                 val downs = mDownDao.querys(its.song_id)
-                                if(downs.size>0){
-                                    for(itd in downs){
-                                        if(itd.type==0){
+                                if (downs.size > 0) {
+                                    for (itd in downs) {
+                                        if (itd.type == 0) {
                                             val request = OkGo.get<File>(its.uri)
                                             OkDownload.request(its.uri, request) //
                                                 .priority(0)
                                                 .fileName("music" + its.song_id + ".mp3") //
                                                 .save() //
-                                                .register(LogDownloadListener(its, context, 0,downs,0)) //
+                                                .register(
+                                                    LogDownloadListener(
+                                                        its,
+                                                        context,
+                                                        0,
+                                                        downs,
+                                                        0
+                                                    )
+                                                ) //
                                                 .start()
-                                        }else{
+                                        } else {
                                             Toast.makeText(
                                                 context,
                                                 getText(R.string.download_carry),
@@ -265,13 +273,13 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
                                             ).show()
                                         }
                                     }
-                                }else{
+                                } else {
                                     val request = OkGo.get<File>(its.uri)
                                     OkDownload.request(its.uri, request) //
                                         .priority(0)
                                         .fileName("music" + its.song_id + ".mp3") //
                                         .save() //
-                                        .register(LogDownloadListener(its, context, 0,downs,0)) //
+                                        .register(LogDownloadListener(its, context, 0, downs, 0)) //
                                         .start()
                                 }
 
@@ -315,7 +323,6 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
             }
 
 
-
     }
 
 
@@ -357,7 +364,7 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
                                         context,
                                         songs,
                                         num,
-                                        song[position].play_list_id,1,position
+                                        song[position].play_list_id, 1, position
                                     )
                                 } else {
                                     Toast.makeText(
@@ -376,7 +383,7 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
                                     context,
                                     songs,
                                     num,
-                                    song[position].play_list_id,1,position
+                                    song[position].play_list_id, 1, position
                                 )
                             } else {
                                 Toast.makeText(
@@ -409,7 +416,7 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
         adapter.setOnItemClickListener(object : AlbumDetAdapter.ItemClickListener {
             override fun onItemClick(view: View, position: Int) {
                 if (position > 0) {
-                    if(adapter.type == 0){
+                    if (adapter.type == 0) {
                         val json: String = Gson().toJson(song)
                         val intent = Intent()
                         intent.setClass(context, MusicPlayActivity().javaClass)
@@ -418,7 +425,7 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
                         intent.putExtra("list", json)
                         intent.putExtra("type", 1)
                         startActivity(intent)
-                    }else{
+                    } else {
                         if (adapter.listdet[position].type == 0) {
                             adapter.listdet[position].type = 1
                             adapter.notifyItemChanged(position)
@@ -557,7 +564,7 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
 
 
                 RxView.clicks(relat4)
-                    .throttleFirst(3, TimeUnit.SECONDS)
+                    .throttleFirst(1, TimeUnit.SECONDS)
                     .subscribe {
                         MaterialDialog.Builder(context)
                             .title("下载音乐")
@@ -565,58 +572,50 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
                             .positiveText("确认")
                             .negativeText("取消")
                             .onPositive { _: MaterialDialog?, _: DialogAction? ->
-
-                                val idmap = mutableListOf<Music>()
-
-                                for (ite in SongDetActivity.adapter.listdet) {
-                                    if (ite.type == 1) {
-                                        idmap.add(ite.song)
-                                    }
-                                }
-                                if (idmap.isNotEmpty()) {
-                                    for(its in idmap){
-
-                                        val downs = mDownDao.querys(its.song_id)
-                                        if(downs.size>0){
-                                            for(itd in downs){
-                                                if(itd.type==0){
-                                                    val request = OkGo.get<File>(its.uri)
-                                                    OkDownload.request(its.uri, request) //
-                                                        .priority(0)
-                                                        .fileName("music" + its.song_id + ".mp3") //
-                                                        .save() //
-                                                        .register(LogDownloadListener(its, context, 0,downs,0)) //
-                                                        .start()
-                                                }else{
-                                                    Toast.makeText(
-                                                        context,
-                                                        getText(R.string.download_carry),
-                                                        Toast.LENGTH_SHORT
-                                                    ).show()
-                                                }
-                                            }
-                                        }else{
-                                            val request = OkGo.get<File>(its.uri)
-                                            OkDownload.request(its.uri, request) //
+                                val downs = mDownDao.querys(songlist[data].song_id)
+                                if (downs.size > 0) {
+                                    for (itd in downs) {
+                                        if (itd.type == 0) {
+                                            val request = OkGo.get<File>(songlist[data].uri)
+                                            OkDownload.request(songlist[data].uri, request) //
                                                 .priority(0)
-                                                .fileName("music" + its.song_id + ".mp3") //
+                                                .fileName("music" + songlist[data].song_id + ".mp3") //
                                                 .save() //
-                                                .register(LogDownloadListener(its, context, 0,downs,0)) //
+                                                .register(
+                                                    LogDownloadListener(
+                                                        songlist[data],
+                                                        context,
+                                                        0,
+                                                        downs,
+                                                        0
+                                                    )
+                                                ) //
                                                 .start()
+                                        } else {
+                                            Toast.makeText(
+                                                context,
+                                                getText(R.string.download_carry),
+                                                Toast.LENGTH_SHORT
+                                            ).show()
                                         }
-
-
                                     }
-
                                 } else {
-                                    Toast.makeText(
-                                        context,
-                                        getText(R.string.song_collect_error),
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                    val request = OkGo.get<File>(songlist[data].uri)
+                                    OkDownload.request(songlist[data].uri, request) //
+                                        .priority(0)
+                                        .fileName("music" + songlist[data].song_id + ".mp3") //
+                                        .save() //
+                                        .register(
+                                            LogDownloadListener(
+                                                songlist[data],
+                                                context,
+                                                0,
+                                                downs,
+                                                0
+                                            )
+                                        )
+                                        .start()
                                 }
-
-
                             }
                             .show()
                     }
