@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
@@ -39,6 +40,15 @@ class LoginActivity : BaseMvpActivity<LoginContract.IPresenter>(), LoginContract
     override fun init(savedInstanceState: Bundle?) {
         super.init(savedInstanceState)
         context = this
+
+
+        val left = resources.getDrawable(R.drawable.emil,null)
+        left.setBounds(0, 0, 50, 50) //必须设置图片的大小否则没有作用
+        et_username_number.setCompoundDrawables(left, null, null, null)
+
+        val lefts = resources.getDrawable(R.drawable.pass,null)
+        lefts.setBounds(0, 0, 50, 50) //必须设置图片的大小否则没有作用
+        et_passs_number.setCompoundDrawables(lefts, null, null, null)
     }
 
     @SuppressLint("CheckResult")

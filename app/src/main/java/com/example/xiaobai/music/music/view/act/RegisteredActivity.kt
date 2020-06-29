@@ -12,6 +12,7 @@ import com.example.xiaobai.music.music.presenter.RegisteredPresenter
 import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_registered.*
 import mvp.ljb.kt.act.BaseMvpActivity
 import java.util.concurrent.TimeUnit
@@ -38,6 +39,18 @@ class RegisteredActivity : BaseMvpActivity<RegisteredContract.IPresenter>(),
     override fun init(savedInstanceState: Bundle?) {
         super.init(savedInstanceState)
         context = this
+
+        val left = resources.getDrawable(R.drawable.emil,null)
+        left.setBounds(0, 0, 50, 50) //必须设置图片的大小否则没有作用
+        re_username_number.setCompoundDrawables(left, null, null, null)
+
+        val lefts = resources.getDrawable(R.drawable.pass,null)
+        lefts.setBounds(0, 0, 50, 50) //必须设置图片的大小否则没有作用
+        re_pass_number.setCompoundDrawables(lefts, null, null, null)
+
+        val leftt = resources.getDrawable(R.drawable.pass,null)
+        leftt.setBounds(0, 0, 50, 50) //必须设置图片的大小否则没有作用
+        re_passs_number.setCompoundDrawables(leftt, null, null, null)
     }
 
 

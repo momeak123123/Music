@@ -73,8 +73,8 @@ public class LockActivity extends AppCompatActivity implements SlidingFinishLayo
     private void initView() {
         tvLockTime = findViewById(R.id.lock_time);
         tvLockDate = findViewById(R.id.lock_date);
-        songNameTv = findViewById(R.id.songNameTv);
-        singerTv = findViewById(R.id.singerTv);
+        songNameTv = findViewById(R.id.tv_audio_name);
+        singerTv = findViewById(R.id.tv_audio);
         iv_audio = findViewById(R.id.iv_audio);
         prevIv = findViewById(R.id.prevIv);
         playPauseIv = findViewById(R.id.playPauseIv);
@@ -88,7 +88,7 @@ public class LockActivity extends AppCompatActivity implements SlidingFinishLayo
         RxView.clicks(playPauseIv)
                 .throttleFirst(2, TimeUnit.SECONDS)
                 .subscribe(o -> {
-                    if (MusicPlayActivity.wlMedia.isPlaying()) {
+                    if (MusicPlayActivity.play.equals("1")) {
                         Observable.just(0).subscribe(MusicPlayActivity.observerset);
                         playPauseIv.setImageResource(R.drawable.play);
                     } else {
@@ -131,7 +131,7 @@ public class LockActivity extends AppCompatActivity implements SlidingFinishLayo
                         songNameTv.setText(MusicPlayActivity.t1);
                         singerTv.setText(MusicPlayActivity.t2);
                         iv_audio.setImageBitmap(MusicPlayActivity.m1);
-                        if(MusicPlayActivity.wlMedia.isPlaying()){
+                        if(MusicPlayActivity.play.equals("1")){
                             playPauseIv.setImageResource(R.drawable.plays);
                         }else{
                             playPauseIv.setImageResource(R.drawable.play);

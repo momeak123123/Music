@@ -26,8 +26,9 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         jp:TabAnimate="Scale2"
-        jp:TabMargin = "@dimen/dp_10"
-        jp:TabIconSize = "@dimen/dp_20"
+        jp:TabMargin = "@dimen/dp_12"
+        jp:TabTextSize = "@dimen/sp_12"
+        jp:TabIconSize = "@dimen/dp_18"
         jp:TabNormalColor="#9e9e9e"
         jp:TabSelectColor="#06b7ff" />
 

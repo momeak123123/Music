@@ -139,8 +139,7 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
 
     override fun onResume() {
         super.onResume()
-
-        adapter!!.notifyItemChanged(0)
+        
         if (lists.isEmpty()) {
             initData()
         }

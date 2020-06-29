@@ -70,7 +70,7 @@ class MusicPlayActivity : AppCompatActivity() {
         lateinit var observerset: Observer<Int>
         lateinit var observerno: Observer<Boolean>
         var bool: Boolean = false
-        var play: Boolean = false
+        lateinit var play: String
         var id: Int = 0
         lateinit var adapter: PlaySongAdapter
          lateinit var t1: String
@@ -542,7 +542,7 @@ class MusicPlayActivity : AppCompatActivity() {
                             playPauseIv.pause()
                             wlMedia.pause()
                             mDisposable.dispose()
-                            play = false
+                            play = "0"
                             Observable.just(false).subscribe(observerno)
                             coverFragment.stopRotateAnimation()
                         }
@@ -570,7 +570,7 @@ class MusicPlayActivity : AppCompatActivity() {
                         if (!playPauseIv.isPlaying) {
                             playPauseIv.play()
                             wlMedia.resume()
-                            play = true
+                            play = "1"
                             Observable.just(true).subscribe(observerno)
                             Observable.just(position.toLong()).subscribe(observers)
                             coverFragment.resumeRotateAnimation()
@@ -731,7 +731,7 @@ class MusicPlayActivity : AppCompatActivity() {
 
             playPauseIv.pause()
             coverFragment.stopRotateAnimation()
-            play = false
+            play = "1"
             wlMedia.stop()
             mDisposable.dispose()
             wlMedia.seek(0.00)
@@ -815,7 +815,7 @@ class MusicPlayActivity : AppCompatActivity() {
                         override fun onComplete() {
                             playPauseIv.play()
                             wlMedia.start() //准备完成开始播放
-                            play = true
+                            play = "1"
                             coverFragment.startRotateAnimation(wlMedia.isPlaying)
                             time(0, max)
                         }
