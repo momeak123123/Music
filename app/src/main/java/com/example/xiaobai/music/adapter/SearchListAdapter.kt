@@ -73,12 +73,14 @@ class SearchListAdapter   (val datas: MutableList<Music>, val context: Context) 
 
     fun add(item: Music) {
         datas.add(item)
-        notifyItemInserted(datas.size)
+        notifyItemChanged(datas.size)
     }
 
     fun remove(position: Int) {
-        datas.removeAt(position)
         notifyItemRemoved(position)
+        if (position != datas.size) {
+            notifyItemRangeChanged(position, datas.size - position);
+        }
     }
 
     fun removeAll() {

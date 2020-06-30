@@ -47,6 +47,7 @@ public class MusicApp extends Application {
 
     public static Boolean play = false;
 
+
     public static Boolean getPlay() {
         return play;
     }

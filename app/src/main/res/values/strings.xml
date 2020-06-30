@@ -108,6 +108,10 @@
     <string name="song_alls">多选</string>
     <string name="song_del">删除歌单</string>
 
+    <string name="dan">单曲循环</string>
+    <string name="lie">列表循环</string>
+    <string name="sui">随机播放</string>
+
     <!--user-->
     <string name="updown">编辑</string>
     <string name="user_updown">编辑资料</string>

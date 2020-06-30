@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
+import com.example.xiaobai.music.LockActivity
 import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.adapter.PlayListAdapter
@@ -61,10 +62,11 @@ import java.util.concurrent.TimeUnit
 class MusicPlayActivity : AppCompatActivity() {
 
     companion object {
+        lateinit var lock: String
         var position: Int = 0
         var song_id: Long = 0
         lateinit var wlMedia: WlMedia
-        lateinit var observer: Observer<String>
+        lateinit var observer: Observer<Boolean>
         lateinit var observers: Observer<Long>
         lateinit var observerplay: Observer<MutableList<Music>>
         lateinit var observerset: Observer<Int>
@@ -76,6 +78,7 @@ class MusicPlayActivity : AppCompatActivity() {
         lateinit var t2: String
         lateinit var m1: Bitmap
         lateinit var m2: Bitmap
+        var playingMusicList: MutableList<Music>? = null
     }
 
     private var adaptert: PlayListAdapter? = null
@@ -87,7 +90,7 @@ class MusicPlayActivity : AppCompatActivity() {
     private var pos: Int = 0
     private var bitmap: Bitmap? = null
     private var playingMusic: Music? = null
-    private var playingMusicList: MutableList<Music>? = null
+
     private var coverFragment = CoverFragment()
     private var lyricFragment = LyricFragment()
     private val fragments = mutableListOf<Fragment>()
@@ -119,7 +122,7 @@ class MusicPlayActivity : AppCompatActivity() {
         intentFilter.addAction("next")
         registerReceiver(broadcastReceiver, intentFilter)
 
-
+        lock = "1"
     }
 
 
@@ -192,6 +195,7 @@ class MusicPlayActivity : AppCompatActivity() {
             .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
                 moveTaskToBack(true)
+                in_indel.visibility = View.GONE
             }
 
         RxView.clicks(icon1)
@@ -201,13 +205,28 @@ class MusicPlayActivity : AppCompatActivity() {
                     type++
                     if (type == 1) {
                         Glide.with(context).load(R.drawable.sui).into(icon1)
+                        Toast.makeText(
+                            context,
+                            getText(R.string.sui),
+                            Toast.LENGTH_SHORT
+                        ).show()
                     } else {
                         Glide.with(context).load(R.drawable.xun).into(icon1)
+                        Toast.makeText(
+                            context,
+                            getText(R.string.lie),
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
 
                 } else {
                     type = 0
                     Glide.with(context).load(R.drawable.dan).into(icon1)
+                    Toast.makeText(
+                        context,
+                        getText(R.string.dan),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
 
             }
@@ -358,6 +377,22 @@ class MusicPlayActivity : AppCompatActivity() {
 
             }
 
+        RxView.clicks(del)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe {
+                MaterialDialog.Builder(context)
+                    .title("播放列表")
+                    .content("确定要清空播放列表")
+                    .positiveText("确认")
+                    .negativeText("取消")
+                    .onPositive { _: MaterialDialog?, _: DialogAction? ->
+                        Observable.just(true).subscribe(observer)
+                    }
+                    .show()
+
+
+            }
+
         progressSb.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
                 position = progress
@@ -375,6 +410,8 @@ class MusicPlayActivity : AppCompatActivity() {
             }
         })
     }
+
+
 
     fun initData() {
         val bundle = intent.extras
@@ -479,9 +516,21 @@ class MusicPlayActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
 
-        observer = object : Observer<String> {
+        observer = object : Observer<Boolean> {
             override fun onSubscribe(d: Disposable) {}
-            override fun onNext(num: String) {
+            override fun onNext(boolean: Boolean) {
+                if(boolean){
+                    if (wlMedia.isPlaying) {
+                        wlMedia.exit()
+                    }
+                    playingMusicList!!.clear()
+                    MusicApp.setPlay(false)
+                    MusicApp.setAblumid(0)
+                    MusicApp.setMusic(playingMusicList)
+                    bool = false
+                    moveTaskToBack(true)
+                    in_indel.visibility = View.GONE
+                }
 
             }
 
@@ -618,10 +667,12 @@ class MusicPlayActivity : AppCompatActivity() {
         in_list.adapter = adaptert
         adaptert!!.setOnItemClickListener(object : PlayListAdapter.ItemClickListener {
             override fun onItemClick(view: View, position: Int) {
-                println(position)
-                id = position
-                adaptert!!.notifyItemChanged(id)
-                starts(playingMusicList!![position])
+                if(id!=position){
+                    id = position
+                    adaptert!!.notifyDataSetChanged()
+                    starts(playingMusicList!![position])
+                }
+
 
             }
         })
@@ -734,9 +785,11 @@ class MusicPlayActivity : AppCompatActivity() {
                     t2 = srtist_name
                     m1 = bitmap!!
                     Observable.just(true).subscribe(observerno)
-                    val bit = BitmapUtils.netUrlPicToBmp(music.pic_url)
-                    BlurKit.getInstance().blur(bit, 20)
-                    m2 = bit!!
+                    val bitmaps = BitmapUtils.netUrlPicToBmp(music.pic_url)
+                    BlurKit.getInstance().blur(bitmaps, 25)
+                    m2 = bitmaps!!
+
+
                 }
             }.start()
 
@@ -779,6 +832,7 @@ class MusicPlayActivity : AppCompatActivity() {
             wlMedia.source = music.uri
             wlMedia.next()
 
+
             object : Thread() {
                 override fun run() {
                     lyricFragment.lrcView(music.song_id)
@@ -788,9 +842,10 @@ class MusicPlayActivity : AppCompatActivity() {
                     t2 = srtist_name
                     m1 = bitmap!!
                     Observable.just(true).subscribe(observerno)
-                    val bit = BitmapUtils.netUrlPicToBmp(music.pic_url)
-                    BlurKit.getInstance().blur(bit, 20)
-                    m2 = bit!!
+                    val bitmaps = BitmapUtils.netUrlPicToBmp(music.pic_url)
+                    BlurKit.getInstance().blur(bitmaps, 25)
+                    m2 = bitmaps!!
+
                 }
             }.start()
         } catch (e: Exception) {
@@ -947,6 +1002,7 @@ class MusicPlayActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         moveTaskToBack(true)
+        in_indel.visibility = View.GONE
     }
 
 }

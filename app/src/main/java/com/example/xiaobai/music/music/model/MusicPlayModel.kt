@@ -153,11 +153,11 @@ class MusicPlayModel {
                                 val versions = bean.new_version
                                 updateTitle = "发现新版本V$versions"
                                 val context = bean.update_log.split("|")
-                                for(it in context){
-                                    if(updateContent==""){
-                                        updateContent = it+"\n"
-                                    }else{
-                                        updateContent += it+"\n"
+                                for (it in context) {
+                                    if (updateContent == "") {
+                                        updateContent = it + "\n"
+                                    } else {
+                                        updateContent += it + "\n"
                                     }
 
                                 }
@@ -205,7 +205,7 @@ class MusicPlayModel {
                 })
         }
 
-        fun asd(context: Context){
+        fun asd(context: Context) {
             OkGo.get<String>(Constants.URL + "api/ads/get_ads")
                 .params("type", 1)
                 .execute(object : StringCallback() {
@@ -222,10 +222,17 @@ class MusicPlayModel {
                                     bean.data,
                                     Array<Banner>::class.java
                                 ).toList()
+                                val str = Gson().toJson(ads[0].url)
+
+                                val sp: SharedPreferences =
+                                    context.getSharedPreferences("User", Context.MODE_PRIVATE)
+
+                                sp.edit().putString("ads", str).apply()
                                 object : Thread() {
                                     override fun run() {
                                         val bitmap = BitmapUtils.netUrlPicToBmp(ads[0].url)
-                                        Observable.just(bitmap).subscribe(StartActivity.observer)
+                                        MusicApp.setStartback(bitmap)
+                                        Observable.just(true).subscribe(StartActivity.observer)
                                     }
                                 }.start()
 
@@ -235,18 +242,10 @@ class MusicPlayModel {
                         }
                     }
 
-                    override fun onFinish() {
-                        super.onFinish()
-                        val bitmap: Bitmap =
-                            BitmapFactory.decodeResource(getResources(), R.drawable.play_page_default_bgs)
-                        Observable.just(bitmap).subscribe(StartActivity.observer)
-                    }
                 })
 
         }
     }
-
-
 
 
 }

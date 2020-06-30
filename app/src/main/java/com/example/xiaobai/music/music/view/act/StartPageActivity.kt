@@ -59,6 +59,8 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>(), Start
         context = this
         MainActivity.bool = false
         adss.setImageBitmap(MusicApp.getStartback())
+
+
     }
 
     @SuppressLint("CheckResult")

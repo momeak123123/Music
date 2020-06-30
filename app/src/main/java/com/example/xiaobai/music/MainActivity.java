@@ -103,6 +103,32 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
         Initialization.setupDatabaseDown(this);
         initData();
 
+        Intent intent = new Intent(MainActivity.this, StartPageActivity.class);
+        startActivity(intent);
+
+        Observable.timer(8, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Long>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable disposable) {
+
+                    }
+
+                    @Override
+                    public void onNext(@NonNull Long number) {
+                        MusicPlayModel.Companion.updateapp(getVersionName());
+                    }
+
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
     }
 
 
@@ -180,32 +206,7 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
         viewPager.setCurrentItem(indexs);
 
         if (bool) {
-            Intent intent = new Intent(MainActivity.this, StartPageActivity.class);
-            startActivity(intent);
 
-            Observable.timer(8, TimeUnit.SECONDS)
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<Long>() {
-                        @Override
-                        public void onSubscribe(@NonNull Disposable disposable) {
-
-                        }
-
-                        @Override
-                        public void onNext(@NonNull Long number) {
-                            MusicPlayModel.Companion.updateapp(getVersionName());
-                        }
-
-                        @Override
-                        public void onError(@NonNull Throwable e) {
-
-                        }
-
-                        @Override
-                        public void onComplete() {
-
-                        }
-                    });
         }
 
         if (isNeedCheck) {

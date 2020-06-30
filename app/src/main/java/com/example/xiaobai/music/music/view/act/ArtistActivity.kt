@@ -281,7 +281,7 @@ class ArtistActivity : BaseMvpActivity<ArtistContract.IPresenter>(), ArtistContr
 
     fun initSingerListup(artists: MutableList<Artists>) {
         adapter.removeAll()
-       adapter.addAll(artists)
+        adapter.addAll(artists)
         adapter.notifyDataSetChanged()
     }
 
