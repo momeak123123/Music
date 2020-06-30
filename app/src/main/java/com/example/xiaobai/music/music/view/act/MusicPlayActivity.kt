@@ -17,7 +17,6 @@ import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
-import com.example.xiaobai.music.LockActivity
 import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.adapter.PlayListAdapter
@@ -45,6 +44,7 @@ import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
 import com.ywl5320.wlmedia.WlMedia
 import com.ywl5320.wlmedia.enums.WlPlayModel
 import com.ywl5320.wlmedia.enums.WlSourceType
+import io.alterac.blurkit.BlurKit
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Observer
@@ -70,18 +70,17 @@ class MusicPlayActivity : AppCompatActivity() {
         lateinit var observerset: Observer<Int>
         lateinit var observerno: Observer<Boolean>
         var bool: Boolean = false
-        lateinit var play: String
         var id: Int = 0
         lateinit var adapter: PlaySongAdapter
-         lateinit var t1: String
-         lateinit var t2: String
-         lateinit var m1: Bitmap
+        lateinit var t1: String
+        lateinit var t2: String
+        lateinit var m1: Bitmap
+        lateinit var m2: Bitmap
     }
 
     private var adaptert: PlayListAdapter? = null
     private var type: Int = 2
     lateinit var mDisposable: Disposable
-    lateinit var mDisposables: Disposable
     var max: Long = 0
     private lateinit var sp: SharedPreferences
     private var min: Long = 0
@@ -216,62 +215,74 @@ class MusicPlayActivity : AppCompatActivity() {
         RxView.clicks(icon2)
             .throttleFirst(0, TimeUnit.SECONDS)
             .subscribe {
+                if (sp.getBoolean("login", false)) {
+                    MaterialDialog.Builder(context)
+                        .title("下载音乐")
+                        .content("是否下载音乐")
+                        .positiveText("确认")
+                        .negativeText("取消")
+                        .onPositive { _: MaterialDialog?, _: DialogAction? ->
 
-                MaterialDialog.Builder(context)
-                    .title("下载音乐")
-                    .content("是否下载音乐")
-                    .positiveText("确认")
-                    .negativeText("取消")
-                    .onPositive { _: MaterialDialog?, _: DialogAction? ->
-
-                        val downs = mDownDao.querys(playingMusic!!.song_id)
-                        if (downs.size > 0) {
-                            for (its in downs) {
-                                if (its.type == 0) {
-                                    val request = OkGo.get<File>(playingMusic!!.uri)
-                                    OkDownload.request(playingMusic!!.uri, request) //
-                                        .priority(0)
-                                        .fileName("music" + playingMusic!!.song_id + ".mp3") //
-                                        .save() //
-                                        .register(
-                                            LogDownloadListener(
-                                                playingMusic,
-                                                context,
-                                                0,
-                                                downs,
-                                                0
-                                            )
-                                        ) //
-                                        .start()
-                                } else {
-                                    Toast.makeText(
-                                        context,
-                                        getText(R.string.download_carry),
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                            val downs = mDownDao.querys(playingMusic!!.song_id)
+                            if (downs.size > 0) {
+                                for (its in downs) {
+                                    if (its.type == 0) {
+                                        val request = OkGo.get<File>(playingMusic!!.uri)
+                                        OkDownload.request(playingMusic!!.uri, request) //
+                                            .priority(0)
+                                            .fileName("music" + playingMusic!!.song_id + ".mp3") //
+                                            .save() //
+                                            .register(
+                                                LogDownloadListener(
+                                                    playingMusic,
+                                                    context,
+                                                    0,
+                                                    downs,
+                                                    0
+                                                )
+                                            ) //
+                                            .start()
+                                    } else {
+                                        Toast.makeText(
+                                            context,
+                                            getText(R.string.download_carry),
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
                                 }
+                            } else {
+                                val request = OkGo.get<File>(playingMusic!!.uri)
+                                OkDownload.request(playingMusic!!.uri, request) //
+                                    .priority(0)
+                                    .fileName("music" + playingMusic!!.song_id + ".mp3") //
+                                    .save() //
+                                    .register(
+                                        LogDownloadListener(
+                                            playingMusic,
+                                            context,
+                                            1,
+                                            downs,
+                                            1
+                                        )
+                                    ) //
+                                    .start()
                             }
-                        } else {
-                            val request = OkGo.get<File>(playingMusic!!.uri)
-                            OkDownload.request(playingMusic!!.uri, request) //
-                                .priority(0)
-                                .fileName("music" + playingMusic!!.song_id + ".mp3") //
-                                .save() //
-                                .register(
-                                    LogDownloadListener(
-                                        playingMusic,
-                                        context,
-                                        1,
-                                        downs,
-                                        1
-                                    )
-                                ) //
-                                .start()
                         }
+                        .show()
+                } else {
+                    MaterialDialog.Builder(context)
+                        .title("登录")
+                        .content("未登陆账号，是否登录")
+                        .positiveText("确认")
+                        .negativeText("取消")
+                        .onPositive { _: MaterialDialog?, _: DialogAction? ->
+                            val intent = Intent()
+                            context.let { intent.setClass(it, LoginActivity().javaClass) }
+                            startActivity(intent)
+                        }
+                        .show()
+                }
 
-
-                    }
-                    .show()
             }
 
         RxView.clicks(icon3)
@@ -460,7 +471,8 @@ class MusicPlayActivity : AppCompatActivity() {
                         }
                     }
                 }
-            }catch (e:Exception){ }
+            } catch (e: Exception) {
+            }
         }
     }
 
@@ -496,10 +508,10 @@ class MusicPlayActivity : AppCompatActivity() {
         observerno = object : Observer<Boolean> {
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(bool: Boolean) {
-                if(bool){
-                    Notification.init(context,t1 ,t2, m1,1)
-                }else{
-                    Notification.init(context,t1 ,t2, m1,0)
+                if (bool) {
+                    Notification.init(context, t1, t2, m1, 1)
+                } else {
+                    Notification.init(context, t1, t2, m1, 0)
                 }
 
             }
@@ -531,48 +543,57 @@ class MusicPlayActivity : AppCompatActivity() {
         observerset = object : Observer<Int> {
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(data: Int) {
-                when (data) {
-                    0 -> {
-                        if (playPauseIv.isPlaying) {
-                            playPauseIv.pause()
-                            wlMedia.pause()
-                            mDisposable.dispose()
-                            play = "0"
-                            Observable.just(false).subscribe(observerno)
-                            coverFragment.stopRotateAnimation()
+                try {
+                    when (data) {
+                        0 -> {
+                            if (playPauseIv.isPlaying) {
+                                playPauseIv.pause()
+                                wlMedia.pause()
+                                mDisposable.dispose()
+                                MusicApp.setPlay(false)
+                                Observable.just(false).subscribe(observerno)
+                                coverFragment.stopRotateAnimation()
+                                AlbumDetActivity.adapter.notifyItemChanged(0)
+                                SongDetActivity.adapter.notifyItemChanged(0)
+                                DownloadActivity.adapter.notifyItemChanged(0)
+                            }
                         }
-                    }
-                    1 -> {
-                        if (id == 0) {
-                            id = playingMusicList!!.size - 1
-                            starts(playingMusicList!![id])
-                        } else {
-                            id -= 1
-                            starts(playingMusicList!![id])
-                        }
+                        1 -> {
+                            if (id == 0) {
+                                id = playingMusicList!!.size - 1
+                                starts(playingMusicList!![id])
+                            } else {
+                                id -= 1
+                                starts(playingMusicList!![id])
+                            }
 
-                    }
-                    2 -> {
-                        if (playingMusicList!!.size - 1 == id) {
-                            id = 0
-                            starts(playingMusicList!![0])
-                        } else {
-                            id += 1
-                            starts(playingMusicList!![id])
                         }
-                    }
-                    3 -> {
-                        if (!playPauseIv.isPlaying) {
-                            playPauseIv.play()
-                            wlMedia.resume()
-                            play = "1"
-                            Observable.just(true).subscribe(observerno)
-                            Observable.just(position.toLong()).subscribe(observers)
-                            coverFragment.resumeRotateAnimation()
+                        2 -> {
+                            if (playingMusicList!!.size - 1 == id) {
+                                id = 0
+                                starts(playingMusicList!![0])
+                            } else {
+                                id += 1
+                                starts(playingMusicList!![id])
+                            }
                         }
+                        3 -> {
+                            if (!playPauseIv.isPlaying) {
+                                playPauseIv.play()
+                                wlMedia.resume()
+                                MusicApp.setPlay(true)
+                                Observable.just(true).subscribe(observerno)
+                                Observable.just(position.toLong()).subscribe(observers)
+                                coverFragment.resumeRotateAnimation()
+                                AlbumDetActivity.adapter.notifyItemChanged(0)
+                                SongDetActivity.adapter.notifyItemChanged(0)
+                                DownloadActivity.adapter.notifyItemChanged(0)
+                            }
 
+                        }
                     }
-                }
+                }catch (e:Exception){}
+
 
             }
 
@@ -702,16 +723,20 @@ class MusicPlayActivity : AppCompatActivity() {
             }
             subTitleTv.text = srtist_name
             Ablemname.text = music.album_name
-            lyricFragment.lrcView(music.song_id)
-            coverFragment.setImageBitmap(context,music.pic_url)
             play(music.uri)
+
             object : Thread() {
                 override fun run() {
+                    lyricFragment.lrcView(music.song_id)
                     bitmap = BitmapUtils.netUrlPicToBmp(music.pic_url)
+                    coverFragment.setImageBitmap(bitmap)
                     t1 = music.name
                     t2 = srtist_name
                     m1 = bitmap!!
                     Observable.just(true).subscribe(observerno)
+                    val bit = BitmapUtils.netUrlPicToBmp(music.pic_url)
+                    BlurKit.getInstance().blur(bit, 20)
+                    m2 = bit!!
                 }
             }.start()
 
@@ -726,7 +751,7 @@ class MusicPlayActivity : AppCompatActivity() {
 
             playPauseIv.pause()
             coverFragment.stopRotateAnimation()
-            play = "1"
+            MusicApp.setPlay(true)
             wlMedia.stop()
             mDisposable.dispose()
             wlMedia.seek(0.00)
@@ -751,17 +776,21 @@ class MusicPlayActivity : AppCompatActivity() {
             }
             subTitleTv.text = srtist_name
             Ablemname.text = music.album_name
-            lyricFragment.lrcView(music.song_id)
-            coverFragment.setImageBitmap(context,music.pic_url)
             wlMedia.source = music.uri
             wlMedia.next()
+
             object : Thread() {
                 override fun run() {
+                    lyricFragment.lrcView(music.song_id)
                     bitmap = BitmapUtils.netUrlPicToBmp(music.pic_url)
+                    coverFragment.setImageBitmap(bitmap)
                     t1 = music.name
                     t2 = srtist_name
                     m1 = bitmap!!
                     Observable.just(true).subscribe(observerno)
+                    val bit = BitmapUtils.netUrlPicToBmp(music.pic_url)
+                    BlurKit.getInstance().blur(bit, 20)
+                    m2 = bit!!
                 }
             }.start()
         } catch (e: Exception) {
@@ -810,7 +839,7 @@ class MusicPlayActivity : AppCompatActivity() {
                         override fun onComplete() {
                             playPauseIv.play()
                             wlMedia.start() //准备完成开始播放
-                            play = "1"
+                            MusicApp.setPlay(true)
                             coverFragment.startRotateAnimation(wlMedia.isPlaying)
                             time(0, max)
                         }

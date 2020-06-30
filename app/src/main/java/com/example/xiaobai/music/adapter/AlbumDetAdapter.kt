@@ -130,7 +130,7 @@ class AlbumDetAdapter(
 
             if (MusicApp.getAblumid() == id) {
 
-                if (MusicPlayActivity.play == "1") {
+                if (MusicApp.getPlay()) {
 
                     Glide.with(context).load(R.drawable.plays).into(play)
                 } else {
@@ -182,7 +182,7 @@ class AlbumDetAdapter(
                 .subscribe {
                     if (MusicPlayActivity.bool) {
                         if (MusicApp.getAblumid() == id) {
-                            if (MusicPlayActivity.play == "1") {
+                            if (MusicApp.getPlay()) {
                                 Observable.just(0).subscribe(MusicPlayActivity.observerset)
                                 Glide.with(context).load(R.drawable.play).into(play)
                             } else {

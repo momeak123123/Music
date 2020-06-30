@@ -24,14 +24,13 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/right"
         android:layout_alignBottom="@+id/right"
-        android:layout_marginBottom="0dp"
         android:layout_toStartOf="@+id/right"
         android:text="@string/more"
         android:textColor="@color/gray"
         app:layout_constraintBottom_toBottomOf="@+id/right"
         app:layout_constraintEnd_toStartOf="@+id/right"
         app:layout_constraintTop_toTopOf="@+id/right"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.5" />
 
     <ImageView
         android:id="@+id/right"

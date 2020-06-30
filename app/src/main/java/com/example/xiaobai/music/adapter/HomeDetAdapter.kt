@@ -888,15 +888,18 @@ class HomeDetAdapter(
 
         var more: TextView
         var title: TextView
+        var right: ImageView
 
         init {
             title = itemView.findViewById(R.id.title)
             more = itemView.findViewById(R.id.more)
+            right = itemView.findViewById(R.id.right)
         }
 
         @SuppressLint("CheckResult")
         fun bindData() {
-
+            more.visibility = View.GONE
+            right.visibility = View.GONE
             title.text = context.getText(R.string.item4)
         }
     }

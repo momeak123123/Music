@@ -98,6 +98,7 @@
     <string name="song_all">全选</string>
     <string name="song_unall">全不选</string>
     <string name="song_collect">收藏到歌单</string>
+    <string name="song_cancel_coll">取消收藏</string>
     <string name="song_collect_error">暂未选择歌曲，请选择</string>
     <string name="song_download">下载</string>
     <string name="song_downloads">下载管理</string>

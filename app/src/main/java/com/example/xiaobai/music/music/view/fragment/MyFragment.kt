@@ -60,9 +60,7 @@ class MyFragment : BaseMvpFragment<MyContract.IPresenter>(), MyContract.IView {
         city.text = sp.getString("countries", "")
         attention_num.text = sp.getString("follow", "")
         collect_num.text = sp.getString("collect", "")
-         nums = mDownDao.queryt(1).count()
-        println(nums)
-        like_num.text = nums.toString()
+
     }
 
     @SuppressLint("CheckResult")
@@ -125,6 +123,10 @@ class MyFragment : BaseMvpFragment<MyContract.IPresenter>(), MyContract.IView {
     override fun onResume() {
         super.onResume()
 
+        nums = mDownDao.queryt(1).count()
+        println(nums)
+        like_num.text = nums.toString()
+
         if(sp.getBoolean("login",false)){
             include.visibility = View.GONE
             Glide.with(requireContext()).load(sp.getString("url", "")).placeholder(R.color.main_black_grey).into(iv_cover)
@@ -132,7 +134,7 @@ class MyFragment : BaseMvpFragment<MyContract.IPresenter>(), MyContract.IView {
             city.text = sp.getString("countries", "")
             attention_num.text = sp.getString("follow", "")
             collect_num.text = sp.getString("collect", "")
-            like_num.text = sp.getString("like", "")
+
         }else{
             include.visibility = View.VISIBLE
         }
@@ -149,7 +151,6 @@ class MyFragment : BaseMvpFragment<MyContract.IPresenter>(), MyContract.IView {
                     city.text = sp.getString("city", "")
                     attention_num.text = sp.getString("follow", "")
                     collect_num.text = sp.getString("collect", "")
-                    like_num.text = sp.getString("like", "")
                 }
 
             }

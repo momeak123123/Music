@@ -110,6 +110,7 @@
                 android:layout_height="wrap_content"
                 android:checked="false"
                 android:text="@string/protocol"
+                android:shadowColor="@color/app_blue"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_18" />
         </RadioGroup>

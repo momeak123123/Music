@@ -5,36 +5,39 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.ImageView
+import android.widget.RadioButton
+import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.bean.Music
 import com.example.xiaobai.music.bean.SongDet
-import com.example.xiaobai.music.config.CornerTransform
+import com.example.xiaobai.music.music.view.act.DownloadActivity
 import com.example.xiaobai.music.music.view.act.MusicPlayActivity
-import com.example.xiaobai.music.music.view.act.SongDetActivity
 import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.Observable
 import java.util.concurrent.TimeUnit
 
-class SongDetAdapter(
-    val datas: MutableList<Music>, val context: Context,
-    val covers: String,
+class DownloadAdapter(
+    val datas: MutableList<Music>,
+    val context: Context,
     val id: Long,
-    val names: String, var num: String
+    val txts: String,
+    val covers: String,
+    val names: String
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
-
 
     companion object {
         const val TYPE_TITLE = 0
         const val TYPE_SELLER = 1
     }
 
-    var type = 0
     private var mItemClickListener: ItemClickListener? = null
+
+    var type = 0
+
     var listdet = mutableListOf<SongDet>()
 
     override fun getItemViewType(position: Int): Int {
@@ -52,15 +55,16 @@ class SongDetAdapter(
         for (it in datas) {
             listdet.add(SongDet(it, 0))
         }
+        //加载View
         return when (position) {
             TYPE_TITLE -> TitleHolder(
-                LayoutInflater.from(context).inflate(R.layout.song_index_header, holder, false)
+                LayoutInflater.from(context).inflate(R.layout.album_index_header, holder, false)
             )
             TYPE_SELLER -> SellerHolder(
-                LayoutInflater.from(context).inflate(R.layout.song_index_item, holder, false)
+                LayoutInflater.from(context).inflate(R.layout.album_index_item, holder, false)
             )
             else -> TitleHolder(
-                LayoutInflater.from(context).inflate(R.layout.song_index_header, holder, false)
+                LayoutInflater.from(context).inflate(R.layout.album_index_header, holder, false)
             )
         }
 
@@ -88,14 +92,17 @@ class SongDetAdapter(
             }
 
         }
+
+
     }
+
 
     inner class TitleHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         var iv_cover: ImageView
         var txt: TextView
         var top_flot: ImageView
-        var title: TextView
+        var top_title: TextView
         var top_set: ImageView
         var pre: ImageView
         var play: ImageView
@@ -105,33 +112,25 @@ class SongDetAdapter(
             iv_cover = itemView.findViewById(R.id.iv_cover)
             txt = itemView.findViewById(R.id.txt)
             top_flot = itemView.findViewById(R.id.top_flot)
-            title = itemView.findViewById(R.id.title)
+            top_title = itemView.findViewById(R.id.top_title)
             top_set = itemView.findViewById(R.id.top_set)
             pre = itemView.findViewById(R.id.pre)
             play = itemView.findViewById(R.id.play)
             next = itemView.findViewById(R.id.next)
         }
 
-        fun dip2px(context: Context, dpValue: Int): Float {
-            val scale = context.resources.displayMetrics.density
-            return (dpValue * scale + 0.5f)
-        }
-
         @SuppressLint("CheckResult")
         fun bindData() {
-            val transformation = CornerTransform(context, dip2px(context, 40))
-            transformation.setExceptCorner(true, true, false, false)
-            Glide.with(context).load(covers).skipMemoryCache(true)
-                .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .transform(transformation).into(iv_cover)
-
-            // Glide.with(context).load(covers).placeholder(R.color.main_black_grey).into(iv_cover)
-            title.text = names
-            txt.text = num + "首"
+            txt.text = txts
+            Glide.with(context).load(covers).placeholder(R.color.main_black_grey).into(iv_cover)
+            top_title.text = names
             Glide.with(context).load(R.drawable.mores).into(top_set)
             Glide.with(context).load(R.drawable.shang).into(pre)
+
             if (MusicApp.getAblumid() == id) {
+
                 if (MusicApp.getPlay()) {
+
                     Glide.with(context).load(R.drawable.plays).into(play)
                 } else {
                     Glide.with(context).load(R.drawable.play).into(play)
@@ -141,12 +140,13 @@ class SongDetAdapter(
                 Glide.with(context).load(R.drawable.play).into(play)
             }
 
-
             Glide.with(context).load(R.drawable.xia).into(next)
+
+
             RxView.clicks(top_flot)
                 .throttleFirst(1, TimeUnit.SECONDS)
                 .subscribe {
-                    Observable.just(true).subscribe(SongDetActivity.observers)
+                    Observable.just(true).subscribe(DownloadActivity.observers)
                 }
 
             RxView.clicks(top_set)
@@ -155,11 +155,11 @@ class SongDetAdapter(
                     if (type == 0) {
                         type = 1
                         notifyItemRangeChanged(1, datas.size)
-                        Observable.just(1).subscribe(SongDetActivity.observerd)
+                        Observable.just(1).subscribe(DownloadActivity.observerd)
                     } else {
                         type = 0
                         notifyItemRangeChanged(1, datas.size)
-                        Observable.just(0).subscribe(SongDetActivity.observerd)
+                        Observable.just(0).subscribe(DownloadActivity.observerd)
                     }
 
                 }
@@ -172,7 +172,7 @@ class SongDetAdapter(
                             Observable.just(1).subscribe(MusicPlayActivity.observerset)
                         }
                     } else {
-                        Observable.just(false).subscribe(SongDetActivity.observers)
+                        Observable.just(false).subscribe(DownloadActivity.observers)
                     }
 
                 }
@@ -181,28 +181,21 @@ class SongDetAdapter(
                 .subscribe {
                     if (MusicPlayActivity.bool) {
                         if (MusicApp.getAblumid() == id) {
-                            try {
-                                if (MusicApp.getPlay()) {
-                                    Observable.just(0).subscribe(MusicPlayActivity.observerset)
-                                    Glide.with(context).load(R.drawable.play).into(play)
-                                } else {
-                                    Observable.just(3).subscribe(MusicPlayActivity.observerset)
-                                    Glide.with(context).load(R.drawable.plays).into(play)
-                                }
-
-                            } catch (e: Exception) {
-                                Observable.just(false).subscribe(SongDetActivity.observers)
+                            if (MusicApp.getPlay()) {
+                                Observable.just(0).subscribe(MusicPlayActivity.observerset)
+                                Glide.with(context).load(R.drawable.play).into(play)
+                            } else {
+                                Observable.just(3).subscribe(MusicPlayActivity.observerset)
+                                Glide.with(context).load(R.drawable.plays).into(play)
                             }
-
 
                         } else {
                             Observable.just(datas).subscribe(MusicPlayActivity.observerplay)
                             Glide.with(context).load(R.drawable.plays).into(play)
                         }
                     } else {
-                        Observable.just(false).subscribe(SongDetActivity.observers)
+                        Observable.just(false).subscribe(DownloadActivity.observers)
                         Glide.with(context).load(R.drawable.plays).into(play)
-
                     }
 
                 }
@@ -214,12 +207,11 @@ class SongDetAdapter(
                             Observable.just(2).subscribe(MusicPlayActivity.observerset)
                         }
                     } else {
-                        Observable.just(false).subscribe(SongDetActivity.observers)
+                        Observable.just(false).subscribe(DownloadActivity.observers)
                     }
 
 
                 }
-
         }
 
     }
@@ -231,8 +223,6 @@ class SongDetAdapter(
         var more: ImageView
         var radio: RadioButton
         var num: TextView
-        var main: RelativeLayout
-        var delete: Button
 
         init {
             iv_cover = itemView.findViewById(R.id.iv_cover)
@@ -241,15 +231,18 @@ class SongDetAdapter(
             more = itemView.findViewById(R.id.more)
             radio = itemView.findViewById(R.id.radio)
             num = itemView.findViewById(R.id.num)
-            main = itemView.findViewById(R.id.main)
-            delete = itemView.findViewById(R.id.delete)
         }
 
+        @SuppressLint("ResourceAsColor")
         fun bindData(position: Int) {
+
+            itemView.setOnClickListener { v ->
+                mItemClickListener?.onItemClick(v, position)
+            }
+
 
             Glide.with(context).load(datas[position].pic_url).placeholder(R.color.main_black_grey)
                 .into(iv_cover)
-
             title.text = datas[position].name
             val artist = datas[position].all_artist
             var srtist_name = ""
@@ -263,8 +256,6 @@ class SongDetAdapter(
             }
             txt.text = srtist_name
 
-
-
             if (type == 0) {
                 num.visibility = View.VISIBLE
                 radio.visibility = View.GONE
@@ -275,17 +266,11 @@ class SongDetAdapter(
                 radio.isChecked = listdet[position].type == 1
             }
 
-            main.setOnClickListener {
-                mItemClickListener?.onItemClick(position)
-            }
 
             more.setOnClickListener {
-                Observable.just(position).subscribe(SongDetActivity.observert)
+                Observable.just(position).subscribe(DownloadActivity.observert)
             }
 
-            delete.setOnClickListener {
-                Observable.just(position).subscribe(SongDetActivity.observerdel)
-            }
         }
     }
 
@@ -301,30 +286,15 @@ class SongDetAdapter(
                 listdet.add(SongDet(it, 0))
             }
         }
-        notifyItemRangeChanged(1, datas.size)
+        notifyDataSetChanged()
     }
 
     interface ItemClickListener {
-        fun onItemClick(position: Int)
+        fun onItemClick(view: View, position: Int)
     }
 
     fun setOnItemClickListener(itemClickListener: ItemClickListener) {
         this.mItemClickListener = itemClickListener
     }
-
-
-    fun add(item: Music) {
-        datas.add(item)
-        notifyItemInserted(datas.size)
-    }
-
-    fun remove(position: Int) {
-        datas.removeAt(position)
-        notifyItemRemoved(position)
-
-    }
-
-    fun removedata(item: Music) {
-        datas.remove(item)
-    }
 }
+

@@ -91,7 +91,7 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         window.statusBarColor = Color.TRANSPARENT
         context = this
-        cencel.text = getText(R.string.delete)
+        cencel.text = getText(R.string.song_cancel_coll)
         relat3.visibility = View.GONE
     }
 
@@ -334,6 +334,8 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
                 view.visibility = View.GONE
                 adapter.type = 0
                 adapter.notifyItemRangeChanged(1, songlist.size)
+                adapter.update(false)
+                bools = true
 
             }
 
@@ -343,10 +345,7 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
 
     override fun onResume() {
         super.onResume()
-        try {
-            adapter.notifyItemChanged(0)
-        } catch (e: Exception) {
-        }
+
 
         observer = object : Observer<JsonArray> {
             override fun onSubscribe(d: Disposable) {}
@@ -555,7 +554,12 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
         }
     }
 
-
+    override fun onStop() {
+        super.onStop()
+        try {
+            adapter.notifyItemChanged(0)
+        }catch (e:Exception){}
+    }
     /**
      * 初始化歌曲
      */
@@ -568,6 +572,7 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
             override fun onItemClick(position: Int) {
                 if (position > 0) {
                     if (adapter.type == 0) {
+
                         val json: String = Gson().toJson(song)
                         val intent = Intent()
                         intent.setClass(context, MusicPlayActivity().javaClass)
@@ -576,6 +581,7 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
                         intent.putExtra("list", json)
                         intent.putExtra("type", 1)
                         startActivity(intent)
+
                     }else{
                         if (adapter.listdet[position].type == 0) {
                             adapter.listdet[position].type = 1

@@ -58,7 +58,7 @@ public class HintTextView extends AppCompatTextView {
         super.onDraw(canvas);
 
         if(matrix !=null){
-            deltaX += mWidth / 8;
+            deltaX += mWidth / 20;
             if(deltaX > 2 * mWidth){
                 deltaX = -mWidth;
             }

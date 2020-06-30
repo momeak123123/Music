@@ -3,10 +3,13 @@ package com.example.xiaobai.music.utils;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.util.Base64;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 public class BitmapUtils {
@@ -21,7 +24,7 @@ public class BitmapUtils {
             InputStream input = connection.getInputStream();
             Bitmap myBitmap = BitmapFactory.decodeStream(input);
 
-            //设置固定大小
+           /* //设置固定大小
             //需要的大小
             float newWidth = 200f;
             float newHeigth = 200f;
@@ -36,8 +39,8 @@ public class BitmapUtils {
             Matrix matrix = new Matrix();
             matrix.postScale(scaleWidth, scaleHeigth);
 
-            Bitmap bitmap = Bitmap.createBitmap(myBitmap, 0, 0, width, height, matrix, true);
-            return bitmap;
+            Bitmap bitmap = Bitmap.createBitmap(myBitmap, 0, 0, width, height, matrix, true);*/
+            return myBitmap;
         } catch (IOException e) {
             // Log exception
             return null;

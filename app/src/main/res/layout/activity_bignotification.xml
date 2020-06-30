@@ -4,7 +4,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/colorPrimaryDark"
     android:layout_height="wrap_content">
 
     <ImageView
@@ -27,7 +26,7 @@
         android:layout_marginTop="@dimen/dp_10"
         android:layout_toEndOf="@+id/ima"
         android:text=""
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         android:textSize="@dimen/sp_16"
         app:layout_constraintStart_toEndOf="@+id/ima"
         app:layout_constraintTop_toTopOf="@+id/ima" />
@@ -41,14 +40,14 @@
         android:layout_marginTop="@dimen/dp_5"
         android:text=""
         android:textSize="@dimen/sp_14"
-        android:textColor="@color/white_50p"
+        android:textColor="@color/black_50p"
         app:layout_constraintStart_toStartOf="@+id/title"
         app:layout_constraintTop_toBottomOf="@+id/title" />
 
     <ImageView
         android:id="@+id/del"
-        android:layout_width="@dimen/dp_25"
-        android:layout_height="@dimen/dp_25"
+        android:layout_width="@dimen/dp_20"
+        android:layout_height="@dimen/dp_20"
         android:layout_alignTop="@+id/title"
         android:layout_alignBottom="@+id/title"
         android:layout_alignParentEnd="true"
@@ -57,7 +56,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/title"
-        android:src="@drawable/del" />
+        android:src="@drawable/del_black" />
 
     <LinearLayout
         android:id="@+id/linearLayout"

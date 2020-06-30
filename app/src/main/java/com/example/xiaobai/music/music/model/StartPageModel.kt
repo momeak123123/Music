@@ -88,25 +88,7 @@ class StartPageModel : BaseModel(), StartPageContract.IModel {
     }
 
     override fun ads() {
-        OkGo.get<String>(Constants.URL + "api/ads/get_ads")
-            .params("type", 1)
-            .execute(object : StringCallback() {
-                override fun onSuccess(response: Response<String>) {
-                    /**
-                     * 成功回调
-                     */
-                    try {
-                        val bean =
-                            Gson().fromJson(response.body(), ResultBeans::class.javaObjectType)
-                        if (bean.code == 200) {
-                            Observable.just(bean.data).subscribe(StartPageActivity.observer)
 
-                        }
-                    } catch (e: Exception) {
-
-                    }
-                }
-            })
     }
 
 }

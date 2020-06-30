@@ -28,6 +28,13 @@
         android:theme="@style/AppTheme"
         tools:replace="android:allowBackup"
         tools:targetApi="n">
+        <activity android:name=".StartActivity"
+            android:theme="@style/AppTheme.Full">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".LockActivity"
             android:excludeFromRecents="true"
@@ -37,24 +44,20 @@
             android:screenOrientation="fullSensor"
             android:taskAffinity="com.example.xiaobai.lock"
             android:theme="@style/LockScreenTheme" />
+
         <service
             android:name=".service.LockService"
             android:process=":main" />
+
         <activity
             android:name=".music.view.act.MusicPlayActivity"
             android:configChanges="orientation|keyboardHidden|keyboard"
             android:launchMode="singleInstance"
             android:windowSoftInputMode="adjustResize" />
         <activity android:name=".MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
-        <activity
-            android:name=".music.view.act.StartPageActivity"
-            android:theme="@style/AppTheme.Full" />
+        <activity android:name=".music.view.act.StartPageActivity" />
         <activity android:name=".music.view.act.SearchActivity" />
         <activity android:name=".music.view.act.LoginActivity" />
         <activity android:name=".music.view.act.RegisteredActivity" />

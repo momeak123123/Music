@@ -45,16 +45,15 @@ class CoverFragment : BaseMvpFragment<CoverContract.IPresenter>(), CoverContract
     /**
      * 设置Bitmap
      */
-    fun setImageBitmap(context: Context, bm: String) {
+    fun setImageBitmap(bm: Bitmap?) {
 
-        //iv_cover.setImageURI(Uri.parse(bm))
+
         Observable.just(bm)
             .subscribeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : Observer<String> {
+            .subscribe(object : Observer<Bitmap?> {
                 override fun onSubscribe(d: Disposable) {}
-                override fun onNext(cover: String) {
-                    Glide.with(context).load(cover).placeholder(R.color.white_8p)
-                        .into(iv_cover)
+                override fun onNext(cover: Bitmap) {
+                    iv_cover.setImageBitmap(cover)
                 }
                 override fun onError(e: Throwable) {}
                 override fun onComplete() {}

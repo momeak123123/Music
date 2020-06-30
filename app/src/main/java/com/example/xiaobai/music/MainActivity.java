@@ -22,6 +22,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import com.example.xiaobai.music.adapter.ViewPagerAdapter;
@@ -84,13 +85,14 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
     private static TextView in_deter;
     private int indexs = 0;
     private SharedPreferences sp;
+    private static MainActivity context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-
+        context = this;
         viewPager = findViewById(R.id.viewPager);
         mTabbar = findViewById(R.id.tabbar);
         et_name = findViewById(R.id.et_name);
@@ -102,7 +104,6 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
         initData();
 
     }
-
 
 
     private String getVersionName() {
@@ -121,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
     }
 
     private void initData() {
-       // MainModel.Companion.homedata(MainActivity.this);
+        // MainModel.Companion.homedata(MainActivity.this);
 
         List<Fragment> list = new ArrayList<>();
         mTabbar.setTitles(R.string.tab1, R.string.tab2, R.string.tab3)
@@ -178,7 +179,7 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
         super.onResume();
         viewPager.setCurrentItem(indexs);
 
-        if(bool){
+        if (bool) {
             Intent intent = new Intent(MainActivity.this, StartPageActivity.class);
             startActivity(intent);
 
@@ -212,24 +213,29 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
         }
 
 
-
     }
 
-    
-    public static void craet(Boolean bool){
-        if(bool){
-            mTabbar.setVisibility(View.VISIBLE);
 
-        }else{
+    public static void craet(Boolean bool) {
+        if (bool) {
+            mTabbar.setVisibility(View.VISIBLE);
+            View view = context.getCurrentFocus();
+            if (view != null) {
+                InputMethodManager inputMethodManager = (InputMethodManager) context.getSystemService(Activity.INPUT_METHOD_SERVICE);
+                assert inputMethodManager != null;
+                inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+            }
+        } else {
             mTabbar.setVisibility(View.GONE);
         }
     }
 
 
-
-    public static String add(){
+    public static String add() {
         return Objects.requireNonNull(et_name.getText()).toString();
     }
+
+
 
     /**
      * 检查权限
@@ -350,7 +356,7 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
 
     @Override
     public void onBackPressed() {
-       System.exit(0);
+        System.exit(0);
     }
 
 

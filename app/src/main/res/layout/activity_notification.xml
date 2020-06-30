@@ -4,7 +4,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:background="@color/colorPrimaryDark"
     android:layout_height="wrap_content">
 
     <ImageView
@@ -33,7 +32,7 @@
         android:maxLines="1"
         android:singleLine="true"
         android:text=""
-        android:textColor="@color/white"
+        android:textColor="@color/black"
         app:layout_constraintStart_toEndOf="@+id/ima"
         app:layout_constraintTop_toTopOf="@+id/ima"
         tools:ignore="RtlHardcoded" />
@@ -52,7 +51,7 @@
         android:maxLines="1"
         android:singleLine="true"
         android:text=""
-        android:textColor="@color/white_50p"
+        android:textColor="@color/black_50p"
         app:layout_constraintStart_toStartOf="@+id/title"
         app:layout_constraintTop_toBottomOf="@+id/title"
         tools:ignore="RtlHardcoded" />
@@ -66,7 +65,7 @@
         android:layout_marginTop="@dimen/dp_20"
         android:layout_marginEnd="@dimen/dp_10"
         android:scaleType="centerCrop"
-        android:src="@drawable/del"
+        android:src="@drawable/del_black"
         app:layout_constraintBottom_toBottomOf="@+id/title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/title" />

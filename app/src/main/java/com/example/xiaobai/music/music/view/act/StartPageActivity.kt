@@ -5,17 +5,15 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.view.View
 import android.view.WindowManager
 import com.bumptech.glide.Glide
 import com.example.xiaobai.music.MainActivity
+import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
-import com.example.xiaobai.music.adapter.SongDetAdapter
-import com.example.xiaobai.music.bean.Banner
 import com.example.xiaobai.music.music.contract.StartPageContract
 import com.example.xiaobai.music.music.presenter.StartPagePresenter
-import com.google.gson.Gson
+import com.example.xiaobai.music.utils.BitmapUtils
 import com.google.gson.JsonArray
 import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.Flowable
@@ -35,6 +33,8 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>(), Start
     companion object {
         lateinit var observer: Observer<JsonArray>
     }
+
+    private lateinit var sp: SharedPreferences
     private lateinit var mDisposable: Disposable
     private lateinit var context: Context
 
@@ -58,6 +58,7 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>(), Start
         window.statusBarColor = Color.TRANSPARENT
         context = this
         MainActivity.bool = false
+        adss.setImageBitmap(MusicApp.getStartback())
     }
 
     @SuppressLint("CheckResult")
@@ -90,26 +91,7 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>(), Start
 
     override fun onResume() {
         super.onResume()
-        observer = object : Observer<JsonArray> {
-            override fun onSubscribe(d: Disposable) {}
-            override fun onNext(data: JsonArray) {
-                val ads: List<Banner> = Gson().fromJson<Array<Banner>>(
-                    data,
-                    Array<Banner>::class.java
-                ).toList()
 
-               if(ads.isNotEmpty()){
-                   //Glide.with(context).load(ads[0].url).placeholder(R.color.colorPrimaryDark).into(adss)
-               }
-
-
-            }
-
-            override fun onError(e: Throwable) {}
-            override fun onComplete() {
-            }
-
-        }
     }
 
     override fun onDestroy() {

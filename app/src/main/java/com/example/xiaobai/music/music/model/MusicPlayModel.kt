@@ -3,10 +3,14 @@ package com.example.xiaobai.music.music.model
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
+import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
+import com.example.xiaobai.music.StartActivity
 import com.example.xiaobai.music.bean.*
 import com.example.xiaobai.music.common.Constants
 import com.example.xiaobai.music.music.view.act.AlbumDetActivity
@@ -16,12 +20,15 @@ import com.example.xiaobai.music.sql.bean.Down
 import com.example.xiaobai.music.sql.bean.Playlist
 import com.example.xiaobai.music.sql.dao.mDownDao
 import com.example.xiaobai.music.sql.dao.mPlaylistDao
+import com.example.xiaobai.music.utils.BitmapUtils
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.lzy.okgo.OkGo
 import com.lzy.okgo.callback.StringCallback
 import com.lzy.okgo.model.Response
+import com.xuexiang.xui.utils.ResUtils.getResources
 import constant.UiType
+import io.reactivex.Observable
 import listener.OnInitUiListener
 import model.UiConfig
 import model.UpdateConfig
@@ -198,7 +205,48 @@ class MusicPlayModel {
                 })
         }
 
+        fun asd(context: Context){
+            OkGo.get<String>(Constants.URL + "api/ads/get_ads")
+                .params("type", 1)
+                .execute(object : StringCallback() {
+                    override fun onSuccess(response: Response<String>) {
+                        /**
+                         * 成功回调
+                         */
+                        try {
+                            val bean =
+                                Gson().fromJson(response.body(), ResultBeans::class.javaObjectType)
+                            if (bean.code == 200) {
+
+                                val ads: List<Banner> = Gson().fromJson<Array<Banner>>(
+                                    bean.data,
+                                    Array<Banner>::class.java
+                                ).toList()
+                                object : Thread() {
+                                    override fun run() {
+                                        val bitmap = BitmapUtils.netUrlPicToBmp(ads[0].url)
+                                        Observable.just(bitmap).subscribe(StartActivity.observer)
+                                    }
+                                }.start()
+
+                            }
+                        } catch (e: Exception) {
+
+                        }
+                    }
+
+                    override fun onFinish() {
+                        super.onFinish()
+                        val bitmap: Bitmap =
+                            BitmapFactory.decodeResource(getResources(), R.drawable.play_page_default_bgs)
+                        Observable.just(bitmap).subscribe(StartActivity.observer)
+                    }
+                })
+
+        }
     }
+
+
 
 
 }

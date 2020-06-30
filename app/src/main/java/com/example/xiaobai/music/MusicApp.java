@@ -3,6 +3,7 @@ package com.example.xiaobai.music;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
+import android.graphics.Bitmap;
 
 import com.example.xiaobai.music.bean.ApkModel;
 import com.example.xiaobai.music.bean.Music;
@@ -20,6 +21,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
+import io.alterac.blurkit.BlurKit;
 import io.reactivex.functions.Consumer;
 import io.reactivex.plugins.RxJavaPlugins;
 import okhttp3.OkHttpClient;
@@ -35,20 +37,22 @@ public class MusicApp extends Application {
 
     public static Long ablumid = 0L;
 
+    public static Bitmap startback;
+
     public static int position = 0;
 
     public static Boolean network = false;
 
     public static List<Music> music;
 
-    public static List<ApkModel> downmusic;
+    public static Boolean play = false;
 
-    public static List<ApkModel> getDownmusic() {
-        return downmusic;
+    public static Boolean getPlay() {
+        return play;
     }
 
-    public static void setDownmusic(List<ApkModel> downmusic) {
-        MusicApp.downmusic = downmusic;
+    public static void setPlay(Boolean play) {
+        MusicApp.play = play;
     }
 
     public static int getPosition() {
@@ -83,6 +87,14 @@ public class MusicApp extends Application {
         MusicApp.network = network;
     }
 
+    public static Bitmap getStartback() {
+        return startback;
+    }
+
+    public static void setStartback(Bitmap startback) {
+        MusicApp.startback = startback;
+    }
+
     @Override
     public void onCreate() {
         // TODO Auto-generated method stub
@@ -94,6 +106,7 @@ public class MusicApp extends Application {
             @Override
             public void run() {
                 UpdateAppUtils.init(mContext);
+                BlurKit.init(MusicApp.this);
                 XUI.init(MusicApp.this); //初始化UI框架
                 XUI.debug(false);  //开启UI框架调试日志
                 OkGo.getInstance().init(MusicApp.this);//网络请求

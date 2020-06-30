@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
 import com.example.xiaobai.music.R
-import com.example.xiaobai.music.adapter.AlbumDetAdapter
+import com.example.xiaobai.music.adapter.DownloadAdapter
 import com.example.xiaobai.music.adapter.PlaySongAdapter
 import com.example.xiaobai.music.bean.Music
 import com.example.xiaobai.music.bean.artistlist
@@ -50,22 +50,18 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
         lateinit var observers: Observer<Boolean>
         lateinit var observerd: Observer<Int>
         lateinit var observert: Observer<Int>
-        lateinit var adapters: PlaySongAdapter
+        lateinit var adapter: DownloadAdapter
     }
 
 
     private lateinit var sp: SharedPreferences
     private var bools: Boolean = true
-    private var album_time: Long = 0
     private lateinit var names: String
-    private var album_type: Int = 0
     private var album_id: Long = 0
     private lateinit var covers: String
-    private lateinit var songdata: String
     private lateinit var txts: String
     var songlist = mutableListOf<Music>()
-    private var activity_type: Int = 0
-    private lateinit var adapter: AlbumDetAdapter
+
     private lateinit var context: Context
     override fun registerPresenter() = DownloadPresenter::class.java
 
@@ -76,7 +72,8 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
     override fun init(savedInstanceState: Bundle?) {
         super.init(savedInstanceState)
         context = this
-        down.visibility = View.GONE
+        cencel.visibility = View.GONE
+        down.text = getText(R.string.collect)
         relat4.visibility = View.GONE
     }
 
@@ -150,7 +147,7 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
                 }
 
             }
-        RxView.clicks(cencel)
+        RxView.clicks(down)
             .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
                 if (sp.getBoolean("login", false)) {
@@ -199,6 +196,8 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
                 view.visibility = View.GONE
                 adapter.type = 0
                 adapter.notifyItemRangeChanged(1, songlist.size)
+                adapter.update(false)
+                bools = true
 
             }
 
@@ -294,22 +293,33 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
         })
     }
 
+    override fun onStop() {
+        super.onStop()
+        try {
+            adapter.notifyItemChanged(0)
+        }catch (e:Exception){}
+    }
     /**
      * 初始化歌曲
      */
     private fun initSongList(song: MutableList<Music>) {
+        album_id = 2
+        names = "下载列表"
+        covers = song[1].pic_url
+        txts = ""
         val layoutManager = LinearLayoutManager(this)
         layoutManager.orientation = LinearLayoutManager.VERTICAL
         recyc_item.isNestedScrollingEnabled = false
         recyc_item.layoutManager = layoutManager
         recyc_item.itemAnimator = DefaultItemAnimator()
         recyc_item.setHasFixedSize(true)
-        adapter = AlbumDetAdapter(song, context, album_id, txts, covers, names)
+        adapter = DownloadAdapter(song, context, album_id, txts, covers, names)
         recyc_item.adapter = adapter
-        adapter.setOnItemClickListener(object : AlbumDetAdapter.ItemClickListener {
+        adapter.setOnItemClickListener(object : DownloadAdapter.ItemClickListener {
             override fun onItemClick(view: View, position: Int) {
                 if (position > 0) {
                     if (adapter.type == 0) {
+
                         val json: String = Gson().toJson(song)
                         val intent = Intent()
                         intent.setClass(context, MusicPlayActivity().javaClass)
@@ -318,6 +328,7 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
                         intent.putExtra("list", json)
                         intent.putExtra("type", 1)
                         startActivity(intent)
+
                     } else {
                         if (adapter.listdet[position].type == 0) {
                             adapter.listdet[position].type = 1
@@ -340,11 +351,6 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
 
     override fun onResume() {
         super.onResume()
-        try {
-            adapter.notifyItemChanged(0)
-        } catch (e: Exception) {
-        }
-
         observers = object : Observer<Boolean> {
             override fun onSubscribe(d: Disposable) {}
 
