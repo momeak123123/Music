@@ -22,7 +22,7 @@ import mvp.ljb.kt.model.BaseModel
  **/
 class UserEditModel : BaseModel(), UserEditContract.IModel{
 
-    override fun registerdata(context: Context, name: String, gender: Int, city: String, images: String) {
+    override fun registerdata(context: Context, name: String, gender: Int, city: String, images: String,mess:String) {
         val sp: SharedPreferences = context.getSharedPreferences("User", Context.MODE_PRIVATE)
         OkGo.post<String>(Constants.URL + "api/user/up_user_info")
             .params("token",sp.getString("token", ""))
@@ -30,6 +30,7 @@ class UserEditModel : BaseModel(), UserEditContract.IModel{
             .params("sex",gender)
             .params("countries",city)
             .params("images",images)
+            .params("message",mess)
             .execute(object : StringCallback() {
                 override fun onSuccess(response: Response<String>) {
                     /**
@@ -49,6 +50,7 @@ class UserEditModel : BaseModel(), UserEditContract.IModel{
                         sp.edit().putString("url", user["headimgurl"]).apply()
                         sp.edit().putString("countries", user["countries"]).apply()
                         sp.edit().putString("sex", user["sex"]).apply()
+                        sp.edit().putString("message", user["message"]).apply()
                         sp.edit().putString("token", user["token"]).apply()
                         sp.edit().putString("user_id", user["user_id"]).apply()
                         sp.edit().putString("follow", user["follow"]).apply()

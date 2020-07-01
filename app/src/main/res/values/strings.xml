@@ -87,7 +87,7 @@
     <string name="album">专辑</string>
 
     <!--song-->
-    <string name="song">歌单</string>
+    <string name="song">我的歌单</string>
     <string name="song_add">添加</string>
     <string name="song_deter">确定</string>
     <string name="song_cancel">取消</string>
@@ -120,6 +120,7 @@
     <string name="man">男</string>
     <string name="girl">女</string>
     <string name="user_city">国家</string>
+    <string name="user_mess">简介信息</string>
     <string name="attention">关注</string>
     <string name="collect">收藏</string>
     <string name="like">本地</string>
@@ -132,4 +133,9 @@
     <string name="download_carry">歌曲已下载</string>
     <string name="download_">歌曲已下载</string>
 
+
+    <!--set-->
+    <string name="set">设置</string>
+    <string name="set1">修改密码</string>
+    <string name="set2">清理缓存</string>
 </resources>

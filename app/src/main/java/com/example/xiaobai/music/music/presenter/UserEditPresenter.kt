@@ -14,8 +14,8 @@ class UserEditPresenter : BaseMvpPresenter<UserEditContract.IView, UserEditContr
 
     override fun registerModel() = UserEditModel::class.java
 
-    override fun registerdata(context: Context, name: String, gender: Int, city: String, images: String) {
-      getModel().registerdata(context,name,gender,city,images)
+    override fun registerdata(context: Context, name: String, gender: Int, city: String, images: String,mess:String) {
+      getModel().registerdata(context,name,gender,city,images,mess)
     }
 
 

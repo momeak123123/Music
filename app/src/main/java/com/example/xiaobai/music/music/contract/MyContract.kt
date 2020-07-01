@@ -16,9 +16,13 @@ interface MyContract {
 
     interface IPresenter : IPresenterContract {
         fun data(context: Context)
+        fun addSongList(context:Context,et_name: String)
+        fun listdata(context: Context)
     }
 
     interface IModel : IModelContract{
         fun data(context: Context)
+        fun addSongList(context:Context,et_name: String)
+        fun listdata(context: Context)
     }
 }

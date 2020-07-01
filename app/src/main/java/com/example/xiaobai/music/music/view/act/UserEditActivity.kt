@@ -99,16 +99,15 @@ class UserEditActivity : BaseMvpActivity<UserEditContract.IPresenter>(), UserEdi
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
                 if (MusicApp.getNetwork()) {
-                    if (name.text.toString() != "") {
-                        if (gender.text.toString() != "") {
-                            if (city.text.toString() != "") {
+                    if (name.text.toString() != "" && gender.text.toString() != "" && city.text.toString() != "" && message.text.toString() != "") {
                                 if (mSexOption[0] == gender.text.toString()) {
                                     getPresenter().registerdata(
                                         context,
                                         name.text.toString(),
                                         1,
                                         city.text.toString(),
-                                        sp.getString("url", "").toString()
+                                        sp.getString("url", "").toString(),
+                                        message.text.toString()
                                     )
                                 } else {
                                     getPresenter().registerdata(
@@ -116,16 +115,10 @@ class UserEditActivity : BaseMvpActivity<UserEditContract.IPresenter>(), UserEdi
                                         name.text.toString(),
                                         2,
                                         city.text.toString(),
-                                        sp.getString("url", "").toString()
+                                        sp.getString("url", "").toString(),
+                                        message.text.toString()
                                     )
                                 }
-                            } else {
-                                Toast.makeText(context, R.string.error_user, Toast.LENGTH_SHORT).show()
-                            }
-
-                        } else {
-                            Toast.makeText(context, R.string.error_user, Toast.LENGTH_SHORT).show()
-                        }
                     } else {
                         Toast.makeText(context, R.string.error_user, Toast.LENGTH_SHORT).show()
                     }
@@ -185,6 +178,9 @@ class UserEditActivity : BaseMvpActivity<UserEditContract.IPresenter>(), UserEdi
         }
 
         city.text = Editable.Factory.getInstance().newEditable(sp.getString("countries", ""))
+
+        message.text = Editable.Factory.getInstance().newEditable(sp.getString("message", ""))
+
     }
 
     override fun onResume() {

@@ -56,6 +56,7 @@ class RegisteredModel : BaseModel(), RegisteredContract.IModel {
                             sp.edit().putBoolean("login", true).apply()
                             sp.edit().putString("sex", user["sex"]).apply()
                             sp.edit().putString("token", user["token"]).apply()
+                            sp.edit().putString("message", user["message"]).apply()
                             sp.edit().putString("user_id", user["user_id"]).apply()
                             sp.edit().putString("follow", user["follow"]).apply()
                             sp.edit().putString("collect", user["collect"]).apply()

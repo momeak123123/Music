@@ -16,5 +16,12 @@ class MyPresenter : BaseMvpPresenter<MyContract.IView, MyContract.IModel>(), MyC
     override fun data(context: Context) {
         getModel().data(context)
     }
+    override fun addSongList(context: Context, et_name: String) {
+        getModel().addSongList(context,et_name)
+    }
+
+    override fun listdata(context: Context) {
+        getModel().listdata(context)
+    }
 
 }

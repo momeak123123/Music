@@ -13,12 +13,6 @@ import com.example.xiaobai.music.music.model.FindModel
 class FindPresenter : BaseMvpPresenter<FindContract.IView, FindContract.IModel>(), FindContract.IPresenter{
 
     override fun registerModel() = FindModel::class.java
-    override fun addSongList(context: Context, et_name: String) {
-        getModel().addSongList(context,et_name)
-    }
 
-    override fun listdata(context: Context) {
-        getModel().listdata(context)
-    }
 
 }

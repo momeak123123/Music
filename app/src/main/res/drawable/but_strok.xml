@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <!-- 连框颜色值 -->
     <item>
@@ -7,8 +8,7 @@
     </item>
     <!-- 主体背景颜色值 -->
     <item
-        android:left="@dimen/dp_0_5"
-        android:right="@dimen/dp_0_5"><!--设置只有底部和右边有边框-->
+        android:bottom="@dimen/dp_0_5">
         <shape>
             <solid android:color="@color/colorPrimary" />
         </shape>

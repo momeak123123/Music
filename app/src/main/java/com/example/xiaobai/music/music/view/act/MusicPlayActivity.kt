@@ -787,7 +787,7 @@ class MusicPlayActivity : AppCompatActivity() {
             }
             subTitleTv.text = srtist_name
             Ablemname.text = music.album_name
-            play(music.uri)
+
 
             object : Thread() {
                 override fun run() {
@@ -810,7 +810,7 @@ class MusicPlayActivity : AppCompatActivity() {
                 }
             }.start()
 
-
+            play(music.uri)
         } catch (e: Exception) {
         }
 
@@ -846,8 +846,6 @@ class MusicPlayActivity : AppCompatActivity() {
             }
             subTitleTv.text = srtist_name
             Ablemname.text = music.album_name
-            wlMedia.source = music.uri
-            wlMedia.next()
 
             object : Thread() {
                 override fun run() {
@@ -869,6 +867,9 @@ class MusicPlayActivity : AppCompatActivity() {
 
                 }
             }.start()
+
+            wlMedia.source = music.uri
+            wlMedia.next()
         } catch (e: Exception) {
         }
 

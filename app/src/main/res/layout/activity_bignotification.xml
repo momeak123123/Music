@@ -24,12 +24,19 @@
         android:layout_alignParentTop="true"
         android:layout_marginStart="@dimen/dp_10"
         android:layout_marginTop="@dimen/dp_10"
+        android:layout_marginEnd="@dimen/dp_10"
+        android:layout_toStartOf="@+id/del"
         android:layout_toEndOf="@+id/ima"
+        android:ellipsize="end"
+        android:gravity="center_vertical|left"
+        android:maxLines="1"
+        android:singleLine="true"
         android:text=""
         android:textColor="@color/black"
         android:textSize="@dimen/sp_16"
         app:layout_constraintStart_toEndOf="@+id/ima"
-        app:layout_constraintTop_toTopOf="@+id/ima" />
+        app:layout_constraintTop_toTopOf="@+id/ima"
+        tools:ignore="RtlHardcoded" />
 
     <TextView
         android:id="@+id/txt"
@@ -37,26 +44,32 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/title"
         android:layout_alignStart="@+id/title"
+        android:layout_alignEnd="@+id/title"
         android:layout_marginTop="@dimen/dp_5"
+        android:ellipsize="end"
+        android:gravity="center_vertical|left"
+        android:maxLines="1"
+        android:singleLine="true"
         android:text=""
-        android:textSize="@dimen/sp_14"
         android:textColor="@color/black_50p"
+        android:textSize="@dimen/sp_14"
         app:layout_constraintStart_toStartOf="@+id/title"
-        app:layout_constraintTop_toBottomOf="@+id/title" />
+        app:layout_constraintTop_toBottomOf="@+id/title"
+        tools:ignore="RtlHardcoded" />
 
     <ImageView
         android:id="@+id/del"
         android:layout_width="@dimen/dp_20"
         android:layout_height="@dimen/dp_20"
-        android:layout_alignTop="@+id/title"
-        android:layout_alignBottom="@+id/title"
+        android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/dp_10"
         android:layout_marginEnd="@dimen/dp_10"
         android:scaleType="centerCrop"
+        android:src="@drawable/del_black"
         app:layout_constraintBottom_toBottomOf="@+id/title"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/title"
-        android:src="@drawable/del_black" />
+        app:layout_constraintTop_toTopOf="@+id/title" />
 
     <LinearLayout
         android:id="@+id/linearLayout"

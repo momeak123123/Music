@@ -6,6 +6,7 @@ import android.widget.Toast
 import com.example.xiaobai.music.bean.*
 import com.example.xiaobai.music.common.Constants
 import com.example.xiaobai.music.music.view.fragment.FindFragment
+import com.example.xiaobai.music.music.view.fragment.MyFragment
 import com.google.gson.Gson
 import com.lzy.okgo.OkGo
 import com.lzy.okgo.callback.StringCallback
@@ -31,7 +32,7 @@ class MainModel {
                                 Gson().fromJson(response.body(), ResultBean::class.javaObjectType)
                             if (bean.code == 200) {
 
-                                Observable.just(bean.data).subscribe(FindFragment.observer)
+                                Observable.just(bean.data).subscribe(MyFragment.observert)
                             } else {
                                 Toast.makeText(
                                     context,

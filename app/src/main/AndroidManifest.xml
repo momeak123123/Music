@@ -29,11 +29,6 @@
         tools:replace="android:allowBackup"
         tools:targetApi="n">
 
-        <service
-            android:name=".service.MusicService"
-            android:enabled="true"
-            />
-
         <activity
             android:name=".StartsActivity"
             android:theme="@style/AppTheme.Full">
@@ -66,7 +61,8 @@
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTask" />
-        <activity android:name=".music.view.act.StartPageActivity" />
+        <activity android:name=".music.view.act.StartPageActivity"
+            android:launchMode="singleTop"/>
         <activity android:name=".music.view.act.SearchActivity" />
         <activity android:name=".music.view.act.LoginActivity" />
         <activity android:name=".music.view.act.RegisteredActivity" />
@@ -78,6 +74,7 @@
         <activity android:name=".music.view.act.SongDetActivity" />
         <activity android:name=".music.view.act.SongEditActivity" />
         <activity android:name=".music.view.act.DownloadActivity" />
+        <activity android:name=".music.view.act.SetActivity" />
     </application>
 
 </manifest>
