@@ -787,11 +787,8 @@ class MusicPlayActivity : AppCompatActivity() {
             }
             subTitleTv.text = srtist_name
             Ablemname.text = music.album_name
-
-
             object : Thread() {
                 override fun run() {
-                    lyricFragment.lrcView(music.song_id)
                     bitmap = BitmapUtils.netUrlPicToBmp(music.pic_url)
                     coverFragment.setImageBitmap(bitmap)
                     t1 = music.name
@@ -811,6 +808,7 @@ class MusicPlayActivity : AppCompatActivity() {
             }.start()
 
             play(music.uri)
+            lyricFragment.lrcView(music.song_id)
         } catch (e: Exception) {
         }
 
@@ -826,7 +824,6 @@ class MusicPlayActivity : AppCompatActivity() {
             mDisposable.dispose()
             wlMedia.seek(0.00)
             wlMedia.seekTimeCallBack(false)
-            playPauseIv.setLoading(true)
             Observable.just(0L).subscribe(observers)
             MusicApp.setPosition(id)
             MusicApp.setMusic(playingMusicList)
@@ -849,7 +846,7 @@ class MusicPlayActivity : AppCompatActivity() {
 
             object : Thread() {
                 override fun run() {
-                    lyricFragment.lrcView(music.song_id)
+
                     bitmap = BitmapUtils.netUrlPicToBmp(music.pic_url)
                     coverFragment.setImageBitmap(bitmap)
                     t1 = music.name
@@ -867,9 +864,10 @@ class MusicPlayActivity : AppCompatActivity() {
 
                 }
             }.start()
-
+            playPauseIv.setLoading(true)
             wlMedia.source = music.uri
             wlMedia.next()
+            lyricFragment.lrcView(music.song_id)
         } catch (e: Exception) {
         }
 

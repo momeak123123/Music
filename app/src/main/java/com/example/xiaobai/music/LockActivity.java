@@ -6,11 +6,14 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.KeyguardManager;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.PowerManager;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
@@ -71,7 +74,7 @@ public class LockActivity extends AppCompatActivity implements SlidingFinishLayo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
         fullScreen(this);
         setContentView(R.layout.activity_lock);
         initView();
@@ -79,7 +82,7 @@ public class LockActivity extends AppCompatActivity implements SlidingFinishLayo
 
     }
 
-    public static void fullScreen(Activity activity) {
+    public void fullScreen(Activity activity) {
         {
 
             Window window = activity.getWindow();
@@ -90,6 +93,7 @@ public class LockActivity extends AppCompatActivity implements SlidingFinishLayo
             decorView.setSystemUiVisibility(option);
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(Color.TRANSPARENT);
+
         }
     }
 
@@ -188,5 +192,18 @@ public class LockActivity extends AppCompatActivity implements SlidingFinishLayo
 
     @Override
     public void onBackPressed() {
+    }
+
+    //监听系统的物理按键
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+
+        } else if (keyCode == KeyEvent.KEYCODE_HOME) {
+
+        } else if (keyCode == KeyEvent.KEYCODE_MENU) {
+
+        }
+        return true;
     }
 }
