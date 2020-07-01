@@ -121,7 +121,7 @@ class MusicPlayActivity : AppCompatActivity() {
         intentFilter.addAction("play")
         intentFilter.addAction("next")
         registerReceiver(broadcastReceiver, intentFilter)
-
+        MusicApp.setIsapp(true)
         lock = "1"
     }
 
@@ -172,7 +172,7 @@ class MusicPlayActivity : AppCompatActivity() {
     }
 
 
-    @SuppressLint("CheckResult")
+    @SuppressLint("CheckResult", "ResourceAsColor")
     private fun initView() {
         playPauseIv.setOnClickListener {
             if (bool) {
@@ -196,6 +196,7 @@ class MusicPlayActivity : AppCompatActivity() {
             .subscribe {
                 moveTaskToBack(true)
                 in_indel.visibility = View.GONE
+                MusicApp.setIsapp(false)
             }
 
         RxView.clicks(icon1)
@@ -240,6 +241,8 @@ class MusicPlayActivity : AppCompatActivity() {
                         .content("是否下载音乐")
                         .positiveText("确认")
                         .negativeText("取消")
+                        .positiveColorRes(R.color.colorAccentDarkTheme)
+                        .negativeColorRes(R.color.red)
                         .onPositive { _: MaterialDialog?, _: DialogAction? ->
 
                             val downs = mDownDao.querys(playingMusic!!.song_id)
@@ -279,7 +282,7 @@ class MusicPlayActivity : AppCompatActivity() {
                                         LogDownloadListener(
                                             playingMusic,
                                             context,
-                                            1,
+                                            0,
                                             downs,
                                             1
                                         )
@@ -294,6 +297,8 @@ class MusicPlayActivity : AppCompatActivity() {
                         .content("未登陆账号，是否登录")
                         .positiveText("确认")
                         .negativeText("取消")
+                        .positiveColorRes(R.color.colorAccentDarkTheme)
+                        .negativeColorRes(R.color.red)
                         .onPositive { _: MaterialDialog?, _: DialogAction? ->
                             val intent = Intent()
                             context.let { intent.setClass(it, LoginActivity().javaClass) }
@@ -320,6 +325,8 @@ class MusicPlayActivity : AppCompatActivity() {
                         .content("未登陆账号，是否登录")
                         .positiveText("确认")
                         .negativeText("取消")
+                        .positiveColorRes(R.color.colorAccentDarkTheme)
+                        .negativeColorRes(R.color.red)
                         .onPositive { _: MaterialDialog?, _: DialogAction? ->
                             val intent = Intent()
                             context.let { intent.setClass(it, LoginActivity().javaClass) }
@@ -385,6 +392,8 @@ class MusicPlayActivity : AppCompatActivity() {
                     .content("确定要清空播放列表")
                     .positiveText("确认")
                     .negativeText("取消")
+                    .positiveColorRes(R.color.colorAccentDarkTheme)
+                    .negativeColorRes(R.color.red)
                     .onPositive { _: MaterialDialog?, _: DialogAction? ->
                         Observable.just(true).subscribe(observer)
                     }
@@ -530,6 +539,7 @@ class MusicPlayActivity : AppCompatActivity() {
                     bool = false
                     moveTaskToBack(true)
                     in_indel.visibility = View.GONE
+                    MusicApp.setIsapp(false)
                 }
 
             }
@@ -688,6 +698,7 @@ class MusicPlayActivity : AppCompatActivity() {
         adapter = PlaySongAdapter(song, context)
         in_list.adapter = adapter
         adapter.setOnItemClickListener(object : PlaySongAdapter.ItemClickListener {
+            @SuppressLint("ResourceAsColor")
             override fun onItemClick(view: View, position: Int) {
                 pos = position
                 MaterialDialog.Builder(context)
@@ -695,6 +706,8 @@ class MusicPlayActivity : AppCompatActivity() {
                     .content("是否将音乐加入此歌单")
                     .positiveText("确认")
                     .negativeText("取消")
+                    .positiveColorRes(R.color.colorAccentDarkTheme)
+                    .negativeColorRes(R.color.red)
                     .onPositive { _: MaterialDialog?, _: DialogAction? ->
                         val idmap = mutableListOf<Music>()
                         playingMusic?.let { idmap.add(it) }
@@ -785,10 +798,14 @@ class MusicPlayActivity : AppCompatActivity() {
                     t2 = srtist_name
                     m1 = bitmap!!
                     Observable.just(true).subscribe(observerno)
+                }
+            }.start()
+
+            object : Thread() {
+                override fun run() {
                     val bitmaps = BitmapUtils.netUrlPicToBmp(music.pic_url)
                     BlurKit.getInstance().blur(bitmaps, 25)
                     m2 = bitmaps!!
-
 
                 }
             }.start()
@@ -832,7 +849,6 @@ class MusicPlayActivity : AppCompatActivity() {
             wlMedia.source = music.uri
             wlMedia.next()
 
-
             object : Thread() {
                 override fun run() {
                     lyricFragment.lrcView(music.song_id)
@@ -842,6 +858,11 @@ class MusicPlayActivity : AppCompatActivity() {
                     t2 = srtist_name
                     m1 = bitmap!!
                     Observable.just(true).subscribe(observerno)
+                }
+            }.start()
+
+            object : Thread() {
+                override fun run() {
                     val bitmaps = BitmapUtils.netUrlPicToBmp(music.pic_url)
                     BlurKit.getInstance().blur(bitmaps, 25)
                     m2 = bitmaps!!
@@ -1003,6 +1024,7 @@ class MusicPlayActivity : AppCompatActivity() {
     override fun onBackPressed() {
         moveTaskToBack(true)
         in_indel.visibility = View.GONE
+        MusicApp.setIsapp(false)
     }
 
 }

@@ -47,6 +47,15 @@ public class MusicApp extends Application {
 
     public static Boolean play = false;
 
+    public static Boolean isapp = false;
+
+    public static Boolean getIsapp() {
+        return isapp;
+    }
+
+    public static void setIsapp(Boolean isapp) {
+        MusicApp.isapp = isapp;
+    }
 
     public static Boolean getPlay() {
         return play;

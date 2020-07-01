@@ -28,10 +28,18 @@
         android:theme="@style/AppTheme"
         tools:replace="android:allowBackup"
         tools:targetApi="n">
-        <activity android:name=".StartActivity"
+
+        <service
+            android:name=".service.MusicService"
+            android:enabled="true"
+            />
+
+        <activity
+            android:name=".StartsActivity"
             android:theme="@style/AppTheme.Full">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -47,16 +55,17 @@
 
         <service
             android:name=".service.LockService"
-            android:process=":main" />
+            android:process=":main"
+            android:enabled="true"/>
 
         <activity
             android:name=".music.view.act.MusicPlayActivity"
             android:configChanges="orientation|keyboardHidden|keyboard"
             android:launchMode="singleInstance"
             android:windowSoftInputMode="adjustResize" />
-        <activity android:name=".MainActivity">
-
-        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:launchMode="singleTask" />
         <activity android:name=".music.view.act.StartPageActivity" />
         <activity android:name=".music.view.act.SearchActivity" />
         <activity android:name=".music.view.act.LoginActivity" />

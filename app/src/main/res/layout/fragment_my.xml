@@ -219,8 +219,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:rb_backgroundColor="@color/app_red"
-        app:rb_borderColor="@color/app_red"
+        app:rb_backgroundColor="@color/red"
+        app:rb_borderColor="@color/red"
         app:rb_isRadiusAdjustBounds="true" />
 
     <View

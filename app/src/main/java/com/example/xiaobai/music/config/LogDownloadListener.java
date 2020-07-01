@@ -42,12 +42,12 @@ public class LogDownloadListener extends DownloadListener {
 
     @Override
     public void onProgress(Progress progress) {
-        //System.out.println("onProgress: " + progress);
+        System.out.println("onProgress: " + progress);
     }
 
     @Override
     public void onError(Progress progress) {
-        //System.out.println("onError: " + progress);
+        System.out.println("onError: " + progress);
         progress.exception.printStackTrace();
     }
 
@@ -60,6 +60,7 @@ public class LogDownloadListener extends DownloadListener {
                down.get(i).setType(1);
                mDownDao.update(down.get(i));
            }
+           System.out.println(0);
        }else{
            Down down = new Down();
            down.setAlbum_id(music.getAlbum_id());
@@ -75,6 +76,7 @@ public class LogDownloadListener extends DownloadListener {
            down.setType(1);
            down.setUri(file.getPath());
            mDownDao.insert(down);
+           System.out.println(1);
        }
 
         System.out.println("File: " + file.getPath());

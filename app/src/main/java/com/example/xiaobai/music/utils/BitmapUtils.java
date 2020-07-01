@@ -24,7 +24,7 @@ public class BitmapUtils {
             InputStream input = connection.getInputStream();
             Bitmap myBitmap = BitmapFactory.decodeStream(input);
 
-           /* //设置固定大小
+            //设置固定大小
             //需要的大小
             float newWidth = 200f;
             float newHeigth = 200f;
@@ -39,7 +39,23 @@ public class BitmapUtils {
             Matrix matrix = new Matrix();
             matrix.postScale(scaleWidth, scaleHeigth);
 
-            Bitmap bitmap = Bitmap.createBitmap(myBitmap, 0, 0, width, height, matrix, true);*/
+            Bitmap bitmap = Bitmap.createBitmap(myBitmap, 0, 0, width, height, matrix, true);
+            return bitmap;
+        } catch (IOException e) {
+            // Log exception
+            return null;
+        }
+    }
+
+    public static Bitmap netUrlPicToBmps(String src) {
+        try {
+
+            URL url = new URL(src);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setDoInput(true);
+            connection.connect();
+            InputStream input = connection.getInputStream();
+            Bitmap myBitmap = BitmapFactory.decodeStream(input);
             return myBitmap;
         } catch (IOException e) {
             // Log exception

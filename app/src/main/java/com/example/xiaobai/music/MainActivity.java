@@ -106,46 +106,11 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
         Intent intent = new Intent(MainActivity.this, StartPageActivity.class);
         startActivity(intent);
 
-        Observable.timer(8, TimeUnit.SECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<Long>() {
-                    @Override
-                    public void onSubscribe(@NonNull Disposable disposable) {
 
-                    }
-
-                    @Override
-                    public void onNext(@NonNull Long number) {
-                        MusicPlayModel.Companion.updateapp(getVersionName());
-                    }
-
-                    @Override
-                    public void onError(@NonNull Throwable e) {
-
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-                });
     }
 
 
-    private String getVersionName() {
-        // 包管理器 可以获取清单文件信息
-        PackageManager packageManager = getPackageManager();
-        try {
-            // 获取包信息
-            // 参1 包名 参2 获取额外信息的flag 不需要的话 写0
-            PackageInfo packageInfo = packageManager.getPackageInfo(
-                    getPackageName(), 0);
-            return packageInfo.versionName;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
-        return "";
-    }
+
 
     private void initData() {
         // MainModel.Companion.homedata(MainActivity.this);

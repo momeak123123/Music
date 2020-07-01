@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
+import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.adapter.DownloadAdapter
 import com.example.xiaobai.music.adapter.PlaySongAdapter
@@ -75,6 +76,7 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
         cencel.visibility = View.GONE
         down.text = getText(R.string.collect)
         relat4.visibility = View.GONE
+
     }
 
     override fun initData() {
@@ -90,19 +92,19 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
         val data = mDownDao.queryt(1)
         val song = mutableListOf<Music>()
         val artist = mutableListOf<artistlist>()
-        for (it in data) {
-            if(it.type==1){
-                artist.add(artistlist(0, it.artist))
+        for (i in 0 until data.size) {
+            if(data[i].type==1){
+                artist.add(i, artistlist(data[i].artist_id,data[i].artist))
                 val music = Music(
-                    it.name,
-                    it.album_name,
-                    it.album_id,
-                    it.song_id,
-                    it.uri,
+                    data[i].name,
+                    data[i].album_name,
+                    data[i].album_id,
+                    data[i].song_id,
+                    data[i].uri,
                     artist,
-                    it.pic_url,
-                    it.song_list_id,
-                    it.publish_time
+                    data[i].pic_url,
+                    data[i].song_list_id,
+                    data[i].publish_time
                 )
                 song.add(music)
             }
@@ -119,7 +121,7 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
 
     }
 
-    @SuppressLint("CheckResult")
+    @SuppressLint("CheckResult", "ResourceAsColor")
     override fun initView() {
         super.initView()
 
@@ -177,6 +179,8 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
                         .content("未登陆账号，是否登录")
                         .positiveText("确认")
                         .negativeText("取消")
+                        .positiveColorRes(R.color.colorAccentDarkTheme)
+                        .negativeColorRes(R.color.red)
                         .onPositive { _: MaterialDialog?, _: DialogAction? ->
                             val intent = Intent()
                             context.let { intent.setClass(it, LoginActivity().javaClass) }
@@ -230,12 +234,15 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
         in_list.adapter = AlbumDetActivity.adapters
         AlbumDetActivity.adapters.setOnItemClickListener(object :
             PlaySongAdapter.ItemClickListener {
+            @SuppressLint("ResourceAsColor")
             override fun onItemClick(view: View, position: Int) {
                 MaterialDialog.Builder(context)
                     .title("添加音乐")
                     .content("是否将音乐加入此歌单")
                     .positiveText("确认")
                     .negativeText("取消")
+                    .positiveColorRes(R.color.colorAccentDarkTheme)
+                    .negativeColorRes(R.color.red)
                     .onPositive { _: MaterialDialog?, _: DialogAction? ->
                         val playlist: Playlist = mPlaylistDao.query(song[position].play_list_id)[0]
                         val playsong = mDownDao.query(song[position].play_list_id)
@@ -351,6 +358,17 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
 
     override fun onResume() {
         super.onResume()
+
+        if(MusicApp.getIsapp()){
+            val intent = Intent()
+            context.let { intent.setClass(it, MusicPlayActivity().javaClass) }
+            intent.putExtra("album_id", 0L)
+            intent.putExtra("pos", 0)
+            intent.putExtra("list", "")
+            intent.putExtra("type", 0)
+            context.startActivity(intent)
+        }
+
         observers = object : Observer<Boolean> {
             override fun onSubscribe(d: Disposable) {}
 
@@ -400,7 +418,7 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
         observert = object : Observer<Int> {
             override fun onSubscribe(d: Disposable) {}
 
-            @SuppressLint("SetTextI18n", "CheckResult")
+            @SuppressLint("SetTextI18n", "CheckResult", "ResourceAsColor")
             override fun onNext(data: Int) {
                 poplue.visibility = View.VISIBLE
                 edit_song.text =
@@ -450,6 +468,8 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
                                 .content("未登陆账号，是否登录")
                                 .positiveText("确认")
                                 .negativeText("取消")
+                                .positiveColorRes(R.color.colorAccentDarkTheme)
+                                .negativeColorRes(R.color.red)
                                 .onPositive { _: MaterialDialog?, _: DialogAction? ->
                                     val intent = Intent()
                                     context.let { intent.setClass(it, LoginActivity().javaClass) }

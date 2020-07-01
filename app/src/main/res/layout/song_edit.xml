@@ -45,6 +45,7 @@
         android:textColor="@color/white"
         android:textColorHint="@color/gray"
         android:textSize="@dimen/sp_18"
+        android:theme="@style/MyEditText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -64,8 +65,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:rb_backgroundColor="@color/app_blue"
-        app:rb_borderColor="@color/app_blue"
+        app:rb_backgroundColor="@color/colorAccentDarkTheme"
+        app:rb_borderColor="@color/colorAccentDarkTheme"
         app:rb_isRadiusAdjustBounds="true" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

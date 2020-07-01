@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -12,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.bumptech.glide.Glide
 import com.example.xiaobai.music.MainActivity
+import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.adapter.*
 import com.example.xiaobai.music.bean.*
@@ -71,6 +73,10 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
         return R.layout.fragment_home
     }
 
+    override fun init(savedInstanceState: Bundle?) {
+        super.init(savedInstanceState)
+
+    }
 
     override fun initData() {
         super.initData()
@@ -139,9 +145,23 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
 
     override fun onResume() {
         super.onResume()
-        
+
+        try {
+            adapter!!.notifyItemChanged(0)
+        }catch (e:Exception){}
+
         if (lists.isEmpty()) {
             initData()
+        }
+
+        if(MusicApp.getIsapp()){
+            val intent = Intent()
+            context?.let { intent.setClass(it, MusicPlayActivity().javaClass) }
+            intent.putExtra("album_id", 0L)
+            intent.putExtra("pos", 0)
+            intent.putExtra("list", "")
+            intent.putExtra("type", 0)
+            context?.startActivity(intent)
         }
 
         observer = object : Observer<JsonObject> {
@@ -315,7 +335,7 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
                                                             context,
                                                             0,
                                                             downs,
-                                                            0
+                                                            1
                                                         )
                                                     ) //
                                                     .start()

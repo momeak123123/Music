@@ -93,6 +93,7 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
         context = this
         cencel.text = getText(R.string.song_cancel_coll)
         relat3.visibility = View.GONE
+
     }
 
     override fun initData() {
@@ -144,7 +145,7 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
 
     }
 
-    @SuppressLint("CheckResult")
+    @SuppressLint("CheckResult", "ResourceAsColor")
     override fun initView() {
         super.initView()
 
@@ -225,6 +226,8 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
                     .content("是否删除音乐")
                     .positiveText("确认")
                     .negativeText("取消")
+                    .positiveColorRes(R.color.colorAccentDarkTheme)
+                    .negativeColorRes(R.color.red)
                     .onPositive { _: MaterialDialog?, _: DialogAction? ->
 
                         val idmap = mutableListOf<Music>()
@@ -260,11 +263,13 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
                     .content("是否下载音乐")
                     .positiveText("确认")
                     .negativeText("取消")
+                    .positiveColorRes(R.color.colorAccentDarkTheme)
+                    .negativeColorRes(R.color.red)
                     .onPositive { _: MaterialDialog?, _: DialogAction? ->
 
                         val idmap = mutableListOf<Music>()
 
-                        for (ite in SongDetActivity.adapter.listdet) {
+                        for (ite in adapter.listdet) {
                             if (ite.type == 1) {
                                 idmap.add(ite.song)
                             }
@@ -305,7 +310,7 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
                                         .priority(0)
                                         .fileName("music" + its.song_id + ".mp3") //
                                         .save() //
-                                        .register(LogDownloadListener(its, context, 0, downs, 0)) //
+                                        .register(LogDownloadListener(its, context, 0, downs, 1)) //
                                         .start()
                                 }
 
@@ -346,6 +351,15 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
     override fun onResume() {
         super.onResume()
 
+        if(MusicApp.getIsapp()){
+            val intent = Intent()
+            context.let { intent.setClass(it, MusicPlayActivity().javaClass) }
+            intent.putExtra("album_id", 0L)
+            intent.putExtra("pos", 0)
+            intent.putExtra("list", "")
+            intent.putExtra("type", 0)
+            context.startActivity(intent)
+        }
 
         observer = object : Observer<JsonArray> {
             override fun onSubscribe(d: Disposable) {}
@@ -467,7 +481,7 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
         observert = object : Observer<Int> {
             override fun onSubscribe(d: Disposable) {}
 
-            @SuppressLint("SetTextI18n", "CheckResult")
+            @SuppressLint("SetTextI18n", "CheckResult", "ResourceAsColor")
             override fun onNext(data: Int) {
                 poplue.visibility = View.VISIBLE
                 edit_song.text =
@@ -497,6 +511,8 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
                             .content("是否下载音乐")
                             .positiveText("确认")
                             .negativeText("取消")
+                            .positiveColorRes(R.color.colorAccentDarkTheme)
+                            .negativeColorRes(R.color.red)
                             .onPositive { _: MaterialDialog?, _: DialogAction? ->
                                 val downs = mDownDao.querys(songlist[data].song_id)
                                 if (downs.size > 0) {
@@ -537,7 +553,7 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
                                                 context,
                                                 0,
                                                 downs,
-                                                0
+                                                1
                                             )
                                         )
                                         .start()

@@ -30,9 +30,6 @@ import java.util.concurrent.TimeUnit
  * @Description input description
  **/
 class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>(), StartPageContract.IView {
-    companion object {
-        lateinit var observer: Observer<JsonArray>
-    }
 
     private lateinit var sp: SharedPreferences
     private lateinit var mDisposable: Disposable

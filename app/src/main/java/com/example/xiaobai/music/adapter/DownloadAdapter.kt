@@ -244,17 +244,7 @@ class DownloadAdapter(
             Glide.with(context).load(datas[position].pic_url).placeholder(R.color.main_black_grey)
                 .into(iv_cover)
             title.text = datas[position].name
-            val artist = datas[position].all_artist
-            var srtist_name = ""
-            for (it in artist) {
-                if (srtist_name != "") {
-                    srtist_name += "/" + it.name
-                } else {
-                    srtist_name = it.name
-                }
-
-            }
-            txt.text = srtist_name
+            txt.text = datas[position].all_artist[position-1].name
 
             if (type == 0) {
                 num.visibility = View.VISIBLE

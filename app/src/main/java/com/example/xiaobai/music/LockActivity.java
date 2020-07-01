@@ -2,6 +2,8 @@ package com.example.xiaobai.music;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
@@ -69,11 +71,12 @@ public class LockActivity extends AppCompatActivity implements SlidingFinishLayo
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         fullScreen(this);
         setContentView(R.layout.activity_lock);
         initView();
         MusicPlayActivity.lock = "0";
+
     }
 
     public static void fullScreen(Activity activity) {
@@ -163,6 +166,16 @@ public class LockActivity extends AppCompatActivity implements SlidingFinishLayo
 
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+    }
 
     /**
      * 滑动销毁锁屏页面
