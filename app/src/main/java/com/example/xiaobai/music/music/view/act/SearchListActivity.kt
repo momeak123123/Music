@@ -2,33 +2,22 @@ package com.example.xiaobai.music.music.view.act
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Color
 import android.os.Bundle
-import android.text.Spannable
-import android.text.SpannableString
-import android.text.style.AbsoluteSizeSpan
-import android.text.style.ForegroundColorSpan
-import android.view.Gravity
 import android.view.View
-import android.widget.SearchView
-import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
-import com.example.xiaobai.music.adapter.SearchAdapter
 import com.example.xiaobai.music.adapter.SearchListAdapter
 import com.example.xiaobai.music.bean.Music
 import com.example.xiaobai.music.music.contract.SearchListContract
 import com.example.xiaobai.music.music.presenter.SearchListPresenter
-import com.example.xiaobai.music.sql.bean.Search
 import com.example.xiaobai.music.sql.config.Initialization
-import com.example.xiaobai.music.sql.dao.mSearchDao
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
 import com.jakewharton.rxbinding2.view.RxView
-import kotlinx.android.synthetic.main.artist_index.*
+import io.reactivex.Observer
+import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.head.*
-import kotlinx.android.synthetic.main.search.*
 import kotlinx.android.synthetic.main.search_index.*
 import mvp.ljb.kt.act.BaseMvpActivity
 import java.util.concurrent.TimeUnit
@@ -40,6 +29,9 @@ import java.util.concurrent.TimeUnit
  **/
 class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>() , SearchListContract.IView {
 
+    companion object {
+        lateinit var observer: Observer<MutableList<Music>>
+    }
     private lateinit var context: Context
     private lateinit var adapter: SearchListAdapter
     override fun registerPresenter() = SearchListPresenter::class.java
@@ -59,8 +51,9 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>() , Se
     override fun initData() {
         super.initData()
         val bundle = intent.extras
-        val search = bundle?.get("search") as String
-        getPresenter().data(context,search)
+        val search = bundle?.get("txt") as String
+        println(search)
+        getPresenter().qqdata(context,search)
 
     }
 
@@ -77,6 +70,19 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>() , Se
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        observer = object : Observer<MutableList<Music>> {
+            override fun onSubscribe(d: Disposable) {}
+            override fun onNext(data: MutableList<Music>) {
+                initSearchList(data)
+            }
+
+            override fun onError(e: Throwable) {}
+            override fun onComplete() {}
+
+        }
+    }
 
 
     /**

@@ -18,5 +18,9 @@ class UserEditPresenter : BaseMvpPresenter<UserEditContract.IView, UserEditContr
       getModel().registerdata(context,name,gender,city,images,mess)
     }
 
+    override fun osst(context: Context) {
+        getModel().osst(context)
+    }
+
 
 }

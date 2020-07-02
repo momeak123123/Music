@@ -15,11 +15,11 @@ interface SearchListContract {
     interface IView : IViewContract
 
     interface IPresenter : IPresenterContract {
-        fun data(context: Context, search: String)
+        fun qqdata(context: Context, search: String)
     }
 
     interface IModel : IModelContract{
-        fun data(context: Context, search: String)
+        fun qqdata(context: Context, search: String)
     }
 
 }

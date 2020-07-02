@@ -9,6 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"
+        android:focusableInTouchMode="true"
+        android:descendantFocusability="blocksDescendants"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -140,7 +142,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_10"
-                    android:layout_weight="1"
+                    android:layout_weight="50"
                     android:background="@color/colorPrimary"
                     android:gravity="center">
 
@@ -175,9 +177,35 @@
                 <FrameLayout
                     android:id="@+id/item2"
                     android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:layout_marginBottom="@dimen/dp_10"
+                    android:layout_weight="1"
+                    android:background="@color/colorPrimary"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/dert"
+                        android:layout_width="@dimen/dp_1"
+                        android:layout_height="@dimen/dp_20"
+                        android:layout_marginTop="@dimen/dp_30"
+                        android:background="@drawable/strok"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical|center"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:text=""
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_24" />
+
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/item3"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_10"
-                    android:layout_weight="1"
+                    android:layout_weight="50"
                     android:background="@color/colorPrimary"
                     android:gravity="center">
 
@@ -186,7 +214,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/dp_40"
                         android:layout_marginTop="@dimen/dp_10"
-                        android:background="@drawable/strok"
                         android:ellipsize="end"
                         android:gravity="center_vertical|center"
                         android:maxLines="1"
@@ -211,11 +238,36 @@
                 </FrameLayout>
 
                 <FrameLayout
-                    android:id="@+id/item3"
+                    android:id="@+id/item4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/dp_10"
+                    android:layout_marginBottom="@dimen/dp_10"
+                    android:layout_weight="1"
+                    android:background="@color/colorPrimary"
+                    android:gravity="center">
+
+                    <TextView
+                        android:id="@+id/derts"
+                        android:layout_width="@dimen/dp_1"
+                        android:layout_height="@dimen/dp_20"
+                        android:layout_marginTop="@dimen/dp_30"
+                        android:background="@drawable/strok"
+                        android:ellipsize="end"
+                        android:gravity="center_vertical|center"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:text=""
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/sp_24" />
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/item5"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dp_10"
-                    android:layout_weight="1"
+                    android:layout_weight="50"
                     android:background="@color/colorPrimary"
                     android:gravity="center">
 

@@ -13,8 +13,8 @@ import com.example.xiaobai.music.music.model.SearchListModel
 class SearchListPresenter : BaseMvpPresenter<SearchListContract.IView, SearchListContract.IModel>(), SearchListContract.IPresenter{
 
     override fun registerModel() = SearchListModel::class.java
-    override fun data(context: Context, search: String) {
-        getModel().data(context,search)
+    override fun qqdata(context: Context, search: String) {
+        getModel().qqdata(context,search)
     }
 
 }

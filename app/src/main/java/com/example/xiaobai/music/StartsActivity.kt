@@ -6,8 +6,10 @@ import android.os.Bundle
 import android.view.Window
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import com.example.xiaobai.music.music.model.MainModel
 import com.example.xiaobai.music.music.model.MusicPlayModel.Companion.asd
 import com.example.xiaobai.music.music.model.MusicPlayModel.Companion.updateapp
+import com.example.xiaobai.music.service.LockService
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Observer
@@ -28,12 +30,18 @@ class StartsActivity : AppCompatActivity() {
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
+        MainModel.homedata(this)
+
+        val intent = Intent(this, LockService::class.java)
+        startService(intent)
+
         mdDisposable = Flowable.intervalRange(0, 2, 0, 1, TimeUnit.SECONDS)
             .observeOn(AndroidSchedulers.mainThread())
             .doOnNext {
                 asd(this)
             }
             .doOnComplete {
+
                 val it = Intent(applicationContext, MainActivity::class.java)
                 startActivity(it)
             }
@@ -75,6 +83,7 @@ class StartsActivity : AppCompatActivity() {
             override fun onNext(bool: Boolean) {
                 if (bool) {
                     mdDisposable!!.dispose()
+
                     val it = Intent(applicationContext, MainActivity::class.java)
                     startActivity(it)
                 }

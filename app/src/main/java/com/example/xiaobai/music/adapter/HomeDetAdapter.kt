@@ -159,13 +159,11 @@ class HomeDetAdapter(
     }
 
     inner class SearchHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var search: RelativeLayout
         var music: ImageView
         var banner: SimpleImageBanner
 
 
         init {
-            search = itemView.findViewById(R.id.search)
             music = itemView.findViewById(R.id.music)
             banner = itemView.findViewById(R.id.banner)
 
@@ -217,15 +215,6 @@ class HomeDetAdapter(
                     context.startActivity(intent)
 
                 }
-
-            RxView.clicks(search)
-                .throttleFirst(3, TimeUnit.SECONDS)
-                .subscribe {
-                    val intent = Intent()
-                    context.let { it1 -> intent.setClass(it1, SearchActivity().javaClass) }
-                    context.startActivity(intent)
-                }
-
 
         }
     }

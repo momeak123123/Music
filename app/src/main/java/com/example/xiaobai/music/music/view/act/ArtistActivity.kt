@@ -64,7 +64,7 @@ class ArtistActivity : BaseMvpActivity<ArtistContract.IPresenter>(), ArtistContr
     override fun initData() {
         super.initData()
         top_title.text =getString(R.string.item3s)
-
+        swipe_refresh_layout.isRefreshing = true
         val sp: SharedPreferences =
             context.getSharedPreferences("Music", Context.MODE_PRIVATE)
 

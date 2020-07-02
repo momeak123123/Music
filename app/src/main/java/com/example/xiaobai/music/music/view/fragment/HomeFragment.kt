@@ -38,7 +38,6 @@ import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.album_item.*
-import kotlinx.android.synthetic.main.fragment_find.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.in_indel
 import kotlinx.android.synthetic.main.fragment_home.poplue

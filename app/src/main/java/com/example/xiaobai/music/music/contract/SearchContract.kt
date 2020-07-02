@@ -16,9 +16,11 @@ interface SearchContract {
 
     interface IPresenter : IPresenterContract {
         fun listdata(): MutableList<Search>
+        fun listcean(): MutableList<Search>
     }
 
     interface IModel : IModelContract{
         fun listdata(): MutableList<Search>
+        fun listcean(): MutableList<Search>
     }
 }

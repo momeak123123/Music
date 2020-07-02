@@ -11,8 +11,13 @@ import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.adapter.GridImageAdapter
 import com.example.xiaobai.music.config.GlideEngine
+import com.example.xiaobai.music.config.OSS
 import com.example.xiaobai.music.music.contract.UserEditContract
 import com.example.xiaobai.music.music.presenter.UserEditPresenter
+import com.google.gson.Gson
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
+import com.google.gson.reflect.TypeToken
 import com.jakewharton.rxbinding2.view.RxView
 import com.luck.picture.lib.PictureSelector
 import com.luck.picture.lib.config.PictureConfig
@@ -27,6 +32,7 @@ import kotlinx.android.synthetic.main.head.*
 import kotlinx.android.synthetic.main.user_edit.*
 import mvp.ljb.kt.act.BaseMvpActivity
 import java.lang.ref.WeakReference
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 /**
@@ -40,6 +46,7 @@ class UserEditActivity : BaseMvpActivity<UserEditContract.IPresenter>(), UserEdi
 
         lateinit var observer: Observer<Boolean>
         lateinit var observers: Observer<LocalMedia>
+        lateinit var observert: Observer<JsonObject>
     }
 
     private val mAdapter: GridImageAdapter? = null
@@ -48,6 +55,7 @@ class UserEditActivity : BaseMvpActivity<UserEditContract.IPresenter>(), UserEdi
     private var sexSelectOption = 1
     private lateinit var sp: SharedPreferences
     private lateinit var context: Context
+    private  var imaurl :String = ""
 
     override fun registerPresenter() = UserEditPresenter::class.java
 
@@ -106,7 +114,7 @@ class UserEditActivity : BaseMvpActivity<UserEditContract.IPresenter>(), UserEdi
                                         name.text.toString(),
                                         1,
                                         city.text.toString(),
-                                        sp.getString("url", "").toString(),
+                                        imaurl,
                                         message.text.toString()
                                     )
                                 } else {
@@ -115,7 +123,7 @@ class UserEditActivity : BaseMvpActivity<UserEditContract.IPresenter>(), UserEdi
                                         name.text.toString(),
                                         2,
                                         city.text.toString(),
-                                        sp.getString("url", "").toString(),
+                                        imaurl,
                                         message.text.toString()
                                     )
                                 }
@@ -167,7 +175,8 @@ class UserEditActivity : BaseMvpActivity<UserEditContract.IPresenter>(), UserEdi
 
         sp =
             getSharedPreferences("User", Context.MODE_PRIVATE)
-        Glide.with(context).load(sp.getString("url", "")).placeholder(R.color.main_black_grey)
+        imaurl = sp.getString("url", "").toString()
+        Glide.with(context).load(imaurl).placeholder(R.color.main_black_grey)
             .into(ima)
         name.text = Editable.Factory.getInstance().newEditable(sp.getString("nickname", ""))
 
@@ -176,6 +185,8 @@ class UserEditActivity : BaseMvpActivity<UserEditContract.IPresenter>(), UserEdi
         }else{
             gender.text = Editable.Factory.getInstance().newEditable(getText(R.string.girl))
         }
+
+
 
         city.text = Editable.Factory.getInstance().newEditable(sp.getString("countries", ""))
 
@@ -203,6 +214,27 @@ class UserEditActivity : BaseMvpActivity<UserEditContract.IPresenter>(), UserEdi
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(media: LocalMedia) {
                 picturePath = media.compressPath
+                getPresenter().osst(context)
+
+
+
+            }
+
+            override fun onError(e: Throwable) {}
+            override fun onComplete() {}
+
+        }
+
+        observert = object : Observer<JsonObject> {
+            override fun onSubscribe(d: Disposable) {}
+            override fun onNext(data: JsonObject) {
+
+                val accsess: Map<String, String> = Gson().fromJson(
+                    data,
+                    object : TypeToken<Map<String, String>>() {}.type
+                )
+
+                OSS.init(context,accsess["AccessKeyId"],accsess["AccessKeySecret"], accsess["SecurityToken"])
                 if(picturePath.equals("")){
                     Toast.makeText(
                         context,
@@ -211,6 +243,8 @@ class UserEditActivity : BaseMvpActivity<UserEditContract.IPresenter>(), UserEdi
                     ).show()
                 }else{
                     Glide.with(context).load(picturePath).placeholder(R.color.main_black_grey).into(ima)
+                    imaurl = sp.getString("user_id", "")+Date().time.toString() +".png"
+                    OSS.put(imaurl,picturePath)
                 }
 
 

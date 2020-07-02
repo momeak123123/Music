@@ -26,6 +26,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import com.example.xiaobai.music.adapter.ViewPagerAdapter;
+import com.example.xiaobai.music.config.SoftKeyBoardListener;
 import com.example.xiaobai.music.music.model.MainModel;
 import com.example.xiaobai.music.music.model.MusicPlayModel;
 import com.example.xiaobai.music.music.view.act.StartPageActivity;
@@ -103,18 +104,13 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
         Initialization.setupDatabasePlaylist(this);
         Initialization.setupDatabaseDown(this);
         initData();
-
-        Intent intent = new Intent(MainActivity.this, StartPageActivity.class);
-        startActivity(intent);
-
-
     }
 
 
 
 
     private void initData() {
-        // MainModel.Companion.homedata(MainActivity.this);
+        //
 
         List<Fragment> list = new ArrayList<>();
         mTabbar.setTitles(R.string.tab1, R.string.tab2, R.string.tab3)
@@ -169,22 +165,40 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
     @Override
     public void onResume() {
         super.onResume();
+        onKeyBoardListener();
+
         viewPager.setCurrentItem(indexs);
-
-        if (bool) {
-
-        }
 
         if (isNeedCheck) {
             checkPermissions(needPermissions);
         }
 
+        if(bool){
+            Intent intent = new Intent(MainActivity.this, StartPageActivity.class);
+            startActivity(intent);
+        }
 
     }
 
 
-    public static void craet(Boolean bool) {
-        if (bool) {
+    //监听软件盘是否弹起
+    private void onKeyBoardListener() {
+        SoftKeyBoardListener.setListener(MainActivity.this, new SoftKeyBoardListener.OnSoftKeyBoardChangeListener() {
+            @Override
+            public void keyBoardShow(int height) {
+                craet(false);
+            }
+
+            @Override
+            public void keyBoardHide(int height) {
+                craet(true);
+            }
+        });
+    }
+
+
+    public static void craet(Boolean bools) {
+        if (bools) {
             mTabbar.setVisibility(View.VISIBLE);
             View view = context.getCurrentFocus();
             if (view != null) {

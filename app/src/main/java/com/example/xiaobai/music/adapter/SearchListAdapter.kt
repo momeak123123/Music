@@ -15,7 +15,7 @@ import com.example.xiaobai.music.sql.bean.Search
 import com.example.xiaobai.music.sql.dao.mSearchDao
 import io.reactivex.Observable
 
-class SearchListAdapter   (val datas: MutableList<Music>, val context: Context) : RecyclerView.Adapter<SearchListAdapter.InnerHolder>() {
+class SearchListAdapter(val datas: MutableList<Music>, val context: Context) : RecyclerView.Adapter<SearchListAdapter.InnerHolder>() {
 
 
     private var mItemClickListener: ItemClickListener? = null
@@ -45,6 +45,8 @@ class SearchListAdapter   (val datas: MutableList<Music>, val context: Context) 
     override fun getItemCount(): Int = datas.size
 
     class InnerHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
+        var iv_cover: ImageView = itemView.findViewById(R.id.iv_cover)
         var title: TextView = itemView.findViewById(R.id.title)
         var txt: TextView = itemView.findViewById(R.id.txt)
     }
@@ -56,6 +58,7 @@ class SearchListAdapter   (val datas: MutableList<Music>, val context: Context) 
         holder.itemView.setOnClickListener { v ->
             mItemClickListener?.onItemClick(v,position)
         }
+        Glide.with(context).load(datas[position].pic_url).placeholder(R.color.main_black_grey).into(holder.iv_cover)
         holder.title.text = datas[position].name
         val artist =  datas[position].all_artist
         var srtist_name = ""
@@ -74,17 +77,5 @@ class SearchListAdapter   (val datas: MutableList<Music>, val context: Context) 
     fun add(item: Music) {
         datas.add(item)
         notifyItemChanged(datas.size)
-    }
-
-    fun remove(position: Int) {
-        notifyItemRemoved(position)
-        if (position != datas.size) {
-            notifyItemRangeChanged(position, datas.size - position);
-        }
-    }
-
-    fun removeAll() {
-        datas.removeAll(datas)
-        notifyDataSetChanged()
     }
 }

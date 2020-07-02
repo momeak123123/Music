@@ -2,6 +2,7 @@ package com.example.xiaobai.music.music.view.act
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.text.Spannable
@@ -13,11 +14,9 @@ import android.view.View
 import android.widget.SearchView
 import android.widget.TextView
 import android.widget.Toast
-import androidx.recyclerview.widget.DefaultItemAnimator
-import androidx.recyclerview.widget.LinearLayoutManager
+import com.cy.cyflowlayoutlibrary.FlowLayoutAdapter
 import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
-import com.example.xiaobai.music.adapter.SearchAdapter
 import com.example.xiaobai.music.music.contract.SearchContract
 import com.example.xiaobai.music.music.presenter.SearchPresenter
 import com.example.xiaobai.music.sql.bean.Search
@@ -34,17 +33,21 @@ import java.util.concurrent.TimeUnit
  * @Date 2020/05/19
  * @Description input description
  **/
-class SearchActivity : BaseMvpActivity<SearchContract.IPresenter>() , SearchContract.IView {
+class SearchActivity : BaseMvpActivity<SearchContract.IPresenter>(), SearchContract.IView {
 
     private lateinit var context: Context
-    private lateinit var adapter: SearchAdapter
-    private  var sreachtxt: String = ""
-    var Datas = mutableListOf<Search>()
 
+    private var sreachtxt: String = ""
+    var Datas = mutableListOf<Search>()
+    var lists = mutableListOf<String>()
+    var Datat = mutableListOf<Search>()
+    var listt = mutableListOf<String>()
+    private var flowLayoutAdapter: FlowLayoutAdapter<String>? = null
+    private var flowLayoutAdapters: FlowLayoutAdapter<String>? = null
     override fun registerPresenter() = SearchPresenter::class.java
 
     override fun getLayoutId(): Int {
-       return R.layout.search
+        return R.layout.search
     }
 
     override fun init(savedInstanceState: Bundle?) {
@@ -55,39 +58,105 @@ class SearchActivity : BaseMvpActivity<SearchContract.IPresenter>() , SearchCont
 
     override fun initData() {
         super.initData()
+        initSearch()
+        Datas = getPresenter().listdata()
 
+        Datat = getPresenter().listcean()
+        for(it in Datat){
+            listt.add(it.txt)
+        }
+
+        flowLayoutAdapter = object : FlowLayoutAdapter<String>(listt) {
+            override fun bindDataToView(
+                holder: ViewHolder,
+                position: Int,
+                bean: String?
+            ) {
+                holder.setText(R.id.txt, bean)
+            }
+
+            override fun onItemClick(position: Int, bean: String?) {
+                if (MusicApp.getNetwork()) {
+                    val sea = Search()
+                    sea.txt = bean
+                    sea.state = 0
+                    mSearchDao.insert(sea)
+                    val intent = Intent()
+                    intent.setClass(context as SearchActivity, SearchListActivity().javaClass)
+                    intent.putExtra("txt", bean)
+                    startActivity(intent)
+                } else {
+                    if (swipe_refresh_layout != null) {
+                        swipe_refresh_layout.isRefreshing = false
+                    }
+                    Toast.makeText(
+                        context,
+                        getText(R.string.nonet),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            }
+
+            override fun getItemLayoutID(position: Int, bean: String?): Int {
+                return R.layout.search_item
+            }
+        }
+        flowLayout.setAdapter(flowLayoutAdapter)
+
+    if (Datas.size == 0) {
+            sreachtitle.visibility = View.GONE
+            flowLayout2.visibility = View.GONE
+            del.visibility = View.GONE
+        } else {
+            sreachtitle.visibility = View.VISIBLE
+            flowLayout2.visibility = View.VISIBLE
+            del.visibility = View.VISIBLE
+        }
+        for(it in Datas){
+            lists.add(it.txt)
+        }
+        flowLayoutAdapters = object : FlowLayoutAdapter<String>(lists) {
+            override fun bindDataToView(
+                holder: ViewHolder,
+                position: Int,
+                bean: String?
+            ) {
+                holder.setText(R.id.txt, bean)
+            }
+
+            override fun onItemClick(position: Int, bean: String?) {
+                intent.setClass(context as SearchActivity, SearchListActivity().javaClass)
+                intent.putExtra("txt", bean)
+                startActivity(intent)
+            }
+
+            override fun getItemLayoutID(position: Int, bean: String?): Int {
+                return R.layout.search_item
+            }
+        }
+        flowLayout2.setAdapter(flowLayoutAdapters)
     }
 
     @SuppressLint("CheckResult")
     override fun initView() {
         super.initView()
-        Datas = getPresenter().listdata()
 
-        if(Datas.size==0){
-            sreachtitle.visibility= View.GONE
-            recyclerView3.visibility= View.GONE
-            del.visibility= View.GONE
-            deltxt.visibility= View.GONE
-        }else{
-            sreachtitle.visibility= View.VISIBLE
-            recyclerView3.visibility= View.VISIBLE
-            del.visibility= View.VISIBLE
-            deltxt.visibility= View.VISIBLE
-        }
 
-        initSearch()
-        initSearchList(Datas)
+
         RxView.clicks(flot)
             .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
                 finish()
             }
 
-        RxView.clicks(deltxt)
+        RxView.clicks(del)
             .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
-                 adapter.removeAll()
-               mSearchDao.deleteAll()
+                Datas.clear()
+                mSearchDao.deleteAll()
+                sreachtitle.visibility = View.GONE
+                flowLayout2.visibility = View.GONE
+                del.visibility = View.GONE
             }
     }
 
@@ -130,13 +199,15 @@ class SearchActivity : BaseMvpActivity<SearchContract.IPresenter>() , SearchCont
 
             override fun onQueryTextSubmit(queryText: String): Boolean {
                 //点击搜索
-                if(MusicApp.getNetwork()){
+                if (MusicApp.getNetwork()) {
                     val sea = Search()
                     sea.txt = queryText
                     sea.state = 0
                     mSearchDao.insert(sea)
-
-                }else{
+                    intent.setClass(context as SearchActivity, SearchListActivity().javaClass)
+                    intent.putExtra("txt", queryText)
+                    startActivity(intent)
+                } else {
                     if (swipe_refresh_layout != null) {
                         swipe_refresh_layout.isRefreshing = false
                     }
@@ -153,20 +224,4 @@ class SearchActivity : BaseMvpActivity<SearchContract.IPresenter>() , SearchCont
         })
     }
 
-    /**
-     * 初始化历史记录
-     */
-    private fun initSearchList(datas : MutableList<Search> ) {
-        recyclerView3.layoutManager = LinearLayoutManager(this)
-        recyclerView3.itemAnimator = DefaultItemAnimator()
-
-        adapter = SearchAdapter(datas,this)
-        recyclerView3.adapter = adapter
-        adapter.setOnItemClickListener(object : SearchAdapter.ItemClickListener {
-            override fun onItemClick(view:View,position: Int) {
-
-
-            }
-        })
-    }
 }

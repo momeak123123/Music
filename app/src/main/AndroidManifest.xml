@@ -59,11 +59,12 @@
             android:configChanges="orientation|keyboardHidden|keyboard"
             android:launchMode="singleInstance"
             android:excludeFromRecents="true"
-            android:taskAffinity="com.example.xiaobai.play"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".MainActivity"
-            android:launchMode="singleTask" />
+            android:launchMode="singleTask"
+            android:configChanges="keyboardHidden"
+            android:windowSoftInputMode="adjustPan|stateHidden"/>
         <activity android:name=".music.view.act.StartPageActivity"
             android:launchMode="singleTop"/>
         <activity android:name=".music.view.act.SearchActivity" />
@@ -78,6 +79,7 @@
         <activity android:name=".music.view.act.SongEditActivity" />
         <activity android:name=".music.view.act.DownloadActivity" />
         <activity android:name=".music.view.act.SetActivity" />
+        <activity android:name=".music.view.act.SearchListActivity" />
     </application>
 
 </manifest>

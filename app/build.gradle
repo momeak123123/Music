@@ -98,6 +98,9 @@ dependencies {
 
     //打开相册
     implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.5.8'
+
+    //自定义FlowLayout
+    implementation 'com.github.AnJiaoDe:MultiFlowLayout:V1.1.2'
 }
 
 greendao {

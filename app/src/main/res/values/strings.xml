@@ -8,7 +8,7 @@
 
     <!-- tabbar -->
     <string name="tab1">首页</string>
-    <string name="tab2">歌单</string>
+    <string name="tab2">搜索</string>
     <string name="tab3">我的</string>
 
 
@@ -27,8 +27,8 @@
     <string name="artist">歌星</string>
 
     <!-- search -->
-    <string name="history">搜索历史</string>
-    <string name="delhistory">清空搜索历史</string>
+    <string name="history">历史搜索</string>
+    <string name="delhistory">大家都在搜</string>
 
     <!--login-->
     <string name="login">欢迎回来</string>

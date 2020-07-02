@@ -70,4 +70,31 @@ class UserEditModel : BaseModel(), UserEditContract.IModel{
             })
     }
 
+    override fun osst(context: Context) {
+        val sp: SharedPreferences = context.getSharedPreferences("User", Context.MODE_PRIVATE)
+        OkGo.post<String>(Constants.URL + "api/user/get_token")
+            .params("token",sp.getString("token", ""))
+            .execute(object : StringCallback() {
+                override fun onSuccess(response: Response<String>) {
+                    /**
+                     * 成功回调
+                     */
+                    val bean =
+                        Gson().fromJson(response.body(), ResultBean::class.javaObjectType)
+                    if (bean.code == 200) {
+
+
+                        Observable.just(bean.data).subscribe(UserEditActivity.observert)
+                    }
+                    Toast.makeText(
+                        context,
+                        bean.msg,
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+
+                }
+            })
+    }
+
 }

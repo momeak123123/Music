@@ -17,4 +17,8 @@ class SearchPresenter : BaseMvpPresenter<SearchContract.IView, SearchContract.IM
        return getModel().listdata()
     }
 
+    override fun listcean(): MutableList<Search> {
+        return getModel().listcean()
+    }
+
 }

@@ -18,12 +18,12 @@ import com.alibaba.sdk.android.oss.model.PutObjectResult;
 
 public class OSS {
 
-    private OSSClient oss;
+    private static OSSClient oss;
 
-    public void init(Context context){
+    public static void init(Context context,String AccessKeyId,String SecretKeyId,String SecurityToken){
 
         String endpoint = "http://oss-cn-hongkong.aliyuncs.com";
-        OSSCredentialProvider credentialProvider = new OSSStsTokenCredentialProvider("LTAIFEFpZ8ZDAnSD", "fLSS92v0nDCkeu9ZRUA37vtigwQrUF", "<StsToken.SecurityToken>");
+        OSSCredentialProvider credentialProvider = new OSSStsTokenCredentialProvider(AccessKeyId, SecretKeyId, SecurityToken);
 
         //该配置类如果不设置，会有默认配置，具体可看该类
         ClientConfiguration conf = new ClientConfiguration();
@@ -36,7 +36,7 @@ public class OSS {
         oss = new OSSClient(context, endpoint, credentialProvider, conf);
     }
 
-    public void put(String name,String path){
+    public static void put(String name,String path){
        // byte[] uploadData = new byte[100 * 1024];
         //PutObjectRequest put = new PutObjectRequest("<bucketName>", "<objectName>", uploadData);
 
@@ -74,6 +74,8 @@ public class OSS {
                 }
             }
         });
+        System.out.println(task.isCompleted());
+        System.out.println(task.isCanceled());
         // task.cancel(); // 可以取消任务。
         // task.waitUntilFinished(); // 等待上传完成。
     }
