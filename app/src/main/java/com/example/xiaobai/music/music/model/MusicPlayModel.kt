@@ -241,7 +241,7 @@ class MusicPlayModel {
         }
 
         fun musicpath( source: String, mid: String, br: String, cookie: String) {
-            OkGo.get<String>("http://symusic.top/music.php?source=$source&types=url&mid=$mid&br=$br")
+            OkGo.post<String>("http://symusic.top/music.php?source=$source&types=url&mid=$mid&br=$br")
                 .params("cookie", cookie)
                 .execute(object : StringCallback() {
                     override fun onSuccess(response: Response<String>) {
@@ -253,7 +253,7 @@ class MusicPlayModel {
                             val da = ca.substring(0,ca.lastIndexOf('<'))
                             val bean =
                                 Gson().fromJson(da, com.example.xiaobai.music.parsing.musicpath::class.javaObjectType)
-                           // Observable.just(bean.geturl).subscribe(MusicPlayActivity.observers)
+                            Observable.just(bean.geturl).subscribe(MusicPlayActivity.observert)
                         } catch (e: Exception) {
                         }
                     }

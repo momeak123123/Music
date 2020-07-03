@@ -24,6 +24,8 @@ import com.example.xiaobai.music.adapter.PlayListAdapter
 import com.example.xiaobai.music.adapter.PlaySongAdapter
 import com.example.xiaobai.music.adapter.ViewPagerAdapter
 import com.example.xiaobai.music.bean.Music
+import com.example.xiaobai.music.config.Cookie
+import com.example.xiaobai.music.config.Dencry
 import com.example.xiaobai.music.config.LogDownloadListener
 import com.example.xiaobai.music.config.Notification
 import com.example.xiaobai.music.music.model.MusicPlayModel
@@ -68,6 +70,7 @@ class MusicPlayActivity : AppCompatActivity() {
         lateinit var wlMedia: WlMedia
         lateinit var observer: Observer<Boolean>
         lateinit var observers: Observer<Long>
+        lateinit var observert: Observer<String>
         lateinit var observerplay: Observer<MutableList<Music>>
         lateinit var observerset: Observer<Int>
         lateinit var observerno: Observer<Boolean>
@@ -564,6 +567,24 @@ class MusicPlayActivity : AppCompatActivity() {
 
         }
 
+        observert = object : Observer<String> {
+            override fun onSubscribe(d: Disposable) {}
+            override fun onNext(uri: String) {
+                if(bool){
+                    wlMedia.source = Dencry.dencryptString(uri)
+                    wlMedia.next()
+                }else{
+                    play(Dencry.dencryptString(uri))
+                }
+
+            }
+
+            override fun onError(e: Throwable) {}
+            override fun onComplete() {}
+
+        }
+
+
         observerno = object : Observer<Boolean> {
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(bool: Boolean) {
@@ -807,8 +828,16 @@ class MusicPlayActivity : AppCompatActivity() {
                 }
             }.start()
 
-            play(music.uri)
-            lyricFragment.lrcView(music.song_id)
+            if(music.uri != ""){
+                play(music.uri)
+                lyricFragment.lrcView(music.song_id)
+
+            }else{
+                MusicPlayModel.musicpath("tencent",music.publish_time,"hq",
+                    Cookie.getCookie())
+            }
+
+
         } catch (e: Exception) {
         }
 
@@ -865,9 +894,16 @@ class MusicPlayActivity : AppCompatActivity() {
                 }
             }.start()
             playPauseIv.setLoading(true)
-            wlMedia.source = music.uri
-            wlMedia.next()
-            lyricFragment.lrcView(music.song_id)
+            if(music.uri != ""){
+                wlMedia.source = music.uri
+                wlMedia.next()
+                lyricFragment.lrcView(music.song_id)
+            }else{
+                MusicPlayModel.musicpath("tencent",music.publish_time,"hq",
+                    Cookie.getCookie())
+            }
+
+
         } catch (e: Exception) {
         }
 

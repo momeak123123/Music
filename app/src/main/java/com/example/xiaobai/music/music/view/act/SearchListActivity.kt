@@ -115,10 +115,10 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>() , Se
         recyclerView.adapter = adapter
         adapter.setOnItemClickListener(object : SearchListAdapter.ItemClickListener {
             override fun onItemClick(view: View, position: Int) {
-                val json: String = Gson().toJson(datas[ids])
+                val json: String = Gson().toJson(datas)
                 val intent = Intent()
                 intent.setClass(context, MusicPlayActivity().javaClass)
-                intent.putExtra("album_id", 3)
+                intent.putExtra("album_id", 3L)
                 intent.putExtra("pos", 0)
                 intent.putExtra("list", json)
                 intent.putExtra("type", 1)

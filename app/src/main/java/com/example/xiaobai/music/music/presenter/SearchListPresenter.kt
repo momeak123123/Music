@@ -32,8 +32,5 @@ class SearchListPresenter : BaseMvpPresenter<SearchListContract.IView, SearchLis
     override fun kuwodata(context: Context, search: String) {
         getModel().kuwodata(context,search)
     }
-
-    override fun musicpath(context: Context, source: String, mid: String, br: String, cookie: String) {
-        getModel().musicpath(context,source,mid,br,cookie)
-    }
+    
 }
