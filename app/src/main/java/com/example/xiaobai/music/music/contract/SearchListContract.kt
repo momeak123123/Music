@@ -15,11 +15,21 @@ interface SearchListContract {
     interface IView : IViewContract
 
     interface IPresenter : IPresenterContract {
-        fun qqdata(context: Context, search: String)
+        fun qqdata(context: Context, search: String,limi:Int)
+        fun kugoudata(context: Context, search: String,limi:Int)
+        fun baidudata(context: Context, search: String)
+        fun wangyidata(context: Context, search: String)
+        fun kuwodata(context: Context, search: String)
+
     }
 
     interface IModel : IModelContract{
-        fun qqdata(context: Context, search: String)
+        fun qqdata(context: Context, search: String,limi:Int)
+        fun kugoudata(context: Context, search: String,limi:Int)
+        fun baidudata(context: Context, search: String)
+        fun wangyidata(context: Context, search: String)
+        fun kuwodata(context: Context, search: String)
+
     }
 
 }

@@ -111,7 +111,8 @@ class MusicPlayActivity : AppCompatActivity() {
         initData()
         sp = getSharedPreferences("User", Context.MODE_PRIVATE)
 
-
+        val intent = Intent(this, LockService::class.java)
+        startService(intent)
         //广播 添加广播的action
 
         val intentFilter = IntentFilter()

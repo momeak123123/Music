@@ -16,7 +16,8 @@
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
-    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"
+    <uses-permission
+        android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"
         tools:ignore="ProtectedPermissions" />
 
     <application
@@ -53,22 +54,23 @@
 
         <service
             android:name=".service.LockService"
-            android:process=":main"
-            android:enabled="true"/>
+            android:enabled="true"
+            android:process=":main" />
 
         <activity
             android:name=".music.view.act.MusicPlayActivity"
             android:configChanges="orientation|keyboardHidden|keyboard"
-            android:launchMode="singleInstance"
             android:excludeFromRecents="true"
+            android:launchMode="singleInstance"
             android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".MainActivity"
-            android:launchMode="singleTask"
             android:configChanges="keyboardHidden"
-            android:windowSoftInputMode="adjustPan|stateHidden"/>
-        <activity android:name=".music.view.act.StartPageActivity"
-            android:launchMode="singleTop"/>
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name=".music.view.act.StartPageActivity"
+            android:launchMode="singleTop" />
         <activity android:name=".music.view.act.SearchActivity" />
         <activity android:name=".music.view.act.LoginActivity" />
         <activity android:name=".music.view.act.RegisteredActivity" />

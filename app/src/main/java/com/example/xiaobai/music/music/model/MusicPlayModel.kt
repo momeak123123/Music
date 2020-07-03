@@ -13,6 +13,7 @@ import com.example.xiaobai.music.bean.*
 import com.example.xiaobai.music.common.Constants
 import com.example.xiaobai.music.music.view.act.AlbumDetActivity
 import com.example.xiaobai.music.music.view.act.MusicPlayActivity
+import com.example.xiaobai.music.music.view.act.SearchListActivity
 import com.example.xiaobai.music.music.view.fragment.HomeFragment
 import com.example.xiaobai.music.sql.bean.Down
 import com.example.xiaobai.music.sql.bean.Playlist
@@ -203,7 +204,7 @@ class MusicPlayModel {
                 })
         }
 
-        fun asd(context: Context) {
+        fun asd() {
             OkGo.get<String>(Constants.URL + "api/ads/get_ads")
                 .params("type", 1)
                 .execute(object : StringCallback() {
@@ -237,6 +238,26 @@ class MusicPlayModel {
 
                 })
 
+        }
+
+        fun musicpath( source: String, mid: String, br: String, cookie: String) {
+            OkGo.get<String>("http://symusic.top/music.php?source=$source&types=url&mid=$mid&br=$br")
+                .params("cookie", cookie)
+                .execute(object : StringCallback() {
+                    override fun onSuccess(response: Response<String>) {
+                        /**
+                         * 成功回调
+                         */
+                        try {
+                            val ca = response.body().substring(7)
+                            val da = ca.substring(0,ca.lastIndexOf('<'))
+                            val bean =
+                                Gson().fromJson(da, com.example.xiaobai.music.parsing.musicpath::class.javaObjectType)
+                           // Observable.just(bean.geturl).subscribe(MusicPlayActivity.observers)
+                        } catch (e: Exception) {
+                        }
+                    }
+                })
         }
     }
 

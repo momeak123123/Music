@@ -93,7 +93,7 @@ class UserEditActivity : BaseMvpActivity<UserEditContract.IPresenter>(), UserEdi
                     .setLanguage(LanguageConfig.ENGLISH)
                     .isSingleDirectReturn(true)
                     .withAspectRatio(1, 1)
-                    .minimumCompressSize(200)// 小于多少kb的图片不压缩
+                    .minimumCompressSize(100)// 小于多少kb的图片不压缩
                     .forResult(MyResultCallback(mAdapter))
 
             }
@@ -220,8 +220,8 @@ class UserEditActivity : BaseMvpActivity<UserEditContract.IPresenter>(), UserEdi
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(data: String) {
                 if(data!=""){
-                    sp.edit().putString("url", "http://oss-cn-shenzhen.aliyuncs.com/$data").apply()
-                    Glide.with(context).load(picturePath)
+                    val path = "https://music-imgs.oss-cn-shenzhen.aliyuncs.com/user/avatar/$data"
+                    Glide.with(context).load(path)
                         .placeholder(R.color.main_black_grey).into(ima)
                 }else{
                     Toast.makeText(

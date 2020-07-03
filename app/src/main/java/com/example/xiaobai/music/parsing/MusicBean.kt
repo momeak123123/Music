@@ -4,7 +4,7 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import java.util.*
 
-data class qqnusic(
+data class qqmusic(
 
     val code: Int,
     val message: String,
@@ -71,5 +71,13 @@ data class kuwomusic(
     val TOTAL: String,
     val searchgroup: String,
     val abslist: JsonArray
+
+)
+
+data class musicpath(
+
+    val mid: String,
+    val br: String,
+    val geturl: String
 
 )

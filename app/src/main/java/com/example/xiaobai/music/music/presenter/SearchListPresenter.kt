@@ -13,8 +13,27 @@ import com.example.xiaobai.music.music.model.SearchListModel
 class SearchListPresenter : BaseMvpPresenter<SearchListContract.IView, SearchListContract.IModel>(), SearchListContract.IPresenter{
 
     override fun registerModel() = SearchListModel::class.java
-    override fun qqdata(context: Context, search: String) {
-        getModel().qqdata(context,search)
+    override fun qqdata(context: Context, search: String,limi:Int) {
+        getModel().qqdata(context,search,limi)
     }
 
+    override fun kugoudata(context: Context, search: String, limi: Int) {
+        getModel().kugoudata(context,search,limi)
+    }
+
+    override fun baidudata(context: Context, search: String) {
+        getModel().baidudata(context,search)
+    }
+
+    override fun wangyidata(context: Context, search: String) {
+        getModel().wangyidata(context,search)
+    }
+
+    override fun kuwodata(context: Context, search: String) {
+        getModel().kuwodata(context,search)
+    }
+
+    override fun musicpath(context: Context, source: String, mid: String, br: String, cookie: String) {
+        getModel().musicpath(context,source,mid,br,cookie)
+    }
 }

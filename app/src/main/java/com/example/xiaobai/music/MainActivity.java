@@ -54,7 +54,7 @@ import io.reactivex.disposables.Disposable;
 public class MainActivity extends AppCompatActivity implements BadgeDismissListener, OnTabSelectListener {
 
     private static final int REQUEST_INSTALL_PACKAGES = 10086;
-    private static Boolean dert = false;
+    private static Boolean dert = true;
     private boolean isShowDownloadProgress;
     private HomeFragment home = new HomeFragment();
     private FindFragment find = new FindFragment();
@@ -174,8 +174,6 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
             checkPermissions(needPermissions);
         }
 
-
-
     }
 
 
@@ -197,7 +195,6 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
 
     public static void craet(Boolean bools) {
         if (bools) {
-
             mTabbar.setVisibility(View.GONE);
         } else {
             if(!dert){

@@ -32,13 +32,10 @@ class StartsActivity : AppCompatActivity() {
 
         MainModel.homedata(this)
 
-        val intent = Intent(this, LockService::class.java)
-        startService(intent)
-
         mdDisposable = Flowable.intervalRange(0, 2, 0, 1, TimeUnit.SECONDS)
             .observeOn(AndroidSchedulers.mainThread())
             .doOnNext {
-                asd(this)
+                asd()
             }
             .doOnComplete {
 

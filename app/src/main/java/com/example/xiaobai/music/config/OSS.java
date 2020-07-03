@@ -31,16 +31,16 @@ public class OSS {
         conf.setSocketTimeout(15 * 1000); // socket超时，默认15秒
         conf.setMaxConcurrentRequest(5); // 最大并发请求数，默认5个
         conf.setMaxErrorRetry(2); // 失败后最大重试次数，默认2次
-       // OSSLog.enableLog(); //这个开启会支持写入手机sd卡中的一份日志文件位置在SDCard_path\OSSLog\logs.csv
+        OSSLog.enableLog(); //这个开启会支持写入手机sd卡中的一份日志文件位置在SDCard_path\OSSLog\logs.csv
 
         oss = new OSSClient(context, endpoint, credentialProvider, conf);
     }
 
-    public static Boolean put(String name,String path){
+    public static void put(String name,String path){
        // byte[] uploadData = new byte[100 * 1024];
         //PutObjectRequest put = new PutObjectRequest("<bucketName>", "<objectName>", uploadData);
-        final Boolean[] bool = {false};
-        PutObjectRequest put = new PutObjectRequest("music-imgs", name, "user/avatar/"+path);
+
+        PutObjectRequest put = new PutObjectRequest("music-imgs", "user/avatar/"+name, path);
 
         // 异步上传时可以设置进度回调。
         put.setProgressCallback(new OSSProgressCallback<PutObjectRequest>() {
@@ -56,7 +56,7 @@ public class OSS {
                 Log.d("PutObject", "UploadSuccess");
                 Log.d("ETag", result.getETag());
                 Log.d("RequestId", result.getRequestId());
-                bool[0] = true;
+
             }
 
             @Override
@@ -73,12 +73,9 @@ public class OSS {
                     Log.e("HostId", serviceException.getHostId());
                     Log.e("RawMessage", serviceException.getRawMessage());
                 }
-                bool[0] = false;
+
             }
         });
-        System.out.println(task.isCompleted());
-        System.out.println(task.isCanceled());
-        return bool[0];
         // task.cancel(); // 可以取消任务。
         // task.waitUntilFinished(); // 等待上传完成。
     }

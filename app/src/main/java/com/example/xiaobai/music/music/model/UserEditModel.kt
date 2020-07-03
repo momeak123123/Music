@@ -106,12 +106,8 @@ class UserEditModel : BaseModel(), UserEditContract.IModel {
                             accsess["SecurityToken"]
                         )
                         val imaurl = sp.getString("user_id", "") + Date().time.toString() + ".png"
-                        val upload = OSS.put(imaurl, picturePath)
-                        if (upload) {
-                            Observable.just(imaurl).subscribe(UserEditActivity.observert)
-                        }else{
-                            Observable.just("").subscribe(UserEditActivity.observert)
-                        }
+                        OSS.put(imaurl, picturePath)
+                        Observable.just(imaurl).subscribe(UserEditActivity.observert)
                     }else{
                         Toast.makeText(
                             context,
