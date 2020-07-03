@@ -3,8 +3,11 @@ package  com.example.xiaobai.music.music.model
 import android.content.Context
 import android.content.SharedPreferences
 import android.widget.Toast
+import com.bumptech.glide.Glide
+import com.example.xiaobai.music.R
 import com.example.xiaobai.music.bean.ResultBean
 import com.example.xiaobai.music.common.Constants
+import com.example.xiaobai.music.config.OSS
 import com.example.xiaobai.music.music.contract.UserEditContract
 import com.example.xiaobai.music.music.view.act.UserEditActivity
 import com.google.gson.Gson
@@ -13,24 +16,33 @@ import com.lzy.okgo.OkGo
 import com.lzy.okgo.callback.StringCallback
 import com.lzy.okgo.model.Response
 import io.reactivex.Observable
+import kotlinx.android.synthetic.main.user_edit.*
 import mvp.ljb.kt.model.BaseModel
+import java.util.*
 
 /**
  * @Author Kotlin MVP Plugin
  * @Date 2020/05/30
  * @Description input description
  **/
-class UserEditModel : BaseModel(), UserEditContract.IModel{
+class UserEditModel : BaseModel(), UserEditContract.IModel {
 
-    override fun registerdata(context: Context, name: String, gender: Int, city: String, images: String,mess:String) {
+    override fun registerdata(
+        context: Context,
+        name: String,
+        gender: Int,
+        city: String,
+        images: String,
+        mess: String
+    ) {
         val sp: SharedPreferences = context.getSharedPreferences("User", Context.MODE_PRIVATE)
         OkGo.post<String>(Constants.URL + "api/user/up_user_info")
-            .params("token",sp.getString("token", ""))
-            .params("nickname",name)
-            .params("sex",gender)
-            .params("countries",city)
-            .params("images",images)
-            .params("message",mess)
+            .params("token", sp.getString("token", ""))
+            .params("nickname", name)
+            .params("sex", gender)
+            .params("countries", city)
+            .params("images", images)
+            .params("message", mess)
             .execute(object : StringCallback() {
                 override fun onSuccess(response: Response<String>) {
                     /**
@@ -59,21 +71,21 @@ class UserEditModel : BaseModel(), UserEditContract.IModel{
 
                         Observable.just(true).subscribe(UserEditActivity.observer)
                     }
-                        Toast.makeText(
-                            context,
-                            bean.msg,
-                            Toast.LENGTH_SHORT
-                        ).show()
+                    Toast.makeText(
+                        context,
+                        bean.msg,
+                        Toast.LENGTH_SHORT
+                    ).show()
 
 
                 }
             })
     }
 
-    override fun osst(context: Context) {
+    override fun osst(context: Context, picturePath: String) {
         val sp: SharedPreferences = context.getSharedPreferences("User", Context.MODE_PRIVATE)
         OkGo.post<String>(Constants.URL + "api/user/get_token")
-            .params("token",sp.getString("token", ""))
+            .params("token", sp.getString("token", ""))
             .execute(object : StringCallback() {
                 override fun onSuccess(response: Response<String>) {
                     /**
@@ -82,17 +94,31 @@ class UserEditModel : BaseModel(), UserEditContract.IModel{
                     val bean =
                         Gson().fromJson(response.body(), ResultBean::class.javaObjectType)
                     if (bean.code == 200) {
+                        val accsess: Map<String, String> = Gson().fromJson(
+                            bean.data,
+                            object : TypeToken<Map<String, String>>() {}.type
+                        )
 
-
-                        Observable.just(bean.data).subscribe(UserEditActivity.observert)
+                        OSS.init(
+                            context,
+                            accsess["AccessKeyId"],
+                            accsess["AccessKeySecret"],
+                            accsess["SecurityToken"]
+                        )
+                        val imaurl = sp.getString("user_id", "") + Date().time.toString() + ".png"
+                        val upload = OSS.put(imaurl, picturePath)
+                        if (upload) {
+                            Observable.just(imaurl).subscribe(UserEditActivity.observert)
+                        }else{
+                            Observable.just("").subscribe(UserEditActivity.observert)
+                        }
+                    }else{
+                        Toast.makeText(
+                            context,
+                            bean.msg,
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
-                    Toast.makeText(
-                        context,
-                        bean.msg,
-                        Toast.LENGTH_SHORT
-                    ).show()
-
-
                 }
             })
     }

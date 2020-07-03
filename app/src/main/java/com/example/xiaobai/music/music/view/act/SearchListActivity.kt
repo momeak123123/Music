@@ -44,7 +44,7 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>() , Se
         super.init(savedInstanceState)
         Initialization.setupDatabaseSearch(this)
         context = this
-
+        top_title.text = getText(R.string.search)
 
     }
 

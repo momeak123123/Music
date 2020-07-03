@@ -73,7 +73,7 @@ class SongDetModel : BaseModel(), SongDetContract.IModel {
                         val bean =
                             Gson().fromJson(response.body(), ResultBeans::class.javaObjectType)
                         if (bean.code == 200) {
-                            // mPlaylistDao.delete(ids)
+                            mPlaylistDao.delete(ids)
                             Observable.just(true).subscribe(SongDetActivity.observers)
                         } else {
                             Toast.makeText(

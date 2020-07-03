@@ -17,7 +17,7 @@
     <string name="nonet">网络未连接</string>
 
     <!-- home -->
-    <string name="search">搜索</string>
+    <string name="search">搜索结果</string>
     <string name="item1">排行榜</string>
     <string name="item2">推荐专辑</string>
     <string name="item3">热门歌星</string>

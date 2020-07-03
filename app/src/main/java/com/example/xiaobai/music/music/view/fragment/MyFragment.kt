@@ -89,7 +89,8 @@ class MyFragment : BaseMvpFragment<MyContract.IPresenter>(), MyContract.IView {
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
                 in_add.visibility = View.VISIBLE
-                MainActivity.craet(false)
+                MainActivity.craetdert(true)
+                MainActivity.craet(true)
 
             }
 
@@ -100,7 +101,9 @@ class MyFragment : BaseMvpFragment<MyContract.IPresenter>(), MyContract.IView {
                     context?.let { MainModel.addsonglist(it, et_name.editValue) }
                     et_name.clear()
                     in_add.visibility = View.GONE
-                    MainActivity.craet(true)
+                    MainActivity.craetdert(false)
+                    MainActivity.craet(false)
+
                 } else {
                     Toast.makeText(
                         context,
@@ -121,12 +124,12 @@ class MyFragment : BaseMvpFragment<MyContract.IPresenter>(), MyContract.IView {
             .subscribe {
 
             }
-        RxView.clicks(item2)
+        RxView.clicks(item3)
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
 
             }
-        RxView.clicks(item3)
+        RxView.clicks(item5)
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
                 if(nums>0){
