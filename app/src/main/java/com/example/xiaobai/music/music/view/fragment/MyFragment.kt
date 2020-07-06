@@ -175,23 +175,6 @@ class MyFragment : BaseMvpFragment<MyContract.IPresenter>(), MyContract.IView {
 
     override fun onResume() {
         super.onResume()
-
-        if (MusicApp.network() == -1) {
-            Toast.makeText(
-                context,
-                getText(R.string.error_connection),
-                Toast.LENGTH_SHORT
-            ).show()
-        } else {
-            loaddata()
-            context?.let { getPresenter().data(it) }
-            nums = mDownDao.queryt(1).count()
-            like_num.text = nums.toString()
-        }
-
-
-
-
         if (sp.getBoolean("login", false)) {
             include.visibility = View.GONE
             Glide.with(requireContext()).load(sp.getString("url", ""))
@@ -201,7 +184,10 @@ class MyFragment : BaseMvpFragment<MyContract.IPresenter>(), MyContract.IView {
             attention_num.text = sp.getString("follow", "")
             collect_num.text = sp.getString("collect", "")
             sign.text = sp.getString("message", "")
-
+            loaddata()
+            context?.let { getPresenter().data(it) }
+            nums = mDownDao.queryt(1).count()
+            like_num.text = nums.toString()
         } else {
             include.visibility = View.VISIBLE
         }
