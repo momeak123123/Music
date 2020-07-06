@@ -5,8 +5,6 @@ import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-
-import com.didichuxing.doraemonkit.DoraemonKit;
 import com.example.xiaobai.music.bean.ApkModel;
 import com.example.xiaobai.music.bean.Music;
 import com.example.xiaobai.music.utils.NetWorkUtils;
@@ -108,7 +106,6 @@ public class MusicApp extends Application {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                DoraemonKit.install(MusicApp.this,"bdf8287e2df59fbe051efaf2494a8b6a");
                 UpdateAppUtils.init(mContext);
                 BlurKit.init(MusicApp.this);
                 XUI.init(MusicApp.this); //初始化UI框架
