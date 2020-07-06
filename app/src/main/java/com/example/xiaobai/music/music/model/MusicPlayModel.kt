@@ -253,7 +253,7 @@ class MusicPlayModel {
                             val da = ca.substring(0,ca.lastIndexOf('<'))
                             val bean =
                                 Gson().fromJson(da, com.example.xiaobai.music.parsing.musicpath::class.javaObjectType)
-                            Observable.just(bean.geturl).subscribe(MusicPlayActivity.observert)
+                                Observable.just(bean.geturl).subscribe(MusicPlayActivity.observert)
                         } catch (e: Exception) {
                         }
                     }

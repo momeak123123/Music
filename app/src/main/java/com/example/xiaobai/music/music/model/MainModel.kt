@@ -3,6 +3,7 @@ package com.example.xiaobai.music.music.model
 import android.content.Context
 import android.content.SharedPreferences
 import android.widget.Toast
+import com.example.xiaobai.music.R
 import com.example.xiaobai.music.bean.*
 import com.example.xiaobai.music.common.Constants
 import com.example.xiaobai.music.music.view.fragment.FindFragment
@@ -43,7 +44,7 @@ class MainModel {
                         } catch (e: Exception) {
                             Toast.makeText(
                                 context,
-                                "程序出现了未知异常",
+                                R.string.error_connection,
                                 Toast.LENGTH_SHORT
                             ).show()
                         }

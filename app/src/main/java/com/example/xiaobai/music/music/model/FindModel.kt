@@ -3,9 +3,11 @@ package  com.example.xiaobai.music.music.model
 import android.content.Context
 import android.content.SharedPreferences
 import android.widget.Toast
+import com.example.xiaobai.music.R
 import com.example.xiaobai.music.bean.*
 import com.example.xiaobai.music.common.Constants
 import com.example.xiaobai.music.music.contract.FindContract
+import com.example.xiaobai.music.music.view.act.AlbumDetActivity
 import com.example.xiaobai.music.music.view.act.ArtistActivity
 import com.example.xiaobai.music.music.view.fragment.FindFragment
 import com.example.xiaobai.music.music.view.fragment.MyFragment
@@ -31,34 +33,37 @@ class FindModel : BaseModel(), FindContract.IModel {
         return mSearchDao.queryAll()
     }
 
-    override fun listcean(): MutableList<Search> {
-        var Data = mutableListOf<Search>()
-        val search = Search()
-        search.txt = "周杰伦"
-        search.state = 0
-        Data.add(search)
+    override fun listcean(){
+        OkGo.get<String>(Constants.URL + "api/Serach/index")
+            .execute(object : StringCallback() {
+                override fun onSuccess(response: Response<String>) {
+                    /**
+                     * 成功回调
+                     */
+                    if(response.code()==200){
+                        try {
+                            val bean =
+                                Gson().fromJson(response.body(), ResultBeans::class.javaObjectType)
+                            if (bean.code == 200) {
 
-        val search1 = Search()
-        search1.txt = "林俊杰"
-        search1.state = 0
-        Data.add(search1)
+                                val sear: List<Sear> = Gson().fromJson<Array<Sear>>(
+                                    bean.data,
+                                    Array<Sear>::class.java
+                                ).toList()
+                                Observable.just(true).subscribe(FindFragment.observers)
+                                Observable.just(sear).subscribe(FindFragment.observert)
+                            }
+                        } catch (e: Exception) {
 
-        val search2 = Search()
-        search2.txt = "华晨宇"
-        search2.state = 0
-        Data.add(search2)
+                        }
+                    }else{
+                        Observable.just(false).subscribe(FindFragment.observers)
+                    }
 
-        val search3 = Search()
-        search3.txt = "Dance Monkey"
-        search3.state = 0
-        Data.add(search3)
 
-        val search4 = Search()
-        search4.txt = "独"
-        search4.state = 0
-        Data.add(search4)
 
-        return Data
+                }
+            })
     }
 
     override fun search(queryText: String) {
@@ -71,22 +76,22 @@ class FindModel : BaseModel(), FindContract.IModel {
                     /**
                      * 成功回调
                      */
-                    try {
 
-                        val ca = response.body().substring(23)
-                        val da = ca.substring(0,ca.lastIndexOf('<'))
-                        val bean =
-                            Gson().fromJson(da, kugousearch::class.javaObjectType)
-                             println( bean.data)
+                        try {
+
+                            val ca = response.body().substring(23)
+                            val da = ca.substring(0, ca.lastIndexOf('<'))
+                            val bean =
+                                Gson().fromJson(da, kugousearch::class.javaObjectType)
                             val ads: MutableList<kugouseBean> = Gson().fromJson<Array<kugouseBean>>(
                                 bean.data,
                                 Array<kugouseBean>::class.java
                             ).toMutableList()
 
                             Observable.just(ads).subscribe(FindFragment.observer)
-                    } catch (e: Exception) {
+                        } catch (e: Exception) {
 
-                    }
+                        }
                 }
             })
     }

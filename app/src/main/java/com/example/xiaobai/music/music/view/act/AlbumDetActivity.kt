@@ -146,7 +146,7 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
 
 
     fun loadData() {
-        if (MusicApp.getNetwork()) {
+        if (MusicApp.network()!=-1) {
             if (activity_type == 1) {
                 getPresenter().songdatas(album_id, album_type, album_time, context)
             } else {
@@ -196,7 +196,7 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
         RxView.clicks(cencel)
             .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
-                if (sp.getBoolean("login", false)) {
+                if (MusicApp.userlogin()) {
                     val idmap = mutableListOf<Music>()
                     for (ite in adapter.listdet) {
                         if (ite.type == 1) {
@@ -239,7 +239,7 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
         RxView.clicks(down)
             .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
-                if (sp.getBoolean("login", false)) {
+                if (MusicApp.userlogin()) {
                     MaterialDialog.Builder(context)
                         .title("下载音乐")
                         .content("是否下载音乐")
@@ -489,17 +489,13 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
         }
     }
 
+
     override fun onResume() {
         super.onResume()
 
-        if(MusicApp.getIsapp()){
-            val intent = Intent()
-            context.let { intent.setClass(it, MusicPlayActivity().javaClass) }
-            intent.putExtra("album_id", 0L)
-            intent.putExtra("pos", 0)
-            intent.putExtra("list", "")
-            intent.putExtra("type", 0)
-            context.startActivity(intent)
+        try {
+            adapter.notifyItemChanged(0)
+        } catch (e: Exception) {
         }
 
         observers = object : Observer<Boolean> {
@@ -586,7 +582,7 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
                 RxView.clicks(relat3)
                     .throttleFirst(3, TimeUnit.SECONDS)
                     .subscribe {
-                        if (sp.getBoolean("login", false)) {
+                        if (MusicApp.userlogin()) {
                             poplue.visibility = View.GONE
                             in_indel.visibility = View.VISIBLE
                             Glide.with(context).load("").into(del)
@@ -618,7 +614,7 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
                 RxView.clicks(relat4)
                     .throttleFirst(1, TimeUnit.SECONDS)
                     .subscribe {
-                        if (sp.getBoolean("login", false)) {
+                        if (MusicApp.userlogin()) {
                             MaterialDialog.Builder(context)
                                 .title("下载音乐")
                                 .content("是否下载音乐")

@@ -107,7 +107,7 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
         val data = mDownDao.query(playids)
         val song = mutableListOf<Music>()
         val artist = mutableListOf<artistlist>()
-        if (MusicApp.getNetwork()) {
+        if (MusicApp.network()!=-1) {
             getPresenter().listdata(context, playids)
         } else {
             for (it in data) {
@@ -153,7 +153,7 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
             swipe_refresh_layout.setColorSchemeColors(-0xff6634, -0xbbbc, -0x996700, -0x559934, -0x7800)
             //下拉刷新
             swipe_refresh_layout.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener {
-                if (MusicApp.getNetwork()) {
+                if (MusicApp.network()!=-1) {
                     getPresenter().listdata(context, playids)
                 } else {
                     if (swipe_refresh_layout != null) {
@@ -351,14 +351,9 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
     override fun onResume() {
         super.onResume()
 
-        if(MusicApp.getIsapp()){
-            val intent = Intent()
-            context.let { intent.setClass(it, MusicPlayActivity().javaClass) }
-            intent.putExtra("album_id", 0L)
-            intent.putExtra("pos", 0)
-            intent.putExtra("list", "")
-            intent.putExtra("type", 0)
-            context.startActivity(intent)
+        try {
+            adapter.notifyItemChanged(0)
+        } catch (e: Exception) {
         }
 
         observer = object : Observer<JsonArray> {

@@ -70,7 +70,7 @@ class LoginActivity : BaseMvpActivity<LoginContract.IPresenter>(), LoginContract
         RxView.clicks(btn_login)
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
-                if(MusicApp.getNetwork()){
+                if(MusicApp.network()!=-1){
                     if (et_username_number.text.toString() != "") {
                         if(isEmail(et_username_number.text.toString())){
                             if (et_passs_number.text.toString() != "") {

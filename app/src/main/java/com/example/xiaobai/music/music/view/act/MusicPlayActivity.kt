@@ -124,7 +124,6 @@ class MusicPlayActivity : AppCompatActivity() {
         intentFilter.addAction("play")
         intentFilter.addAction("next")
         registerReceiver(broadcastReceiver, intentFilter)
-        MusicApp.setIsapp(true)
         lock = "1"
     }
 
@@ -199,7 +198,6 @@ class MusicPlayActivity : AppCompatActivity() {
             .subscribe {
                 moveTaskToBack(true)
                 in_indel.visibility = View.GONE
-                MusicApp.setIsapp(false)
             }
 
         RxView.clicks(icon1)
@@ -238,7 +236,7 @@ class MusicPlayActivity : AppCompatActivity() {
         RxView.clicks(icon2)
             .throttleFirst(0, TimeUnit.SECONDS)
             .subscribe {
-                if (sp.getBoolean("login", false)) {
+                if (MusicApp.userlogin()) {
                     MaterialDialog.Builder(context)
                         .title("下载音乐")
                         .content("是否下载音乐")
@@ -315,7 +313,7 @@ class MusicPlayActivity : AppCompatActivity() {
         RxView.clicks(icon3)
             .throttleFirst(0, TimeUnit.SECONDS)
             .subscribe {
-                if (sp.getBoolean("login", false)) {
+                if (MusicApp.userlogin()) {
                     in_indel.visibility = View.VISIBLE
                     Glide.with(context).load("").into(del)
                     in_title.text = getText(R.string.song_but)
@@ -540,9 +538,8 @@ class MusicPlayActivity : AppCompatActivity() {
                     MusicApp.setAblumid(0)
                     MusicApp.setMusic(playingMusicList)
                     bool = false
-                    moveTaskToBack(true)
+                    finish()
                     in_indel.visibility = View.GONE
-                    MusicApp.setIsapp(false)
                 }
 
             }
@@ -555,11 +552,9 @@ class MusicPlayActivity : AppCompatActivity() {
         observers = object : Observer<Long> {
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(bool: Long) {
-                if (!mDisposable.isDisposed) {
-                    mDisposable.dispose()
-                    time(bool, max - bool)
-                }
-
+              try{
+                  time(bool, max - bool)
+              }catch (e:Exception){}
             }
 
             override fun onError(e: Throwable) {}
@@ -629,7 +624,9 @@ class MusicPlayActivity : AppCompatActivity() {
                             if (playPauseIv.isPlaying) {
                                 playPauseIv.pause()
                                 wlMedia.pause()
-                                mDisposable.dispose()
+                                if (!mDisposable.isDisposed) {
+                                    mDisposable.dispose()
+                                }
                                 MusicApp.setPlay(false)
                                 Observable.just(false).subscribe(observerno)
                                 coverFragment.stopRotateAnimation()
@@ -639,6 +636,7 @@ class MusicPlayActivity : AppCompatActivity() {
                             }
                         }
                         1 -> {
+
                             if (id == 0) {
                                 id = playingMusicList!!.size - 1
                                 starts(playingMusicList!![id])
@@ -649,6 +647,7 @@ class MusicPlayActivity : AppCompatActivity() {
 
                         }
                         2 -> {
+
                             if (playingMusicList!!.size - 1 == id) {
                                 id = 0
                                 starts(playingMusicList!![0])
@@ -811,23 +810,25 @@ class MusicPlayActivity : AppCompatActivity() {
             object : Thread() {
                 override fun run() {
                     bitmap = BitmapUtils.netUrlPicToBmp(music.pic_url)
-                    coverFragment.setImageBitmap(bitmap)
-                    t1 = music.name
-                    t2 = srtist_name
-                    m1 = bitmap!!
-                    Observable.just(true).subscribe(observerno)
+                    if(bitmap!=null) {
+                        coverFragment.setImageBitmap(bitmap)
+                        m1 = bitmap!!
+                        t1 = music.name
+                        t2 = srtist_name
+                        Observable.just(true).subscribe(observerno)
+                    }
                 }
             }.start()
 
             object : Thread() {
                 override fun run() {
                     val bitmaps = BitmapUtils.netUrlPicToBmp(music.pic_url)
-                    BlurKit.getInstance().blur(bitmaps, 25)
-                    m2 = bitmaps!!
-
+                    if(bitmaps!=null){
+                        BlurKit.getInstance().blur(bitmaps, 25)
+                        m2 = bitmaps
+                    }
                 }
             }.start()
-
             if(music.uri != ""){
                 play(music.uri)
                 lyricFragment.lrcView(music.song_id)
@@ -845,15 +846,13 @@ class MusicPlayActivity : AppCompatActivity() {
 
     private fun starts(music: Music) {
         try {
-
+            if (!mDisposable.isDisposed) {
+                mDisposable.dispose()
+            }
             playPauseIv.pause()
             coverFragment.stopRotateAnimation()
             MusicApp.setPlay(true)
             wlMedia.stop()
-            mDisposable.dispose()
-            wlMedia.seek(0.00)
-            wlMedia.seekTimeCallBack(false)
-            Observable.just(0L).subscribe(observers)
             MusicApp.setPosition(id)
             MusicApp.setMusic(playingMusicList)
             song_id = music.song_id
@@ -875,21 +874,25 @@ class MusicPlayActivity : AppCompatActivity() {
 
             object : Thread() {
                 override fun run() {
-
                     bitmap = BitmapUtils.netUrlPicToBmp(music.pic_url)
-                    coverFragment.setImageBitmap(bitmap)
-                    t1 = music.name
-                    t2 = srtist_name
-                    m1 = bitmap!!
-                    Observable.just(true).subscribe(observerno)
+                    if(bitmap!=null) {
+                        coverFragment.setImageBitmap(bitmap)
+                        m1 = bitmap!!
+                        t1 = music.name
+                        t2 = srtist_name
+                        Observable.just(true).subscribe(observerno)
+                    }
+
                 }
             }.start()
 
             object : Thread() {
                 override fun run() {
                     val bitmaps = BitmapUtils.netUrlPicToBmp(music.pic_url)
-                    BlurKit.getInstance().blur(bitmaps, 25)
-                    m2 = bitmaps!!
+                    if(bitmaps!=null){
+                        BlurKit.getInstance().blur(bitmaps, 25)
+                        m2 = bitmaps
+                    }
 
                 }
             }.start()
@@ -912,9 +915,7 @@ class MusicPlayActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        if (wlMedia.isPlaying) {
-            wlMedia.exit()
-        }
+        Observable.just(true).subscribe(observer)
         Notification.deleteNotification()
         unregisterReceiver(broadcastReceiver) // 注销广播
     }
@@ -1059,7 +1060,6 @@ class MusicPlayActivity : AppCompatActivity() {
     override fun onBackPressed() {
         moveTaskToBack(true)
         in_indel.visibility = View.GONE
-        MusicApp.setIsapp(false)
     }
 
 }

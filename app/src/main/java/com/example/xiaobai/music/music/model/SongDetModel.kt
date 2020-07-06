@@ -3,6 +3,7 @@ package  com.example.xiaobai.music.music.model
 import android.content.Context
 import android.content.SharedPreferences
 import android.widget.Toast
+import com.example.xiaobai.music.R
 import com.example.xiaobai.music.bean.Music
 import com.example.xiaobai.music.bean.ResultBeans
 import com.example.xiaobai.music.common.Constants
@@ -49,7 +50,7 @@ class SongDetModel : BaseModel(), SongDetContract.IModel {
                     } catch (e: Exception) {
                         Toast.makeText(
                             context,
-                            "程序出现了未知异常",
+                            R.string.error_connection,
                             Toast.LENGTH_SHORT
                         ).show()
                     }
@@ -85,7 +86,7 @@ class SongDetModel : BaseModel(), SongDetContract.IModel {
                     } catch (e: Exception) {
                         Toast.makeText(
                             context,
-                            "程序出现了未知异常",
+                            R.string.error_connection,
                             Toast.LENGTH_SHORT
                         ).show()
                     }
@@ -160,7 +161,6 @@ class SongDetModel : BaseModel(), SongDetContract.IModel {
                         val bean =
                             Gson().fromJson(response.body(), ResultBeans::class.javaObjectType)
                         if (bean.code == 200) {
-
                             val playlist: Playlist = mPlaylistDao.query(playids)[0]
                             val num = (playlist.song_num.toInt() - 1).toString()
                             playlist.song_num = num
@@ -168,14 +168,10 @@ class SongDetModel : BaseModel(), SongDetContract.IModel {
                             SongDetActivity.adapter.remove(data)
                             SongDetActivity.adapter.num = num
                             SongDetActivity.adapter.notifyItemChanged(0)
-
-
                             val lists = mDownDao.querys(song.song_id)
                             if (lists.size > 0) {
                                 mDownDao.delete(lists[0].id)
                             }
-
-
                         } else {
                             Toast.makeText(
                                 context,

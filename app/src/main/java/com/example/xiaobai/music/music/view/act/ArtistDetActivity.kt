@@ -67,7 +67,7 @@ class ArtistDetActivity : BaseMvpActivity<ArtistDetContract.IPresenter>() , Arti
             val bundle = intent.extras
             val id = bundle?.get("id") as Long
             val type = bundle.get("type") as Int
-            if(MusicApp.getNetwork()){
+            if(MusicApp.network()!=-1){
                 getPresenter().listdata(context,id,type)
             }else{
                 if (swipe_refresh_layout != null) {

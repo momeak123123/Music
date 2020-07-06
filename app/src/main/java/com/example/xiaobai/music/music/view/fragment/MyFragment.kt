@@ -70,15 +70,16 @@ class MyFragment : BaseMvpFragment<MyContract.IPresenter>(), MyContract.IView {
     override fun initData() {
         super.initData()
 
-        loaddata()
-
         sp = requireContext().getSharedPreferences("User", Context.MODE_PRIVATE)
-        Glide.with(requireContext()).load(sp.getString("url", "")).placeholder(R.color.main_black_grey).into(iv_cover)
+        Glide.with(requireContext()).load(sp.getString("url", ""))
+            .placeholder(R.color.main_black_grey).into(iv_cover)
         name.text = sp.getString("nickname", "")
         city.text = sp.getString("countries", "")
         attention_num.text = sp.getString("follow", "")
         collect_num.text = sp.getString("collect", "")
         sign.text = sp.getString("message", "")
+
+
     }
 
     @SuppressLint("CheckResult")
@@ -114,7 +115,7 @@ class MyFragment : BaseMvpFragment<MyContract.IPresenter>(), MyContract.IView {
             }
         RxView.clicks(in_cancel)
             .throttleFirst(1, TimeUnit.SECONDS)
-            .subscribe{ o: Any? ->
+            .subscribe { o: Any? ->
                 in_add.visibility = View.GONE
                 MainActivity.craet(true)
             }
@@ -132,11 +133,11 @@ class MyFragment : BaseMvpFragment<MyContract.IPresenter>(), MyContract.IView {
         RxView.clicks(item5)
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
-                if(nums>0){
+                if (nums > 0) {
                     val intent = Intent()
                     context?.let { it1 -> intent.setClass(it1, DownloadActivity().javaClass) }
                     startActivity(intent)
-                }else{
+                } else {
                     Toast.makeText(
                         context,
                         getText(R.string.song_download_error),
@@ -175,35 +176,47 @@ class MyFragment : BaseMvpFragment<MyContract.IPresenter>(), MyContract.IView {
     override fun onResume() {
         super.onResume()
 
-        loaddata()
+        if (MusicApp.network() == -1) {
+            Toast.makeText(
+                context,
+                getText(R.string.error_connection),
+                Toast.LENGTH_SHORT
+            ).show()
+        } else {
+            loaddata()
+            context?.let { getPresenter().data(it) }
+            nums = mDownDao.queryt(1).count()
+            like_num.text = nums.toString()
+        }
 
-        nums = mDownDao.queryt(1).count()
-        println(nums)
-        like_num.text = nums.toString()
 
-        if(sp.getBoolean("login",false)){
+
+
+        if (sp.getBoolean("login", false)) {
             include.visibility = View.GONE
-            Glide.with(requireContext()).load(sp.getString("url", "")).placeholder(R.color.main_black_grey).into(iv_cover)
+            Glide.with(requireContext()).load(sp.getString("url", ""))
+                .placeholder(R.color.main_black_grey).into(iv_cover)
             name.text = sp.getString("nickname", "")
             city.text = sp.getString("countries", "")
             attention_num.text = sp.getString("follow", "")
             collect_num.text = sp.getString("collect", "")
             sign.text = sp.getString("message", "")
 
-        }else{
+        } else {
             include.visibility = View.VISIBLE
         }
 
         observer = object : Observer<Boolean> {
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(data: Boolean) {
-                if(data){
+                if (data) {
                     val sp: SharedPreferences =
                         requireContext().getSharedPreferences("User", Context.MODE_PRIVATE)
 
-                    Glide.with(requireContext()).load(sp.getString("url", "")).placeholder(R.color.main_black_grey).into(iv_cover)
+                    Glide.with(requireContext()).load(sp.getString("url", ""))
+                        .placeholder(R.color.main_black_grey).into(iv_cover)
                     name.text = sp.getString("nickname", "")
-                    city.text = sp.getString("city", "")
+                    city.text = sp.getString("countries", "")
                     attention_num.text = sp.getString("follow", "")
                     collect_num.text = sp.getString("collect", "")
                     sign.text = sp.getString("message", "")
@@ -261,25 +274,15 @@ class MyFragment : BaseMvpFragment<MyContract.IPresenter>(), MyContract.IView {
     }
 
 
+    fun loaddata() {
 
-    fun loaddata(){
-        if (MusicApp.getNetwork()) {
-            val list: MutableList<Playlist> = mPlaylistDao.queryAll()
-            if (list.size > 0) {
-                initSongList(list)
-                bools = true
-            } else {
-                context?.let { getPresenter().listdata(it) }
-            }
-
+        val list: MutableList<Playlist> = mPlaylistDao.queryAll()
+        if (list.size > 0) {
+            initSongList(list)
+            bools = true
         } else {
-            Toast.makeText(
-                context,
-                getText(R.string.nonet),
-                Toast.LENGTH_LONG
-            ).show()
+            context?.let { getPresenter().listdata(it) }
         }
-
     }
 
 

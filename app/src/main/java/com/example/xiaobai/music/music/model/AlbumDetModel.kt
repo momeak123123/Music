@@ -2,6 +2,7 @@ package  com.example.xiaobai.music.music.model
 
 import android.content.Context
 import android.widget.Toast
+import com.example.xiaobai.music.R
 import com.example.xiaobai.music.bean.ResultBeans
 import com.example.xiaobai.music.common.Constants
 import com.example.xiaobai.music.music.contract.AlbumDetContract
@@ -29,21 +30,32 @@ class AlbumDetModel : BaseModel(), AlbumDetContract.IModel {
                     /**
                      * 成功回调
                      */
-                    try {
-                        val bean =
-                            Gson().fromJson(response.body(), ResultBeans::class.javaObjectType)
-                        if (bean.code == 200) {
-                            Observable.just(bean.data).subscribe(AlbumDetActivity.observer)
-                        } else {
-                            Toast.makeText(
-                                context,
-                                bean.msg,
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    } catch (e: Exception) {
+                    if(response.code()==200){
+                        try {
+                            val bean =
+                                Gson().fromJson(response.body(), ResultBeans::class.javaObjectType)
+                            if (bean.code == 200) {
+                                Observable.just(bean.data).subscribe(AlbumDetActivity.observer)
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    bean.msg,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        } catch (e: Exception) {
 
+                        }
+                    }else{
+                        Toast.makeText(
+                            context,
+                            R.string.error_connection,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        Observable.just(true).subscribe(AlbumDetActivity.observers)
                     }
+
+
 
                 }
             })
@@ -60,25 +72,34 @@ class AlbumDetModel : BaseModel(), AlbumDetContract.IModel {
             .params("update_time", time)
             .execute(object : StringCallback() {
                 override fun onSuccess(response: Response<String>) {
-                    /**
-                     * 成功回调
-                     */
-                    try {
-                        val bean =
-                            Gson().fromJson(response.body(), ResultBeans::class.javaObjectType)
-                        if (bean.code == 200) {
-                            Observable.just(bean.data).subscribe(AlbumDetActivity.observer)
-                        } else {
-                            Toast.makeText(
-                                context,
-                                bean.msg,
-                                Toast.LENGTH_SHORT
-                            ).show()
+                    if (response.code() == 200) {
+                        /**
+                         * 成功回调
+                         */
+                        try {
+                            val bean =
+                                Gson().fromJson(response.body(), ResultBeans::class.javaObjectType)
+                            if (bean.code == 200) {
+                                Observable.just(bean.data).subscribe(AlbumDetActivity.observer)
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    bean.msg,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        } catch (e: Exception) {
+
                         }
-                    } catch (e: Exception) {
 
+                    } else {
+                        Toast.makeText(
+                            context,
+                            R.string.error_connection,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        Observable.just(true).subscribe(AlbumDetActivity.observers)
                     }
-
                 }
             })
 

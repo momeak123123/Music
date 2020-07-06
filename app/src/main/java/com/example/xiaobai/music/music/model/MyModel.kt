@@ -3,6 +3,7 @@ package  com.example.xiaobai.music.music.model
 import android.content.Context
 import android.content.SharedPreferences
 import android.widget.Toast
+import com.example.xiaobai.music.R
 import com.example.xiaobai.music.bean.ResultBean
 import com.example.xiaobai.music.bean.ResultBeans
 import com.example.xiaobai.music.common.Constants
@@ -47,8 +48,10 @@ class MyModel : BaseModel(), MyContract.IModel {
                             sp.edit().putString("nickname", user["nickname"]).apply()
                             sp.edit().putString("url", user["headimgurl"]).apply()
                             sp.edit().putString("countries", user["countries"]).apply()
+                            sp.edit().putBoolean("login", true).apply()
                             sp.edit().putString("sex", user["sex"]).apply()
                             sp.edit().putString("token", user["token"]).apply()
+                            sp.edit().putString("message", user["message"]).apply()
                             sp.edit().putString("user_id", user["user_id"]).apply()
                             sp.edit().putString("follow", user["follow"]).apply()
                             sp.edit().putString("collect", user["collect"]).apply()
@@ -98,7 +101,7 @@ class MyModel : BaseModel(), MyContract.IModel {
                     } catch (e: Exception) {
                         Toast.makeText(
                             context,
-                            "程序出现了未知异常",
+                            R.string.error_connection,
                             Toast.LENGTH_SHORT
                         ).show()
                     }

@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -38,6 +39,7 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>() , Se
 
     companion object {
         lateinit var observer: Observer<MutableList<Music>>
+
     }
     val datas = mutableListOf<Music>()
     private  var ids: Int = 0
@@ -88,9 +90,19 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>() , Se
         observer = object : Observer<MutableList<Music>> {
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(data: MutableList<Music>) {
-                datas.clear()
-                datas.addAll(data)
-                initSearchList(data)
+                if(data.size>0){
+                    datas.clear()
+                    datas.addAll(data)
+                    initSearchList(data)
+                }else{
+                    Toast.makeText(
+                        context,
+                        getText(R.string.  error_search),
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                }
+
                 if (swipe_refresh_layout != null) {
                     swipe_refresh_layout.isRefreshing = false
                 }
@@ -100,6 +112,9 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>() , Se
             override fun onComplete() {}
 
         }
+
+
+
 
 
     }

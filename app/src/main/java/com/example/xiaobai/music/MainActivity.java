@@ -53,9 +53,7 @@ import io.reactivex.disposables.Disposable;
 @RequiresApi(api = Build.VERSION_CODES.M)
 public class MainActivity extends AppCompatActivity implements BadgeDismissListener, OnTabSelectListener {
 
-    private static final int REQUEST_INSTALL_PACKAGES = 10086;
     private static Boolean dert = true;
-    private boolean isShowDownloadProgress;
     private HomeFragment home = new HomeFragment();
     private FindFragment find = new FindFragment();
     private MyFragment my = new MyFragment();
@@ -76,7 +74,6 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
     public static Boolean bool = true;
 
     private static final int PERMISSION_REQUESTED = 0;
-    private static final int REQUEST_CODE = 1;
     /**
      * 判断是否需要检测，防止不停的弹框
      */
@@ -84,7 +81,6 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
     private ViewPager viewPager;
     private static JPTabBar mTabbar;
     private int indexs = 0;
-    private SharedPreferences sp;
     private static MainActivity context;
 
     @Override
@@ -98,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
 
         Initialization.setupDatabasePlaylist(this);
         Initialization.setupDatabaseDown(this);
+
         initData();
 
         if(bool){
@@ -124,8 +121,14 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
         list.add(home);
         list.add(find);
         list.add(my);
-        viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(), list));
-        mTabbar.setContainer(viewPager);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                viewPager.setAdapter(new ViewPagerAdapter(getSupportFragmentManager(), list));
+                mTabbar.setContainer(viewPager);
+
+            }
+        }).start();
         //设置Badge消失的代理
         mTabbar.setDismissListener(this);
         mTabbar.setTabListener(this);
@@ -182,12 +185,14 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
         SoftKeyBoardListener.setListener(MainActivity.this, new SoftKeyBoardListener.OnSoftKeyBoardChangeListener() {
             @Override
             public void keyBoardShow(int height) {
-                craet(false);
+                craet(true);
             }
 
             @Override
             public void keyBoardHide(int height) {
-                craet(true);
+                craetdert(false);
+                craet(false);
+
             }
         });
     }

@@ -109,7 +109,7 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
             )
 
             initList(ads, lists, album, artist, song)
-        }else{
+        } else {
             context?.let { getPresenter().homedata(it) }
         }
     }
@@ -141,26 +141,24 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
             }
     }
 
-
     override fun onResume() {
         super.onResume()
 
         try {
             adapter!!.notifyItemChanged(0)
-        }catch (e:Exception){}
-
-        if (lists.isEmpty()) {
-            initData()
+        } catch (e: Exception) {
         }
 
-        if(MusicApp.getIsapp()){
-            val intent = Intent()
-            context?.let { intent.setClass(it, MusicPlayActivity().javaClass) }
-            intent.putExtra("album_id", 0L)
-            intent.putExtra("pos", 0)
-            intent.putExtra("list", "")
-            intent.putExtra("type", 0)
-            context?.startActivity(intent)
+        if(MusicApp.network()==-1){
+            Toast.makeText(
+                context,
+                getText(R.string.error_connection),
+                Toast.LENGTH_SHORT
+            ).show()
+        }else{
+            if (lists.isEmpty()) {
+                initData()
+            }
         }
 
         observer = object : Observer<JsonObject> {
@@ -191,7 +189,6 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
                 initList(ads, list, album, artist, song)
 
 
-
             }
 
             override fun onError(e: Throwable) {}
@@ -206,7 +203,7 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
             @SuppressLint("SetTextI18n", "CheckResult")
             override fun onNext(data: Music) {
                 poplue.visibility = View.VISIBLE
-                MainActivity.craet(false)
+                MainActivity.craet(true)
                 edit_song.text =
                     getText(R.string.album).toString() + ":" + data.album_name
                 var srtist_name = ""
@@ -223,7 +220,8 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
                     .throttleFirst(3, TimeUnit.SECONDS)
                     .subscribe {
                         poplue.visibility = View.GONE
-                        MainActivity.craet(true)
+                        MainActivity.craetdert(false)
+                        MainActivity.craet(false)
                     }
 
                 RxView.clicks(relat1)
@@ -285,70 +283,49 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
                                 .negativeText("取消")
                                 .onPositive { _: MaterialDialog?, _: DialogAction? ->
 
-                                    val idmap = mutableListOf<Music>()
-
-                                    for (ite in SongDetActivity.adapter.listdet) {
-                                        if (ite.type == 1) {
-                                            idmap.add(ite.song)
-                                        }
-                                    }
-                                    if (idmap.isNotEmpty()) {
-                                        for (its in idmap) {
-
-                                            val downs = mDownDao.querys(its.song_id)
-                                            if (downs.size > 0) {
-                                                for (itd in downs) {
-                                                    if (itd.type == 0) {
-                                                        val request = OkGo.get<File>(its.uri)
-                                                        OkDownload.request(its.uri, request) //
-                                                            .priority(0)
-                                                            .fileName("music" + its.song_id + ".mp3") //
-                                                            .save() //
-                                                            .register(
-                                                                LogDownloadListener(
-                                                                    its,
-                                                                    context,
-                                                                    0,
-                                                                    downs,
-                                                                    0
-                                                                )
-                                                            ) //
-                                                            .start()
-                                                    } else {
-                                                        Toast.makeText(
-                                                            context,
-                                                            getText(R.string.download_carry),
-                                                            Toast.LENGTH_SHORT
-                                                        ).show()
-                                                    }
-                                                }
-                                            } else {
-                                                val request = OkGo.get<File>(its.uri)
-                                                OkDownload.request(its.uri, request) //
+                                    val downs = mDownDao.querys(data.song_id)
+                                    if (downs.size > 0) {
+                                        for (itd in downs) {
+                                            if (itd.type == 0) {
+                                                val request = OkGo.get<File>(data.uri)
+                                                OkDownload.request(data.uri, request) //
                                                     .priority(0)
-                                                    .fileName("music" + its.song_id + ".mp3") //
+                                                    .fileName("music" + data.song_id + ".mp3") //
                                                     .save() //
                                                     .register(
                                                         LogDownloadListener(
-                                                            its,
+                                                            data,
                                                             context,
                                                             0,
                                                             downs,
-                                                            1
+                                                            0
                                                         )
                                                     ) //
                                                     .start()
+                                            } else {
+                                                Toast.makeText(
+                                                    context,
+                                                    getText(R.string.download_carry),
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
                                             }
-
-
                                         }
-
                                     } else {
-                                        Toast.makeText(
-                                            context,
-                                            getText(R.string.song_collect_error),
-                                            Toast.LENGTH_SHORT
-                                        ).show()
+                                        val request = OkGo.get<File>(data.uri)
+                                        OkDownload.request(data.uri, request) //
+                                            .priority(0)
+                                            .fileName("music" + data.song_id + ".mp3") //
+                                            .save() //
+                                            .register(
+                                                LogDownloadListener(
+                                                    data,
+                                                    context,
+                                                    0,
+                                                    downs,
+                                                    1
+                                                )
+                                            ) //
+                                            .start()
                                     }
 
 

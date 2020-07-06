@@ -2,10 +2,12 @@ package  com.example.xiaobai.music.music.model
 
 import android.content.Context
 import android.widget.Toast
+import com.example.xiaobai.music.R
 import com.example.xiaobai.music.bean.Hierarchy
 import com.example.xiaobai.music.bean.Music
 import com.example.xiaobai.music.bean.artistlist
 import com.example.xiaobai.music.music.contract.SearchListContract
+import com.example.xiaobai.music.music.view.act.AlbumDetActivity
 import com.example.xiaobai.music.music.view.act.RegisteredActivity
 import com.example.xiaobai.music.music.view.act.SearchListActivity
 import com.example.xiaobai.music.music.view.fragment.FindFragment
@@ -26,7 +28,7 @@ import mvp.ljb.kt.model.BaseModel
  * @Description input description
  **/
 class SearchListModel : BaseModel(), SearchListContract.IModel {
-    override fun qqdata(context: Context, search: String,limi:Int) {
+    override fun qqdata(context: Context, search: String, limi: Int) {
         val musicall = mutableListOf<Music>()
         OkGo.get<String>("https://c.y.qq.com/soso/fcgi-bin/client_search_cp?ct=24&qqmusic_ver=1298&new_json=1&remoteplace=txt.yqq.song&searchid=55196029248120147&t=0&aggr=1&cr=1&catZhida=1&lossless=0&flag_qc=0&&g_tk=5381&loginUin=0&hostUin=0&format=json&inCharset=utf8&outCharset=utf-8&notice=0&platform=yqq.json&needNewCode=0&n=30")
             .params("p", limi)
@@ -40,34 +42,54 @@ class SearchListModel : BaseModel(), SearchListContract.IModel {
                         val bean =
                             Gson().fromJson(response.body(), qqmusic::class.javaObjectType)
                         if (bean.code == 0) {
-                           val song = bean.data.getAsJsonObject("song")
+                            val song = bean.data.getAsJsonObject("song")
                             val list = song.getAsJsonArray("list")
-                          for(i in 0 until list.size()){
+                            for (i in 0 until list.size()) {
 
                                 val music = list.get(i)
                                 var jsonObj: JsonObject? = null
                                 if (music.isJsonObject) {
                                     jsonObj = music.asJsonObject
                                 }
-                              val mid = jsonObj!!.get("mid").asString
-                              val title = jsonObj.get("title").asString
-                              val id = jsonObj.get("id").asLong
-                              val album = jsonObj.get("album").asJsonObject
-                              val album_id = album.get("id").asLong
-                              val album_name = album.get("name").asString
-                              val album_pmid = "http://y.gtimg.cn/music/photo_new/T002R300x300M000"+album.get("pmid").asString+".jpg"
-                              val one = mutableListOf<artistlist>()
-                              val singer = jsonObj.get("singer").asJsonArray
-                              for(e in 0 until singer.size()) {
-                                  val artist = singer.get(e)
-                                  var jsonOs: JsonObject? = null
-                                  if (artist.isJsonObject) {
-                                      jsonOs = artist.asJsonObject
-                                  }
-                                  one.add(artistlist(jsonOs!!.get("id").asLong,jsonOs.get("name").asString))
-                              }
+                                val mid = jsonObj!!.get("mid").asString
+                                val title = jsonObj.get("title").asString
+                                val id = jsonObj.get("id").asLong
+                                val album = jsonObj.get("album").asJsonObject
+                                val album_id = album.get("id").asLong
+                                val album_name = album.get("name").asString
+                                val album_pmid =
+                                    "http://y.gtimg.cn/music/photo_new/T002R300x300M000" + album.get(
+                                        "pmid"
+                                    ).asString + ".jpg"
+                                val one = mutableListOf<artistlist>()
+                                val singer = jsonObj.get("singer").asJsonArray
+                                for (e in 0 until singer.size()) {
+                                    val artist = singer.get(e)
+                                    var jsonOs: JsonObject? = null
+                                    if (artist.isJsonObject) {
+                                        jsonOs = artist.asJsonObject
+                                    }
+                                    one.add(
+                                        artistlist(
+                                            jsonOs!!.get("id").asLong,
+                                            jsonOs.get("name").asString
+                                        )
+                                    )
+                                }
 
-                              musicall.add(Music(title, album_name, album_id, id, "", one, album_pmid, 0, mid))
+                                musicall.add(
+                                    Music(
+                                        title,
+                                        album_name,
+                                        album_id,
+                                        id,
+                                        "",
+                                        one,
+                                        album_pmid,
+                                        0,
+                                        mid
+                                    )
+                                )
                             }
 
                             Observable.just(musicall).subscribe(SearchListActivity.observer)
@@ -81,11 +103,12 @@ class SearchListModel : BaseModel(), SearchListContract.IModel {
                         }
                     } catch (e: Exception) {
                     }
+
                 }
             })
     }
 
-    override fun kugoudata(context: Context, search: String,limi:Int) {
+    override fun kugoudata(context: Context, search: String, limi: Int) {
         val musicall = mutableListOf<Music>()
         OkGo.get<String>("http://songsearch.kugou.com/song_search_v2?keyword=$search&page=$limi&pagesize=50&userid=-1&clientver=&platform=WebFilter&tag=em&filter=2&iscorrection=1&privilege_filter=0")
             .execute(object : StringCallback() {
@@ -98,7 +121,7 @@ class SearchListModel : BaseModel(), SearchListContract.IModel {
                             Gson().fromJson(response.body(), kugoumusic::class.javaObjectType)
                         if (bean.error_code == 0) {
                             val list = bean.data.getAsJsonArray("lists")
-                            for(i in 0 until list.size()){
+                            for (i in 0 until list.size()) {
 
                                 val music = list.get(i)
                                 var jsonObj: JsonObject? = null
@@ -116,12 +139,24 @@ class SearchListModel : BaseModel(), SearchListContract.IModel {
                                     jsonObj.get("SingerId").asJsonArray,
                                     Array<Long>::class.java
                                 ).toMutableList()
-                                for(e in singer) {
+                                for (e in singer) {
 
-                                    one.add(artistlist(e,jsonObj.get("SingerName").asString))
+                                    one.add(artistlist(e, jsonObj.get("SingerName").asString))
                                 }
 
-                                musicall.add(Music(title, album_name, album_id, id, "", one, "http://y.gtimg.cn/music/photo_new/T002R300x300M000$album_pmid.jpg", 0, mid))
+                                musicall.add(
+                                    Music(
+                                        title,
+                                        album_name,
+                                        album_id,
+                                        id,
+                                        "",
+                                        one,
+                                        "http://y.gtimg.cn/music/photo_new/T002R300x300M000$album_pmid.jpg",
+                                        0,
+                                        mid
+                                    )
+                                )
                             }
 
                             Observable.just(musicall).subscribe(SearchListActivity.observer)
@@ -152,7 +187,7 @@ class SearchListModel : BaseModel(), SearchListContract.IModel {
                             Gson().fromJson(response.body(), baidumusic::class.javaObjectType)
                         if (bean.error_code == 0) {
                             val list = bean.result.getAsJsonArray("song_info")
-                            for(i in 0 until list.size()){
+                            for (i in 0 until list.size()) {
 
                                 val music = list.get(i)
                                 var jsonObj: JsonObject? = null
@@ -168,11 +203,23 @@ class SearchListModel : BaseModel(), SearchListContract.IModel {
                                 val one = mutableListOf<artistlist>()
                                 val srtist_id = jsonObj.get("all_artist_id").asString.split(",")
                                 val artist_name = jsonObj.get("author").asString.split(",")
-                                for(e in srtist_id.indices) {
-                                    one.add(artistlist(srtist_id[e].toLong(),artist_name[e]))
+                                for (e in srtist_id.indices) {
+                                    one.add(artistlist(srtist_id[e].toLong(), artist_name[e]))
                                 }
 
-                                musicall.add(Music(title, album_name, album_id, id, "", one, album_pmid, 0, mid))
+                                musicall.add(
+                                    Music(
+                                        title,
+                                        album_name,
+                                        album_id,
+                                        id,
+                                        "",
+                                        one,
+                                        album_pmid,
+                                        0,
+                                        mid
+                                    )
+                                )
                             }
 
                             Observable.just(musicall).subscribe(SearchListActivity.observer)
@@ -197,7 +244,7 @@ class SearchListModel : BaseModel(), SearchListContract.IModel {
                             Gson().fromJson(response.body(), wangyimusic::class.javaObjectType)
                         if (bean.code == 0) {
                             val list = bean.result.getAsJsonArray("songs")
-                            for(i in 0 until list.size()){
+                            for (i in 0 until list.size()) {
 
                                 val music = list.get(i)
                                 var jsonObj: JsonObject? = null
@@ -213,16 +260,33 @@ class SearchListModel : BaseModel(), SearchListContract.IModel {
                                 val album_pmid = album.get("picUrl").asString
                                 val one = mutableListOf<artistlist>()
                                 val singer = jsonObj.get("ar").asJsonArray
-                                for(e in 0 until singer.size()) {
+                                for (e in 0 until singer.size()) {
                                     val artist = singer.get(e)
                                     var jsonOs: JsonObject? = null
                                     if (artist.isJsonObject) {
                                         jsonOs = artist.asJsonObject
                                     }
-                                    one.add(artistlist(jsonOs!!.get("id").asLong,jsonOs.get("name").asString))
+                                    one.add(
+                                        artistlist(
+                                            jsonOs!!.get("id").asLong,
+                                            jsonOs.get("name").asString
+                                        )
+                                    )
                                 }
 
-                                musicall.add(Music(title, album_name, album_id, id, "", one, album_pmid, 0, mid))
+                                musicall.add(
+                                    Music(
+                                        title,
+                                        album_name,
+                                        album_id,
+                                        id,
+                                        "",
+                                        one,
+                                        album_pmid,
+                                        0,
+                                        mid
+                                    )
+                                )
                             }
 
                             Observable.just(musicall).subscribe(SearchListActivity.observer)
@@ -246,7 +310,7 @@ class SearchListModel : BaseModel(), SearchListContract.IModel {
                         val bean =
                             Gson().fromJson(response.body(), kuwomusic::class.javaObjectType)
                         if (bean.abslist.size() > 0) {
-                            for(i in 0 until bean.abslist.size()){
+                            for (i in 0 until bean.abslist.size()) {
 
                                 val music = bean.abslist.get(i)
                                 var jsonObj: JsonObject? = null
@@ -260,8 +324,25 @@ class SearchListModel : BaseModel(), SearchListContract.IModel {
                                 val album_name = jsonObj.get("ALBUM").asString
                                 val album_pmid = ""
                                 val one = mutableListOf<artistlist>()
-                                one.add(artistlist(jsonObj.get("ARTISTID").asLong,jsonObj.get("ARTIST").asString))
-                                musicall.add(Music(title, album_name, album_id, id, "", one, album_pmid, 0, mid))
+                                one.add(
+                                    artistlist(
+                                        jsonObj.get("ARTISTID").asLong,
+                                        jsonObj.get("ARTIST").asString
+                                    )
+                                )
+                                musicall.add(
+                                    Music(
+                                        title,
+                                        album_name,
+                                        album_id,
+                                        id,
+                                        "",
+                                        one,
+                                        album_pmid,
+                                        0,
+                                        mid
+                                    )
+                                )
                             }
                             Observable.just(musicall).subscribe(SearchListActivity.observer)
 
@@ -271,7 +352,6 @@ class SearchListModel : BaseModel(), SearchListContract.IModel {
                 }
             })
     }
-
 
 
 }

@@ -101,7 +101,7 @@ class UserEditActivity : BaseMvpActivity<UserEditContract.IPresenter>(), UserEdi
         RxView.clicks(btn_edit)
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
-                if (MusicApp.getNetwork()) {
+                if (MusicApp.network()!=-1) {
                     if (name.text.toString() != "" && gender.text.toString() != "" && city.text.toString() != "" && message.text.toString() != "") {
                         if (mSexOption[0] == gender.text.toString()) {
                             getPresenter().registerdata(

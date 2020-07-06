@@ -19,9 +19,8 @@ import java.net.URL;
 public class Notification extends android.app.Notification {
 
     private static RemoteViews mRemoteViews;
-    private static NotificationManager notificationManager;
+    private static NotificationManager notificationManager = null;
     private static NotificationChannel channel;
-    private static android.app.Notification notification;
     private static Context context;
     private static String title;
     private static String txt;
@@ -54,8 +53,7 @@ public class Notification extends android.app.Notification {
         resultIntent.addCategory(Intent.CATEGORY_LAUNCHER);
         PendingIntent resultPendingIntent = PendingIntent.getActivity(context, 0x004, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-           //自定义布局
-       notification = new NotificationCompat.Builder(mContext,"1089")
+        android.app.Notification notification = new NotificationCompat.Builder(mContext, "1089")
                 .setWhen(System.currentTimeMillis())
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setCustomContentView(getContentView())
@@ -63,6 +61,7 @@ public class Notification extends android.app.Notification {
                 .setContentIntent(resultPendingIntent) // 设定点击通知之后启动的内容，这个内容由方法中的参数：PendingIntent对象决定
                 .setPriority(NotificationCompat.PRIORITY_MAX) // 设置通知的优先级
                 .setDefaults(NotificationCompat.FLAG_ONLY_ALERT_ONCE)//取消提示音
+                .setSound(null)
                 .setAutoCancel(false) // 设置点击通知之后通知是否消失
                 .build();
 
@@ -155,6 +154,9 @@ public class Notification extends android.app.Notification {
 
     //清除通知栏消息
     public static void deleteNotification() {
-        notificationManager.cancel(1);
+        if(notificationManager!=null){
+            notificationManager.cancel(1);
+        }
+
     }
 }

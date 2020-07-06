@@ -52,7 +52,7 @@ class SongEditActivity : BaseMvpActivity<SongEditContract.IPresenter>(), SongEdi
         RxView.clicks(btn_edit)
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
-                if (MusicApp.getNetwork()) {
+                if (MusicApp.network()!=-1) {
                     if (name.text.toString() != "") {
                         getPresenter().registerdata(
                             context,

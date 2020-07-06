@@ -7,6 +7,7 @@ import com.example.xiaobai.music.bean.ResultBean
 import com.example.xiaobai.music.common.Constants
 import com.example.xiaobai.music.music.contract.LyricContract
 import com.example.xiaobai.music.music.presenter.LyricPresenter
+import com.example.xiaobai.music.music.view.act.ArtistDetActivity
 import com.example.xiaobai.music.music.view.act.MusicPlayActivity
 import com.google.gson.Gson
 import com.lzy.okgo.OkGo
@@ -30,33 +31,34 @@ class LyricFragment : BaseMvpFragment<LyricContract.IPresenter>(), LyricContract
     override fun registerPresenter() = LyricPresenter::class.java
 
     override fun getLayoutId(): Int {
-       return R.layout.frag_player_lrcview
+        return R.layout.frag_player_lrcview
     }
 
     override fun onResume() {
         super.onResume()
         lrcView.setDraggable(true, LrcView.OnPlayClickListener { time: Long ->
-            MusicPlayActivity.wlMedia.seek((time/1000).toDouble())
+            MusicPlayActivity.wlMedia.seek((time / 1000).toDouble())
             MusicPlayActivity.wlMedia.seekTimeCallBack(true)
             if (!MusicPlayActivity.wlMedia.isPlaying) {
                 MusicPlayActivity.wlMedia.start()
             }
-            Observable.just(time/1000).subscribe(MusicPlayActivity.observers)
+            Observable.just(time / 1000).subscribe(MusicPlayActivity.observers)
 
             true
         })
     }
 
-     fun lrcView(songid:Long) {
+    fun lrcView(songid: Long) {
         super.initView()
 
-            OkGo.get<String>(Constants.URL + "api/index/get_lrclink")
-                .params("song_id",songid)
-                .execute(object : StringCallback() {
-                    override fun onSuccess(response: Response<String>) {
-                        /**
-                         * 成功回调
-                         */
+        OkGo.get<String>(Constants.URL + "api/index/get_lrclink")
+            .params("song_id", songid)
+            .execute(object : StringCallback() {
+                override fun onSuccess(response: Response<String>) {
+                    /**
+                     * 成功回调
+                     */
+                    if (response.code() == 200) {
                         try {
                             val bean =
                                 Gson().fromJson(response.body(), ResultBean::class.javaObjectType)
@@ -75,8 +77,16 @@ class LyricFragment : BaseMvpFragment<LyricContract.IPresenter>(), LyricContract
                             }
                         } catch (e: Exception) {
                         }
-
+                    } else {
+                        Toast.makeText(
+                            context,
+                            R.string.error_connection,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        Observable.just(true).subscribe(MusicPlayActivity.observer)
                     }
-                })
+
+                }
+            })
     }
 }

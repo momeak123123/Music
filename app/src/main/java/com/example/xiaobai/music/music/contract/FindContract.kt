@@ -17,13 +17,13 @@ interface FindContract {
 
     interface IPresenter : IPresenterContract {
         fun listdata(): MutableList<Search>
-        fun listcean(): MutableList<Search>
+        fun listcean()
         fun search(queryText: String)
     }
 
     interface IModel : IModelContract{
         fun listdata(): MutableList<Search>
-        fun listcean(): MutableList<Search>
+        fun listcean()
         fun search(queryText: String)
     }
 

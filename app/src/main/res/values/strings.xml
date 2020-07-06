@@ -130,8 +130,10 @@
 
     <!--download-->
     <string name="download">后台开始下载</string>
+    <string name="download_error">下载失败，请重新下载</string>
     <string name="download_carry">歌曲已下载</string>
-    <string name="download_">歌曲已下载</string>
+    <string name="download_succe">歌曲：</string>
+    <string name="download_success">下载成功</string>
 
 
     <!--set-->

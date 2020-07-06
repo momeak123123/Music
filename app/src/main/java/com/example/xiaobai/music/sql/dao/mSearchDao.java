@@ -29,7 +29,6 @@ public class mSearchDao {
     /**
      * 删除数据
      *
-     * @param id
      */
     public static void deleteAll() {
         Initialization.getDaoInstantSearch().getSearchDao().deleteAll();

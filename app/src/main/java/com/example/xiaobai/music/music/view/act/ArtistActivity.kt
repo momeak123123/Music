@@ -95,7 +95,7 @@ class ArtistActivity : BaseMvpActivity<ArtistContract.IPresenter>(), ArtistContr
             loaddata()
 
         }else{
-            if(MusicApp.getNetwork()){
+            if(MusicApp.network()!=-1){
                 getPresenter().taglist(context,true)
             }else{
                 if (swipe_refresh_layout != null) {
@@ -113,7 +113,7 @@ class ArtistActivity : BaseMvpActivity<ArtistContract.IPresenter>(), ArtistContr
     }
 
     fun loaddata(){
-        if (MusicApp.getNetwork()) {
+        if (MusicApp.network()!=-1) {
             getPresenter().listdata(context, varieties, letter)
         } else {
             if (swipe_refresh_layout != null) {

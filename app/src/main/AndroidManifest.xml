@@ -48,7 +48,7 @@
             android:exported="false"
             android:launchMode="singleInstance"
             android:noHistory="true"
-            android:screenOrientation="fullSensor"
+            android:screenOrientation="unspecified"
             android:taskAffinity="com.example.xiaobai.lock"
             android:theme="@style/LockScreenTheme" />
 
@@ -59,10 +59,12 @@
 
         <activity
             android:name=".music.view.act.MusicPlayActivity"
-            android:configChanges="orientation|keyboardHidden|keyboard"
+            android:launchMode="singleTask"
+            android:taskAffinity="com.example.xiaobai.play"
+            android:exported="false"
             android:excludeFromRecents="true"
-            android:launchMode="singleInstance"
-            android:windowSoftInputMode="adjustResize" />
+            android:screenOrientation="unspecified"
+            android:configChanges="orientation|keyboardHidden|screenSize"/>
         <activity
             android:name=".MainActivity"
             android:configChanges="keyboardHidden"
@@ -71,7 +73,6 @@
         <activity
             android:name=".music.view.act.StartPageActivity"
             android:launchMode="singleTop" />
-        <activity android:name=".music.view.act.SearchActivity" />
         <activity android:name=".music.view.act.LoginActivity" />
         <activity android:name=".music.view.act.RegisteredActivity" />
         <activity android:name=".music.view.act.AlbumActivity" />

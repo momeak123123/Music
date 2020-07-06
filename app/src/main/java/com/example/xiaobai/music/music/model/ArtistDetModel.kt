@@ -2,9 +2,11 @@ package  com.example.xiaobai.music.music.model
 
 import android.content.Context
 import android.widget.Toast
+import com.example.xiaobai.music.R
 import com.example.xiaobai.music.bean.ResultBean
 import com.example.xiaobai.music.common.Constants
 import com.example.xiaobai.music.music.contract.ArtistDetContract
+import com.example.xiaobai.music.music.view.act.AlbumDetActivity
 import com.example.xiaobai.music.music.view.act.ArtistDetActivity
 import com.google.gson.Gson
 import com.lzy.okgo.OkGo
@@ -29,20 +31,29 @@ class ArtistDetModel : BaseModel(), ArtistDetContract.IModel {
                     /**
                      * 成功回调
                      */
-                    try {
-                        val bean =
-                            Gson().fromJson(response.body(), ResultBean::class.javaObjectType)
-                        if (bean.code == 200) {
-                            Observable.just(bean.data).subscribe(ArtistDetActivity.observer)
-                        } else {
-                            Toast.makeText(
-                                context,
-                                bean.msg,
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                    } catch (e: Exception) {
+                    if (response.code() == 200) {
+                        try {
+                            val bean =
+                                Gson().fromJson(response.body(), ResultBean::class.javaObjectType)
+                            if (bean.code == 200) {
+                                Observable.just(bean.data).subscribe(ArtistDetActivity.observer)
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    bean.msg,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        } catch (e: Exception) {
 
+                        }
+                    } else {
+                        Toast.makeText(
+                            context,
+                            R.string.error_connection,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        Observable.just(true).subscribe(ArtistDetActivity.observers)
                     }
                 }
             })

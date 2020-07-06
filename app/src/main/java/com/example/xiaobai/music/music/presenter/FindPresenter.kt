@@ -18,8 +18,8 @@ class FindPresenter : BaseMvpPresenter<FindContract.IView, FindContract.IModel>(
         return getModel().listdata()
     }
 
-    override fun listcean(): MutableList<Search> {
-        return getModel().listcean()
+    override fun listcean() {
+         getModel().listcean()
     }
 
     override fun search(queryText: String) {

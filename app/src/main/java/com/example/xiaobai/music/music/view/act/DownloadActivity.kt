@@ -152,7 +152,7 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
         RxView.clicks(down)
             .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
-                if (sp.getBoolean("login", false)) {
+                if (MusicApp.userlogin()) {
                     val idmap = mutableListOf<Music>()
                     for (ite in adapter.listdet) {
                         if (ite.type == 1) {
@@ -359,16 +359,6 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
     override fun onResume() {
         super.onResume()
 
-        if(MusicApp.getIsapp()){
-            val intent = Intent()
-            context.let { intent.setClass(it, MusicPlayActivity().javaClass) }
-            intent.putExtra("album_id", 0L)
-            intent.putExtra("pos", 0)
-            intent.putExtra("list", "")
-            intent.putExtra("type", 0)
-            context.startActivity(intent)
-        }
-
         observers = object : Observer<Boolean> {
             override fun onSubscribe(d: Disposable) {}
 
@@ -453,7 +443,7 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
                 RxView.clicks(relat3)
                     .throttleFirst(3, TimeUnit.SECONDS)
                     .subscribe {
-                        if (sp.getBoolean("login", false)) {
+                        if (MusicApp.userlogin()) {
                             poplue.visibility = View.GONE
                             in_indel.visibility = View.VISIBLE
                             Glide.with(context).load("").into(del)

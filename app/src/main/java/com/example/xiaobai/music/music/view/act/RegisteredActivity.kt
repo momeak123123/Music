@@ -81,7 +81,7 @@ class RegisteredActivity : BaseMvpActivity<RegisteredContract.IPresenter>(),
         RxView.clicks(btn_register)
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
-                if(MusicApp.getNetwork()){
+                if(MusicApp.network()!=-1){
                     if (re_username_number.text.toString() != "") {
                         if(isEmail(re_username_number.text.toString())){
                             if (re_pass_number.text.toString() != "") {

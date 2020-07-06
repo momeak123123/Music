@@ -3,8 +3,10 @@ package com.example.xiaobai.music;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 
+import com.didichuxing.doraemonkit.DoraemonKit;
 import com.example.xiaobai.music.bean.ApkModel;
 import com.example.xiaobai.music.bean.Music;
 import com.example.xiaobai.music.utils.NetWorkUtils;
@@ -40,8 +42,6 @@ public class MusicApp extends Application {
     public static Bitmap startback;
 
     public static int position = 0;
-
-    public static Boolean network = false;
 
     public static List<Music> music;
 
@@ -89,13 +89,6 @@ public class MusicApp extends Application {
         MusicApp.ablumid = ablumid;
     }
 
-    public static Boolean getNetwork() {
-        return network;
-    }
-
-    public static void setNetwork(Boolean network) {
-        MusicApp.network = network;
-    }
 
     public static Bitmap getStartback() {
         return startback;
@@ -115,12 +108,12 @@ public class MusicApp extends Application {
         new Thread(new Runnable() {
             @Override
             public void run() {
+                DoraemonKit.install(MusicApp.this,"bdf8287e2df59fbe051efaf2494a8b6a");
                 UpdateAppUtils.init(mContext);
                 BlurKit.init(MusicApp.this);
                 XUI.init(MusicApp.this); //初始化UI框架
                 XUI.debug(false);  //开启UI框架调试日志
                 OkGo.getInstance().init(MusicApp.this);//网络请求
-                setNetwork(NetWorkUtils.isConnectedByState(mContext));
                 initOkGo();
             }
         }).start();
@@ -134,6 +127,15 @@ public class MusicApp extends Application {
                 System.out.println("异常处理"+throwable.getMessage());
             }
         });
+    }
+
+    public static Boolean userlogin(){
+        SharedPreferences sp = mContext.getSharedPreferences("User", Context.MODE_PRIVATE);
+       return sp.getBoolean("login", false);
+    }
+
+    public static int network(){
+        return NetWorkUtils.getCurrentNetworkType(mContext);
     }
 
     public static synchronized MusicApp getInstance() {
