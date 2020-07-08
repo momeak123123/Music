@@ -42,8 +42,6 @@ class LyricFragment : BaseMvpFragment<LyricContract.IPresenter>(), LyricContract
             if (!MusicPlayActivity.wlMedia.isPlaying) {
                 MusicPlayActivity.wlMedia.start()
             }
-            Observable.just(time / 1000).subscribe(MusicPlayActivity.observers)
-
             true
         })
     }

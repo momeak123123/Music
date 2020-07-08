@@ -55,7 +55,8 @@ class PlayListAdapter  (val datas: MutableList<Music>?, val context: Context) : 
         holder.itemView.setOnClickListener { v ->
             mItemClickListener?.onItemClick(v,position)
         }
-        Glide.with(context).load(R.drawable.del_black).into(holder.more)
+        holder.more.setImageResource(R.drawable.del_black)
+
         holder.title.text = datas?.get(position)!!.name
         val artist =  datas[position].all_artist
         var srtist_name = ""
@@ -70,7 +71,6 @@ class PlayListAdapter  (val datas: MutableList<Music>?, val context: Context) : 
         holder.txt.text =  srtist_name
 
         if(MusicPlayActivity.id==position){
-            println(""+MusicPlayActivity.id+"/"+position)
             holder.txt.setTextColor(ResUtils.getResources().getColor(R.color.lightBlue))
             holder.title.setTextColor(ResUtils.getResources().getColor(R.color.lightBlue))
         }else{

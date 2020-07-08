@@ -30,8 +30,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup"
         tools:targetApi="n">
+        <service
+            android:name=".service.MusicService"
+            android:enabled="true"
+            android:exported="true"></service>
 
         <activity
             android:name=".StartsActivity"
@@ -59,12 +64,12 @@
 
         <activity
             android:name=".music.view.act.MusicPlayActivity"
-            android:launchMode="singleTask"
-            android:taskAffinity="com.example.xiaobai.play"
-            android:exported="false"
+            android:configChanges="orientation|keyboardHidden|screenSize"
             android:excludeFromRecents="true"
+            android:exported="false"
+            android:launchMode="singleTask"
             android:screenOrientation="unspecified"
-            android:configChanges="orientation|keyboardHidden|screenSize"/>
+            android:taskAffinity="com.example.xiaobai.play" />
         <activity
             android:name=".MainActivity"
             android:configChanges="keyboardHidden"
@@ -83,8 +88,8 @@
         <activity android:name=".music.view.act.SongDetActivity" />
         <activity android:name=".music.view.act.SongEditActivity" />
         <activity android:name=".music.view.act.DownloadActivity" />
-        <activity android:name=".music.view.act.SetActivity" />
         <activity android:name=".music.view.act.SearchListActivity" />
+        <activity android:name=".music.view.act.UserSetActivity" />
     </application>
 
 </manifest>

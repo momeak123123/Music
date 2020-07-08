@@ -15,6 +15,7 @@ import com.example.xiaobai.music.MainActivity
 import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.adapter.SongListAdapter
+import com.example.xiaobai.music.bean.SongLists
 import com.example.xiaobai.music.music.contract.MyContract
 import com.example.xiaobai.music.music.model.MainModel
 import com.example.xiaobai.music.music.presenter.MyPresenter
@@ -69,15 +70,8 @@ class MyFragment : BaseMvpFragment<MyContract.IPresenter>(), MyContract.IView {
 
     override fun initData() {
         super.initData()
-
+        context?.let { getPresenter().data(it) }
         sp = requireContext().getSharedPreferences("User", Context.MODE_PRIVATE)
-        Glide.with(requireContext()).load(sp.getString("url", ""))
-            .placeholder(R.color.main_black_grey).into(iv_cover)
-        name.text = sp.getString("nickname", "")
-        city.text = sp.getString("countries", "")
-        attention_num.text = sp.getString("follow", "")
-        collect_num.text = sp.getString("collect", "")
-        sign.text = sp.getString("message", "")
 
 
     }
@@ -97,7 +91,7 @@ class MyFragment : BaseMvpFragment<MyContract.IPresenter>(), MyContract.IView {
 
         RxView.clicks(in_deter)
             .throttleFirst(1, TimeUnit.SECONDS)
-            .subscribe { o: Any? ->
+            .subscribe {
                 if (et_name.isNotEmpty) {
                     context?.let { MainModel.addsonglist(it, et_name.editValue) }
                     et_name.clear()
@@ -115,7 +109,7 @@ class MyFragment : BaseMvpFragment<MyContract.IPresenter>(), MyContract.IView {
             }
         RxView.clicks(in_cancel)
             .throttleFirst(1, TimeUnit.SECONDS)
-            .subscribe { o: Any? ->
+            .subscribe {
                 in_add.visibility = View.GONE
                 MainActivity.craet(true)
             }
@@ -147,19 +141,12 @@ class MyFragment : BaseMvpFragment<MyContract.IPresenter>(), MyContract.IView {
 
             }
 
-        RxView.clicks(iv_cover)
-            .throttleFirst(3, TimeUnit.SECONDS)
-            .subscribe {
-                val intent = Intent()
-                context?.let { intent.setClass(it, UserEditActivity().javaClass) }
-                startActivity(intent)
-            }
 
         RxView.clicks(set)
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
                 val intent = Intent()
-                context?.let { intent.setClass(it, SetActivity().javaClass) }
+                context?.let { intent.setClass(it, UserSetActivity().javaClass) }
                 startActivity(intent)
             }
 
@@ -175,29 +162,16 @@ class MyFragment : BaseMvpFragment<MyContract.IPresenter>(), MyContract.IView {
 
     override fun onResume() {
         super.onResume()
-        if (sp.getBoolean("login", false)) {
-            include.visibility = View.GONE
-            Glide.with(requireContext()).load(sp.getString("url", ""))
-                .placeholder(R.color.main_black_grey).into(iv_cover)
-            name.text = sp.getString("nickname", "")
-            city.text = sp.getString("countries", "")
-            attention_num.text = sp.getString("follow", "")
-            collect_num.text = sp.getString("collect", "")
-            sign.text = sp.getString("message", "")
-            loaddata()
-            context?.let { getPresenter().data(it) }
-            nums = mDownDao.queryt(1).count()
-            like_num.text = nums.toString()
-        } else {
-            include.visibility = View.VISIBLE
-        }
+
+
+        nums = mDownDao.queryt(1).count()
+        like_num.text = nums.toString()
+        loaddata()
 
         observer = object : Observer<Boolean> {
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(data: Boolean) {
                 if (data) {
-                    val sp: SharedPreferences =
-                        requireContext().getSharedPreferences("User", Context.MODE_PRIVATE)
 
                     Glide.with(requireContext()).load(sp.getString("url", ""))
                         .placeholder(R.color.main_black_grey).into(iv_cover)
@@ -219,12 +193,19 @@ class MyFragment : BaseMvpFragment<MyContract.IPresenter>(), MyContract.IView {
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(data: JsonObject) {
 
-                val song: Playlist = Gson().fromJson(
+                val song: SongLists = Gson().fromJson(
                     data,
-                    object : TypeToken<Playlist>() {}.type
+                    object : TypeToken<SongLists>() {}.type
                 )
-                mPlaylistDao.insert(song)
-                adapter!!.add(song)
+                val play = Playlist()
+                play.name = song.name
+                play.pic_url = song.pic_url
+                play.play_list_id = song.play_list_id
+                play.song_num = song.song_num
+                play.user_id = sp.getString("userid","").toString()
+                play.create_time = song.create_time
+                mPlaylistDao.insert(play)
+                adapter!!.add(play)
 
 
             }
@@ -238,17 +219,24 @@ class MyFragment : BaseMvpFragment<MyContract.IPresenter>(), MyContract.IView {
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(listdata: JsonArray) {
 
-                val data: MutableList<Playlist> = Gson().fromJson(
+                val data: MutableList<SongLists> = Gson().fromJson(
                     listdata,
-                    object : TypeToken<MutableList<Playlist>>() {}.type
+                    object : TypeToken<MutableList<SongLists>>() {}.type
                 )
 
                 if (data.size > 0) {
                     for (it in data) {
-                        mPlaylistDao.insert(it)
-                    }
+                        val play = Playlist()
+                        play.name = it.name
+                        play.pic_url = it.pic_url
+                        play.play_list_id = it.play_list_id
+                        play.song_num = it.song_num
+                        play.user_id = sp.getString("userid","").toString()
+                        play.create_time = it.create_time
 
-                    initData()
+                        mPlaylistDao.insert(play)
+                    }
+                    loaddata()
                 }
             }
 
@@ -262,13 +250,30 @@ class MyFragment : BaseMvpFragment<MyContract.IPresenter>(), MyContract.IView {
 
     fun loaddata() {
 
-        val list: MutableList<Playlist> = mPlaylistDao.queryAll()
-        if (list.size > 0) {
-            initSongList(list)
-            bools = true
+        if (sp.getBoolean("login", false)) {
+
+            include.visibility = View.GONE
+
+            Glide.with(requireContext()).load(sp.getString("url", ""))
+                .placeholder(R.color.main_black_grey).into(iv_cover)
+            name.text = sp.getString("nickname", "")
+            city.text = sp.getString("countries", "")
+            attention_num.text = sp.getString("follow", "")
+            collect_num.text = sp.getString("collect", "")
+            sign.text = sp.getString("message", "")
+
+            val list: MutableList<Playlist> = mPlaylistDao.querys(sp.getString("userid","").toString())
+            if (list.size > 0) {
+                initSongList(list)
+                bools = true
+            } else {
+                context?.let { getPresenter().listdata(it) }
+            }
+
         } else {
-            context?.let { getPresenter().listdata(it) }
+            include.visibility = View.VISIBLE
         }
+
     }
 
 

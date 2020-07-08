@@ -17,6 +17,7 @@ import com.example.xiaobai.music.config.CornerTransform
 import com.example.xiaobai.music.music.view.act.MusicPlayActivity
 import com.example.xiaobai.music.music.view.act.SongDetActivity
 import com.jakewharton.rxbinding2.view.RxView
+import com.xuexiang.xui.utils.ResUtils
 import io.reactivex.Observable
 import java.util.concurrent.TimeUnit
 
@@ -128,21 +129,23 @@ class SongDetAdapter(
             // Glide.with(context).load(covers).placeholder(R.color.main_black_grey).into(iv_cover)
             title.text = names
             txt.text = num + "首"
-            Glide.with(context).load(R.drawable.mores).into(top_set)
-            Glide.with(context).load(R.drawable.shang).into(pre)
+            top_set.setImageResource(R.drawable.mores)
+            pre.setImageResource(R.drawable.shang)
+
+
             if (MusicApp.getAblumid() == id) {
+
                 if (MusicApp.getPlay()) {
-                    Glide.with(context).load(R.drawable.plays).into(play)
+                    play.setImageResource(R.drawable.plays)
                 } else {
-                    Glide.with(context).load(R.drawable.play).into(play)
+                    play.setImageResource(R.drawable.play)
                 }
 
             } else {
-                Glide.with(context).load(R.drawable.play).into(play)
+                play.setImageResource(R.drawable.play)
             }
+            next.setImageResource(R.drawable.xia)
 
-
-            Glide.with(context).load(R.drawable.xia).into(next)
             RxView.clicks(top_flot)
                 .throttleFirst(1, TimeUnit.SECONDS)
                 .subscribe {
@@ -184,10 +187,10 @@ class SongDetAdapter(
                             try {
                                 if (MusicApp.getPlay()) {
                                     Observable.just(0).subscribe(MusicPlayActivity.observerset)
-                                    Glide.with(context).load(R.drawable.play).into(play)
+                                    play.setImageResource(R.drawable.play)
                                 } else {
                                     Observable.just(3).subscribe(MusicPlayActivity.observerset)
-                                    Glide.with(context).load(R.drawable.plays).into(play)
+                                    play.setImageResource(R.drawable.plays)
                                 }
 
                             } catch (e: Exception) {
@@ -196,12 +199,12 @@ class SongDetAdapter(
 
 
                         } else {
-                            Observable.just(datas).subscribe(MusicPlayActivity.observerplay)
-                            Glide.with(context).load(R.drawable.plays).into(play)
+                            Observable.just(false).subscribe(SongDetActivity.observers)
+                            play.setImageResource(R.drawable.plays)
                         }
                     } else {
                         Observable.just(false).subscribe(SongDetActivity.observers)
-                        Glide.with(context).load(R.drawable.plays).into(play)
+                        play.setImageResource(R.drawable.plays)
 
                     }
 
@@ -249,6 +252,7 @@ class SongDetAdapter(
 
             Glide.with(context).load(datas[position].pic_url).placeholder(R.color.main_black_grey)
                 .into(iv_cover)
+
 
             title.text = datas[position].name
             val artist = datas[position].all_artist

@@ -10,7 +10,6 @@ import android.widget.Toast
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.bumptech.glide.Glide
 import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.adapter.AlbumDetAdapter
@@ -156,6 +155,7 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
             if (swipe_refresh_layout != null) {
                 swipe_refresh_layout.isRefreshing = false
             }
+            finish()
             Toast.makeText(
                 context,
                 getText(R.string.nonet),
@@ -205,9 +205,9 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
                     }
                     if (idmap.isNotEmpty()) {
                         in_indel.visibility = View.VISIBLE
-                        Glide.with(context).load("").into(del)
+                        del.visibility = View.GONE
                         in_title.text = getText(R.string.song_but)
-                        val list: MutableList<Playlist> = mPlaylistDao.queryAll()
+                        val list: MutableList<Playlist> = mPlaylistDao.querys(sp.getString("userid","").toString())
                         initSongLists(list, idmap)
                     } else {
                         Toast.makeText(
@@ -493,10 +493,10 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
     override fun onResume() {
         super.onResume()
 
-        try {
+        if (MusicApp.getAblumid() == album_id) {
             adapter.notifyItemChanged(0)
-        } catch (e: Exception) {
         }
+
 
         observers = object : Observer<Boolean> {
             override fun onSubscribe(d: Disposable) {}
@@ -585,9 +585,9 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
                         if (MusicApp.userlogin()) {
                             poplue.visibility = View.GONE
                             in_indel.visibility = View.VISIBLE
-                            Glide.with(context).load("").into(del)
+                            del.visibility = View.GONE
                             in_title.text = getText(R.string.song_but)
-                            val list: MutableList<Playlist> = mPlaylistDao.queryAll()
+                            val list: MutableList<Playlist> = mPlaylistDao.querys(sp.getString("userid","").toString())
                             val idmap = mutableListOf<Music>()
                             idmap.add(songlist[data])
                             initSongLists(list, idmap)

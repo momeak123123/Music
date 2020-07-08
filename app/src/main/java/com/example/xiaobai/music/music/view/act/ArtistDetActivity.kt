@@ -73,6 +73,7 @@ class ArtistDetActivity : BaseMvpActivity<ArtistDetContract.IPresenter>() , Arti
                 if (swipe_refresh_layout != null) {
                     swipe_refresh_layout.isRefreshing = false
                 }
+                finish()
                 Toast.makeText(
                     context,
                     getText(R.string.nonet),

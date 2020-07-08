@@ -140,4 +140,6 @@
     <string name="set">设置</string>
     <string name="set1">修改密码</string>
     <string name="set2">清理缓存</string>
+    <string name="set3">编辑个人资料</string>
+    <string name="set2_sess">清理缓存成功</string>
 </resources>

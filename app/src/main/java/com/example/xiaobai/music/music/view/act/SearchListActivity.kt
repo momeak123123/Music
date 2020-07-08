@@ -134,9 +134,9 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>() , Se
                 val intent = Intent()
                 intent.setClass(context, MusicPlayActivity().javaClass)
                 intent.putExtra("album_id", 3L)
-                intent.putExtra("pos", 0)
+                intent.putExtra("pos", position)
                 intent.putExtra("list", json)
-                intent.putExtra("type", 1)
+                intent.putExtra("type", 2)
                 startActivity(intent)
 
             }

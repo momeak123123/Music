@@ -78,7 +78,7 @@ public class LockActivity extends AppCompatActivity implements SlidingFinishLayo
         fullScreen(this);
         setContentView(R.layout.activity_lock);
         initView();
-        MusicPlayActivity.lock = "0";
+
 
     }
 
@@ -147,7 +147,7 @@ public class LockActivity extends AppCompatActivity implements SlidingFinishLayo
         } else {
             playPauseIv.setImageResource(R.drawable.play);
         }
-        iv_audio.setImageBitmap(MusicPlayActivity.m1);
+        Glide.with(this).load(MusicPlayActivity.m).placeholder(R.color.main_black_grey).into(iv_audio);
         back.setImageBitmap(MusicPlayActivity.m2);
     }
 
@@ -187,7 +187,7 @@ public class LockActivity extends AppCompatActivity implements SlidingFinishLayo
     @Override
     public void onSlidingFinish() {
         finish();
-        MusicPlayActivity.lock = "1";
+
     }
 
     @Override

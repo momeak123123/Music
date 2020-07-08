@@ -53,6 +53,15 @@ public class mPlaylistDao {
         return Initialization.getDaoInstantPlaylist().getPlaylistDao().queryBuilder().where(PlaylistDao.Properties.Play_list_id.eq(playid)).list();
     }
 
+    /**
+     * 查询条件为Type=TYPE_LOVE的数据
+     *
+     * @return
+     */
+    public static List<Playlist> querys(String userid) {
+        return Initialization.getDaoInstantPlaylist().getPlaylistDao().queryBuilder().where(PlaylistDao.Properties.User_id.eq(userid)).list();
+    }
+
 
     /**
      * 查询全部数据

@@ -34,7 +34,8 @@ public class FileUtils {
      * @return
      */
     private static String getAppDir() {
-        return Environment.getExternalStorageDirectory() + "/musicLake/";
+
+        return Environment.getExternalStorageDirectory() + "/xiaobai/";
     }
 
     public static String getMusicDir() {

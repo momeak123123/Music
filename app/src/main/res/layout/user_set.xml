@@ -20,14 +20,13 @@
     <RelativeLayout
         android:id="@+id/view"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_40"
+        android:layout_height="@dimen/dp_50"
         android:layout_marginStart="@dimen/dp_20"
-        android:layout_marginTop="@dimen/dp_10"
         android:layout_marginEnd="@dimen/dp_20"
         android:background="@drawable/but_strok"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/include">
+        app:layout_constraintTop_toBottomOf="@+id/view2">
 
         <ImageView
             android:id="@+id/imageView12"
@@ -35,7 +34,7 @@
             android:layout_height="@dimen/dp_25"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="@dimen/dp_5"
+            android:layout_marginTop="@dimen/dp_15"
             android:scaleType="centerCrop"
             android:src="@drawable/right" />
 
@@ -47,9 +46,9 @@
             android:layout_alignBottom="@+id/imageView12"
             android:layout_alignParentStart="true"
             android:gravity="center"
-            android:textSize="@dimen/sp_16"
             android:text="@string/set1"
             android:textColor="@color/white"
+            android:textSize="@dimen/sp_16"
             app:layout_constraintBottom_toBottomOf="@+id/imageView12"
             app:layout_constraintTop_toTopOf="@+id/imageView12" />
 
@@ -58,7 +57,7 @@
     <RelativeLayout
         android:id="@+id/view1"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_40"
+        android:layout_height="@dimen/dp_50"
         android:layout_marginStart="@dimen/dp_20"
         android:layout_marginEnd="@dimen/dp_20"
         android:background="@drawable/but_strok"
@@ -72,7 +71,7 @@
             android:layout_height="@dimen/dp_25"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="@dimen/dp_5"
+            android:layout_marginTop="@dimen/dp_15"
             android:scaleType="centerCrop"
             android:src="@drawable/right" />
 
@@ -92,6 +91,44 @@
 
     </RelativeLayout>
 
+    <RelativeLayout
+        android:id="@+id/view2"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/dp_50"
+        android:layout_marginStart="@dimen/dp_20"
+        android:layout_marginTop="@dimen/dp_20"
+        android:layout_marginEnd="@dimen/dp_20"
+        android:background="@drawable/but_strok"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/include">
+
+        <ImageView
+            android:id="@+id/imageView14"
+            android:layout_width="@dimen/dp_25"
+            android:layout_height="@dimen/dp_25"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="@dimen/dp_15"
+            android:scaleType="centerCrop"
+            android:src="@drawable/right" />
+
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/imageView14"
+            android:layout_alignBottom="@+id/imageView14"
+            android:layout_alignParentStart="true"
+            android:gravity="center"
+            android:text="@string/set3"
+            android:textColor="@color/white"
+            android:textSize="@dimen/sp_16"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView14"
+            app:layout_constraintTop_toTopOf="@+id/imageView14" />
+
+    </RelativeLayout>
 
     <com.xuexiang.xui.widget.button.roundbutton.RoundButton
         android:id="@+id/btn_unlogin"

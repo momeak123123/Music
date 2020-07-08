@@ -10,8 +10,8 @@ android {
         applicationId "com.example.xiaobai.music"
         minSdkVersion 24
         targetSdkVersion 29
-        versionCode 28
-        versionName "0.0.28"
+        versionCode 29
+        versionName "0.0.29"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
@@ -100,10 +100,13 @@ dependencies {
 
     //自定义FlowLayout
     implementation 'com.github.AnJiaoDe:MultiFlowLayout:V1.1.2'
+
+    //缓存
+    implementation 'com.danikula:videocache:2.7.1'
 }
 
 greendao {
-    schemaVersion 8
+    schemaVersion 9
     daoPackage 'com.example.xiaobai.music.sql.gen'
     targetGenDir 'src/main/java'
 }

@@ -101,6 +101,7 @@ class ArtistActivity : BaseMvpActivity<ArtistContract.IPresenter>(), ArtistContr
                 if (swipe_refresh_layout != null) {
                     swipe_refresh_layout.isRefreshing = false
                 }
+                finish()
                 Toast.makeText(
                     context,
                     getText(R.string.nonet),
@@ -119,6 +120,7 @@ class ArtistActivity : BaseMvpActivity<ArtistContract.IPresenter>(), ArtistContr
             if (swipe_refresh_layout != null) {
                 swipe_refresh_layout.isRefreshing = false
             }
+            finish()
             Toast.makeText(
                 context,
                 getText(R.string.nonet),

@@ -14,15 +14,18 @@ public class Playlist {
     private Long play_list_id;
     private String name;
     private String pic_url;
+    private String user_id;
     private String create_time;
     private String song_num;
-    @Generated(hash = 1255000093)
+
+    @Generated(hash = 874975770)
     public Playlist(Long id, Long play_list_id, String name, String pic_url,
-            String create_time, String song_num) {
+            String user_id, String create_time, String song_num) {
         this.id = id;
         this.play_list_id = play_list_id;
         this.name = name;
         this.pic_url = pic_url;
+        this.user_id = user_id;
         this.create_time = create_time;
         this.song_num = song_num;
     }
@@ -53,6 +56,12 @@ public class Playlist {
     public void setPic_url(String pic_url) {
         this.pic_url = pic_url;
     }
+    public String getUser_id() {
+        return this.user_id;
+    }
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
+    }
     public String getCreate_time() {
         return this.create_time;
     }
@@ -65,5 +74,6 @@ public class Playlist {
     public void setSong_num(String song_num) {
         this.song_num = song_num;
     }
+   
 
 }

@@ -10,7 +10,6 @@ import android.widget.Toast
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.bumptech.glide.Glide
 import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.adapter.DownloadAdapter
@@ -58,7 +57,7 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
     private lateinit var sp: SharedPreferences
     private var bools: Boolean = true
     private lateinit var names: String
-    private var album_id: Long = 0
+    private var album_id: Long = 2
     private lateinit var covers: String
     private lateinit var txts: String
     var songlist = mutableListOf<Music>()
@@ -93,8 +92,8 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
         val song = mutableListOf<Music>()
         val artist = mutableListOf<artistlist>()
         for (i in 0 until data.size) {
-            if(data[i].type==1){
-                artist.add(i, artistlist(data[i].artist_id,data[i].artist))
+            if (data[i].type == 1) {
+                artist.add(i, artistlist(data[i].artist_id, data[i].artist))
                 val music = Music(
                     data[i].name,
                     data[i].album_name,
@@ -161,9 +160,9 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
                     }
                     if (idmap.isNotEmpty()) {
                         in_indel.visibility = View.VISIBLE
-                        Glide.with(context).load("").into(del)
+                        del.visibility = View.GONE
                         in_title.text = getText(R.string.song_but)
-                        val list: MutableList<Playlist> = mPlaylistDao.queryAll()
+                        val list: MutableList<Playlist> = mPlaylistDao.querys(sp.getString("userid","").toString())
                         initSongLists(list, idmap)
                     } else {
                         Toast.makeText(
@@ -300,17 +299,12 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
         })
     }
 
-    override fun onStop() {
-        super.onStop()
-        try {
-            adapter.notifyItemChanged(0)
-        }catch (e:Exception){}
-    }
+
     /**
      * 初始化歌曲
      */
     private fun initSongList(song: MutableList<Music>) {
-        album_id = 2
+
         names = "下载列表"
         covers = song[1].pic_url
         txts = ""
@@ -358,6 +352,9 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
 
     override fun onResume() {
         super.onResume()
+        if (MusicApp.getAblumid() == album_id) {
+           adapter.notifyItemChanged(0)
+        }
 
         observers = object : Observer<Boolean> {
             override fun onSubscribe(d: Disposable) {}
@@ -446,9 +443,9 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
                         if (MusicApp.userlogin()) {
                             poplue.visibility = View.GONE
                             in_indel.visibility = View.VISIBLE
-                            Glide.with(context).load("").into(del)
+                            del.visibility = View.GONE
                             in_title.text = getText(R.string.song_but)
-                            val list: MutableList<Playlist> = mPlaylistDao.queryAll()
+                            val list: MutableList<Playlist> = mPlaylistDao.querys(sp.getString("userid","").toString())
                             val idmap = mutableListOf<Music>()
                             idmap.add(songlist[data])
                             initSongLists(list, idmap)

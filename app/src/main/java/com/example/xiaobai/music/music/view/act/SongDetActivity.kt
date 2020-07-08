@@ -351,9 +351,8 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
     override fun onResume() {
         super.onResume()
 
-        try {
-            adapter.notifyItemChanged(0)
-        } catch (e: Exception) {
+        if (MusicApp.getAblumid() == playids) {
+           adapter.notifyItemChanged(0)
         }
 
         observer = object : Observer<JsonArray> {

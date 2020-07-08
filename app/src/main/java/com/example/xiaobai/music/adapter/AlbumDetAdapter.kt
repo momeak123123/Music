@@ -17,6 +17,7 @@ import com.example.xiaobai.music.bean.SongDet
 import com.example.xiaobai.music.music.view.act.AlbumDetActivity
 import com.example.xiaobai.music.music.view.act.MusicPlayActivity
 import com.jakewharton.rxbinding2.view.RxView
+import com.xuexiang.xui.utils.ResUtils
 import io.reactivex.Observable
 import java.util.concurrent.TimeUnit
 
@@ -123,26 +124,25 @@ class AlbumDetAdapter(
         @SuppressLint("CheckResult")
         fun bindData() {
             txt.text = txts
+
             Glide.with(context).load(covers).placeholder(R.color.main_black_grey).into(iv_cover)
             top_title.text = names
-            Glide.with(context).load(R.drawable.mores).into(top_set)
-            Glide.with(context).load(R.drawable.shang).into(pre)
+            top_set.setImageResource(R.drawable.mores)
+            pre.setImageResource(R.drawable.shang)
+
 
             if (MusicApp.getAblumid() == id) {
 
                 if (MusicApp.getPlay()) {
-
-                    Glide.with(context).load(R.drawable.plays).into(play)
+                    play.setImageResource(R.drawable.plays)
                 } else {
-                    Glide.with(context).load(R.drawable.play).into(play)
+                    play.setImageResource(R.drawable.play)
                 }
 
             } else {
-                Glide.with(context).load(R.drawable.play).into(play)
+                play.setImageResource(R.drawable.play)
             }
-
-            Glide.with(context).load(R.drawable.xia).into(next)
-
+            next.setImageResource(R.drawable.xia)
 
             RxView.clicks(top_flot)
                 .throttleFirst(1, TimeUnit.SECONDS)
@@ -184,19 +184,19 @@ class AlbumDetAdapter(
                         if (MusicApp.getAblumid() == id) {
                             if (MusicApp.getPlay()) {
                                 Observable.just(0).subscribe(MusicPlayActivity.observerset)
-                                Glide.with(context).load(R.drawable.play).into(play)
+                                play.setImageResource(R.drawable.play)
                             } else {
                                 Observable.just(3).subscribe(MusicPlayActivity.observerset)
-                                Glide.with(context).load(R.drawable.plays).into(play)
+                                play.setImageResource(R.drawable.plays)
                             }
 
                         } else {
-                            Observable.just(datas).subscribe(MusicPlayActivity.observerplay)
-                            Glide.with(context).load(R.drawable.plays).into(play)
+                            Observable.just(false).subscribe(AlbumDetActivity.observers)
+                            play.setImageResource(R.drawable.plays)
                         }
                     } else {
                         Observable.just(false).subscribe(AlbumDetActivity.observers)
-                        Glide.with(context).load(R.drawable.plays).into(play)
+                        play.setImageResource(R.drawable.plays)
                     }
 
                 }
@@ -240,6 +240,7 @@ class AlbumDetAdapter(
             itemView.setOnClickListener { v ->
                 mItemClickListener?.onItemClick(v, position)
             }
+
 
 
             Glide.with(context).load(datas[position].pic_url).placeholder(R.color.main_black_grey)

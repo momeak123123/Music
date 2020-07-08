@@ -245,7 +245,7 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
                             in_indel.visibility = View.VISIBLE
                             context?.let { it1 -> Glide.with(it1).load("").into(del) }
                             in_title.text = getText(R.string.song_but)
-                            val list: MutableList<Playlist> = mPlaylistDao.queryAll()
+                            val list: MutableList<Playlist> = mPlaylistDao.querys(sp.getString("userid","").toString())
                             val idmap = mutableListOf<Music>()
                             idmap.add(data)
                             initSongLists(list, idmap)

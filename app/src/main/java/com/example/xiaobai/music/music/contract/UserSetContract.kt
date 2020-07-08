@@ -6,12 +6,13 @@ import mvp.ljb.kt.contract.IModelContract
 
 /**
  * @Author Kotlin MVP Plugin
- * @Date 2020/07/01
+ * @Date 2020/07/07
  * @Description input description
  **/
-interface SetContract {
+interface UserSetContract {
 
-    interface IView : IViewContract
+    interface IView : IViewContract {
+    }
 
     interface IPresenter : IPresenterContract
 
