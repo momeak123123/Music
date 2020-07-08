@@ -12,8 +12,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.adapter.SearchListAdapter
 import com.example.xiaobai.music.bean.Music
-import com.example.xiaobai.music.config.Cookie
-import com.example.xiaobai.music.config.Dencry
+import com.example.xiaobai.music.bean.Searchs
 import com.example.xiaobai.music.music.contract.SearchListContract
 import com.example.xiaobai.music.music.presenter.SearchListPresenter
 import com.example.xiaobai.music.sql.config.Initialization
@@ -35,21 +34,23 @@ import java.util.concurrent.TimeUnit
  * @Date 2020/06/24
  * @Description input description
  **/
-class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>() , SearchListContract.IView {
+class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>(),
+    SearchListContract.IView {
 
     companion object {
-        lateinit var observer: Observer<MutableList<Music>>
-
+        lateinit var observer: Observer<MutableList<Searchs>>
+        lateinit var observers: Observer<Boolean>
     }
-    val datas = mutableListOf<Music>()
-    private  var ids: Int = 0
+
+    val datas = mutableListOf<Searchs>()
     private lateinit var search: String
     private lateinit var context: Context
     private lateinit var adapter: SearchListAdapter
+    private var type = 0
     override fun registerPresenter() = SearchListPresenter::class.java
 
     override fun getLayoutId(): Int {
-       return R.layout.search_index
+        return R.layout.search_index
     }
 
     override fun init(savedInstanceState: Bundle?) {
@@ -57,15 +58,16 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>() , Se
         Initialization.setupDatabaseSearch(this)
         context = this
         top_title.text = getText(R.string.search)
-
     }
 
     override fun initData() {
         super.initData()
         val bundle = intent.extras
         search = bundle?.get("txt") as String
-        getPresenter().qqdata(context,search,0)
+        getPresenter().qqdata(context, search, 0)
+
         swipe_refresh_layout.isRefreshing = true
+
     }
 
     @SuppressLint("CheckResult")
@@ -74,7 +76,9 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>() , Se
 
         swipe_refresh_layout.setColorSchemeColors(-0xff6634, -0xbbbc, -0x996700, -0x559934, -0x7800)
         //下拉刷新
-        swipe_refresh_layout.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener {  getPresenter().qqdata(context,search,0) })
+        swipe_refresh_layout.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener {
+            swipe_refresh_layout.isRefreshing = false
+        })
 
         RxView.clicks(top_flot)
             .throttleFirst(1, TimeUnit.SECONDS)
@@ -87,35 +91,63 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>() , Se
 
     override fun onResume() {
         super.onResume()
-        observer = object : Observer<MutableList<Music>> {
+        observer = object : Observer<MutableList<Searchs>> {
             override fun onSubscribe(d: Disposable) {}
-            override fun onNext(data: MutableList<Music>) {
-                if(data.size>0){
-                    datas.clear()
-                    datas.addAll(data)
-                    initSearchList(data)
-                }else{
+            override fun onNext(data: MutableList<Searchs>) {
+
+                if (data.size > 0) {
+                    for (it in data) {
+                        datas.add(it)
+                    }
+                    initSearchList(datas)
+                } else {
                     Toast.makeText(
                         context,
-                        getText(R.string.  error_search),
+                        getText(R.string.error_search),
                         Toast.LENGTH_SHORT
                     ).show()
 
                 }
 
-                if (swipe_refresh_layout != null) {
-                    swipe_refresh_layout.isRefreshing = false
-                }
             }
 
             override fun onError(e: Throwable) {}
-            override fun onComplete() {}
+            override fun onComplete() {
+                when (type) {
+                    0 -> {
+                        type++
+                        getPresenter().kugoudata(context, search, 0)
+                    }
+                    1 -> {
+                        if (swipe_refresh_layout != null) {
+                            swipe_refresh_layout.isRefreshing = false
+                        }
+                    }
+
+                }
+
+
+            }
 
         }
 
+        observers = object : Observer<Boolean> {
+            override fun onSubscribe(d: Disposable) {}
 
+            override fun onNext(data: Boolean) {
+                if (data) {
+                    if (swipe_refresh_layout != null) {
+                        swipe_refresh_layout.isRefreshing = false
+                    }
+                }
 
+            }
 
+            override fun onError(e: Throwable) {}
+            override fun onComplete() {
+            }
+
+        }
 
     }
 
@@ -123,14 +155,18 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>() , Se
     /**
      * 初始化
      */
-    private fun initSearchList(datas : MutableList<Music> ) {
+    private fun initSearchList(datas: MutableList<Searchs>) {
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.itemAnimator = DefaultItemAnimator()
-        adapter = SearchListAdapter(datas,this)
+        adapter = SearchListAdapter(datas, this)
         recyclerView.adapter = adapter
         adapter.setOnItemClickListener(object : SearchListAdapter.ItemClickListener {
             override fun onItemClick(view: View, position: Int) {
-                val json: String = Gson().toJson(datas)
+                val music = mutableListOf<Music>()
+                for (it in datas) {
+                    music.add(it.music)
+                }
+                val json: String = Gson().toJson(music)
                 val intent = Intent()
                 intent.setClass(context, MusicPlayActivity().javaClass)
                 intent.putExtra("album_id", 3L)

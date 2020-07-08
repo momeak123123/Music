@@ -9,11 +9,11 @@
 
     <RelativeLayout
         android:id="@+id/item"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="@dimen/dp_70"
         android:layout_marginStart="@dimen/dp_10"
-        android:layout_marginEnd="@dimen/dp_40"
-        app:layout_constraintEnd_toStartOf="@+id/more"
+        android:layout_marginEnd="@dimen/dp_20"
+        app:layout_constraintEnd_toStartOf="@+id/type"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -76,6 +76,18 @@
     </RelativeLayout>
 
 
+    <ImageView
+        android:id="@+id/type"
+        android:layout_width="@dimen/dp_20"
+        android:layout_height="@dimen/dp_20"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="@dimen/dp_20"
+        android:src="@drawable/wangyiyun"
+        app:layout_constraintBottom_toBottomOf="@+id/item"
+        app:layout_constraintEnd_toStartOf="@+id/more"
+        app:layout_constraintTop_toTopOf="@+id/item" />
 
     <ImageView
         android:id="@+id/more"

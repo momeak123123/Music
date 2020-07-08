@@ -13,7 +13,9 @@ import mvp.ljb.kt.contract.IModelContract
  **/
 interface FindContract {
 
-    interface IView : IViewContract
+    interface IView : IViewContract {
+
+    }
 
     interface IPresenter : IPresenterContract {
         fun listdata(): MutableList<Search>

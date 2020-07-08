@@ -59,7 +59,7 @@ public class Notification extends android.app.Notification {
                 .setCustomContentView(getContentView())
                 .setCustomBigContentView(getContentViews())
                 .setContentIntent(resultPendingIntent) // 设定点击通知之后启动的内容，这个内容由方法中的参数：PendingIntent对象决定
-                .setPriority(NotificationCompat.PRIORITY_MAX) // 设置通知的优先级
+                .setPriority(NotificationCompat.PRIORITY_LOW) // 设置通知的优先级
                 .setDefaults(NotificationCompat.FLAG_ONLY_ALERT_ONCE)//取消提示音
                 .setSound(null)
                 .setAutoCancel(false) // 设置点击通知之后通知是否消失

@@ -240,8 +240,8 @@ class MusicPlayModel {
 
         }
 
-        fun musicpath( source: String, mid: String, br: String, cookie: String) {
-            OkGo.post<String>("http://symusic.top/music.php?source=$source&types=url&mid=$mid&br=$br")
+        fun musicpath( url: String,  cookie: String) {
+            OkGo.post<String>(url)
                 .params("cookie", cookie)
                 .execute(object : StringCallback() {
                     override fun onSuccess(response: Response<String>) {

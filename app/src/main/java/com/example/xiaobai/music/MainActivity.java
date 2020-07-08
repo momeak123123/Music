@@ -22,6 +22,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
@@ -86,7 +87,6 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
         context = this;
         viewPager = findViewById(R.id.viewPager);
@@ -193,6 +193,8 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
 
             }
         });
+
+        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
 

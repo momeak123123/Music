@@ -29,8 +29,7 @@ public class LockService extends Service {
 
             @Override
             public void onReceive(Context context, Intent intent) {
-                if (Objects.equals(intent.getAction(), Intent.ACTION_SCREEN_OFF)) {
-                    System.out.println("收到锁屏广播");
+                if (Objects.equals(intent.getAction(), Intent.ACTION_SCREEN_OFF) || Objects.equals(intent.getAction(), Intent.ACTION_SCREEN_ON)) {
                     Intent lockscreen = new Intent(LockService.this, LockActivity.class);
                     lockscreen.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                     startActivity(lockscreen);

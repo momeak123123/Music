@@ -1,6 +1,7 @@
 package com.example.xiaobai.music.music.view.fragment
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
@@ -10,9 +11,12 @@ import android.text.style.AbsoluteSizeSpan
 import android.text.style.ForegroundColorSpan
 import android.view.Gravity
 import android.view.View
+import android.view.View.OnFocusChangeListener
+import android.view.inputmethod.InputMethodManager
 import android.widget.SearchView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.cy.cyflowlayoutlibrary.FlowLayoutAdapter
@@ -22,7 +26,7 @@ import com.example.xiaobai.music.adapter.SearchAdapter
 import com.example.xiaobai.music.bean.Sear
 import com.example.xiaobai.music.music.contract.FindContract
 import com.example.xiaobai.music.music.presenter.FindPresenter
-import com.example.xiaobai.music.music.view.act.*
+import com.example.xiaobai.music.music.view.act.SearchListActivity
 import com.example.xiaobai.music.parsing.kugouseBean
 import com.example.xiaobai.music.sql.bean.Search
 import com.example.xiaobai.music.sql.config.Initialization
@@ -32,11 +36,6 @@ import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.artist_index.*
 import kotlinx.android.synthetic.main.fragment_find.*
-import kotlinx.android.synthetic.main.fragment_find.del
-import kotlinx.android.synthetic.main.fragment_find.flowLayout
-import kotlinx.android.synthetic.main.fragment_find.flowLayout2
-import kotlinx.android.synthetic.main.fragment_find.search_view
-import kotlinx.android.synthetic.main.fragment_find.sreachtitle
 import mvp.ljb.kt.fragment.BaseMvpFragment
 import java.util.concurrent.TimeUnit
 
@@ -68,6 +67,7 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
     override fun init(savedInstanceState: Bundle?) {
         super.init(savedInstanceState)
         Initialization.setupDatabaseSearch(context)
+
     }
 
     override fun initData() {
@@ -92,6 +92,10 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
 
     override fun onResume() {
         super.onResume()
+
+        layout.isFocusable = true
+        layout.isFocusableInTouchMode = true
+        layout.requestFocus()
 
         if (MusicApp.network() != -1) {
             getPresenter().listcean()
@@ -249,6 +253,7 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
      */
     private fun initSearch() {
         search_view.clearFocus()
+
         val id = search_view.context.resources
             .getIdentifier("android:id/search_src_text", null, null)
         val textView = search_view.findViewById(id) as TextView
@@ -256,7 +261,6 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
         textView.textSize = 16F// 设置输入字体大小
         textView.height = 40// 设置输入框的高度
         textView.gravity = Gravity.CENTER_VERTICAL
-
         val spanText = SpannableString("搜索音乐")
 
         // 设置字体大小

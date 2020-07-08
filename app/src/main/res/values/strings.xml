@@ -65,6 +65,7 @@
     <string name="equalizer">均衡器</string>
     <string name="error_connection">网络连接异常，请稍后重试！</string>
     <string name="error_search">搜索失败，请稍后重试</string>
+    <string name="error_searcher">搜索歌曲暂时无法收藏</string>
     <string name="secret_num">~~ 加载中 ~~</string>
     <string name="error_playing_track">播放出错</string>
     <string name="lyric_default_hint">暂无歌词</string>

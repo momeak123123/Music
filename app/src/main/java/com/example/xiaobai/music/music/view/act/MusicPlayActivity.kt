@@ -1,6 +1,7 @@
 package com.example.xiaobai.music.music.view.act
 
 import android.annotation.SuppressLint
+import android.app.KeyguardManager
 import android.content.*
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
@@ -16,7 +17,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.danikula.videocache.CacheListener
 import com.danikula.videocache.HttpProxyCacheServer
 import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
@@ -63,10 +63,9 @@ import java.io.File
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class MusicPlayActivity : AppCompatActivity(), CacheListener {
+class MusicPlayActivity : AppCompatActivity() {
 
     companion object {
-        lateinit var lock: String
         var position: Int = 0
         var song_id: Long = 0
         lateinit var wlMedia: WlMedia
@@ -85,15 +84,16 @@ class MusicPlayActivity : AppCompatActivity(), CacheListener {
         var playingMusicList: MutableList<Music>? = null
     }
 
+    private lateinit var connection: ServiceConnection
     private var adaptert: PlayListAdapter? = null
     private var type: Int = 2
     var max: Long = 0
+    private var search: Boolean = false
     private lateinit var sp: SharedPreferences
     private var min: Long = 0
     private var pos: Int = 0
     private var bitmap: Bitmap? = null
     private var playingMusic: Music? = null
-    private var binder: MusicService.MyBinder? = null
     private var coverFragment = CoverFragment()
     private var lyricFragment = LyricFragment()
     private val fragments = mutableListOf<Fragment>()
@@ -114,8 +114,6 @@ class MusicPlayActivity : AppCompatActivity(), CacheListener {
         initData()
         sp = getSharedPreferences("User", Context.MODE_PRIVATE)
 
-        val intent = Intent(this, LockService::class.java)
-        startService(intent)
         //广播 添加广播的action
 
         val intentFilter = IntentFilter()
@@ -124,15 +122,21 @@ class MusicPlayActivity : AppCompatActivity(), CacheListener {
         intentFilter.addAction("play")
         intentFilter.addAction("next")
         registerReceiver(broadcastReceiver, intentFilter)
+
+        val intentservice = Intent(this, MusicService::class.java)
+        startService(intentservice)
+
+        initKeyguardManager()
     }
 
-    var connection: ServiceConnection = object : ServiceConnection {
-        override fun onServiceConnected(name: ComponentName?, service: IBinder) {
-            binder = service as MusicService.MyBinder
-            binder!!.startMusic()
-        }
+    private fun initKeyguardManager() {
+        val keyguardManager =
+            applicationContext.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
+        val keyguardLock = keyguardManager.newKeyguardLock("")
+        keyguardLock.disableKeyguard() //取消系统锁屏
 
-        override fun onServiceDisconnected(name: ComponentName?) {}
+        val intent = Intent(this, LockService::class.java)
+        startService(intent)
     }
 
     var broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
@@ -292,12 +296,21 @@ class MusicPlayActivity : AppCompatActivity(), CacheListener {
             .throttleFirst(0, TimeUnit.SECONDS)
             .subscribe {
                 if (MusicApp.userlogin()) {
-                    in_indel.visibility = View.VISIBLE
-                    del.visibility = View.GONE
-                    in_title.text = getText(R.string.song_but)
-                    val list: MutableList<Playlist> =
-                        mPlaylistDao.querys(sp.getString("userid", "").toString())
-                    initSongList(list)
+                    if(!search){
+                        in_indel.visibility = View.VISIBLE
+                        del.visibility = View.GONE
+                        in_title.text = getText(R.string.song_but)
+                        val list: MutableList<Playlist> =
+                            mPlaylistDao.querys(sp.getString("userid", "").toString())
+                        initSongList(list)
+                    }else{
+                        Toast.makeText(
+                            context,
+                            getText(R.string.error_searcher),
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+
 
                 } else {
                     MaterialDialog.Builder(context)
@@ -598,7 +611,6 @@ class MusicPlayActivity : AppCompatActivity(), CacheListener {
     }
 
 
-
     /**
      * 初始化歌曲
      */
@@ -708,7 +720,7 @@ class MusicPlayActivity : AppCompatActivity(), CacheListener {
             song_id = music.song_id
             MusicApp.setPosition(id)
             MusicApp.setMusic(playingMusicList)
-
+            progressSb.progress = 0
             val artist = music.all_artist
             var srtist_name = ""
             for (it in artist) {
@@ -721,22 +733,22 @@ class MusicPlayActivity : AppCompatActivity(), CacheListener {
             }
             subTitleTv.text = srtist_name
             Ablemname.text = music.album_name
-
-            if (music.uri != "") {
-                musicplay(0, music.uri)
-                lyricFragment.lrcView(music.song_id)
-
-            } else {
-                MusicPlayModel.musicpath(
-                    "tencent", music.publish_time, "hq",
-                    Cookie.getCookie()
-                )
-            }
-
             coverFragment.setImageBitmap(music.pic_url)
             t1 = music.name
             t2 = srtist_name
             m = music.pic_url
+
+            if (music.uri != "") {
+                musicplay(0, music.uri)
+                lyricFragment.lrcView(music.song_id)
+                search = false
+            } else {
+                search = true
+                MusicPlayModel.musicpath(
+                    music.publish_time,
+                    Cookie.getCookie()
+                )
+            }
 
             object : Thread() {
                 override fun run() {
@@ -775,7 +787,7 @@ class MusicPlayActivity : AppCompatActivity(), CacheListener {
 
             MusicApp.setPosition(id)
             MusicApp.setMusic(playingMusicList)
-
+            progressSb.progress = 0
             song_id = music.song_id
             playingMusic = music
 
@@ -794,20 +806,22 @@ class MusicPlayActivity : AppCompatActivity(), CacheListener {
             subTitleTv.text = srtist_name
             Ablemname.text = music.album_name
 
-            if (music.uri != "") {
-                musicplay(1, music.uri)
-                lyricFragment.lrcView(music.song_id)
-            } else {
-                MusicPlayModel.musicpath(
-                    "tencent", music.publish_time, "hq",
-                    Cookie.getCookie()
-                )
-            }
-
             coverFragment.setImageBitmap(music.pic_url)
             t1 = music.name
             t2 = srtist_name
             m = music.pic_url
+
+            if (music.uri != "") {
+                musicplay(1, music.uri)
+                lyricFragment.lrcView(music.song_id)
+                search = false
+            } else {
+                search = true
+                MusicPlayModel.musicpath(
+                    music.publish_time,
+                    Cookie.getCookie()
+                )
+            }
 
             object : Thread() {
                 override fun run() {
@@ -859,8 +873,12 @@ class MusicPlayActivity : AppCompatActivity(), CacheListener {
         super.onDestroy()
         Observable.just(true).subscribe(observer)
         Notification.deleteNotification()
+        val intent = Intent(this, LockService::class.java)
+        stopService(intent)
         unregisterReceiver(broadcastReceiver) // 注销广播
+        unbindService(connection)
     }
+
 
 
     @SuppressLint("SetTextI18n")
@@ -884,11 +902,9 @@ class MusicPlayActivity : AppCompatActivity(), CacheListener {
                                 val f = aLong / 60
                                 val m = aLong % 60
                                 progressTv.text = "00:00"
-                                wlMedia.seek(0.0)
                                 durationTv.text =
                                     unitFormat(f.toInt()) + ":" + unitFormat(m.toInt())
                                 lrcView.updateTime(0)
-                                coverFragment.startRotateAnimation(wlMedia.isPlaying)
                             }
 
                             override fun onError(e: Throwable) {}
@@ -897,17 +913,11 @@ class MusicPlayActivity : AppCompatActivity(), CacheListener {
                                 playPauseIv.play()
                                 wlMedia.start() //准备完成开始播放
                                 MusicApp.setPlay(true)
-
+                                coverFragment.startRotateAnimation(true)
                             }
                         })
                 } else {
-                    if (playingMusicList!!.size - 1 == id) {
-                        id = 0
-                        starts(playingMusicList!![0])
-                    } else {
-                        id += 1
-                        starts(playingMusicList!![id])
-                    }
+                    Observable.just(2).subscribe(observerset)
                 }
 
             }
@@ -940,7 +950,7 @@ class MusicPlayActivity : AppCompatActivity(), CacheListener {
             }
 
             wlMedia.setOnCompleteListener { type ->
-               //
+                //
                 when {
                     type === WlComplete.WL_COMPLETE_EOF -> {
                         WlLog.d("正常播放结束")
@@ -954,13 +964,11 @@ class MusicPlayActivity : AppCompatActivity(), CacheListener {
                     type === WlComplete.WL_COMPLETE_HANDLE -> {
                         WlLog.d("手动结束")
                         playPauseIv.setLoading(false)
-                        Observable.just(2).subscribe(observerset)
                     }
                     type === WlComplete.WL_COMPLETE_ERROR -> {
                         WlLog.d("播放出现错误结束")
                         playPauseIv.setLoading(false)
                         Observable.just(2).subscribe(observerset)
-
                     }
                 }
             }
@@ -1020,7 +1028,7 @@ class MusicPlayActivity : AppCompatActivity(), CacheListener {
 
                     }
 
-                } else if(des==2){
+                } else if (des == 2) {
                     if (playingMusicList!!.size - 1 == id) {
                         id = 0
                         starts(playingMusicList!![0])
@@ -1066,10 +1074,6 @@ class MusicPlayActivity : AppCompatActivity(), CacheListener {
 
 
     }
-
-    override fun onCacheAvailable(cacheFile: File?, url: String?, percentsAvailable: Int) {
-    }
-
 
 }
 
