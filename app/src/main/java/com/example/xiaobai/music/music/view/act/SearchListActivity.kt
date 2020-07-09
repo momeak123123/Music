@@ -13,7 +13,9 @@ import com.example.xiaobai.music.R
 import com.example.xiaobai.music.adapter.SearchListAdapter
 import com.example.xiaobai.music.bean.Music
 import com.example.xiaobai.music.bean.Searchs
+import com.example.xiaobai.music.config.Cookie
 import com.example.xiaobai.music.music.contract.SearchListContract
+import com.example.xiaobai.music.music.model.MusicPlayModel
 import com.example.xiaobai.music.music.presenter.SearchListPresenter
 import com.example.xiaobai.music.sql.config.Initialization
 import com.google.gson.Gson

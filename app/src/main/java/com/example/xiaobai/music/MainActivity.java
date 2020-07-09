@@ -27,6 +27,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import com.example.xiaobai.music.adapter.ViewPagerAdapter;
+import com.example.xiaobai.music.config.Notification;
 import com.example.xiaobai.music.config.SoftKeyBoardListener;
 import com.example.xiaobai.music.music.model.MainModel;
 import com.example.xiaobai.music.music.model.MusicPlayModel;
@@ -34,6 +35,8 @@ import com.example.xiaobai.music.music.view.act.StartPageActivity;
 import com.example.xiaobai.music.music.view.fragment.FindFragment;
 import com.example.xiaobai.music.music.view.fragment.HomeFragment;
 import com.example.xiaobai.music.music.view.fragment.MyFragment;
+import com.example.xiaobai.music.service.LockService;
+import com.example.xiaobai.music.service.MusicService;
 import com.example.xiaobai.music.sql.config.Initialization;
 import com.example.xiaobai.music.R;
 import com.jpeng.jptabbar.BadgeDismissListener;
@@ -220,6 +223,7 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
         dert = bools;
     }
 
+
     /**
      * 检查权限
      *
@@ -335,6 +339,10 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
 
     protected void onDestroy() {
         super.onDestroy();
+
+        Intent intentservice = new Intent(this, MusicService.class);
+        stopService(intentservice);
+
     }
 
     @Override

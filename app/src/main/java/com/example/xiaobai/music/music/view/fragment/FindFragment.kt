@@ -49,6 +49,7 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
     companion object {
         lateinit var observer: Observer<MutableList<kugouseBean>>
         lateinit var observert: Observer<List<Sear>>
+        lateinit var observerts: Observer<List<Sear>>
         lateinit var observers: Observer<Boolean>
     }
 
@@ -97,8 +98,9 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
         layout.isFocusableInTouchMode = true
         layout.requestFocus()
 
+        getPresenter().listcean()
+
         if (MusicApp.network() != -1) {
-            getPresenter().listcean()
 
             val datas = getPresenter().listdata()
 
@@ -133,6 +135,7 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
                     }
                 }
                 flowLayout2.setAdapter(flowLayoutAdapters)
+
             }
 
         } else {
@@ -166,7 +169,6 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
                     for (it in data) {
                         listt.add(it.name)
                     }
-
                     flowLayoutAdapter = object : FlowLayoutAdapter<String>(listt) {
                         override fun bindDataToView(
                             holder: ViewHolder,
@@ -178,10 +180,13 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
 
                         override fun onItemClick(position: Int, bean: String?) {
                             if (MusicApp.network() != -1) {
-                                val sea = Search()
-                                sea.txt = bean
-                                sea.state = 0
-                                mSearchDao.insert(sea)
+                                val dess = mSearchDao.querys(bean)
+                                if(dess.size==0){
+                                    val sea = Search()
+                                    sea.txt = bean
+                                    sea.state = 0
+                                    mSearchDao.insert(sea)
+                                }
                                 intent(bean)
                             } else {
                                 if (swipe_refresh_layout != null) {
@@ -210,7 +215,6 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
             }
 
         }
-
 
 
         observer = object : Observer<MutableList<kugouseBean>> {
@@ -295,11 +299,15 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
             override fun onQueryTextSubmit(queryText: String): Boolean {
                 //点击搜索
                 if (MusicApp.network() != -1) {
-                    val sea = Search()
-                    sea.txt = queryText
-                    sea.state = 0
-                    mSearchDao.insert(sea)
-                    lists.add(queryText)
+                    val dess = mSearchDao.querys(queryText)
+                    if(dess.size==0){
+                        val sea = Search()
+                        sea.txt = queryText
+                        sea.state = 0
+                        mSearchDao.insert(sea)
+                        lists.add(queryText)
+                    }
+
                     intent(queryText)
                 } else {
                     if (swipe_refresh_layout != null) {

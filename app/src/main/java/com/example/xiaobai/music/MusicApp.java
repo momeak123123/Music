@@ -38,7 +38,6 @@ public class MusicApp extends Application {
     @SuppressLint("StaticFieldLeak")
     public static Context mContext;
 
-
     public static Long ablumid = 0L;
 
     public static Bitmap startback;
@@ -49,15 +48,16 @@ public class MusicApp extends Application {
 
     public static Boolean play = false;
 
-    public static Boolean isapp = false;
+    public static Double press = 0.0;
 
-    public static Boolean getIsapp() {
-        return isapp;
+    public static Double getPress() {
+        return press;
     }
 
-    public static void setIsapp(Boolean isapp) {
-        MusicApp.isapp = isapp;
+    public static void setPress(Double press) {
+        MusicApp.press = press;
     }
+
 
     public static Boolean getPlay() {
         return play;
@@ -91,7 +91,6 @@ public class MusicApp extends Application {
         MusicApp.ablumid = ablumid;
     }
 
-
     public static Bitmap getStartback() {
         return startback;
     }
@@ -120,12 +119,11 @@ public class MusicApp extends Application {
         }).start();
 
 
-
         // 捕捉RxJava全局异常
         RxJavaPlugins.setErrorHandler(new Consumer<Throwable>() {
             @Override
             public void accept(Throwable throwable) throws Exception {
-                System.out.println("异常处理"+throwable.getMessage());
+                System.out.println("异常处理" + throwable.getMessage());
             }
         });
     }
@@ -144,12 +142,12 @@ public class MusicApp extends Application {
                 .build();
     }
 
-    public static Boolean userlogin(){
+    public static Boolean userlogin() {
         SharedPreferences sp = mContext.getSharedPreferences("User", Context.MODE_PRIVATE);
-       return sp.getBoolean("login", false);
+        return sp.getBoolean("login", false);
     }
 
-    public static int network(){
+    public static int network() {
         return NetWorkUtils.getCurrentNetworkType(mContext);
     }
 

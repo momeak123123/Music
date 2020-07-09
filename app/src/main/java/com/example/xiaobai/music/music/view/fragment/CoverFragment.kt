@@ -7,6 +7,7 @@ import android.net.Uri
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
 import com.bumptech.glide.Glide
+import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.music.contract.CoverContract
 import com.example.xiaobai.music.music.presenter.CoverPresenter
@@ -45,14 +46,33 @@ class CoverFragment : BaseMvpFragment<CoverContract.IPresenter>(), CoverContract
     /**
      * 设置Bitmap
      */
-    fun setImageBitmap(ima:String ) {
+    fun setImagePath(ima:String ) {
 
         Observable.just(0)
             .subscribeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<Int> {
                 override fun onSubscribe(d: Disposable) {}
                 override fun onNext(cover: Int) {
-                    context?.let { Glide.with(it).load(ima).placeholder(R.color.main_black_grey).into(iv_cover) }
+                    context?.let { Glide.with(it).load(ima).placeholder(R.color.buttombar).into(iv_cover) }
+                }
+                override fun onError(e: Throwable) {}
+                override fun onComplete() {}
+            })
+
+
+    }
+
+    /**
+     * 设置Bitmap
+     */
+    fun setImageBitmap(ima:Bitmap ) {
+
+        Observable.just(0)
+            .subscribeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Observer<Int> {
+                override fun onSubscribe(d: Disposable) {}
+                override fun onNext(cover: Int) {
+                    iv_cover.setImageBitmap(ima)
                 }
                 override fun onError(e: Throwable) {}
                 override fun onComplete() {}
@@ -104,7 +124,7 @@ class CoverFragment : BaseMvpFragment<CoverContract.IPresenter>(), CoverContract
 
     override fun onResume() {
         super.onResume()
-        if (coverAnimator != null && coverAnimator?.isPaused!! && MusicPlayActivity.wlMedia.isPlaying) {
+        if (coverAnimator != null && coverAnimator?.isPaused!! && MusicApp.getPlay()) {
             coverAnimator?.resume()
         }
     }

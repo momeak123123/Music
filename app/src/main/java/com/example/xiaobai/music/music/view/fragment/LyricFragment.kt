@@ -37,11 +37,8 @@ class LyricFragment : BaseMvpFragment<LyricContract.IPresenter>(), LyricContract
     override fun onResume() {
         super.onResume()
         lrcView.setDraggable(true, LrcView.OnPlayClickListener { time: Long ->
-            MusicPlayActivity.wlMedia.seek((time / 1000).toDouble())
-            MusicPlayActivity.wlMedia.seekTimeCallBack(true)
-            if (!MusicPlayActivity.wlMedia.isPlaying) {
-                MusicPlayActivity.wlMedia.start()
-            }
+            Observable.just(time).subscribe(MusicPlayActivity.observerseeks)
+
             true
         })
     }
@@ -81,7 +78,6 @@ class LyricFragment : BaseMvpFragment<LyricContract.IPresenter>(), LyricContract
                             R.string.error_connection,
                             Toast.LENGTH_SHORT
                         ).show()
-                        Observable.just(true).subscribe(MusicPlayActivity.observer)
                     }
 
                 }

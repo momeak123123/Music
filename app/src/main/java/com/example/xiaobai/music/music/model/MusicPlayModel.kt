@@ -11,6 +11,7 @@ import com.example.xiaobai.music.R
 import com.example.xiaobai.music.StartsActivity
 import com.example.xiaobai.music.bean.*
 import com.example.xiaobai.music.common.Constants
+import com.example.xiaobai.music.config.Dencry
 import com.example.xiaobai.music.music.view.act.AlbumDetActivity
 import com.example.xiaobai.music.music.view.act.MusicPlayActivity
 import com.example.xiaobai.music.music.view.act.SearchListActivity
@@ -240,25 +241,6 @@ class MusicPlayModel {
 
         }
 
-        fun musicpath( url: String,  cookie: String) {
-            OkGo.post<String>(url)
-                .params("cookie", cookie)
-                .execute(object : StringCallback() {
-                    override fun onSuccess(response: Response<String>) {
-                        /**
-                         * 成功回调
-                         */
-                        try {
-                            val ca = response.body().substring(7)
-                            val da = ca.substring(0,ca.lastIndexOf('<'))
-                            val bean =
-                                Gson().fromJson(da, com.example.xiaobai.music.parsing.musicpath::class.javaObjectType)
-                                Observable.just(bean.geturl).subscribe(MusicPlayActivity.observert)
-                        } catch (e: Exception) {
-                        }
-                    }
-                })
-        }
     }
 
 

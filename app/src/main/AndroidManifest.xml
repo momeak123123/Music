@@ -33,10 +33,11 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup"
         tools:targetApi="n">
+
         <service
             android:name=".service.MusicService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="false"/>
 
         <activity
             android:name=".StartsActivity"
@@ -64,12 +65,7 @@
 
         <activity
             android:name=".music.view.act.MusicPlayActivity"
-            android:configChanges="orientation|keyboardHidden|screenSize"
-            android:excludeFromRecents="true"
-            android:exported="false"
-            android:launchMode="singleTask"
-            android:screenOrientation="unspecified"
-            android:taskAffinity="com.example.xiaobai.play" />
+            android:launchMode="singleTop"/>
         <activity
             android:name=".MainActivity"
             android:configChanges="keyboardHidden"

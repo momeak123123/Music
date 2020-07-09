@@ -52,6 +52,15 @@ public class mSearchDao {
         return Initialization.getDaoInstantSearch().getSearchDao().queryBuilder().where(SearchDao.Properties.Id.eq(searchid)).list();
     }
 
+    /**
+     * 查询条件为Type=TYPE_LOVE的数据
+     *
+     * @return
+     */
+    public static List<Search> querys(String txt) {
+        return Initialization.getDaoInstantSearch().getSearchDao().queryBuilder().where(SearchDao.Properties.Txt.eq(txt)).list();
+    }
+
 
     /**
      * 查询全部数据

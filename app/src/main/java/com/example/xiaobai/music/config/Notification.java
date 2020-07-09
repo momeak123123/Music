@@ -1,5 +1,6 @@
 package com.example.xiaobai.music.config;
 
+import android.annotation.SuppressLint;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -11,6 +12,8 @@ import android.os.Build;
 import android.widget.RemoteViews;
 
 import androidx.core.app.NotificationCompat;
+
+import com.example.xiaobai.music.MusicApp;
 import com.example.xiaobai.music.R;
 import com.example.xiaobai.music.music.view.act.MusicPlayActivity;
 
@@ -22,22 +25,14 @@ public class Notification extends android.app.Notification {
     private static NotificationManager notificationManager = null;
     private static NotificationChannel channel;
     private static Context context;
-    private static String title;
-    private static String txt;
-    private static Bitmap bitmap;
-    private static int type;
 
-    public static void init(Context mContext, String titles, String txts, Bitmap bitmaps,int types){
-        context = mContext;
-        title = titles;
-        txt = txts;
-        bitmap = bitmaps;
-        type = types;
+    public static void init(String titles, String txts, Bitmap bitmaps,int types){
+        context = MusicApp.getAppContext();
         if(Build.VERSION.SDK_INT>= Build.VERSION_CODES.O){
             //创建 通知通道  channelid和channelname是必须的（自己命名就好）
              channel = new NotificationChannel("1089", "小白音乐", NotificationManager.IMPORTANCE_DEFAULT);
         }
-        notificationManager= (NotificationManager) mContext.getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager= (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
             //向下兼容 用NotificationCompat.Builder构造notification对象
           /* notification = new NotificationCompat.Builder(mContext,"1089")
@@ -48,26 +43,31 @@ public class Notification extends android.app.Notification {
                     .build();*/
 
         //处理点击Notification的逻辑 返回正在运行的activity
+
         Intent resultIntent = new Intent(context, MusicPlayActivity.class);
         resultIntent.setAction(Intent.ACTION_MAIN);
         resultIntent.addCategory(Intent.CATEGORY_LAUNCHER);
         PendingIntent resultPendingIntent = PendingIntent.getActivity(context, 0x004, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        android.app.Notification notification = new NotificationCompat.Builder(mContext, "1089")
+        // 设定点击通知之后启动的内容，这个内容由方法中的参数：PendingIntent对象决定
+        // 设置通知的优先级
+        // 设置点击通知之后通知是否消失
+        android.app.Notification notification = new NotificationCompat.Builder(context, "1089")
                 .setWhen(System.currentTimeMillis())
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setCustomContentView(getContentView())
-                .setCustomBigContentView(getContentViews())
+                .setCustomContentView(getContentView(titles, txts, bitmaps, types))
+                .setCustomBigContentView(getContentViews(titles, txts, bitmaps, types))
                 .setContentIntent(resultPendingIntent) // 设定点击通知之后启动的内容，这个内容由方法中的参数：PendingIntent对象决定
                 .setPriority(NotificationCompat.PRIORITY_LOW) // 设置通知的优先级
-                .setDefaults(NotificationCompat.FLAG_ONLY_ALERT_ONCE)//取消提示音
+                .setDefaults(NotificationCompat.FLAG_NO_CLEAR)
                 .setSound(null)
+                .setVibrate(new long[]{0L})
                 .setAutoCancel(false) // 设置点击通知之后通知是否消失
                 .build();
 
 
 
-        notification.flags |= Notification.FLAG_NO_CLEAR;       // |=叠加运算,设置 FLAG_NO_CLEAR 表示设置通知不能被状态栏的清除按钮给清除掉,也不能被手动清除,但能通过 cancel() 方法清除
+        notification.flags |= Notification.FLAG_NO_CLEAR;
 
         if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.O){
             notificationManager.createNotificationChannel(channel);
@@ -75,7 +75,8 @@ public class Notification extends android.app.Notification {
         notificationManager.notify(1, notification);
     }
 
-    private static RemoteViews getContentView() {
+
+    private static RemoteViews getContentView( String title, String txt, Bitmap bitmap,int type) {
         mRemoteViews = new RemoteViews("com.example.xiaobai.music", R.layout.activity_notification);
         mRemoteViews.setTextViewText(R.id.title, title);
         mRemoteViews.setTextViewText(R.id.txt, txt);
@@ -110,7 +111,7 @@ public class Notification extends android.app.Notification {
         return mRemoteViews;
     }
 
-    private static RemoteViews getContentViews() {
+    private static RemoteViews getContentViews( String title, String txt, Bitmap bitmap,int type) {
         mRemoteViews = new RemoteViews("com.example.xiaobai.music", R.layout.activity_bignotification);
         mRemoteViews.setTextViewText(R.id.title, title);
         mRemoteViews.setTextViewText(R.id.txt, txt);
@@ -144,6 +145,7 @@ public class Notification extends android.app.Notification {
 
         return mRemoteViews;
     }
+
     /**
      * 获取一个Activity类型的PendingIntent对象
      */
