@@ -85,6 +85,7 @@ class MusicService : Service() {
             when {
                 type === WlComplete.WL_COMPLETE_EOF -> {
                     WlLog.d("正常播放结束")
+                    Observable.just(3).subscribe(MusicPlayActivity.observerplay)
                     musicnext()
                 }
                 type === WlComplete.WL_COMPLETE_NEXT -> {
@@ -94,13 +95,12 @@ class MusicService : Service() {
                     WlLog.d("手动结束")
                     wlMedia.stop()
                     Observable.just(3).subscribe(MusicPlayActivity.observerplay)
-                    Observable.just(2).subscribe(MusicPlayActivity.observerplay)
                 }
                 type === WlComplete.WL_COMPLETE_ERROR -> {
                     WlLog.d("播放出现错误结束")
                     wlMedia.stop()
                     Observable.just(3).subscribe(MusicPlayActivity.observerplay)
-                    Observable.just(2).subscribe(MusicPlayActivity.observerplay)
+                    musicnext()
                 }
             }
         }

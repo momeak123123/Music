@@ -40,7 +40,7 @@ class UserEditActivity : BaseMvpActivity<UserEditContract.IPresenter>(), UserEdi
     companion object {
 
         lateinit var observer: Observer<Boolean>
-        lateinit var observers: Observer<LocalMedia>
+        lateinit var observers: Observer<String>
         lateinit var observert: Observer<String>
     }
 
@@ -101,7 +101,7 @@ class UserEditActivity : BaseMvpActivity<UserEditContract.IPresenter>(), UserEdi
         RxView.clicks(btn_edit)
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
-                if (MusicApp.network()!=-1) {
+                if (MusicApp.network() != -1) {
                     if (name.text.toString() != "" && gender.text.toString() != "" && city.text.toString() != "" && message.text.toString() != "") {
                         if (mSexOption[0] == gender.text.toString()) {
                             getPresenter().registerdata(
@@ -147,8 +147,11 @@ class UserEditActivity : BaseMvpActivity<UserEditContract.IPresenter>(), UserEdi
 
         override fun onResult(result: List<LocalMedia>) {
             for (media in result) {
-                if (media.isCompressed) {
-                    Observable.just(media).subscribe(observers)
+                if(media.compressPath!=null){
+                    println(media.compressPath)
+                    Observable.just(media.compressPath).subscribe(observers)
+                }else{
+
                 }
             }
             if (mAdapterWeakReference.get() != null) {
@@ -202,13 +205,11 @@ class UserEditActivity : BaseMvpActivity<UserEditContract.IPresenter>(), UserEdi
 
         }
 
-        observers = object : Observer<LocalMedia> {
+        observers = object : Observer<String> {
             override fun onSubscribe(d: Disposable) {}
-            override fun onNext(media: LocalMedia) {
-
-                picturePath = media.compressPath
-                getPresenter().osst(context,picturePath)
-
+            override fun onNext(media: String) {
+                    picturePath = media
+                    getPresenter().osst(context, picturePath)
             }
 
             override fun onError(e: Throwable) {}
@@ -219,11 +220,12 @@ class UserEditActivity : BaseMvpActivity<UserEditContract.IPresenter>(), UserEdi
         observert = object : Observer<String> {
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(data: String) {
-                if(data!=""){
-                    val path = "https://music-imgs.oss-cn-shenzhen.aliyuncs.com/user/avatar/$data"
-                    Glide.with(context).load(path)
+                if (data != "") {
+                    println(data)
+                    imaurl = "https://music-imgs.oss-cn-shenzhen.aliyuncs.com/user/avatar/$data"
+                    Glide.with(context).load(imaurl)
                         .placeholder(R.color.main_black_grey).into(ima)
-                }else{
+                } else {
                     Toast.makeText(
                         context,
                         getText(R.string.secret_erro),
