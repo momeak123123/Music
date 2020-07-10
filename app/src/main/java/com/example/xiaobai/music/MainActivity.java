@@ -1,6 +1,5 @@
 package com.example.xiaobai.music;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,45 +13,30 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.TextView;
 
 import com.example.xiaobai.music.adapter.ViewPagerAdapter;
-import com.example.xiaobai.music.config.Notification;
 import com.example.xiaobai.music.config.SoftKeyBoardListener;
-import com.example.xiaobai.music.music.model.MainModel;
-import com.example.xiaobai.music.music.model.MusicPlayModel;
 import com.example.xiaobai.music.music.view.act.StartPageActivity;
 import com.example.xiaobai.music.music.view.fragment.FindFragment;
 import com.example.xiaobai.music.music.view.fragment.HomeFragment;
 import com.example.xiaobai.music.music.view.fragment.MyFragment;
 import com.example.xiaobai.music.service.LockService;
 import com.example.xiaobai.music.service.MusicService;
+import com.example.xiaobai.music.service.NotificationService;
 import com.example.xiaobai.music.sql.config.Initialization;
-import com.example.xiaobai.music.R;
 import com.jpeng.jptabbar.BadgeDismissListener;
 import com.jpeng.jptabbar.JPTabBar;
 import com.jpeng.jptabbar.OnTabSelectListener;
-import com.xuexiang.xui.widget.edittext.materialedittext.MaterialEditText;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
-import java.util.concurrent.TimeUnit;
-
-import io.reactivex.Observable;
-import io.reactivex.Observer;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
 
 @RequiresApi(api = Build.VERSION_CODES.M)
 public class MainActivity extends AppCompatActivity implements BadgeDismissListener, OnTabSelectListener {
@@ -197,7 +181,6 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
             }
         });
 
-        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
 
@@ -342,6 +325,13 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
 
         Intent intentservice = new Intent(this, MusicService.class);
         stopService(intentservice);
+
+        Intent notifiservice = new Intent(this, NotificationService.class);
+        stopService(notifiservice);
+
+        Intent lockservice = new Intent(this, LockService.class);
+        stopService(lockservice);
+
 
     }
 

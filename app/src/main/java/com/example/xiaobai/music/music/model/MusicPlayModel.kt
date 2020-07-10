@@ -3,6 +3,8 @@ package com.example.xiaobai.music.music.model
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
@@ -11,10 +13,8 @@ import com.example.xiaobai.music.R
 import com.example.xiaobai.music.StartsActivity
 import com.example.xiaobai.music.bean.*
 import com.example.xiaobai.music.common.Constants
-import com.example.xiaobai.music.config.Dencry
 import com.example.xiaobai.music.music.view.act.AlbumDetActivity
 import com.example.xiaobai.music.music.view.act.MusicPlayActivity
-import com.example.xiaobai.music.music.view.act.SearchListActivity
 import com.example.xiaobai.music.music.view.fragment.HomeFragment
 import com.example.xiaobai.music.sql.bean.Down
 import com.example.xiaobai.music.sql.bean.Playlist
@@ -26,7 +26,6 @@ import com.google.gson.reflect.TypeToken
 import com.lzy.okgo.OkGo
 import com.lzy.okgo.callback.StringCallback
 import com.lzy.okgo.model.Response
-import com.xuexiang.xui.utils.ResUtils.getResources
 import constant.UiType
 import io.reactivex.Observable
 import listener.OnInitUiListener
@@ -225,9 +224,11 @@ class MusicPlayModel {
 
                                 object : Thread() {
                                     override fun run() {
-                                        val bitmap = BitmapUtils.netUrlPicToBmps(ads[0].url)
-                                        MusicApp.setStartback(bitmap)
-                                        Observable.just(true).subscribe(StartsActivity.observer)
+                                        if(ads[0].url!=""){
+                                            val bm = BitmapUtils.getBitmap(ads[0].url)
+                                            MusicApp.setStartback(bm)
+                                            Observable.just(true).subscribe(StartsActivity.observer)
+                                        }
                                     }
                                 }.start()
 

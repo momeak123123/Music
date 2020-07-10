@@ -12,11 +12,8 @@ import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.music.contract.StartPageContract
 import com.example.xiaobai.music.music.presenter.StartPagePresenter
-import com.example.xiaobai.music.utils.BitmapUtils
-import com.google.gson.JsonArray
 import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.Flowable
-import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.start_page.*

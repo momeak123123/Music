@@ -5,16 +5,14 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.graphics.Bitmap
+import android.os.Build
 import android.os.IBinder
 import com.danikula.videocache.HttpProxyCacheServer
 import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.bean.Music
 import com.example.xiaobai.music.config.Cookie
 import com.example.xiaobai.music.config.Dencry
-import com.example.xiaobai.music.config.Notification
 import com.example.xiaobai.music.music.view.act.MusicPlayActivity
-import com.example.xiaobai.music.utils.BitmapUtils
 import com.google.gson.Gson
 import com.lzy.okgo.OkGo
 import com.lzy.okgo.callback.StringCallback
@@ -23,12 +21,7 @@ import com.ywl5320.wlmedia.WlMedia
 import com.ywl5320.wlmedia.enums.WlComplete
 import com.ywl5320.wlmedia.enums.WlPlayModel
 import com.ywl5320.wlmedia.log.WlLog
-import io.alterac.blurkit.BlurKit
 import io.reactivex.Observable
-import io.reactivex.Observer
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.frag_player_coverviews.*
 import java.util.*
 
 
@@ -79,6 +72,7 @@ class MusicService : Service() {
 
         wlMedia.setOnErrorListener { _, _ ->
             WlLog.d("播放错误")
+            Observable.just(3).subscribe(MusicPlayActivity.observerplay)
         }
 
         wlMedia.setOnCompleteListener { type ->
@@ -90,6 +84,7 @@ class MusicService : Service() {
                 }
                 type === WlComplete.WL_COMPLETE_NEXT -> {
                     WlLog.d("切换下一首，导致当前结束")
+                    Observable.just(3).subscribe(MusicPlayActivity.observerplay)
                 }
                 type === WlComplete.WL_COMPLETE_HANDLE -> {
                     WlLog.d("手动结束")
@@ -113,6 +108,11 @@ class MusicService : Service() {
         intentFilter.addAction("play")
         intentFilter.addAction("next")
         registerReceiver(broadcastReceiver, intentFilter)
+
+
+        val intent = Intent(this, LockService::class.java)
+        startService(intent)
+
     }
 
     fun musicplay(type: Int, count: Int) {
@@ -228,20 +228,37 @@ class MusicService : Service() {
     var broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             when (Objects.requireNonNull(intent.action)) {
-                "del" -> Notification.deleteNotification()
+                "del" ->intent(1,0)
                 "pre" ->
                     musicpre()
-                "play" ->
+                "play" ->{
                     if ( MusicApp.getPlay()) {
                         musicpause()
                     } else {
                         musicresume()
                     }
+                }
                 "next" ->
                     musicnext()
                 else -> {
                 }
             }
+        }
+    }
+
+
+    fun intent(type:Int,play:Int){
+        val intent = Intent(this, NotificationService::class.java)
+        intent.putExtra("type", type)
+        intent.putExtra("play", play)
+        intent.putExtra("title", MusicPlayActivity.t1)
+        intent.putExtra("txt", MusicPlayActivity.t2)
+        intent.putExtra("bitmap", MusicPlayActivity.m)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            //android8.0以上通过startForegroundService启动service
+            startForegroundService(intent)
+        } else {
+            startService(intent)
         }
     }
 
@@ -291,7 +308,7 @@ class MusicService : Service() {
         println("继续")
         MusicApp.setPlay(true)
         wlMedia.resume()
-        Notification.init(MusicPlayActivity.t1, MusicPlayActivity.t2, MusicPlayActivity.m1,1)
+        intent(0,1)
         Observable.just(4).subscribe(MusicPlayActivity.observerplay)
     }
 
@@ -299,7 +316,7 @@ class MusicService : Service() {
         println("暂停")
         MusicApp.setPlay(false)
         wlMedia.pause()
-        Notification.init(MusicPlayActivity.t1, MusicPlayActivity.t2, MusicPlayActivity.m1,0)
+        intent(0,0)
         Observable.just(3).subscribe(MusicPlayActivity.observerplay)
     }
 
@@ -366,9 +383,6 @@ class MusicService : Service() {
     override fun onDestroy() {
         wlMedia.exit()
         unregisterReceiver(broadcastReceiver)
-        Notification.deleteNotification()
-        val intent = Intent(this, LockService::class.java)
-        stopService(intent)
     }
 
 

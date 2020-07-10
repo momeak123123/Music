@@ -161,12 +161,12 @@ class HomeDetAdapter(
     inner class SearchHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var music: ImageView
         var banner: SimpleImageBanner
-
+        var name: TextView
 
         init {
             music = itemView.findViewById(R.id.music)
             banner = itemView.findViewById(R.id.banner)
-
+            name = itemView.findViewById(R.id.name)
         }
 
         @SuppressLint("ResourceAsColor", "CheckResult")
@@ -176,8 +176,10 @@ class HomeDetAdapter(
             try {
                 if (MusicPlayActivity.bool) {
                     music.visibility = View.VISIBLE
+                    name.visibility = View.VISIBLE
                 } else {
                     music.visibility = View.GONE
+                    name.visibility = View.GONE
                 }
             } catch (e: Exception) {
             }

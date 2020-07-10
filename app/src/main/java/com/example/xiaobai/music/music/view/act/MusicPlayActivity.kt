@@ -1,13 +1,14 @@
 package com.example.xiaobai.music.music.view.act
 
 import android.annotation.SuppressLint
-import android.app.KeyguardManager
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.animation.Animation
@@ -25,12 +26,12 @@ import com.example.xiaobai.music.adapter.PlaySongAdapter
 import com.example.xiaobai.music.adapter.ViewPagerAdapter
 import com.example.xiaobai.music.bean.Music
 import com.example.xiaobai.music.config.LogDownloadListener
-import com.example.xiaobai.music.config.Notification
 import com.example.xiaobai.music.music.model.MusicPlayModel
 import com.example.xiaobai.music.music.view.fragment.CoverFragment
 import com.example.xiaobai.music.music.view.fragment.LyricFragment
 import com.example.xiaobai.music.service.LockService
 import com.example.xiaobai.music.service.MusicService
+import com.example.xiaobai.music.service.NotificationService
 import com.example.xiaobai.music.sql.bean.Playlist
 import com.example.xiaobai.music.sql.dao.mDownDao
 import com.example.xiaobai.music.sql.dao.mPlaylistDao
@@ -104,22 +105,12 @@ class MusicPlayActivity : AppCompatActivity() {
 
         sp = getSharedPreferences("User", Context.MODE_PRIVATE)
 
-        initKeyguardManager()
-
         initView()
         initData()
 
     }
 
-    private fun initKeyguardManager() {
-        val keyguardManager =
-            applicationContext.getSystemService(Context.KEYGUARD_SERVICE) as KeyguardManager
-        val keyguardLock = keyguardManager.newKeyguardLock("")
-        keyguardLock.disableKeyguard() //取消系统锁屏
 
-        val intent = Intent(this, LockService::class.java)
-        startService(intent)
-    }
 
     @SuppressLint("CheckResult", "ResourceAsColor")
     private fun initView() {
@@ -404,6 +395,13 @@ class MusicPlayActivity : AppCompatActivity() {
     fun del() {
         val intentservice = Intent(this, MusicService::class.java)
         stopService(intentservice)
+
+        val notifiservice = Intent(this, NotificationService::class.java)
+        stopService(notifiservice)
+
+        val lockservice = Intent(this, LockService::class.java)
+        stopService(lockservice)
+
         finish()
     }
 
@@ -449,32 +447,18 @@ class MusicPlayActivity : AppCompatActivity() {
                     }
                     subTitleTv.text = srtist_name
                     Ablemname.text = playingMusic.album_name
-                    playPauseIv.setLoading(true)
                     coverFragment.setImagePath(playingMusic.pic_url)
                     t1 = playingMusic.name
                     t2 = srtist_name
                     m = playingMusic.pic_url
                     lyricFragment.lrcView(playingMusic.song_id)
+                    notification(0,t1, t2, m,1)
 
                     object : Thread() {
                         override fun run() {
-                            val bitmap = BitmapUtils.netUrlPicToBmp(playingMusic.pic_url)
-                            if (bitmap != null) {
-                                m1 = bitmap
-                                Notification.init(t1, t2, m1,1)
-                            }
-
-                        }
-                    }.start()
-
-                    object : Thread() {
-                        override fun run() {
-                            val bitmaps = BitmapUtils.netUrlPicToBmp(playingMusic.pic_url)
-                            if (bitmaps != null) {
-                                BlurKit.getInstance().blur(bitmaps, 25)
-                                m2 = bitmaps
-                            }
-
+                            val bitmaps = BitmapUtils.getBitmap(m)
+                            BlurKit.getInstance().blur(bitmaps, 25)
+                            m2 = bitmaps
                         }
                     }.start()
 
@@ -613,8 +597,6 @@ class MusicPlayActivity : AppCompatActivity() {
                         playPauseIv.setLoading(false)
                     }
                     2 -> {
-                        progressSb.progress=0
-                        playPauseIv.setLoading(false)
                         Toast.makeText(
                             context,
                             getText(R.string.error_playing_track),
@@ -622,11 +604,14 @@ class MusicPlayActivity : AppCompatActivity() {
                         ).show()
                     }
                     3 -> {
+                        progressSb.progress=0
+                        progressTv.text = "00:00"
+                        playPauseIv.setLoading(false)
                         if (playPauseIv.isPlaying) {
                             playPauseIv.pause()
-                            MusicApp.setPlay(false)
-                            coverFragment.stopRotateAnimation()
                         }
+                        MusicApp.setPlay(false)
+                        coverFragment.stopRotateAnimation()
                     }
                     4 -> {
                         if (!playPauseIv.isPlaying) {
@@ -700,7 +685,7 @@ class MusicPlayActivity : AppCompatActivity() {
                     .negativeColorRes(R.color.red)
                     .onPositive { _: MaterialDialog?, _: DialogAction? ->
                         val idmap = mutableListOf<Music>()
-                        playingMusic?.let { idmap.add(it) }
+                        playingMusic.let { idmap.add(it) }
                         val playlist: Playlist = mPlaylistDao.query(song[position].play_list_id)[0]
                         val playsong = mDownDao.query(song[position].play_list_id)
                         val songs = mutableListOf<Music>()
@@ -766,6 +751,25 @@ class MusicPlayActivity : AppCompatActivity() {
         intent.putExtra("count", count)
         intent.putExtra("id", id)
         startService(intent)
+    }
+
+    fun notification(type: Int, title: String, txt: String,bit:String,play: Int) {
+
+        val intent = Intent(this, NotificationService::class.java)
+        intent.putExtra("type", type)
+        intent.putExtra("play", play)
+        intent.putExtra("title", title)
+        intent.putExtra("txt", txt)
+        intent.putExtra("bitmap", bit)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            //android8.0以上通过startForegroundService启动service
+            startForegroundService(intent)
+        } else {
+            startService(intent)
+        }
+
+
     }
 
 

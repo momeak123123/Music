@@ -2,53 +2,31 @@ package com.example.xiaobai.music;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.KeyguardManager;
-import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
-import android.os.PowerManager;
 import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.example.xiaobai.music.bean.Music;
 import com.example.xiaobai.music.music.view.act.MusicPlayActivity;
 import com.example.xiaobai.music.music.view.custom.SlidingFinishLayout;
-import com.example.xiaobai.music.utils.BitmapUtils;
 import com.jakewharton.rxbinding2.view.RxView;
-
-import org.reactivestreams.Subscriber;
-import org.reactivestreams.Subscription;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
-import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
 
-import io.alterac.blurkit.BlurKit;
-import io.alterac.blurkit.BlurLayout;
 import io.reactivex.Flowable;
 import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 
 public class LockActivity extends AppCompatActivity implements SlidingFinishLayout.OnSlidingFinishListener {

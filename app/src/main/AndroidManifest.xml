@@ -33,11 +33,13 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup"
         tools:targetApi="n">
-
+        <service
+            android:name=".service.NotificationService"
+            android:enabled="true"
+            android:exported="true"></service>
         <service
             android:name=".service.MusicService"
-            android:enabled="true"
-            android:exported="false"/>
+            android:enabled="true" />
 
         <activity
             android:name=".StartsActivity"
@@ -55,7 +57,6 @@
             android:launchMode="singleInstance"
             android:noHistory="true"
             android:screenOrientation="unspecified"
-            android:taskAffinity="com.example.xiaobai.lock"
             android:theme="@style/LockScreenTheme" />
 
         <service
@@ -65,7 +66,7 @@
 
         <activity
             android:name=".music.view.act.MusicPlayActivity"
-            android:launchMode="singleTop"/>
+            android:launchMode="singleTop" />
         <activity
             android:name=".MainActivity"
             android:configChanges="keyboardHidden"

@@ -2,64 +2,67 @@ package com.example.xiaobai.music.utils;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.util.Base64;
 
-import java.io.ByteArrayOutputStream;
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLConnection;
 
 public class BitmapUtils {
 
-    public static Bitmap netUrlPicToBmp(String src) {
-        try {
 
-            URL url = new URL(src);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
+    static Bitmap bitmap;
 
-            //设置固定大小
-            //需要的大小
-            float newWidth = 200f;
-            float newHeigth = 200f;
+    public static Bitmap returnBitMap(final String url){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                URL imageurl = null;
 
-            //图片大小
-            int width = myBitmap.getWidth();
-            int height = myBitmap.getHeight();
+                try {
+                    imageurl = new URL(url);
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    HttpURLConnection conn = (HttpURLConnection)imageurl.openConnection();
+                    conn.setDoInput(true);
+                    conn.connect();
+                    InputStream is = conn.getInputStream();
+                    bitmap = BitmapFactory.decodeStream(is);
+                    is.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
 
-            //缩放比例
-            float scaleWidth = newWidth / width;
-            float scaleHeigth = newHeigth / height;
-            Matrix matrix = new Matrix();
-            matrix.postScale(scaleWidth, scaleHeigth);
-
-            Bitmap bitmap = Bitmap.createBitmap(myBitmap, 0, 0, width, height, matrix, true);
-            return bitmap;
-        } catch (IOException e) {
-            // Log exception
-            return null;
-        }
+        return bitmap;
     }
 
-    public static Bitmap netUrlPicToBmps(String src) {
-        try {
 
-            URL url = new URL(src);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setDoInput(true);
-            connection.connect();
-            InputStream input = connection.getInputStream();
-            Bitmap myBitmap = BitmapFactory.decodeStream(input);
-            return myBitmap;
-        } catch (IOException e) {
-            // Log exception
-            return null;
+    public static Bitmap getBitmap(String url) {
+        Bitmap bm = null;
+        try {
+            URL iconUrl = new URL(url);
+            URLConnection conn = iconUrl.openConnection();
+            HttpURLConnection http = (HttpURLConnection) conn;
+
+            int length = http.getContentLength();
+
+            conn.connect();
+            // 获得图像的字符流
+            InputStream is = conn.getInputStream();
+            BufferedInputStream bis = new BufferedInputStream(is, length);
+            bm = BitmapFactory.decodeStream(bis);
+            bis.close();
+            is.close();// 关闭流
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return bm;
     }
 }

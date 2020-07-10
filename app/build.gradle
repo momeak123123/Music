@@ -103,6 +103,7 @@ dependencies {
 
     //缓存
     implementation 'com.danikula:videocache:2.7.1'
+
 }
 
 greendao {
