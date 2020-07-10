@@ -7,6 +7,7 @@ import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.animation.Animation
@@ -24,7 +25,7 @@ import com.example.xiaobai.music.adapter.PlaySongAdapter
 import com.example.xiaobai.music.adapter.ViewPagerAdapter
 import com.example.xiaobai.music.bean.Music
 import com.example.xiaobai.music.config.LogDownloadListener
-import com.example.xiaobai.music.config.Notification
+import com.example.xiaobai.music.config.Notifications
 import com.example.xiaobai.music.music.model.MusicPlayModel
 import com.example.xiaobai.music.music.view.fragment.CoverFragment
 import com.example.xiaobai.music.music.view.fragment.LyricFragment
@@ -448,7 +449,7 @@ class MusicPlayActivity : AppCompatActivity() {
                     t2 = srtist_name
                     m = playingMusic.pic_url
                     lyricFragment.lrcView(playingMusic.song_id)
-                    Notification.init(1)
+                    Notifications.init(1)
 
                     object : Thread() {
                         override fun run() {
@@ -748,7 +749,13 @@ class MusicPlayActivity : AppCompatActivity() {
         intent.putExtra("seek", seek)
         intent.putExtra("count", count)
         intent.putExtra("id", id)
-        startService(intent)
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            //android8.0以上通过startForegroundService启动service
+            startForegroundService(intent)
+        } else {
+            startService(intent)
+        }
     }
 
 

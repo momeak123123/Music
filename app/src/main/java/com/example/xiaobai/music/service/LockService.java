@@ -37,10 +37,12 @@ public class LockService extends Service {
             }
         };
 
+
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         registerReceiver(receiver, filter);
     }
+
 
     @Override
     public void onDestroy() {

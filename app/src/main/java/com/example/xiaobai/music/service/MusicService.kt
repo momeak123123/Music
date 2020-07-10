@@ -1,5 +1,8 @@
 package com.example.xiaobai.music.service
 
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -9,10 +12,11 @@ import android.os.Build
 import android.os.IBinder
 import com.danikula.videocache.HttpProxyCacheServer
 import com.example.xiaobai.music.MusicApp
+import com.example.xiaobai.music.R
 import com.example.xiaobai.music.bean.Music
 import com.example.xiaobai.music.config.Cookie
 import com.example.xiaobai.music.config.Dencry
-import com.example.xiaobai.music.config.Notification
+import com.example.xiaobai.music.config.Notifications
 import com.example.xiaobai.music.music.view.act.MusicPlayActivity
 import com.google.gson.Gson
 import com.lzy.okgo.OkGo
@@ -114,9 +118,31 @@ class MusicService : Service() {
         val intent = Intent(this, LockService::class.java)
         startService(intent)
 
+        val notificationManager =
+            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        //创建NotificationChannel
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(
+                "10898958",
+                "小白音乐",
+                NotificationManager.IMPORTANCE_HIGH
+            )
+            notificationManager.createNotificationChannel(channel)
+        }
+        startForeground(1, getNotification())
+
     }
 
-
+    private fun getNotification(): Notification? {
+        val builder: Notification.Builder = Notification.Builder(this)
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setContentTitle("title")
+            .setContentText("text")
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            builder.setChannelId("10898958")
+        }
+        return builder.build()
+    }
 
     fun musicplay(type: Int, count: Int) {
         when (count) {
@@ -231,7 +257,7 @@ class MusicService : Service() {
     var broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             when (Objects.requireNonNull(intent.action)) {
-                "del" ->Notification.deleteNotification()
+                "del" -> Notifications.deleteNotification()
                 "pre" ->
                     musicpre()
                 "play" ->{
@@ -250,20 +276,6 @@ class MusicService : Service() {
     }
 
 
-    fun intent(type:Int,play:Int){
-        val intent = Intent(this, NotificationService::class.java)
-        intent.putExtra("type", type)
-        intent.putExtra("play", play)
-        intent.putExtra("title", MusicPlayActivity.t1)
-        intent.putExtra("txt", MusicPlayActivity.t2)
-        intent.putExtra("bitmap", MusicPlayActivity.m)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            //android8.0以上通过startForegroundService启动service
-            startForegroundService(intent)
-        } else {
-            startService(intent)
-        }
-    }
 
     private fun getProxy(): HttpProxyCacheServer {
         return MusicApp.getProxy(applicationContext)
@@ -311,7 +323,7 @@ class MusicService : Service() {
         println("继续")
         MusicApp.setPlay(true)
         wlMedia.resume()
-        Notification.init(1)
+        Notifications.init(1)
         Observable.just(4).subscribe(MusicPlayActivity.observerplay)
     }
 
@@ -319,7 +331,7 @@ class MusicService : Service() {
         println("暂停")
         MusicApp.setPlay(false)
         wlMedia.pause()
-        Notification.init(0)
+        Notifications.init(0)
         Observable.just(3).subscribe(MusicPlayActivity.observerplay)
     }
 
