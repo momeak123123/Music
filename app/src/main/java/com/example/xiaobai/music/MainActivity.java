@@ -10,7 +10,6 @@ import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -20,6 +19,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Toast;
 
 import com.example.xiaobai.music.adapter.ViewPagerAdapter;
 import com.example.xiaobai.music.config.SoftKeyBoardListener;
@@ -29,7 +29,6 @@ import com.example.xiaobai.music.music.view.fragment.HomeFragment;
 import com.example.xiaobai.music.music.view.fragment.MyFragment;
 import com.example.xiaobai.music.service.LockService;
 import com.example.xiaobai.music.service.MusicService;
-import com.example.xiaobai.music.service.NotificationService;
 import com.example.xiaobai.music.sql.config.Initialization;
 import com.jpeng.jptabbar.BadgeDismissListener;
 import com.jpeng.jptabbar.JPTabBar;
@@ -70,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
     private static JPTabBar mTabbar;
     private int indexs = 0;
     private static MainActivity context;
+    private boolean exit = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
     public void onResume() {
         super.onResume();
         onKeyBoardListener();
-
+        exit = false;
         viewPager.setCurrentItem(indexs);
 
         if (isNeedCheck) {
@@ -326,9 +326,6 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
         Intent intentservice = new Intent(this, MusicService.class);
         stopService(intentservice);
 
-        Intent notifiservice = new Intent(this, NotificationService.class);
-        stopService(notifiservice);
-
         Intent lockservice = new Intent(this, LockService.class);
         stopService(lockservice);
 
@@ -337,7 +334,13 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
 
     @Override
     public void onBackPressed() {
-        System.exit(0);
+        if(exit){
+            System.exit(0);
+        }else{
+            exit = true;
+            Toast.makeText(MainActivity.this,  "再按一次退出", Toast.LENGTH_SHORT).show();
+        }
+
     }
 
 

@@ -12,6 +12,7 @@ import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.bean.Music
 import com.example.xiaobai.music.config.Cookie
 import com.example.xiaobai.music.config.Dencry
+import com.example.xiaobai.music.config.Notification
 import com.example.xiaobai.music.music.view.act.MusicPlayActivity
 import com.google.gson.Gson
 import com.lzy.okgo.OkGo
@@ -72,29 +73,29 @@ class MusicService : Service() {
 
         wlMedia.setOnErrorListener { _, _ ->
             WlLog.d("播放错误")
-            Observable.just(3).subscribe(MusicPlayActivity.observerplay)
+            Observable.just(2).subscribe(MusicPlayActivity.observerplay)
         }
 
         wlMedia.setOnCompleteListener { type ->
             when {
                 type === WlComplete.WL_COMPLETE_EOF -> {
                     WlLog.d("正常播放结束")
-                    Observable.just(3).subscribe(MusicPlayActivity.observerplay)
+                    Observable.just(2).subscribe(MusicPlayActivity.observerplay)
                     musicnext()
                 }
                 type === WlComplete.WL_COMPLETE_NEXT -> {
                     WlLog.d("切换下一首，导致当前结束")
-                    Observable.just(3).subscribe(MusicPlayActivity.observerplay)
+                    Observable.just(2).subscribe(MusicPlayActivity.observerplay)
                 }
                 type === WlComplete.WL_COMPLETE_HANDLE -> {
                     WlLog.d("手动结束")
                     wlMedia.stop()
-                    Observable.just(3).subscribe(MusicPlayActivity.observerplay)
+                    Observable.just(2).subscribe(MusicPlayActivity.observerplay)
                 }
                 type === WlComplete.WL_COMPLETE_ERROR -> {
                     WlLog.d("播放出现错误结束")
                     wlMedia.stop()
-                    Observable.just(3).subscribe(MusicPlayActivity.observerplay)
+                    Observable.just(2).subscribe(MusicPlayActivity.observerplay)
                     musicnext()
                 }
             }
@@ -114,6 +115,8 @@ class MusicService : Service() {
         startService(intent)
 
     }
+
+
 
     fun musicplay(type: Int, count: Int) {
         when (count) {
@@ -228,7 +231,7 @@ class MusicService : Service() {
     var broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             when (Objects.requireNonNull(intent.action)) {
-                "del" ->intent(1,0)
+                "del" ->Notification.deleteNotification()
                 "pre" ->
                     musicpre()
                 "play" ->{
@@ -308,7 +311,7 @@ class MusicService : Service() {
         println("继续")
         MusicApp.setPlay(true)
         wlMedia.resume()
-        intent(0,1)
+        Notification.init(1)
         Observable.just(4).subscribe(MusicPlayActivity.observerplay)
     }
 
@@ -316,7 +319,7 @@ class MusicService : Service() {
         println("暂停")
         MusicApp.setPlay(false)
         wlMedia.pause()
-        intent(0,0)
+        Notification.init(0)
         Observable.just(3).subscribe(MusicPlayActivity.observerplay)
     }
 

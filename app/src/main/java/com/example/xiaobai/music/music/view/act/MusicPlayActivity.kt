@@ -6,9 +6,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.animation.Animation
@@ -26,12 +24,12 @@ import com.example.xiaobai.music.adapter.PlaySongAdapter
 import com.example.xiaobai.music.adapter.ViewPagerAdapter
 import com.example.xiaobai.music.bean.Music
 import com.example.xiaobai.music.config.LogDownloadListener
+import com.example.xiaobai.music.config.Notification
 import com.example.xiaobai.music.music.model.MusicPlayModel
 import com.example.xiaobai.music.music.view.fragment.CoverFragment
 import com.example.xiaobai.music.music.view.fragment.LyricFragment
 import com.example.xiaobai.music.service.LockService
 import com.example.xiaobai.music.service.MusicService
-import com.example.xiaobai.music.service.NotificationService
 import com.example.xiaobai.music.sql.bean.Playlist
 import com.example.xiaobai.music.sql.dao.mDownDao
 import com.example.xiaobai.music.sql.dao.mPlaylistDao
@@ -107,9 +105,8 @@ class MusicPlayActivity : AppCompatActivity() {
 
         initView()
         initData()
-
+        m = "http://p1.music.126.net/6y-UleORITEDbvrOLV0Q8A==/5639395138885805.jpg"
     }
-
 
 
     @SuppressLint("CheckResult", "ResourceAsColor")
@@ -396,8 +393,6 @@ class MusicPlayActivity : AppCompatActivity() {
         val intentservice = Intent(this, MusicService::class.java)
         stopService(intentservice)
 
-        val notifiservice = Intent(this, NotificationService::class.java)
-        stopService(notifiservice)
 
         val lockservice = Intent(this, LockService::class.java)
         stopService(lockservice)
@@ -445,6 +440,7 @@ class MusicPlayActivity : AppCompatActivity() {
                         }
 
                     }
+                    search = playingMusic.uri == ""
                     subTitleTv.text = srtist_name
                     Ablemname.text = playingMusic.album_name
                     coverFragment.setImagePath(playingMusic.pic_url)
@@ -452,7 +448,7 @@ class MusicPlayActivity : AppCompatActivity() {
                     t2 = srtist_name
                     m = playingMusic.pic_url
                     lyricFragment.lrcView(playingMusic.song_id)
-                    notification(0,t1, t2, m,1)
+                    Notification.init(1)
 
                     object : Thread() {
                         override fun run() {
@@ -594,24 +590,26 @@ class MusicPlayActivity : AppCompatActivity() {
                         playPauseIv.setLoading(true)
                     }
                     1 -> {
+
                         playPauseIv.setLoading(false)
                     }
                     2 -> {
-                        Toast.makeText(
-                            context,
-                            getText(R.string.error_playing_track),
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                    3 -> {
-                        progressSb.progress=0
+                        progressSb.progress = 0
                         progressTv.text = "00:00"
-                        playPauseIv.setLoading(false)
                         if (playPauseIv.isPlaying) {
                             playPauseIv.pause()
+                            playPauseIv.setLoading(false)
+                            MusicApp.setPlay(false)
+                            coverFragment.stopRotateAnimation()
                         }
-                        MusicApp.setPlay(false)
-                        coverFragment.stopRotateAnimation()
+                    }
+                    3 -> {
+                        if (playPauseIv.isPlaying) {
+                            playPauseIv.pause()
+                            playPauseIv.setLoading(false)
+                            MusicApp.setPlay(false)
+                            coverFragment.stopRotateAnimation()
+                        }
                     }
                     4 -> {
                         if (!playPauseIv.isPlaying) {
@@ -753,24 +751,6 @@ class MusicPlayActivity : AppCompatActivity() {
         startService(intent)
     }
 
-    fun notification(type: Int, title: String, txt: String,bit:String,play: Int) {
-
-        val intent = Intent(this, NotificationService::class.java)
-        intent.putExtra("type", type)
-        intent.putExtra("play", play)
-        intent.putExtra("title", title)
-        intent.putExtra("txt", txt)
-        intent.putExtra("bitmap", bit)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            //android8.0以上通过startForegroundService启动service
-            startForegroundService(intent)
-        } else {
-            startService(intent)
-        }
-
-
-    }
 
 
     override fun onDestroy() {

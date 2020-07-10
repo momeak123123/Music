@@ -33,10 +33,7 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup"
         tools:targetApi="n">
-        <service
-            android:name=".service.NotificationService"
-            android:enabled="true"
-            android:exported="true"></service>
+
         <service
             android:name=".service.MusicService"
             android:enabled="true" />
