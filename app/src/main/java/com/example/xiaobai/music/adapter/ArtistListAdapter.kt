@@ -46,7 +46,7 @@ class ArtistListAdapter (var datas:MutableList<Artists>, val context: Context) :
         holder.itemView.setOnClickListener { v ->
             mItemClickListener?.onItemClick(v,position)
         }
-        Glide.with(context).load(datas[position].pic_url).placeholder(R.color.main_black_grey).into(holder.iv_cover)
+        Glide.with(context).load(datas[position].pic_url).placeholder(R.drawable.undetback).into(holder.iv_cover)
         holder.title.text = datas[position].name
     }
 

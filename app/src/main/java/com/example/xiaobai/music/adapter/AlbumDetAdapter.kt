@@ -125,7 +125,7 @@ class AlbumDetAdapter(
         fun bindData() {
             txt.text = txts
 
-            Glide.with(context).load(covers).placeholder(R.color.main_black_grey).into(iv_cover)
+            Glide.with(context).load(covers).placeholder(R.drawable.undetback).into(iv_cover)
             top_title.text = names
             top_set.setImageResource(R.drawable.mores)
             pre.setImageResource(R.drawable.shang)
@@ -243,7 +243,7 @@ class AlbumDetAdapter(
 
 
 
-            Glide.with(context).load(datas[position].pic_url).placeholder(R.color.main_black_grey)
+            Glide.with(context).load(datas[position].pic_url).placeholder(R.drawable.undetback)
                 .into(iv_cover)
             title.text = datas[position].name
             val artist = datas[position].all_artist

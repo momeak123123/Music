@@ -5,14 +5,17 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.music.contract.UserSetContract
 import com.example.xiaobai.music.music.presenter.UserSetPresenter
-import com.example.xiaobai.music.utils.FileUtils
 import com.jakewharton.rxbinding2.view.RxView
 import com.xuexiang.xui.widget.dialog.materialdialog.DialogAction
 import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
+import com.xuexiang.xui.widget.picker.widget.OptionsPickerView
+import com.xuexiang.xui.widget.picker.widget.builder.OptionsPickerBuilder
+import com.xuexiang.xui.widget.picker.widget.listener.OnOptionsSelectListener
 import kotlinx.android.synthetic.main.head.*
 import kotlinx.android.synthetic.main.user_set.*
 import mvp.ljb.kt.act.BaseMvpActivity
@@ -32,6 +35,8 @@ class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>() , UserSetC
     override fun getLayoutId(): Int {
        return R.layout.user_set
     }
+
+    private lateinit var mTimeOption: Array<String?>
 
     override fun init(savedInstanceState: Bundle?) {
         super.init(savedInstanceState)
@@ -117,9 +122,6 @@ class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>() , UserSetC
             }
 
     }
-
-
-
 
     override fun initData() {
         super.initData()

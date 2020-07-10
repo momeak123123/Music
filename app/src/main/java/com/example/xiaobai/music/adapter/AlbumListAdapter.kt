@@ -45,7 +45,7 @@ class AlbumListAdapter  (val datas: List<Album>, val context: Context) : Recycle
         holder.itemView.setOnClickListener { v ->
             mItemClickListener?.onItemClick(v,position)
         }
-        Glide.with(context).load(datas[position].pic_url).placeholder(R.color.main_black_grey).into(holder.iv_cover)
+        Glide.with(context).load(datas[position].pic_url).placeholder(R.drawable.undetback).into(holder.iv_cover)
         holder.title.text = datas[position].name
         holder.txt.text = datas[position].info
     }

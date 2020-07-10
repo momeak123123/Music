@@ -103,7 +103,7 @@ class ArtistDetAdapter  (val datas: List<Album>, val context: Context, val name 
         fun bindData() {
             artist_name.text = name
             artist_txt.text = txt
-            Glide.with(context).load(url).placeholder(R.color.main_black_grey).into(back)
+            Glide.with(context).load(url).placeholder(R.drawable.undetback).into(back)
 
             RxView.clicks(top_flot)
                 .throttleFirst(1, TimeUnit.SECONDS)
@@ -130,7 +130,7 @@ class ArtistDetAdapter  (val datas: List<Album>, val context: Context, val name 
             itemView.setOnClickListener { v ->
                 mItemClickListener?.onItemClick(v,position)
             }
-            Glide.with(context).load(datas[position].pic_url).placeholder(R.color.main_black_grey)
+            Glide.with(context).load(datas[position].pic_url).placeholder(R.drawable.undetback)
                 .into(iv_cover)
             title.text = datas[position].name
             txt.text =  datas[position].info

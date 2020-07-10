@@ -113,11 +113,20 @@ class MusicPlayActivity : AppCompatActivity() {
     @SuppressLint("CheckResult", "ResourceAsColor")
     private fun initView() {
         playPauseIv.setOnClickListener {
-            if (playPauseIv.isPlaying) {
-                Observable.just(0).subscribe(observerset)
-            } else {
-                Observable.just(3).subscribe(observerset)
+            if(MusicApp.getPlay()){
+                if (playPauseIv.isPlaying) {
+                    Observable.just(0).subscribe(observerset)
+                } else {
+                    Observable.just(3).subscribe(observerset)
+                }
+            }else{
+                Toast.makeText(
+                    context,
+                    getText(R.string.error_playing_track),
+                    Toast.LENGTH_LONG
+                ).show()
             }
+
         }
 
         RxView.clicks(top_flot)
@@ -453,9 +462,16 @@ class MusicPlayActivity : AppCompatActivity() {
 
                     object : Thread() {
                         override fun run() {
-                            val bitmaps = BitmapUtils.getBitmap(m)
-                            BlurKit.getInstance().blur(bitmaps, 25)
-                            m2 = bitmaps
+                            try{
+                                val bitmaps = BitmapUtils.getBitmap(m)
+                                BlurKit.getInstance().blur(bitmaps, 25)
+                                m2 = bitmaps
+                            }catch (e:java.lang.Exception){
+                                val bitmaps = BitmapUtils.getBitmap("http://p1.music.126.net/6y-UleORITEDbvrOLV0Q8A==/5639395138885805.jpg")
+                                BlurKit.getInstance().blur(bitmaps, 25)
+                                m2 = bitmaps
+                            }
+
                         }
                     }.start()
 
@@ -553,6 +569,10 @@ class MusicPlayActivity : AppCompatActivity() {
 
             @SuppressLint("SetTextI18n")
             override fun onNext(bool: Double) {
+                if(playPauseIv.isPlaying){
+                    playPauseIv.setLoading(false)
+                }
+
                 min = bool.toLong()
                 val fs = min / 60
                 val ms = min % 60
@@ -591,31 +611,31 @@ class MusicPlayActivity : AppCompatActivity() {
                         playPauseIv.setLoading(true)
                     }
                     1 -> {
-
                         playPauseIv.setLoading(false)
                     }
                     2 -> {
                         progressSb.progress = 0
                         progressTv.text = "00:00"
+                        playPauseIv.setLoading(false)
+                        MusicApp.setPlay(false)
                         if (playPauseIv.isPlaying) {
                             playPauseIv.pause()
-                            playPauseIv.setLoading(false)
-                            MusicApp.setPlay(false)
                             coverFragment.stopRotateAnimation()
                         }
+
                     }
                     3 -> {
+                        playPauseIv.setLoading(false)
+                        MusicApp.setPlay(false)
                         if (playPauseIv.isPlaying) {
                             playPauseIv.pause()
-                            playPauseIv.setLoading(false)
-                            MusicApp.setPlay(false)
                             coverFragment.stopRotateAnimation()
                         }
                     }
                     4 -> {
+                        MusicApp.setPlay(true)
                         if (!playPauseIv.isPlaying) {
                             playPauseIv.play()
-                            MusicApp.setPlay(true)
                             coverFragment.resumeRotateAnimation()
                         }
                     }

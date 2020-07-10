@@ -10,6 +10,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.os.IBinder
+import android.widget.Toast
 import com.danikula.videocache.HttpProxyCacheServer
 import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
@@ -56,18 +57,23 @@ class MusicService : Service() {
                 wlMedia.start()
                 MusicApp.setPlay(true)
             } else {
-                musicnext()
+                Toast.makeText(
+                    MusicApp.getAppContext(),
+                    getText(R.string.error_playing_track),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
 
         }
         wlMedia.setOnTimeInfoListener { currentTime, _ ->
+
             MusicApp.setPress(currentTime)
             Observable.just(currentTime).subscribe(MusicPlayActivity.observerseek)
         }
 
         wlMedia.setOnLoadListener { b ->
             if (b) {
-                Observable.just(0).subscribe(MusicPlayActivity.observerplay)
+
                 WlLog.d("加载中")
             } else {
                 WlLog.d("加载完成")
@@ -76,28 +82,32 @@ class MusicService : Service() {
         }
 
         wlMedia.setOnErrorListener { _, _ ->
-            WlLog.d("播放错误")
-            Observable.just(2).subscribe(MusicPlayActivity.observerplay)
+            WlLog.d("播放错误  0")
         }
 
         wlMedia.setOnCompleteListener { type ->
             when {
                 type === WlComplete.WL_COMPLETE_EOF -> {
-                    WlLog.d("正常播放结束")
+                    WlLog.d("正常播放结束   1")
                     Observable.just(2).subscribe(MusicPlayActivity.observerplay)
                     musicnext()
                 }
                 type === WlComplete.WL_COMPLETE_NEXT -> {
-                    WlLog.d("切换下一首，导致当前结束")
+                    WlLog.d("切换下一首，导致当前结束   2")
                     Observable.just(2).subscribe(MusicPlayActivity.observerplay)
                 }
                 type === WlComplete.WL_COMPLETE_HANDLE -> {
-                    WlLog.d("手动结束")
+                    WlLog.d("手动结束   3")
                     wlMedia.stop()
+                    Toast.makeText(
+                        MusicApp.getAppContext(),
+                        getText(R.string.error_playing_track),
+                        Toast.LENGTH_SHORT
+                    ).show()
                     Observable.just(2).subscribe(MusicPlayActivity.observerplay)
                 }
                 type === WlComplete.WL_COMPLETE_ERROR -> {
-                    WlLog.d("播放出现错误结束")
+                    WlLog.d("播放出现错误结束   4")
                     wlMedia.stop()
                     Observable.just(2).subscribe(MusicPlayActivity.observerplay)
                     musicnext()
@@ -342,7 +352,7 @@ class MusicService : Service() {
         val ids = intent.getIntExtra("id", 0)
         count = intent.getIntExtra("count", 0)
         val seek = intent.getDoubleExtra("seek", 0.0)
-
+        Observable.just(0).subscribe(MusicPlayActivity.observerplay)
         when (types) {
             0 -> {
                 musicstart(ids)

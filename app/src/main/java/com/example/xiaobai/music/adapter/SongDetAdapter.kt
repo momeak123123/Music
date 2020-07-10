@@ -126,7 +126,7 @@ class SongDetAdapter(
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
                 .transform(transformation).into(iv_cover)
 
-            // Glide.with(context).load(covers).placeholder(R.color.main_black_grey).into(iv_cover)
+            // Glide.with(context).load(covers).placeholder(R.drawable.undetback).into(iv_cover)
             title.text = names
             txt.text = num + "首"
             top_set.setImageResource(R.drawable.mores)
@@ -250,7 +250,7 @@ class SongDetAdapter(
 
         fun bindData(position: Int) {
 
-            Glide.with(context).load(datas[position].pic_url).placeholder(R.color.main_black_grey)
+            Glide.with(context).load(datas[position].pic_url).placeholder(R.drawable.undetback)
                 .into(iv_cover)
 
 

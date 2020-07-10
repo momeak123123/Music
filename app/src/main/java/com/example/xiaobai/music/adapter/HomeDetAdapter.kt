@@ -314,32 +314,32 @@ class HomeDetAdapter(
             if (list.isNotEmpty()) {
 
                 Glide.with(context).load(list[0].pic_url)
-                    .placeholder(R.color.main_black_grey).into(iv_cover)
+                    .placeholder(R.drawable.undetback).into(iv_cover)
                 title.text = list[0].name
                 txt.text = list[0].info
 
                 Glide.with(context).load(list[1].pic_url)
-                    .placeholder(R.color.main_black_grey).into(iv_cover1)
+                    .placeholder(R.drawable.undetback).into(iv_cover1)
                 title1.text = list[1].name
                 txt1.text = list[1].info
 
                 Glide.with(context).load(list[2].pic_url)
-                    .placeholder(R.color.main_black_grey).into(iv_cover2)
+                    .placeholder(R.drawable.undetback).into(iv_cover2)
                 title2.text = list[2].name
                 txt2.text = list[2].info
 
                 Glide.with(context).load(list[3].pic_url)
-                    .placeholder(R.color.main_black_grey).into(iv_cover3)
+                    .placeholder(R.drawable.undetback).into(iv_cover3)
                 title3.text = list[3].name
                 txt3.text = list[3].info
 
                 Glide.with(context).load(list[4].pic_url)
-                    .placeholder(R.color.main_black_grey).into(iv_cover4)
+                    .placeholder(R.drawable.undetback).into(iv_cover4)
                 title4.text = list[4].name
                 txt4.text = list[4].info
 
                 Glide.with(context).load(list[5].pic_url)
-                    .placeholder(R.color.main_black_grey).into(iv_cover5)
+                    .placeholder(R.drawable.undetback).into(iv_cover5)
                 title5.text = list[5].name
                 txt5.text = list[5].info
 
@@ -531,32 +531,32 @@ class HomeDetAdapter(
             if (album.isNotEmpty()) {
 
                 Glide.with(context).load(album[0].pic_url)
-                    .placeholder(R.color.main_black_grey).into(iv_cover)
+                    .placeholder(R.drawable.undetback).into(iv_cover)
                 title.text = album[0].name
                 txt.text = album[0].info
 
                 Glide.with(context).load(album[1].pic_url)
-                    .placeholder(R.color.main_black_grey).into(iv_cover1)
+                    .placeholder(R.drawable.undetback).into(iv_cover1)
                 title1.text = album[1].name
                 txt1.text = album[1].info
 
                 Glide.with(context).load(album[2].pic_url)
-                    .placeholder(R.color.main_black_grey).into(iv_cover2)
+                    .placeholder(R.drawable.undetback).into(iv_cover2)
                 title2.text = album[2].name
                 txt2.text = album[2].info
 
                 Glide.with(context).load(album[3].pic_url)
-                    .placeholder(R.color.main_black_grey).into(iv_cover3)
+                    .placeholder(R.drawable.undetback).into(iv_cover3)
                 title3.text = album[3].name
                 txt3.text = album[3].info
 
                 Glide.with(context).load(album[4].pic_url)
-                    .placeholder(R.color.main_black_grey).into(iv_cover4)
+                    .placeholder(R.drawable.undetback).into(iv_cover4)
                 title4.text = album[4].name
                 txt4.text = album[4].info
 
                 Glide.with(context).load(album[5].pic_url)
-                    .placeholder(R.color.main_black_grey).into(iv_cover5)
+                    .placeholder(R.drawable.undetback).into(iv_cover5)
                 title5.text = album[5].name
                 txt5.text = album[5].info
 
@@ -760,35 +760,35 @@ class HomeDetAdapter(
             if (artist.isNotEmpty()) {
 
                 Glide.with(context).load(artist[0].pic_url)
-                    .placeholder(R.color.main_black_grey).into(iv_cover)
+                    .placeholder(R.drawable.undetback).into(iv_cover)
                 title.text = artist[0].name
 
                 Glide.with(context).load(artist[1].pic_url)
-                    .placeholder(R.color.main_black_grey).into(iv_cover1)
+                    .placeholder(R.drawable.undetback).into(iv_cover1)
                 title1.text = artist[1].name
 
                 Glide.with(context).load(artist[2].pic_url)
-                    .placeholder(R.color.main_black_grey).into(iv_cover2)
+                    .placeholder(R.drawable.undetback).into(iv_cover2)
                 title2.text = artist[2].name
 
                 Glide.with(context).load(artist[3].pic_url)
-                    .placeholder(R.color.main_black_grey).into(iv_cover3)
+                    .placeholder(R.drawable.undetback).into(iv_cover3)
                 title3.text = artist[3].name
 
                 Glide.with(context).load(artist[4].pic_url)
-                    .placeholder(R.color.main_black_grey).into(iv_cover4)
+                    .placeholder(R.drawable.undetback).into(iv_cover4)
                 title4.text = artist[4].name
 
                 Glide.with(context).load(artist[5].pic_url)
-                    .placeholder(R.color.main_black_grey).into(iv_cover5)
+                    .placeholder(R.drawable.undetback).into(iv_cover5)
                 title5.text = artist[5].name
 
                 Glide.with(context).load(artist[6].pic_url)
-                    .placeholder(R.color.main_black_grey).into(iv_cover6)
+                    .placeholder(R.drawable.undetback).into(iv_cover6)
                 title6.text = artist[6].name
 
                 Glide.with(context).load(artist[7].pic_url)
-                    .placeholder(R.color.main_black_grey).into(iv_cover7)
+                    .placeholder(R.drawable.undetback).into(iv_cover7)
                 title7.text = artist[7].name
 
                 RxView.clicks(idea)
@@ -1000,7 +1000,7 @@ class HomeDetAdapter(
             if (song.isNotEmpty()) {
 
                 Glide.with(context).load(song[0].pic_url)
-                    .placeholder(R.color.main_black_grey).into(iv_cover)
+                    .placeholder(R.drawable.undetback).into(iv_cover)
                 title.text = song[0].name
                 var srtist_name = ""
                 for (it in song[0].all_artist) {
@@ -1018,7 +1018,7 @@ class HomeDetAdapter(
                 }
 
                 Glide.with(context).load(song[1].pic_url)
-                    .placeholder(R.color.main_black_grey).into(iv_cover1)
+                    .placeholder(R.drawable.undetback).into(iv_cover1)
                 title1.text = song[1].name
                 var srtist_name1 = ""
                 for (it in song[1].all_artist) {
@@ -1036,7 +1036,7 @@ class HomeDetAdapter(
                 }
 
                 Glide.with(context).load(song[2].pic_url)
-                    .placeholder(R.color.main_black_grey).into(iv_cover2)
+                    .placeholder(R.drawable.undetback).into(iv_cover2)
                 title2.text = song[2].name
                 var srtist_name2 = ""
                 for (it in song[2].all_artist) {
@@ -1054,7 +1054,7 @@ class HomeDetAdapter(
                 }
 
                 Glide.with(context).load(song[3].pic_url)
-                    .placeholder(R.color.main_black_grey).into(iv_cover3)
+                    .placeholder(R.drawable.undetback).into(iv_cover3)
                 title3.text = song[3].name
                 var srtist_name3 = ""
                 for (it in song[3].all_artist) {
@@ -1073,7 +1073,7 @@ class HomeDetAdapter(
             }
 
             Glide.with(context).load(song[4].pic_url)
-                .placeholder(R.color.main_black_grey).into(iv_cover4)
+                .placeholder(R.drawable.undetback).into(iv_cover4)
             title4.text = song[4].name
             var srtist_name4 = ""
             for (it in song[4].all_artist) {
@@ -1092,7 +1092,7 @@ class HomeDetAdapter(
 
 
             Glide.with(context).load(song[5].pic_url)
-                .placeholder(R.color.main_black_grey).into(iv_cover5)
+                .placeholder(R.drawable.undetback).into(iv_cover5)
             title5.text = song[5].name
             var srtist_name5 = ""
             for (it in song[5].all_artist) {
@@ -1110,7 +1110,7 @@ class HomeDetAdapter(
             }
 
             Glide.with(context).load(song[6].pic_url)
-                .placeholder(R.color.main_black_grey).into(iv_cover6)
+                .placeholder(R.drawable.undetback).into(iv_cover6)
             title6.text = song[6].name
             var srtist_name6 = ""
             for (it in song[6].all_artist) {
@@ -1128,7 +1128,7 @@ class HomeDetAdapter(
             }
 
             Glide.with(context).load(song[7].pic_url)
-                .placeholder(R.color.main_black_grey).into(iv_cover7)
+                .placeholder(R.drawable.undetback).into(iv_cover7)
             title7.text = song[7].name
             var srtist_name7 = ""
             for (it in song[7].all_artist) {
