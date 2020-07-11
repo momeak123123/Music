@@ -18,12 +18,14 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.danikula.videocache.HttpProxyCacheServer
 import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.adapter.PlayListAdapter
 import com.example.xiaobai.music.adapter.PlaySongAdapter
 import com.example.xiaobai.music.adapter.ViewPagerAdapter
 import com.example.xiaobai.music.bean.Music
+import com.example.xiaobai.music.config.Cookie
 import com.example.xiaobai.music.config.LogDownloadListener
 import com.example.xiaobai.music.config.Notifications
 import com.example.xiaobai.music.music.model.MusicPlayModel
@@ -283,7 +285,7 @@ class MusicPlayActivity : AppCompatActivity() {
                         Toast.makeText(
                             context,
                             getText(R.string.error_searcher),
-                            Toast.LENGTH_LONG
+                            Toast.LENGTH_SHORT
                         ).show()
                     }
 
@@ -572,12 +574,9 @@ class MusicPlayActivity : AppCompatActivity() {
                         }
                         1 -> {
 
-                            load = false
                             musicplay(1, 0.0, id)
                         }
                         2 -> {
-
-                            load = false
                             musicplay(2, 0.0, id)
                         }
                         3 -> {
@@ -587,7 +586,7 @@ class MusicPlayActivity : AppCompatActivity() {
                                 Toast.makeText(
                                     context,
                                     getText(R.string.error_playing_trackt),
-                                    Toast.LENGTH_LONG
+                                    Toast.LENGTH_SHORT
                                 ).show()
                             }
 
@@ -619,7 +618,8 @@ class MusicPlayActivity : AppCompatActivity() {
                     progressSb.progress = min.toInt()
                     lrcView.updateTime(min * 1000)
 
-                } catch (e: java.lang.Exception) {}
+                } catch (e: java.lang.Exception) {
+                }
 
             }
 
@@ -655,28 +655,55 @@ class MusicPlayActivity : AppCompatActivity() {
                         playPauseIv.setLoading(false)
                     }
                     2 -> {
-                        progressSb.progress = 0
-                        progressTv.text = "00:00"
-                        MusicApp.setPlay(false)
-                        if (playPauseIv.isPlaying) {
-                            playPauseIv.pause()
-                            coverFragment.stopRotateAnimation()
+                        try {
+                            progressSb.progress = 0
+                            progressTv.text = "00:00"
+                            MusicApp.setPlay(false)
+                            if (playPauseIv.isPlaying) {
+                                playPauseIv.pause()
+                                coverFragment.stopRotateAnimation()
+                            }
+                        } catch (e: java.lang.Exception) {
                         }
 
                     }
                     3 -> {
-                        playPauseIv.setLoading(false)
-                        MusicApp.setPlay(false)
-                        if (playPauseIv.isPlaying) {
-                            playPauseIv.pause()
-                            coverFragment.stopRotateAnimation()
+                        try {
+                            MusicApp.setPlay(false)
+                            if (playPauseIv.isPlaying) {
+                                playPauseIv.pause()
+                                coverFragment.stopRotateAnimation()
+                            }
+                        } catch (e: java.lang.Exception) {
                         }
                     }
                     4 -> {
-                        MusicApp.setPlay(true)
-                        if (!playPauseIv.isPlaying) {
-                            playPauseIv.play()
-                            coverFragment.resumeRotateAnimation()
+                        try {
+                            playPauseIv.setLoading(false)
+                            MusicApp.setPlay(true)
+                            if (!playPauseIv.isPlaying) {
+                                playPauseIv.play()
+                                coverFragment.resumeRotateAnimation()
+                            }
+                        } catch (e: java.lang.Exception) {
+                        }
+                    }
+                    5 -> {
+                        try {
+                            progressSb.progress = 0
+                            progressTv.text = "00:00"
+                            MusicApp.setPlay(false)
+                            playPauseIv.setLoading(false)
+                            if (playPauseIv.isPlaying) {
+                                playPauseIv.pause()
+                                coverFragment.stopRotateAnimation()
+                            }
+                            Toast.makeText(
+                                context,
+                                getText(R.string.error_playing_trackt),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } catch (e: java.lang.Exception) {
                         }
                     }
 
@@ -745,7 +772,8 @@ class MusicPlayActivity : AppCompatActivity() {
                     .onPositive { _: MaterialDialog?, _: DialogAction? ->
                         val idmap = mutableListOf<Music>()
                         playingMusic.let { idmap.add(it) }
-                        val playlist: Playlist = mPlaylistDao.query(song[position].play_list_id)[0]
+                        val playlist: Playlist =
+                            mPlaylistDao.query(song[position].play_list_id)[0]
                         val playsong = mDownDao.query(song[position].play_list_id)
                         val songs = mutableListOf<Music>()
                         songs.addAll(idmap)
@@ -759,7 +787,8 @@ class MusicPlayActivity : AppCompatActivity() {
                                     }
                                 }
                                 if (songs.size > 0) {
-                                    val num = (playlist.song_num.toInt() + songs.size).toString()
+                                    val num =
+                                        (playlist.song_num.toInt() + songs.size).toString()
                                     MusicPlayModel.addSong(
                                         context,
                                         songs,
@@ -770,7 +799,7 @@ class MusicPlayActivity : AppCompatActivity() {
                                     Toast.makeText(
                                         context,
                                         getText(R.string.play_mode),
-                                        Toast.LENGTH_LONG
+                                        Toast.LENGTH_SHORT
                                     ).show()
                                 }
 
@@ -790,7 +819,7 @@ class MusicPlayActivity : AppCompatActivity() {
                                 Toast.makeText(
                                     context,
                                     getText(R.string.play_mode),
-                                    Toast.LENGTH_LONG
+                                    Toast.LENGTH_SHORT
                                 ).show()
                             }
                         }

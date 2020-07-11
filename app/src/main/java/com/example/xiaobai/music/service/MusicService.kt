@@ -60,7 +60,7 @@ class MusicService : Service() {
             } else {
                 Toast.makeText(
                     MusicApp.getAppContext(),
-                    getText(R.string.error_playing_trackt),
+                    getText(R.string.error_playing_track),
                     Toast.LENGTH_SHORT
                 ).show()
                 MusicPlayActivity.load= false
@@ -78,7 +78,7 @@ class MusicService : Service() {
                 WlLog.d("Loading")
             } else {
                 WlLog.d("Loading carry")
-                Observable.just(1).subscribe(MusicPlayActivity.observerplay)
+                Observable.just(4).subscribe(MusicPlayActivity.observerplay)
             }
         }
 
@@ -313,22 +313,42 @@ class MusicService : Service() {
     }
 
     fun musicnext() {
-        println("下一首")
-        Observable.just(0).subscribe(MusicPlayActivity.observerplay)
-        if ( MusicApp.getPlay()) {
-            wlMedia.stop()
+        if(MusicApp.network()==-1){
+            Toast.makeText(
+                MusicApp.getAppContext(),
+                getText(R.string.error_connection),
+                Toast.LENGTH_SHORT
+            ).show()
+        }else{
+            println("下一首")
+            MusicPlayActivity.load = false
+            Observable.just(0).subscribe(MusicPlayActivity.observerplay)
+            if ( MusicApp.getPlay()) {
+                wlMedia.stop()
+            }
+            musicplay(2, count)
         }
-        musicplay(2, count)
+
 
     }
 
     fun musicpre() {
-        println("上一首")
-        Observable.just(0).subscribe(MusicPlayActivity.observerplay)
-        if ( MusicApp.getPlay()) {
-            wlMedia.stop()
+        if(MusicApp.network()==-1){
+            Toast.makeText(
+                MusicApp.getAppContext(),
+                getText(R.string.error_connection),
+                Toast.LENGTH_SHORT
+            ).show()
+        }else{
+            println("上一首")
+            MusicPlayActivity.load = false
+            Observable.just(0).subscribe(MusicPlayActivity.observerplay)
+            if ( MusicApp.getPlay()) {
+                wlMedia.stop()
+            }
+            musicplay(1, count)
         }
-        musicplay(1, count)
+
     }
 
     fun musicresume() {

@@ -73,7 +73,7 @@ public class Notifications extends android.app.Notification {
                         .setCustomContentView(getContentView())
                         .setCustomBigContentView(getContentViews())
                         .setContentIntent(resultPendingIntent) // 设定点击通知之后启动的内容，这个内容由方法中的参数：PendingIntent对象决定
-                        .setPriority(NotificationCompat.PRIORITY_HIGH) // 设置通知的优先级
+                        .setPriority(NotificationCompat.PRIORITY_LOW) // 设置通知的优先级
                         .setDefaults(NotificationCompat.DEFAULT_ALL)
                         .setSound(null)
                         .setChannelId("10898958")

@@ -89,7 +89,7 @@ class StartsActivity : AppCompatActivity() {
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(bool: Boolean) {
                 if (bool) {
-                    mdDisposable!!.dispose()
+                    mdDisposable?.dispose()
 
                     val it = Intent(applicationContext, MainActivity::class.java)
                     startActivity(it)

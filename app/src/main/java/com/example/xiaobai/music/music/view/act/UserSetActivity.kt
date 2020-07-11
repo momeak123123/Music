@@ -137,7 +137,7 @@ class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>() , UserSetC
         RxView.clicks(relativeLayout2)
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
-                set.visibility = View.VISIBLE
+                set.visibility = View.GONE
             }
 
         RxView.clicks(relat1)
@@ -147,6 +147,7 @@ class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>() , UserSetC
                     switch1.isChecked = false
                 }else{
                     switch1.isChecked = true
+                    switch2.isChecked = false
                 }
 
 
@@ -167,6 +168,7 @@ class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>() , UserSetC
                     switch2.isChecked = false
                 }else{
                     switch2.isChecked = true
+                    switch1.isChecked = false
                 }
 
             }

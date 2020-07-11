@@ -16,7 +16,20 @@ import android.view.View;
 import androidx.annotation.Nullable;
 
 import com.example.xiaobai.music.R;
+import com.example.xiaobai.music.music.view.act.MusicPlayActivity;
 import com.example.xiaobai.music.utils.SizeUtils;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+import java.util.concurrent.TimeUnit;
+
+import io.reactivex.Flowable;
+import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 
 /**
  * 自定义暂停播放按钮，包括自定义进度条
@@ -53,6 +66,7 @@ public class PlayPauseView extends View {
     private int mDirection = Direction.POSITIVE.value;
     private float mPadding;
     private int mAnimDuration = 200;//动画时间
+    private Disposable mdDisposable;
 
     public PlayPauseView(Context context) {
         super(context);
@@ -300,6 +314,21 @@ public class PlayPauseView extends View {
             getLoadingAnim().cancel();
         }
         getLoadingAnim().start();
+
+        mdDisposable = Flowable.intervalRange(0, 21, 0, 1, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(new Consumer<Long>() {
+                    @Override
+                    public void accept(Long aLong) throws Exception {
+                    }
+                })
+                .doOnComplete(new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        Observable.just(5).subscribe(MusicPlayActivity.observerplay);
+                    }
+                })
+                .subscribe();
     }
 
     /**
@@ -309,6 +338,11 @@ public class PlayPauseView extends View {
         if (getLoadingAnim() != null) {
             getLoadingAnim().cancel();
         }
+        if(mdDisposable!=null){
+            mdDisposable.dispose();
+        }
+
+
     }
 
     public void setProgress(float progress) {

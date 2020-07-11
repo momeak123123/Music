@@ -72,7 +72,10 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>(), Start
         RxView.clicks(view)
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
-                mDisposable.dispose()
+                if (mDisposable.isDisposed) {
+                    mDisposable.dispose()
+                }
+
                 finish()
             }
     }
