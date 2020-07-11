@@ -90,10 +90,12 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
 
         val data = mDownDao.queryt(1)
         val song = mutableListOf<Music>()
-        val artist = mutableListOf<artistlist>()
+
         for (i in 0 until data.size) {
             if (data[i].type == 1) {
-                artist.add(i, artistlist(data[i].artist_id, data[i].artist))
+                val artist = mutableListOf<artistlist>()
+                artist.add(0, artistlist(data[i].artist_id, data[i].artist))
+
                 val music = Music(
                     data[i].name,
                     data[i].album_name,
@@ -327,7 +329,7 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
                         intent.putExtra("album_id", album_id)
                         intent.putExtra("pos", position - 1)
                         intent.putExtra("list", json)
-                        intent.putExtra("type", 1)
+                        intent.putExtra("type", 4)
                         startActivity(intent)
 
                     } else {
@@ -369,7 +371,7 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
                     intent.putExtra("album_id", album_id)
                     intent.putExtra("pos", 0)
                     intent.putExtra("list", json)
-                    intent.putExtra("type", 1)
+                    intent.putExtra("type", 4)
                     startActivity(intent)
                 }
 

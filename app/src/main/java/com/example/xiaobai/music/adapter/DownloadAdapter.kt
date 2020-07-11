@@ -245,7 +245,7 @@ class DownloadAdapter(
             Glide.with(context).load(datas[position].pic_url).placeholder(R.color.main_black_grey)
                 .into(iv_cover)
             title.text = datas[position].name
-            txt.text = datas[position].all_artist[position-1].name
+            txt.text = datas[position].all_artist[0].name
 
             if (type == 0) {
                 num.visibility = View.VISIBLE

@@ -2,10 +2,8 @@ package  com.example.xiaobai.music.music.model
 
 import android.content.Context
 import android.widget.Toast
-import com.example.xiaobai.music.R
 import com.example.xiaobai.music.bean.*
 import com.example.xiaobai.music.music.contract.SearchListContract
-import com.example.xiaobai.music.music.view.act.AlbumDetActivity
 import com.example.xiaobai.music.music.view.act.RegisteredActivity
 import com.example.xiaobai.music.music.view.act.SearchListActivity
 import com.example.xiaobai.music.music.view.fragment.FindFragment
@@ -81,7 +79,7 @@ class SearchListModel : BaseModel(), SearchListContract.IModel {
 
                                     musicall.add(
                                         Searchs(
-                                            0,
+                                            1,
                                             Music(
                                                 title,
                                                 album_name,
@@ -161,7 +159,7 @@ class SearchListModel : BaseModel(), SearchListContract.IModel {
 
                                     musicall.add(
                                         Searchs(
-                                            1, Music(
+                                            2, Music(
                                                 title,
                                                 album_name,
                                                 album_id,
@@ -233,7 +231,7 @@ class SearchListModel : BaseModel(), SearchListContract.IModel {
 
                                 musicall.add(
                                     Searchs(
-                                        2, Music(
+                                        3, Music(
                                             title,
                                             album_name,
                                             album_id,
@@ -306,7 +304,7 @@ class SearchListModel : BaseModel(), SearchListContract.IModel {
 
                                 musicall.add(
                                     Searchs(
-                                        3, Music(
+                                        4, Music(
                                             title,
                                             album_name,
                                             album_id,
@@ -368,7 +366,7 @@ class SearchListModel : BaseModel(), SearchListContract.IModel {
                                 )
                                 musicall.add(
                                     Searchs(
-                                        4, Music(
+                                        5, Music(
                                             title,
                                             album_name,
                                             album_id,

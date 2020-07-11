@@ -10,11 +10,11 @@ import java.io.Serializable
  */
 data class Music(
     val name: String,
-    val album_name : String,
+    val album_name: String,
     val album_id: Long,
     val song_id: Long,
-    val uri : String,
-    val all_artist : List<artistlist>,
+    val uri: String,
+    val all_artist: List<artistlist>,
     val pic_url: String,
     val song_list_id: Long,
     val publish_time: String

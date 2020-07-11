@@ -34,6 +34,7 @@ import java.util.*
 class MusicService : Service() {
 
 
+    private var style: Int = 0
     private var count: Int = 2
     private var id = 0
     lateinit var wlMedia: WlMedia
@@ -55,13 +56,13 @@ class MusicService : Service() {
                 MusicApp.setPress(0.0)
                 Observable.just(wlMedia.duration.toLong()).subscribe(MusicPlayActivity.observerui)
                 wlMedia.start()
-                MusicApp.setPlay(true)
             } else {
                 Toast.makeText(
                     MusicApp.getAppContext(),
-                    getText(R.string.error_playing_track),
+                    getText(R.string.error_playing_trackt),
                     Toast.LENGTH_SHORT
                 ).show()
+                Observable.just(1).subscribe(MusicPlayActivity.observerplay)
             }
 
         }
@@ -73,7 +74,6 @@ class MusicService : Service() {
 
         wlMedia.setOnLoadListener { b ->
             if (b) {
-
                 WlLog.d("加载中")
             } else {
                 WlLog.d("加载完成")
@@ -98,17 +98,12 @@ class MusicService : Service() {
                 }
                 type === WlComplete.WL_COMPLETE_HANDLE -> {
                     WlLog.d("手动结束   3")
-                    wlMedia.stop()
-                    Toast.makeText(
-                        MusicApp.getAppContext(),
-                        getText(R.string.error_playing_track),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    MusicPlayActivity.max = wlMedia.duration.toLong()
                     Observable.just(2).subscribe(MusicPlayActivity.observerplay)
                 }
                 type === WlComplete.WL_COMPLETE_ERROR -> {
                     WlLog.d("播放出现错误结束   4")
-                    wlMedia.stop()
+                    MusicPlayActivity.max = wlMedia.duration.toLong()
                     Observable.just(2).subscribe(MusicPlayActivity.observerplay)
                     musicnext()
                 }
@@ -146,8 +141,6 @@ class MusicService : Service() {
     private fun getNotification(): Notification? {
         val builder: Notification.Builder = Notification.Builder(this)
             .setSmallIcon(R.mipmap.ic_launcher)
-            .setContentTitle("title")
-            .setContentText("text")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             builder.setChannelId("10898958")
         }
@@ -210,14 +203,15 @@ class MusicService : Service() {
         uriseat(playingMusicList!![ids].uri, playingMusicList!![ids].publish_time)
     }
 
-    fun uriseat(uri: String, time: String) {
-        if (uri != "") {
+    fun uriseat( uri: String, time: String) {
+        if (style == 1) {
+            MusicPlayActivity.uri = uri
             val proxy: HttpProxyCacheServer = getProxy()
-            val proxyUrl = proxy.getProxyUrl(uri)
+            val proxyUrl = proxy.getProxyUrl(uri,true)
             wlMedia.source = proxyUrl
             wlMedia.next()
 
-        } else {
+        } else if(style==3){
             if (time != "") {
                 musicpath(
                     time,
@@ -228,6 +222,9 @@ class MusicService : Service() {
             }
 
 
+        }else if(style==4){
+            wlMedia.source = uri
+            wlMedia.next()
         }
     }
 
@@ -251,6 +248,7 @@ class MusicService : Service() {
                                         com.example.xiaobai.music.parsing.musicpath::class.javaObjectType
                                     )
                                 val uri = Dencry.dencryptString(bean.geturl)
+                                MusicPlayActivity.uri = uri
                                 val proxy: HttpProxyCacheServer = getProxy()
                                 val proxyUrl = proxy.getProxyUrl(uri)
                                 wlMedia.source = proxyUrl
@@ -331,7 +329,6 @@ class MusicService : Service() {
 
     fun musicresume() {
         println("继续")
-        MusicApp.setPlay(true)
         wlMedia.resume()
         Notifications.init(1)
         Observable.just(4).subscribe(MusicPlayActivity.observerplay)
@@ -339,7 +336,6 @@ class MusicService : Service() {
 
     fun musicpause() {
         println("暂停")
-        MusicApp.setPlay(false)
         wlMedia.pause()
         Notifications.init(0)
         Observable.just(3).subscribe(MusicPlayActivity.observerplay)
@@ -351,8 +347,9 @@ class MusicService : Service() {
         val types = intent!!.getIntExtra("type", 0)
         val ids = intent.getIntExtra("id", 0)
         count = intent.getIntExtra("count", 0)
+        style = intent.getIntExtra("style", 0)
         val seek = intent.getDoubleExtra("seek", 0.0)
-        Observable.just(0).subscribe(MusicPlayActivity.observerplay)
+
         when (types) {
             0 -> {
                 musicstart(ids)

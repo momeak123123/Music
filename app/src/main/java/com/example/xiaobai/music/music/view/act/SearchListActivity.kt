@@ -174,7 +174,7 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>(),
                 intent.putExtra("album_id", 3L)
                 intent.putExtra("pos", position)
                 intent.putExtra("list", json)
-                intent.putExtra("type", 2)
+                intent.putExtra("type", 3)
                 startActivity(intent)
 
             }

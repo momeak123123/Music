@@ -9,7 +9,8 @@ import android.view.Window
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import com.example.xiaobai.music.music.model.MainModel
-import com.example.xiaobai.music.music.model.MusicPlayModel.Companion.asd
+import com.example.xiaobai.music.music.model.MusicPlayModel.Companion
+import com.example.xiaobai.music.music.model.MusicPlayModel.Companion.getadvertising
 import com.example.xiaobai.music.music.model.MusicPlayModel.Companion.updateapp
 import com.example.xiaobai.music.service.LockService
 import io.reactivex.Flowable
@@ -44,7 +45,7 @@ class StartsActivity : AppCompatActivity() {
         mdDisposable = Flowable.intervalRange(0, 2, 0, 1, TimeUnit.SECONDS)
             .observeOn(AndroidSchedulers.mainThread())
             .doOnNext {
-                asd()
+                getadvertising()
             }
             .doOnComplete {
 

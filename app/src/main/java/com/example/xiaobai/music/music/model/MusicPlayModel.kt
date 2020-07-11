@@ -204,7 +204,7 @@ class MusicPlayModel {
                 })
         }
 
-        fun asd() {
+        fun getadvertising() {
             OkGo.get<String>(Constants.URL + "api/ads/get_ads")
                 .params("type", 1)
                 .execute(object : StringCallback() {

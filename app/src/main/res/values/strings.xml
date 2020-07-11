@@ -68,6 +68,8 @@
     <string name="error_searcher">搜索歌曲暂时无法收藏</string>
     <string name="secret_num">~~ 加载中 ~~</string>
     <string name="error_playing_track">播放错误</string>
+    <string name="error_playing_tracks">播放失败</string>
+    <string name="error_playing_trackt">出错啦</string>
     <string name="lyric_default_hint">暂无歌词</string>
     <string name="folders">文件夹</string>
     <string name="play_time">00:00</string>
