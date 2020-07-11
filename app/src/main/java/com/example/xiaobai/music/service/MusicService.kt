@@ -54,7 +54,7 @@ class MusicService : Service() {
         wlMedia.setOnPreparedListener {
             if (wlMedia.duration > 0) {
                 MusicApp.setPress(0.0)
-                MusicPlayActivity.load= true
+                MusicPlayActivity.load = true
                 Observable.just(wlMedia.duration.toLong()).subscribe(MusicPlayActivity.observerui)
                 wlMedia.start()
             } else {
@@ -63,7 +63,7 @@ class MusicService : Service() {
                     getText(R.string.error_playing_track),
                     Toast.LENGTH_SHORT
                 ).show()
-                MusicPlayActivity.load= false
+                MusicPlayActivity.load = false
                 Observable.just(1).subscribe(MusicPlayActivity.observerplay)
             }
 
@@ -100,12 +100,12 @@ class MusicService : Service() {
                 }
                 type === WlComplete.WL_COMPLETE_HANDLE -> {
                     WlLog.d("End manually   3")
-                    MusicPlayActivity.load= false
+                    MusicPlayActivity.load = false
                     Observable.just(2).subscribe(MusicPlayActivity.observerplay)
                 }
                 type === WlComplete.WL_COMPLETE_ERROR -> {
                     WlLog.d("Play ended with an error   4")
-                    MusicPlayActivity.load= false
+                    MusicPlayActivity.load = false
                     Observable.just(2).subscribe(MusicPlayActivity.observerplay)
                     musicnext()
                 }
@@ -205,26 +205,43 @@ class MusicService : Service() {
         uriseat(playingMusicList!![ids].uri, playingMusicList!![ids].publish_time)
     }
 
-    fun uriseat( uri: String, time: String) {
+    fun uriseat(uri: String, time: String) {
         if (style == 1) {
-            MusicPlayActivity.uri = uri
-            val proxy: HttpProxyCacheServer = getProxy()
-            val proxyUrl = proxy.getProxyUrl(uri,true)
-            wlMedia.source = proxyUrl
-            wlMedia.next()
-
-        } else if(style==3){
-            if (time != "") {
-                musicpath(
-                    time,
-                    Cookie.getCookie()
-                )
-            } else {
+            if (MusicApp.network() == -1) {
+                Toast.makeText(
+                    MusicApp.getAppContext(),
+                    getText(R.string.error_connection),
+                    Toast.LENGTH_SHORT
+                ).show()
                 Observable.just(2).subscribe(MusicPlayActivity.observerplay)
+            } else {
+                MusicPlayActivity.uri = uri
+                val proxy: HttpProxyCacheServer = getProxy()
+                val proxyUrl = proxy.getProxyUrl(uri, true)
+                wlMedia.source = proxyUrl
+                wlMedia.next()
             }
 
+        } else if (style == 3) {
+            if (MusicApp.network() == -1) {
+                Toast.makeText(
+                    MusicApp.getAppContext(),
+                    getText(R.string.error_connection),
+                    Toast.LENGTH_SHORT
+                ).show()
+                Observable.just(1).subscribe(MusicPlayActivity.observerplay)
+            } else {
+                if (time != "") {
+                    musicpath(
+                        time,
+                        Cookie.getCookie()
+                    )
+                } else {
+                    Observable.just(1).subscribe(MusicPlayActivity.observerplay)
+                }
 
-        }else if(style==4){
+            }
+        } else if (style == 4) {
             wlMedia.source = uri
             wlMedia.next()
         }
@@ -252,7 +269,7 @@ class MusicService : Service() {
                                 val uri = Dencry.dencryptString(bean.geturl)
                                 MusicPlayActivity.uri = uri
                                 val proxy: HttpProxyCacheServer = getProxy()
-                                val proxyUrl = proxy.getProxyUrl(uri,true)
+                                val proxyUrl = proxy.getProxyUrl(uri, true)
                                 wlMedia.source = proxyUrl
                                 wlMedia.next()
 
@@ -270,8 +287,8 @@ class MusicService : Service() {
                 "del" -> Notifications.deleteNotification()
                 "pre" ->
                     musicpre()
-                "play" ->{
-                    if ( MusicApp.getPlay()) {
+                "play" -> {
+                    if (MusicApp.getPlay()) {
                         musicpause()
                     } else {
                         musicresume()
@@ -284,7 +301,6 @@ class MusicService : Service() {
             }
         }
     }
-
 
 
     private fun getProxy(): HttpProxyCacheServer {
@@ -301,8 +317,9 @@ class MusicService : Service() {
     }
 
     fun musicstart(ids: Int) {
+
         println("切歌")
-        if ( MusicApp.getPlay()) {
+        if (MusicApp.getPlay()) {
             wlMedia.stop()
         }
         MusicApp.setPosition(ids)
@@ -313,41 +330,27 @@ class MusicService : Service() {
     }
 
     fun musicnext() {
-        if(MusicApp.network()==-1){
-            Toast.makeText(
-                MusicApp.getAppContext(),
-                getText(R.string.error_connection),
-                Toast.LENGTH_SHORT
-            ).show()
-        }else{
-            println("下一首")
-            MusicPlayActivity.load = false
-            Observable.just(0).subscribe(MusicPlayActivity.observerplay)
-            if ( MusicApp.getPlay()) {
-                wlMedia.stop()
-            }
-            musicplay(2, count)
+
+        println("下一首")
+        MusicPlayActivity.load = false
+        Observable.just(0).subscribe(MusicPlayActivity.observerplay)
+        if (MusicApp.getPlay()) {
+            wlMedia.stop()
         }
+        musicplay(2, count)
 
 
     }
 
     fun musicpre() {
-        if(MusicApp.network()==-1){
-            Toast.makeText(
-                MusicApp.getAppContext(),
-                getText(R.string.error_connection),
-                Toast.LENGTH_SHORT
-            ).show()
-        }else{
-            println("上一首")
-            MusicPlayActivity.load = false
-            Observable.just(0).subscribe(MusicPlayActivity.observerplay)
-            if ( MusicApp.getPlay()) {
-                wlMedia.stop()
-            }
-            musicplay(1, count)
+
+        println("上一首")
+        MusicPlayActivity.load = false
+        Observable.just(0).subscribe(MusicPlayActivity.observerplay)
+        if (MusicApp.getPlay()) {
+            wlMedia.stop()
         }
+        musicplay(1, count)
 
     }
 

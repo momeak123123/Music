@@ -153,43 +153,51 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
         RxView.clicks(down)
             .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
-                if (MusicApp.userlogin()) {
-                    val idmap = mutableListOf<Music>()
-                    for (ite in adapter.listdet) {
-                        if (ite.type == 1) {
-                            idmap.add(ite.song)
+                if(MusicApp.network()==-1){
+                    Toast.makeText(
+                        MusicApp.getAppContext(),
+                        getText(R.string.error_connection),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }else {
+                    if (MusicApp.userlogin()) {
+                        val idmap = mutableListOf<Music>()
+                        for (ite in adapter.listdet) {
+                            if (ite.type == 1) {
+                                idmap.add(ite.song)
+                            }
                         }
-                    }
-                    if (idmap.isNotEmpty()) {
-                        in_indel.visibility = View.VISIBLE
-                        del.visibility = View.GONE
-                        in_title.text = getText(R.string.song_but)
-                        val list: MutableList<Playlist> = mPlaylistDao.querys(sp.getString("userid","").toString())
-                        initSongLists(list, idmap)
+                        if (idmap.isNotEmpty()) {
+                            in_indel.visibility = View.VISIBLE
+                            del.visibility = View.GONE
+                            in_title.text = getText(R.string.song_but)
+                            val list: MutableList<Playlist> =
+                                mPlaylistDao.querys(sp.getString("userid", "").toString())
+                            initSongLists(list, idmap)
+                        } else {
+                            Toast.makeText(
+                                context,
+                                getText(R.string.song_collect_error),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+
                     } else {
-                        Toast.makeText(
-                            context,
-                            getText(R.string.song_collect_error),
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        MaterialDialog.Builder(context)
+                            .title("登录")
+                            .content("未登陆账号，是否登录")
+                            .positiveText("确认")
+                            .negativeText("取消")
+                            .positiveColorRes(R.color.colorAccentDarkTheme)
+                            .negativeColorRes(R.color.red)
+                            .onPositive { _: MaterialDialog?, _: DialogAction? ->
+                                val intent = Intent()
+                                context.let { intent.setClass(it, LoginActivity().javaClass) }
+                                startActivity(intent)
+                            }
+                            .show()
                     }
-
-                } else {
-                    MaterialDialog.Builder(context)
-                        .title("登录")
-                        .content("未登陆账号，是否登录")
-                        .positiveText("确认")
-                        .negativeText("取消")
-                        .positiveColorRes(R.color.colorAccentDarkTheme)
-                        .negativeColorRes(R.color.red)
-                        .onPositive { _: MaterialDialog?, _: DialogAction? ->
-                            val intent = Intent()
-                            context.let { intent.setClass(it, LoginActivity().javaClass) }
-                            startActivity(intent)
-                        }
-                        .show()
                 }
-
 
             }
 
@@ -452,29 +460,43 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
                 RxView.clicks(relat3)
                     .throttleFirst(3, TimeUnit.SECONDS)
                     .subscribe {
-                        if (MusicApp.userlogin()) {
-                            poplue.visibility = View.GONE
-                            in_indel.visibility = View.VISIBLE
-                            del.visibility = View.GONE
-                            in_title.text = getText(R.string.song_but)
-                            val list: MutableList<Playlist> = mPlaylistDao.querys(sp.getString("userid","").toString())
-                            val idmap = mutableListOf<Music>()
-                            idmap.add(songlist[data])
-                            initSongLists(list, idmap)
-                        } else {
-                            MaterialDialog.Builder(context)
-                                .title("登录")
-                                .content("未登陆账号，是否登录")
-                                .positiveText("确认")
-                                .negativeText("取消")
-                                .positiveColorRes(R.color.colorAccentDarkTheme)
-                                .negativeColorRes(R.color.red)
-                                .onPositive { _: MaterialDialog?, _: DialogAction? ->
-                                    val intent = Intent()
-                                    context.let { intent.setClass(it, LoginActivity().javaClass) }
-                                    startActivity(intent)
-                                }
-                                .show()
+                        if(MusicApp.network()==-1){
+                            Toast.makeText(
+                                MusicApp.getAppContext(),
+                                getText(R.string.error_connection),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }else {
+                            if (MusicApp.userlogin()) {
+                                poplue.visibility = View.GONE
+                                in_indel.visibility = View.VISIBLE
+                                del.visibility = View.GONE
+                                in_title.text = getText(R.string.song_but)
+                                val list: MutableList<Playlist> =
+                                    mPlaylistDao.querys(sp.getString("userid", "").toString())
+                                val idmap = mutableListOf<Music>()
+                                idmap.add(songlist[data])
+                                initSongLists(list, idmap)
+                            } else {
+                                MaterialDialog.Builder(context)
+                                    .title("登录")
+                                    .content("未登陆账号，是否登录")
+                                    .positiveText("确认")
+                                    .negativeText("取消")
+                                    .positiveColorRes(R.color.colorAccentDarkTheme)
+                                    .negativeColorRes(R.color.red)
+                                    .onPositive { _: MaterialDialog?, _: DialogAction? ->
+                                        val intent = Intent()
+                                        context.let {
+                                            intent.setClass(
+                                                it,
+                                                LoginActivity().javaClass
+                                            )
+                                        }
+                                        startActivity(intent)
+                                    }
+                                    .show()
+                            }
                         }
 
                     }

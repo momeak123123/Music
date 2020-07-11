@@ -170,44 +170,77 @@ class MusicPlayActivity : AppCompatActivity() {
         RxView.clicks(icon2)
             .throttleFirst(0, TimeUnit.SECONDS)
             .subscribe {
-                if (style != 4) {
-                    if (MusicApp.userlogin()) {
-                        MaterialDialog.Builder(context)
-                            .title("下载音乐")
-                            .content("是否下载音乐")
-                            .positiveText("确认")
-                            .negativeText("取消")
-                            .positiveColorRes(R.color.colorAccentDarkTheme)
-                            .negativeColorRes(R.color.red)
-                            .onPositive { _: MaterialDialog?, _: DialogAction? ->
+                if(MusicApp.network()==-1){
+                    Toast.makeText(
+                        MusicApp.getAppContext(),
+                        getText(R.string.error_connection),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }else {
+                    if (style != 4) {
+                        if (MusicApp.userlogin()) {
+                            MaterialDialog.Builder(context)
+                                .title("下载音乐")
+                                .content("是否下载音乐")
+                                .positiveText("确认")
+                                .negativeText("取消")
+                                .positiveColorRes(R.color.colorAccentDarkTheme)
+                                .negativeColorRes(R.color.red)
+                                .onPositive { _: MaterialDialog?, _: DialogAction? ->
 
-                                val downs = mDownDao.querys(song_id)
-                                if (downs.size > 0) {
-                                    for (its in downs) {
-                                        if (uri != "") {
-                                            if (its.type == 0) {
-                                                val request = OkGo.get<File>(uri)
-                                                OkDownload.request(uri, request) //
-                                                    .priority(0)
-                                                    .fileName("music$song_id.mp3") //
-                                                    .save() //
-                                                    .register(
-                                                        LogDownloadListener(
-                                                            playingMusic,
-                                                            context,
-                                                            0,
-                                                            downs,
-                                                            0
-                                                        )
-                                                    ) //
-                                                    .start()
+                                    val downs = mDownDao.querys(song_id)
+                                    if (downs.size > 0) {
+                                        for (its in downs) {
+                                            if (uri != "") {
+                                                if (its.type == 0) {
+                                                    val request = OkGo.get<File>(uri)
+                                                    OkDownload.request(uri, request) //
+                                                        .priority(0)
+                                                        .fileName("music$song_id.mp3") //
+                                                        .save() //
+                                                        .register(
+                                                            LogDownloadListener(
+                                                                playingMusic,
+                                                                context,
+                                                                0,
+                                                                downs,
+                                                                0
+                                                            )
+                                                        ) //
+                                                        .start()
+                                                } else {
+                                                    Toast.makeText(
+                                                        context,
+                                                        getText(R.string.download_carry),
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                }
                                             } else {
                                                 Toast.makeText(
                                                     context,
-                                                    getText(R.string.download_carry),
+                                                    getText(R.string.download_error),
                                                     Toast.LENGTH_SHORT
                                                 ).show()
                                             }
+
+                                        }
+                                    } else {
+                                        if (uri != "") {
+                                            val request = OkGo.get<File>(uri)
+                                            OkDownload.request(uri, request) //
+                                                .priority(0)
+                                                .fileName("music$song_id.mp3") //
+                                                .save() //
+                                                .register(
+                                                    LogDownloadListener(
+                                                        playingMusic,
+                                                        context,
+                                                        0,
+                                                        downs,
+                                                        1
+                                                    )
+                                                ) //
+                                                .start()
                                         } else {
                                             Toast.makeText(
                                                 context,
@@ -215,35 +248,63 @@ class MusicPlayActivity : AppCompatActivity() {
                                                 Toast.LENGTH_SHORT
                                             ).show()
                                         }
-
-                                    }
-                                } else {
-                                    if (uri != "") {
-                                        val request = OkGo.get<File>(uri)
-                                        OkDownload.request(uri, request) //
-                                            .priority(0)
-                                            .fileName("music$song_id.mp3") //
-                                            .save() //
-                                            .register(
-                                                LogDownloadListener(
-                                                    playingMusic,
-                                                    context,
-                                                    0,
-                                                    downs,
-                                                    1
-                                                )
-                                            ) //
-                                            .start()
-                                    } else {
-                                        Toast.makeText(
-                                            context,
-                                            getText(R.string.download_error),
-                                            Toast.LENGTH_SHORT
-                                        ).show()
                                     }
                                 }
-                            }
-                            .show()
+                                .show()
+                        } else {
+                            MaterialDialog.Builder(context)
+                                .title("登录")
+                                .content("未登陆账号，是否登录")
+                                .positiveText("确认")
+                                .negativeText("取消")
+                                .positiveColorRes(R.color.colorAccentDarkTheme)
+                                .negativeColorRes(R.color.red)
+                                .onPositive { _: MaterialDialog?, _: DialogAction? ->
+                                    val intent = Intent()
+                                    context.let { intent.setClass(it, LoginActivity().javaClass) }
+                                    startActivity(intent)
+                                }
+                                .show()
+                        }
+
+                    } else {
+                        Toast.makeText(
+                            context,
+                            getText(R.string.download_carry),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
+            }
+
+        RxView.clicks(icon3)
+            .throttleFirst(0, TimeUnit.SECONDS)
+            .subscribe {
+                if(MusicApp.network()==-1){
+                    Toast.makeText(
+                        MusicApp.getAppContext(),
+                        getText(R.string.error_connection),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }else {
+                    if (MusicApp.userlogin()) {
+                        if (!search) {
+                            in_indel.visibility = View.VISIBLE
+                            del.visibility = View.GONE
+                            in_title.text = getText(R.string.song_but)
+                            val list: MutableList<Playlist> =
+                                mPlaylistDao.querys(sp.getString("userid", "").toString())
+                            initSongList(list)
+                        } else {
+                            Toast.makeText(
+                                context,
+                                getText(R.string.error_searcher),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+
+
                     } else {
                         MaterialDialog.Builder(context)
                             .title("登录")
@@ -259,51 +320,6 @@ class MusicPlayActivity : AppCompatActivity() {
                             }
                             .show()
                     }
-
-                } else {
-                    Toast.makeText(
-                        context,
-                        getText(R.string.download_carry),
-                        Toast.LENGTH_SHORT
-                    ).show()
-                }
-
-            }
-
-        RxView.clicks(icon3)
-            .throttleFirst(0, TimeUnit.SECONDS)
-            .subscribe {
-                if (MusicApp.userlogin()) {
-                    if (!search) {
-                        in_indel.visibility = View.VISIBLE
-                        del.visibility = View.GONE
-                        in_title.text = getText(R.string.song_but)
-                        val list: MutableList<Playlist> =
-                            mPlaylistDao.querys(sp.getString("userid", "").toString())
-                        initSongList(list)
-                    } else {
-                        Toast.makeText(
-                            context,
-                            getText(R.string.error_searcher),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-
-
-                } else {
-                    MaterialDialog.Builder(context)
-                        .title("登录")
-                        .content("未登陆账号，是否登录")
-                        .positiveText("确认")
-                        .negativeText("取消")
-                        .positiveColorRes(R.color.colorAccentDarkTheme)
-                        .negativeColorRes(R.color.red)
-                        .onPositive { _: MaterialDialog?, _: DialogAction? ->
-                            val intent = Intent()
-                            context.let { intent.setClass(it, LoginActivity().javaClass) }
-                            startActivity(intent)
-                        }
-                        .show()
                 }
 
             }
@@ -517,10 +533,6 @@ class MusicPlayActivity : AppCompatActivity() {
                                 BlurKit.getInstance().blur(bitmaps, 25)
                                 m2 = bitmaps
                             } catch (e: java.lang.Exception) {
-                                val bitmaps =
-                                    BitmapUtils.getBitmap("http://p1.music.126.net/6y-UleORITEDbvrOLV0Q8A==/5639395138885805.jpg")
-                                BlurKit.getInstance().blur(bitmaps, 25)
-                                m2 = bitmaps
                             }
 
                         }

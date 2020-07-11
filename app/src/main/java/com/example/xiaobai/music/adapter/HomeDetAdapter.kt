@@ -50,7 +50,6 @@ class HomeDetAdapter(
     }
 
     var type = 0
-    private lateinit var data_song: MutableList<Music>
     private lateinit var bannerdata: MutableList<BannerItem>
     private var mItemClickListener: ItemClickListener? = null
 

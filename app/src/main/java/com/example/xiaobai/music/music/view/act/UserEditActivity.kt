@@ -128,7 +128,7 @@ class UserEditActivity : BaseMvpActivity<UserEditContract.IPresenter>(), UserEdi
                 } else {
                     Toast.makeText(
                         context,
-                        getText(R.string.nonet),
+                        getText(R.string.error_connection),
                         Toast.LENGTH_LONG
                     ).show()
                 }

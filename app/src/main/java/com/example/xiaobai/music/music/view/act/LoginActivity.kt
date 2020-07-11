@@ -94,7 +94,7 @@ class LoginActivity : BaseMvpActivity<LoginContract.IPresenter>(), LoginContract
                 }else{
                     Toast.makeText(
                         context,
-                        getText(R.string.nonet),
+                        getText(R.string.error_connection),
                         Toast.LENGTH_LONG
                     ).show()
                 }

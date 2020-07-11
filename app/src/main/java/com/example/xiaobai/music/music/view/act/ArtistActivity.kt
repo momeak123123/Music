@@ -102,11 +102,7 @@ class ArtistActivity : BaseMvpActivity<ArtistContract.IPresenter>(), ArtistContr
                     swipe_refresh_layout.isRefreshing = false
                 }
                 finish()
-                Toast.makeText(
-                    context,
-                    getText(R.string.nonet),
-                    Toast.LENGTH_LONG
-                ).show()
+
             }
 
         }
@@ -121,11 +117,7 @@ class ArtistActivity : BaseMvpActivity<ArtistContract.IPresenter>(), ArtistContr
                 swipe_refresh_layout.isRefreshing = false
             }
             finish()
-            Toast.makeText(
-                context,
-                getText(R.string.nonet),
-                Toast.LENGTH_LONG
-            ).show()
+
         }
     }
 

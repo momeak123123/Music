@@ -35,7 +35,7 @@ public class Notifications extends android.app.Notification {
         txt = MusicPlayActivity.t2;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             //创建 通知通道  channelid和channelname是必须的（自己命名就好）
-            channel = new NotificationChannel("1089", "小白音乐", NotificationManager.IMPORTANCE_DEFAULT);
+            channel = new NotificationChannel("10898958", "小白音乐", NotificationManager.IMPORTANCE_DEFAULT);
         }
         notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -65,7 +65,7 @@ public class Notifications extends android.app.Notification {
                 // 设定点击通知之后启动的内容，这个内容由方法中的参数：PendingIntent对象决定
                 // 设置通知的优先级
                 // 设置点击通知之后通知是否消失
-                notification = new NotificationCompat.Builder(context, "1089")
+                notification = new NotificationCompat.Builder(context, "10898958")
                         .setWhen(System.currentTimeMillis())
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setCustomContentView(getContentView())
