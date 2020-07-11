@@ -54,6 +54,7 @@ class MusicService : Service() {
         wlMedia.setOnPreparedListener {
             if (wlMedia.duration > 0) {
                 MusicApp.setPress(0.0)
+                MusicPlayActivity.load= true
                 Observable.just(wlMedia.duration.toLong()).subscribe(MusicPlayActivity.observerui)
                 wlMedia.start()
             } else {
@@ -62,48 +63,49 @@ class MusicService : Service() {
                     getText(R.string.error_playing_trackt),
                     Toast.LENGTH_SHORT
                 ).show()
+                MusicPlayActivity.load= false
                 Observable.just(1).subscribe(MusicPlayActivity.observerplay)
             }
 
         }
         wlMedia.setOnTimeInfoListener { currentTime, _ ->
-
             MusicApp.setPress(currentTime)
             Observable.just(currentTime).subscribe(MusicPlayActivity.observerseek)
         }
 
         wlMedia.setOnLoadListener { b ->
             if (b) {
-                WlLog.d("加载中")
+                WlLog.d("Loading")
             } else {
-                WlLog.d("加载完成")
+                WlLog.d("Loading carry")
                 Observable.just(1).subscribe(MusicPlayActivity.observerplay)
             }
         }
 
-        wlMedia.setOnErrorListener { _, _ ->
-            WlLog.d("播放错误  0")
+        wlMedia.setOnErrorListener { code, msg ->
+            WlLog.d("playback error")
+            WlLog.d("code$code - msg$msg")
         }
 
         wlMedia.setOnCompleteListener { type ->
             when {
                 type === WlComplete.WL_COMPLETE_EOF -> {
-                    WlLog.d("正常播放结束   1")
+                    WlLog.d("Normal playback ends 1")
                     Observable.just(2).subscribe(MusicPlayActivity.observerplay)
                     musicnext()
                 }
                 type === WlComplete.WL_COMPLETE_NEXT -> {
-                    WlLog.d("切换下一首，导致当前结束   2")
+                    WlLog.d("Switch to the next song, causing the current end   2")
                     Observable.just(2).subscribe(MusicPlayActivity.observerplay)
                 }
                 type === WlComplete.WL_COMPLETE_HANDLE -> {
-                    WlLog.d("手动结束   3")
-                    MusicPlayActivity.max = wlMedia.duration.toLong()
+                    WlLog.d("End manually   3")
+                    MusicPlayActivity.load= false
                     Observable.just(2).subscribe(MusicPlayActivity.observerplay)
                 }
                 type === WlComplete.WL_COMPLETE_ERROR -> {
-                    WlLog.d("播放出现错误结束   4")
-                    MusicPlayActivity.max = wlMedia.duration.toLong()
+                    WlLog.d("Play ended with an error   4")
+                    MusicPlayActivity.load= false
                     Observable.just(2).subscribe(MusicPlayActivity.observerplay)
                     musicnext()
                 }
@@ -250,7 +252,7 @@ class MusicService : Service() {
                                 val uri = Dencry.dencryptString(bean.geturl)
                                 MusicPlayActivity.uri = uri
                                 val proxy: HttpProxyCacheServer = getProxy()
-                                val proxyUrl = proxy.getProxyUrl(uri)
+                                val proxyUrl = proxy.getProxyUrl(uri,true)
                                 wlMedia.source = proxyUrl
                                 wlMedia.next()
 
@@ -312,6 +314,7 @@ class MusicService : Service() {
 
     fun musicnext() {
         println("下一首")
+        Observable.just(0).subscribe(MusicPlayActivity.observerplay)
         if ( MusicApp.getPlay()) {
             wlMedia.stop()
         }
@@ -321,6 +324,7 @@ class MusicService : Service() {
 
     fun musicpre() {
         println("上一首")
+        Observable.just(0).subscribe(MusicPlayActivity.observerplay)
         if ( MusicApp.getPlay()) {
             wlMedia.stop()
         }

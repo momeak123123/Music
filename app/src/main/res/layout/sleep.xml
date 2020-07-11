@@ -50,7 +50,7 @@
                 android:layout_marginTop="@dimen/dp_15"
                 android:layout_marginBottom="@dimen/dp_15"
                 android:gravity="center_vertical"
-                android:text="一次定时" />
+                android:text="单次定时" />
 
             <Switch
                 android:id="@+id/switch1"
@@ -60,6 +60,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentBottom="true"
                 android:layout_marginEnd="@dimen/dp_20"
+                android:checked="false"
                 android:text=""
                 app:layout_constraintEnd_toEndOf="parent" />
 
@@ -126,7 +127,7 @@
                 android:layout_marginTop="@dimen/dp_15"
                 android:layout_marginBottom="@dimen/dp_15"
                 android:gravity="center_vertical"
-                android:text="自动定时" />
+                android:text="每天定时" />
 
             <Switch
                 android:id="@+id/switch2"
@@ -163,7 +164,7 @@
                 android:layout_marginTop="@dimen/dp_15"
                 android:layout_marginBottom="@dimen/dp_15"
                 android:gravity="center_vertical"
-                android:text="自动定时启动时间" />
+                android:text="每天定时启动时间" />
 
             <TextView
                 android:id="@+id/time"

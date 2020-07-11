@@ -253,9 +253,19 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
                             if (idmap.size > 0) {
                                 for (sea in idmap) {
                                     for (det in playsong) {
-                                        if (sea.song_id == det.song_id) {
+                                        if(sea.song_list_id==0L){
                                             songs.remove(sea)
+                                            Toast.makeText(
+                                                context,
+                                                getText(R.string.error_searcher),
+                                                Toast.LENGTH_LONG
+                                            ).show()
+                                        }else{
+                                            if (sea.song_id == det.song_id) {
+                                                songs.remove(sea)
+                                            }
                                         }
+
                                     }
                                 }
                                 if (songs.size > 0) {

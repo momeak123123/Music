@@ -1,11 +1,13 @@
 package com.example.xiaobai.music.music.view.act
 
 import android.annotation.SuppressLint
+import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
+import android.widget.TimePicker
 import android.widget.Toast
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.music.contract.UserSetContract
@@ -13,14 +15,13 @@ import com.example.xiaobai.music.music.presenter.UserSetPresenter
 import com.jakewharton.rxbinding2.view.RxView
 import com.xuexiang.xui.widget.dialog.materialdialog.DialogAction
 import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
-import com.xuexiang.xui.widget.picker.widget.OptionsPickerView
-import com.xuexiang.xui.widget.picker.widget.builder.OptionsPickerBuilder
-import com.xuexiang.xui.widget.picker.widget.listener.OnOptionsSelectListener
 import kotlinx.android.synthetic.main.head.*
+import kotlinx.android.synthetic.main.sleep.*
 import kotlinx.android.synthetic.main.user_set.*
 import mvp.ljb.kt.act.BaseMvpActivity
 import java.io.File
 import java.util.concurrent.TimeUnit
+
 
 /**
  * @Author Kotlin MVP Plugin
@@ -46,7 +47,7 @@ class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>() , UserSetC
     }
 
 
-    @SuppressLint("CheckResult")
+    @SuppressLint("CheckResult", "SetTextI18n")
     override fun initView() {
         super.initView()
         RxView.clicks(top_flot)
@@ -121,6 +122,63 @@ class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>() , UserSetC
                 startActivity(intent)
             }
 
+        RxView.clicks(view3)
+            .throttleFirst(3, TimeUnit.SECONDS)
+            .subscribe {
+              set.visibility = View.VISIBLE
+            }
+
+        RxView.clicks(popule_back)
+            .throttleFirst(3, TimeUnit.SECONDS)
+            .subscribe {
+                set.visibility = View.GONE
+            }
+
+        RxView.clicks(relativeLayout2)
+            .throttleFirst(3, TimeUnit.SECONDS)
+            .subscribe {
+                set.visibility = View.VISIBLE
+            }
+
+        RxView.clicks(relat1)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe {
+                if(switch1.isChecked){
+                    switch1.isChecked = false
+                }else{
+                    switch1.isChecked = true
+                }
+
+
+            }
+        RxView.clicks(relat2)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe {
+                TimePickerDialog(this,
+                    TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute -> time.text =
+                        "$hourOfDay:$minute"
+                    }, 23, 0, true).show()
+
+            }
+        RxView.clicks(relat3)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe {
+                if(switch2.isChecked){
+                    switch2.isChecked = false
+                }else{
+                    switch2.isChecked = true
+                }
+
+            }
+        RxView.clicks(relat4)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe {
+                TimePickerDialog(this,
+                    TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute -> time.text =
+                        "$hourOfDay:$minute"
+                    }, 23, 0, true).show()
+
+            }
     }
 
     override fun initData() {

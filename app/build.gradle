@@ -104,6 +104,9 @@ dependencies {
     //缓存
     implementation 'com.danikula:videocache:2.7.1'
 
+    //选择器
+    implementation 'com.contrarywind:Android-PickerView:4.1.9'
+
 }
 
 greendao {
