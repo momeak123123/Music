@@ -21,13 +21,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 作者：yonglong on 2016/9/9 04:02
  * 邮箱：643872807@qq.com
  * 版本：2.5
  */
-public class FileUtils {
+public class FilesUtils {
     /**
      * 获取APP根目录
      *
@@ -931,4 +932,25 @@ public class FileUtils {
         return fileDir.listFiles();
     }
 
+    /**
+     * 获取当前文件夹大小，不递归子文件夹
+     *
+     * @param file
+     * @return
+     */
+    public static long getCurrentFolderSize(File file) {
+        long size = 0;
+        try {
+            java.io.File[] fileList = file.listFiles();
+            for (File value : Objects.requireNonNull(fileList)) {
+                if (!value.isDirectory()) {
+                    size = size + value.length();
+                }
+            }
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return size;
+    }
 }

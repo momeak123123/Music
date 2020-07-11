@@ -27,14 +27,12 @@ public class Notifications extends android.app.Notification {
     private static Bitmap bitmap;
     private static android.app.Notification notification;
     private static int play;
-    private static String bit;
 
     public static void init(int plays) {
         context = MusicApp.getAppContext();
         play = plays;
         title = MusicPlayActivity.t1;
         txt = MusicPlayActivity.t2;
-        bit = MusicPlayActivity.m;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             //创建 通知通道  channelid和channelname是必须的（自己命名就好）
             channel = new NotificationChannel("1089", "小白音乐", NotificationManager.IMPORTANCE_DEFAULT);

@@ -41,12 +41,10 @@ class StartsActivity : AppCompatActivity() {
         window.statusBarColor = Color.TRANSPARENT
 
         MainModel.homedata(this)
-
-        mdDisposable = Flowable.intervalRange(0, 2, 0, 1, TimeUnit.SECONDS)
+        getadvertising()
+        mdDisposable = Flowable.intervalRange(0, 3, 0, 1, TimeUnit.SECONDS)
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnNext {
-                getadvertising()
-            }
+            .doOnNext {}
             .doOnComplete {
 
                 val it = Intent(applicationContext, MainActivity::class.java)

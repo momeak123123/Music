@@ -7,9 +7,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 
 import com.danikula.videocache.HttpProxyCacheServer;
-import com.example.xiaobai.music.bean.ApkModel;
 import com.example.xiaobai.music.bean.Music;
-import com.example.xiaobai.music.utils.FileUtils;
 import com.example.xiaobai.music.utils.NetWorkUtils;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheEntity;
@@ -20,7 +18,6 @@ import com.lzy.okgo.https.HttpsUtils;
 import com.lzy.okgo.interceptor.HttpLoggingInterceptor;
 import com.xuexiang.xui.XUI;
 
-import java.io.File;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
@@ -134,6 +131,8 @@ public class MusicApp extends Application {
         MusicApp app = (MusicApp) context.getApplicationContext();
         return app.proxy == null ? (app.proxy = app.newProxy()) : app.proxy;
     }
+
+
 
     private HttpProxyCacheServer newProxy() {
         return new HttpProxyCacheServer.Builder(this)

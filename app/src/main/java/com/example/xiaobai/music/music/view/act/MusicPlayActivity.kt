@@ -583,11 +583,8 @@ class MusicPlayActivity : AppCompatActivity() {
                             if (load) {
                                 musicplay(4, 0.0, id)
                             } else {
-                                Toast.makeText(
-                                    context,
-                                    getText(R.string.error_playing_trackt),
-                                    Toast.LENGTH_SHORT
-                                ).show()
+                                playPauseIv.setLoading(true)
+                                musicplay(0, 0.0, id)
                             }
 
                         }

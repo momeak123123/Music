@@ -224,8 +224,8 @@ class MusicPlayModel {
 
                                 object : Thread() {
                                     override fun run() {
-                                        if(ads[0].url!=""){
-                                            val bm = BitmapUtils.getBitmap(ads[0].url)
+                                        if(ads[0].img!=""){
+                                            val bm = BitmapUtils.getBitmap(ads[0].img)
                                             MusicApp.setStartback(bm)
                                             Observable.just(true).subscribe(StartsActivity.observer)
                                         }

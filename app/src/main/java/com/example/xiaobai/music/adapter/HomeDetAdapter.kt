@@ -190,7 +190,7 @@ class HomeDetAdapter(
 
                 for (it in ads) {
                     val item1 = BannerItem()
-                    item1.imgUrl = it.url
+                    item1.imgUrl = it.img
                     item1.title = ""
                     bannerdata.add(item1)
                 }

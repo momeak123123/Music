@@ -7,11 +7,11 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
-import android.widget.TimePicker
 import android.widget.Toast
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.music.contract.UserSetContract
 import com.example.xiaobai.music.music.presenter.UserSetPresenter
+import com.example.xiaobai.music.utils.FilesUtils
 import com.jakewharton.rxbinding2.view.RxView
 import com.xuexiang.xui.widget.dialog.materialdialog.DialogAction
 import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
@@ -20,6 +20,7 @@ import kotlinx.android.synthetic.main.sleep.*
 import kotlinx.android.synthetic.main.user_set.*
 import mvp.ljb.kt.act.BaseMvpActivity
 import java.io.File
+import java.text.DecimalFormat
 import java.util.concurrent.TimeUnit
 
 
@@ -31,6 +32,7 @@ import java.util.concurrent.TimeUnit
 class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>() , UserSetContract.IView {
 
     override fun registerPresenter() = UserSetPresenter::class.java
+    private lateinit var file: File
     private lateinit var context: Context
     private lateinit var sp: SharedPreferences
     override fun getLayoutId(): Int {
@@ -39,13 +41,37 @@ class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>() , UserSetC
 
     private lateinit var mTimeOption: Array<String?>
 
+    @SuppressLint("SetTextI18n")
     override fun init(savedInstanceState: Bundle?) {
         super.init(savedInstanceState)
         context = this
         top_title.text = getText(R.string.set)
         sp = getSharedPreferences("User", Context.MODE_PRIVATE)
+        val path = context.externalCacheDir!!.absolutePath+"/video-cache"
+        file = File(path)
+        val sizes = FilesUtils.getCurrentFolderSize(file)
+        size.text =FormetFileSize(sizes)
     }
 
+     private fun FormetFileSize(file: Long): String {
+         val df = DecimalFormat("#.00")
+         var fileSizeString = "0M"
+         fileSizeString = when {
+             file < 1024 -> {
+                 df.format(file.toDouble()).toString() + "B"
+             }
+             file < 1048576 -> {
+                 df.format(file.toDouble() / 1024).toString() + "K"
+             }
+             file < 1073741824 -> {
+                 df.format(file.toDouble() / 1048576).toString() + "M"
+             }
+             else -> {
+                 df.format(file.toDouble() / 1073741824).toString() + "G"
+             }
+         }
+         return fileSizeString
+     }
 
     @SuppressLint("CheckResult", "SetTextI18n")
     override fun initView() {
@@ -67,8 +93,7 @@ class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>() , UserSetC
                     .positiveText("确认")
                     .negativeText("取消")
                     .onPositive { _: MaterialDialog?, _: DialogAction? ->
-                       val path = context.externalCacheDir!!.absolutePath+"/video-cache"
-                        val file = File(path)
+
                         if (file.isDirectory) {
                             val files: Array<File> = file.listFiles()
 
