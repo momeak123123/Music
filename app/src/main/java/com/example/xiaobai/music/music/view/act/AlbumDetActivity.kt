@@ -222,10 +222,10 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
 
                     } else {
                         MaterialDialog.Builder(context)
-                            .title("登录")
-                            .content("未登陆账号，是否登录")
-                            .positiveText("确认")
-                            .negativeText("取消")
+                            .title(getText(R.string.go))
+                            .content(getText(R.string.ungoset))
+                            .positiveText(getText(R.string.carry))
+                            .negativeText(getText(R.string.cancel))
                             .positiveColorRes(R.color.colorAccentDarkTheme)
                             .negativeColorRes(R.color.red)
                             .onPositive { _: MaterialDialog?, _: DialogAction? ->
@@ -251,12 +251,12 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
                 }else {
                     if (MusicApp.userlogin()) {
                         MaterialDialog.Builder(context)
-                            .title("下载音乐")
-                            .content("是否下载音乐")
+                            .title(getText(R.string.download_song))
+                            .content(getText(R.string.download_playsong))
                             .positiveColorRes(R.color.colorAccentDarkTheme)
                             .negativeColorRes(R.color.red)
-                            .positiveText("确认")
-                            .negativeText("取消")
+                            .positiveText(getText(R.string.carry))
+                            .negativeText(getText(R.string.cancel))
                             .onPositive { _: MaterialDialog?, _: DialogAction? ->
 
                                 val idmap = mutableListOf<Music>()
@@ -331,12 +331,12 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
 
                     } else {
                         MaterialDialog.Builder(context)
-                            .title("登录")
-                            .content("未登陆账号，是否登录")
-                            .positiveText("确认")
+                            .title(getText(R.string.go))
+                            .content(getText(R.string.ungoset))
+                            .positiveText(getText(R.string.carry))
+                            .negativeText(getText(R.string.cancel))
                             .positiveColorRes(R.color.colorAccentDarkTheme)
                             .negativeColorRes(R.color.red)
-                            .negativeText("取消")
                             .onPositive { _: MaterialDialog?, _: DialogAction? ->
                                 val intent = Intent()
                                 context.let { intent.setClass(it, LoginActivity().javaClass) }
@@ -392,10 +392,10 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
             @SuppressLint("ResourceAsColor")
             override fun onItemClick(view: View, position: Int) {
                 MaterialDialog.Builder(context)
-                    .title("添加音乐")
-                    .content("是否将音乐加入此歌单")
-                    .positiveText("确认")
-                    .negativeText("取消")
+                    .title(getText(R.string.song_addsong))
+                    .content(getText(R.string.song_addsonglist))
+                    .positiveText(getText(R.string.carry))
+                    .negativeText(getText(R.string.cancel))
                     .positiveColorRes(R.color.colorAccentDarkTheme)
                     .negativeColorRes(R.color.red)
                     .onPositive { _: MaterialDialog?, _: DialogAction? ->
@@ -619,10 +619,10 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
                                 initSongLists(list, idmap)
                             } else {
                                 MaterialDialog.Builder(context)
-                                    .title("登录")
-                                    .content("未登陆账号，是否登录")
-                                    .positiveText("确认")
-                                    .negativeText("取消")
+                                    .title(getText(R.string.go))
+                                    .content(getText(R.string.ungoset))
+                                    .positiveText(getText(R.string.carry))
+                                    .negativeText(getText(R.string.cancel))
                                     .positiveColorRes(R.color.colorAccentDarkTheme)
                                     .negativeColorRes(R.color.red)
                                     .onPositive { _: MaterialDialog?, _: DialogAction? ->
@@ -651,10 +651,10 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
                         } else {
                             if (MusicApp.userlogin()) {
                                 MaterialDialog.Builder(context)
-                                    .title("下载音乐")
-                                    .content("是否下载音乐")
-                                    .positiveText("确认")
-                                    .negativeText("取消")
+                                    .title(getText(R.string.download_song))
+                                    .content(getText(R.string.download_playsong))
+                                    .positiveText(getText(R.string.carry))
+                                    .negativeText(getText(R.string.cancel))
                                     .positiveColorRes(R.color.colorAccentDarkTheme)
                                     .negativeColorRes(R.color.red)
                                     .onPositive { _: MaterialDialog?, _: DialogAction? ->
@@ -709,20 +709,15 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
                                     .show()
                             } else {
                                 MaterialDialog.Builder(context)
-                                    .title("登录")
-                                    .content("未登陆账号，是否登录")
-                                    .positiveText("确认")
-                                    .negativeText("取消")
+                                    .title(getText(R.string.go))
+                                    .content(getText(R.string.ungoset))
+                                    .positiveText(getText(R.string.carry))
+                                    .negativeText(getText(R.string.cancel))
                                     .positiveColorRes(R.color.colorAccentDarkTheme)
                                     .negativeColorRes(R.color.red)
                                     .onPositive { _: MaterialDialog?, _: DialogAction? ->
                                         val intent = Intent()
-                                        context.let {
-                                            intent.setClass(
-                                                it,
-                                                LoginActivity().javaClass
-                                            )
-                                        }
+                                        context.let { intent.setClass(it, LoginActivity().javaClass) }
                                         startActivity(intent)
                                     }
                                     .show()

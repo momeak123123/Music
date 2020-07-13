@@ -12,7 +12,6 @@ import android.os.Build
 import android.os.IBinder
 import android.widget.Toast
 import com.danikula.videocache.HttpProxyCacheServer
-import com.example.xiaobai.music.LockActivity
 import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.bean.Music
@@ -29,7 +28,6 @@ import com.ywl5320.wlmedia.enums.WlComplete
 import com.ywl5320.wlmedia.enums.WlPlayModel
 import com.ywl5320.wlmedia.log.WlLog
 import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import java.util.*
 
 
@@ -431,6 +429,12 @@ class MusicService : Service() {
     /** 服务不再有用且将要被销毁时调用  */
     override fun onDestroy() {
         wlMedia.exit()
+
+        val lockservice = Intent(this, LockService::class.java)
+        stopService(lockservice)
+
+        Notifications.deleteNotification()
+
         unregisterReceiver(broadcastReceiver)
     }
 

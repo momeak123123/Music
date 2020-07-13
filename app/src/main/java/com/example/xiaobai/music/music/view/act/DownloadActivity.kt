@@ -184,10 +184,10 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
 
                     } else {
                         MaterialDialog.Builder(context)
-                            .title("登录")
-                            .content("未登陆账号，是否登录")
-                            .positiveText("确认")
-                            .negativeText("取消")
+                            .title(getText(R.string.go))
+                            .content(getText(R.string.ungoset))
+                            .positiveText(getText(R.string.carry))
+                            .negativeText(getText(R.string.cancel))
                             .positiveColorRes(R.color.colorAccentDarkTheme)
                             .negativeColorRes(R.color.red)
                             .onPositive { _: MaterialDialog?, _: DialogAction? ->
@@ -246,10 +246,10 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
             @SuppressLint("ResourceAsColor")
             override fun onItemClick(view: View, position: Int) {
                 MaterialDialog.Builder(context)
-                    .title("添加音乐")
-                    .content("是否将音乐加入此歌单")
-                    .positiveText("确认")
-                    .negativeText("取消")
+                    .title(getText(R.string.song_addsong))
+                    .content(getText(R.string.song_addsonglist))
+                    .positiveText(getText(R.string.carry))
+                    .negativeText(getText(R.string.cancel))
                     .positiveColorRes(R.color.colorAccentDarkTheme)
                     .negativeColorRes(R.color.red)
                     .onPositive { _: MaterialDialog?, _: DialogAction? ->
@@ -479,10 +479,10 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
                                 initSongLists(list, idmap)
                             } else {
                                 MaterialDialog.Builder(context)
-                                    .title("登录")
-                                    .content("未登陆账号，是否登录")
-                                    .positiveText("确认")
-                                    .negativeText("取消")
+                                    .title(getText(R.string.go))
+                                    .content(getText(R.string.ungoset))
+                                    .positiveText(getText(R.string.carry))
+                                    .negativeText(getText(R.string.cancel))
                                     .positiveColorRes(R.color.colorAccentDarkTheme)
                                     .negativeColorRes(R.color.red)
                                     .onPositive { _: MaterialDialog?, _: DialogAction? ->

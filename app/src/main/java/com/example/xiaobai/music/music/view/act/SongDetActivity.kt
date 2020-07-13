@@ -229,10 +229,10 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
                     ).show()
                 }else {
                     MaterialDialog.Builder(context)
-                        .title("删除音乐")
-                        .content("是否删除音乐")
-                        .positiveText("确认")
-                        .negativeText("取消")
+                        .title(getText(R.string.song_delsong))
+                        .content(getText(R.string.song_delsongs))
+                        .positiveText(getText(R.string.carry))
+                        .negativeText(getText(R.string.cancel))
                         .positiveColorRes(R.color.colorAccentDarkTheme)
                         .negativeColorRes(R.color.red)
                         .onPositive { _: MaterialDialog?, _: DialogAction? ->
@@ -273,10 +273,10 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
                     ).show()
                 }else {
                     MaterialDialog.Builder(context)
-                        .title("下载音乐")
-                        .content("是否下载音乐")
-                        .positiveText("确认")
-                        .negativeText("取消")
+                        .title(getText(R.string.download_song))
+                        .content(getText(R.string.download_playsong))
+                        .positiveText(getText(R.string.carry))
+                        .negativeText(getText(R.string.cancel))
                         .positiveColorRes(R.color.colorAccentDarkTheme)
                         .negativeColorRes(R.color.red)
                         .onPositive { _: MaterialDialog?, _: DialogAction? ->
@@ -530,10 +530,10 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
                             ).show()
                         }else {
                             MaterialDialog.Builder(context)
-                                .title("下载音乐")
-                                .content("是否下载音乐")
-                                .positiveText("确认")
-                                .negativeText("取消")
+                                .title(getText(R.string.download_song))
+                                .content(getText(R.string.download_playsong))
+                                .positiveText(getText(R.string.carry))
+                                .negativeText(getText(R.string.cancel))
                                 .positiveColorRes(R.color.colorAccentDarkTheme)
                                 .negativeColorRes(R.color.red)
                                 .onPositive { _: MaterialDialog?, _: DialogAction? ->

@@ -326,8 +326,7 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
         Intent intentservice = new Intent(this, MusicService.class);
         stopService(intentservice);
 
-        Intent lockservice = new Intent(this, LockService.class);
-        stopService(lockservice);
+
 
 
     }

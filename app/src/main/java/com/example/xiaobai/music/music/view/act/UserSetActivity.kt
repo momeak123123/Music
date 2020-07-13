@@ -88,12 +88,12 @@ class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>() , UserSetC
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
                 MaterialDialog.Builder(context)
-                    .title("清理缓存")
-                    .content("是否清理缓存")
+                    .title(getText(R.string.set2))
+                    .content(getText(R.string.set2_un))
                     .positiveColorRes(R.color.colorAccentDarkTheme)
                     .negativeColorRes(R.color.red)
-                    .positiveText("确认")
-                    .negativeText("取消")
+                    .positiveText(getText(R.string.carry))
+                    .negativeText(getText(R.string.cancel))
                     .onPositive { _: MaterialDialog?, _: DialogAction? ->
 
                         if (file.isDirectory) {

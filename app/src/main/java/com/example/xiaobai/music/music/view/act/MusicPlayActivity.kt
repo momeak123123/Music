@@ -178,10 +178,10 @@ class MusicPlayActivity : AppCompatActivity() {
                     if (style != 4) {
                         if (MusicApp.userlogin()) {
                             MaterialDialog.Builder(context)
-                                .title("下载音乐")
-                                .content("是否下载音乐")
-                                .positiveText("确认")
-                                .negativeText("取消")
+                                .title(getText(R.string.download_song))
+                                .content(getText(R.string.download_playsong))
+                                .positiveText(getText(R.string.carry))
+                                .negativeText(getText(R.string.cancel))
                                 .positiveColorRes(R.color.colorAccentDarkTheme)
                                 .negativeColorRes(R.color.red)
                                 .onPositive { _: MaterialDialog?, _: DialogAction? ->
@@ -251,10 +251,10 @@ class MusicPlayActivity : AppCompatActivity() {
                                 .show()
                         } else {
                             MaterialDialog.Builder(context)
-                                .title("登录")
-                                .content("未登陆账号，是否登录")
-                                .positiveText("确认")
-                                .negativeText("取消")
+                                .title(getText(R.string.go))
+                                .content(getText(R.string.ungoset))
+                                .positiveText(getText(R.string.carry))
+                                .negativeText(getText(R.string.cancel))
                                 .positiveColorRes(R.color.colorAccentDarkTheme)
                                 .negativeColorRes(R.color.red)
                                 .onPositive { _: MaterialDialog?, _: DialogAction? ->
@@ -305,10 +305,10 @@ class MusicPlayActivity : AppCompatActivity() {
 
                     } else {
                         MaterialDialog.Builder(context)
-                            .title("登录")
-                            .content("未登陆账号，是否登录")
-                            .positiveText("确认")
-                            .negativeText("取消")
+                            .title(getText(R.string.go))
+                            .content(getText(R.string.ungoset))
+                            .positiveText(getText(R.string.carry))
+                            .negativeText(getText(R.string.cancel))
                             .positiveColorRes(R.color.colorAccentDarkTheme)
                             .negativeColorRes(R.color.red)
                             .onPositive { _: MaterialDialog?, _: DialogAction? ->
@@ -357,10 +357,10 @@ class MusicPlayActivity : AppCompatActivity() {
             .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
                 MaterialDialog.Builder(context)
-                    .title("播放列表")
-                    .content("确定要清空播放列表")
-                    .positiveText("确认")
-                    .negativeText("取消")
+                    .title(getText(R.string.song_list))
+                    .content(getText(R.string.song_dellist))
+                    .positiveText(getText(R.string.carry))
+                    .negativeText(getText(R.string.cancel))
                     .positiveColorRes(R.color.colorAccentDarkTheme)
                     .negativeColorRes(R.color.red)
                     .onPositive { _: MaterialDialog?, _: DialogAction? ->
@@ -701,6 +701,7 @@ class MusicPlayActivity : AppCompatActivity() {
                                 getText(R.string.error_playing_trackt),
                                 Toast.LENGTH_SHORT
                             ).show()
+                            musicplay(2, 0.0, id)
                         } catch (e: java.lang.Exception) {
                         }
                     }
@@ -761,10 +762,10 @@ class MusicPlayActivity : AppCompatActivity() {
             @SuppressLint("ResourceAsColor")
             override fun onItemClick(view: View, position: Int) {
                 MaterialDialog.Builder(context)
-                    .title("添加音乐")
-                    .content("是否将音乐加入此歌单")
-                    .positiveText("确认")
-                    .negativeText("取消")
+                    .title(getText(R.string.song_addsong))
+                    .content(getText(R.string.song_addsonglist))
+                    .positiveText(getText(R.string.carry))
+                    .negativeText(getText(R.string.cancel))
                     .positiveColorRes(R.color.colorAccentDarkTheme)
                     .negativeColorRes(R.color.red)
                     .onPositive { _: MaterialDialog?, _: DialogAction? ->

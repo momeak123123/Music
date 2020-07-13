@@ -255,8 +255,8 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
                                 MaterialDialog.Builder(it1)
                                     .title("登录")
                                     .content("未登陆账号，是否登录")
-                                    .positiveText("确认")
-                                    .negativeText("取消")
+                                    .positiveText(getText(R.string.carry))
+                                    .negativeText(getText(R.string.cancel))
                                     .onPositive { _: MaterialDialog?, _: DialogAction? ->
                                         val intent = Intent()
                                         context.let {
@@ -279,8 +279,8 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
                             MaterialDialog.Builder(it1)
                                 .title("下载音乐")
                                 .content("是否下载音乐")
-                                .positiveText("确认")
-                                .negativeText("取消")
+                                .positiveText(getText(R.string.carry))
+                                .negativeText(getText(R.string.cancel))
                                 .onPositive { _: MaterialDialog?, _: DialogAction? ->
 
                                     val downs = mDownDao.querys(data.song_id)
@@ -358,8 +358,8 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
                 MaterialDialog.Builder(context!!)
                     .title("添加音乐")
                     .content("是否将音乐加入此歌单")
-                    .positiveText("确认")
-                    .negativeText("取消")
+                    .positiveText(getText(R.string.carry))
+                    .negativeText(getText(R.string.cancel))
                     .onPositive { _: MaterialDialog?, _: DialogAction? ->
                         val playlist: Playlist = mPlaylistDao.query(song[position].play_list_id)[0]
                         val playsong = mDownDao.query(song[position].play_list_id)
