@@ -257,7 +257,6 @@ class ArtistActivity : BaseMvpActivity<ArtistContract.IPresenter>(), ArtistContr
             ItemClickListener(recyc_list,
                 object : ItemClickListener.OnItemClickListener {
                     override fun onItemClick(view: View?, position: Int) {
-                        println(artists[position].artist_id)
                         val intent = Intent()
                         context.let { intent.setClass(it, ArtistDetActivity().javaClass) }
                         intent.putExtra("id", artists[position].artist_id)

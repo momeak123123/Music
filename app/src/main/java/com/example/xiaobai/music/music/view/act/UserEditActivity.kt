@@ -148,10 +148,7 @@ class UserEditActivity : BaseMvpActivity<UserEditContract.IPresenter>(), UserEdi
         override fun onResult(result: List<LocalMedia>) {
             for (media in result) {
                 if(media.compressPath!=null){
-                    println(media.compressPath)
                     Observable.just(media.compressPath).subscribe(observers)
-                }else{
-
                 }
             }
             if (mAdapterWeakReference.get() != null) {
@@ -221,7 +218,6 @@ class UserEditActivity : BaseMvpActivity<UserEditContract.IPresenter>(), UserEdi
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(data: String) {
                 if (data != "") {
-                    println(data)
                     imaurl = "https://music-imgs.oss-cn-shenzhen.aliyuncs.com/user/avatar/$data"
                     Glide.with(context).load(imaurl)
                         .placeholder(R.color.main_black_grey).into(ima)

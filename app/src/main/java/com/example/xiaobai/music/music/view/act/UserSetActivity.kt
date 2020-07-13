@@ -51,6 +51,8 @@ class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>() , UserSetC
         file = File(path)
         val sizes = FilesUtils.getCurrentFolderSize(file)
         size.text =FormetFileSize(sizes)
+
+
     }
 
      private fun FormetFileSize(file: Long): String {
@@ -201,9 +203,21 @@ class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>() , UserSetC
             .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
                 TimePickerDialog(this,
-                    TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute -> time.text =
-                        "$hourOfDay:$minute"
+                    TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
+                        time.text = "$hourOfDay:$minute"
+                        sp.edit().putString("starttime", "$hourOfDay:$minute").apply()
                     }, 23, 0, true).show()
+
+            }
+
+        RxView.clicks(relat5)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe {
+                TimePickerDialog(this,
+                    TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
+                        times.text = "$hourOfDay:$minute"
+                        sp.edit().putString("endtime", "$hourOfDay:$minute").apply()
+                    }, 2, 0, true).show()
 
             }
     }

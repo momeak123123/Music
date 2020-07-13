@@ -4,7 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -23,6 +26,7 @@ import com.jakewharton.rxbinding2.view.RxView;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Flowable;
@@ -49,9 +53,9 @@ public class LockActivity extends AppCompatActivity implements SlidingFinishLayo
     private static ImageView iv_audio;
     @SuppressLint("StaticFieldLeak")
     private static ImageView playPauseIv;
-
     @SuppressLint("StaticFieldLeak")
     private static ImageView back;
+    @SuppressLint("StaticFieldLeak")
     private static Context context;
 
 
@@ -65,6 +69,10 @@ public class LockActivity extends AppCompatActivity implements SlidingFinishLayo
         MusicApp.setLock(true);
         context = this;
         initView();
+
+        IntentFilter filter=new IntentFilter();
+        filter.addAction(Intent.ACTION_TIME_TICK);
+        registerReceiver(receiver,filter);
     }
 
     public void fullScreen(Activity activity) {
@@ -137,23 +145,38 @@ public class LockActivity extends AppCompatActivity implements SlidingFinishLayo
         Glide.with(context).load(MusicPlayActivity.m).placeholder(R.drawable.undetback).into(iv_audio);
         Glide.with(context).load(MusicPlayActivity.m).apply(bitmapTransform(new BlurTransformation(25, 3))).into(back);
 
-
     }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        data();
+    }
+
+    private final BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (Objects.equals(action, Intent.ACTION_TIME_TICK)) {
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm-M月dd日 E", Locale.CHINESE);
+                String[] date = simpleDateFormat.format(new Date()).split("-");
+                tvLockTime.setText(date[0]);
+                tvLockDate.setText(date[1]);
+            }
+        }
+    };
 
     @SuppressLint("CheckResult")
     @Override
     protected void onResume() {
         super.onResume();
-        Flowable.interval(1, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<Long>() {
-                    @Override
-                    public void accept(Long aLong) {
-                        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("HH:mm-M月dd日 E", Locale.CHINESE);
-                        String[] date = simpleDateFormat.format(new Date()).split("-");
-                        tvLockTime.setText(date[0]);
-                        tvLockDate.setText(date[1]);
-                    }
-                });
+
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(receiver);
     }
 
     @Override
