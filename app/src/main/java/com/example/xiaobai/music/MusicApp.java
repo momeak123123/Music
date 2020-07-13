@@ -21,8 +21,6 @@ import com.xuexiang.xui.XUI;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
-
-import io.alterac.blurkit.BlurKit;
 import io.reactivex.functions.Consumer;
 import io.reactivex.plugins.RxJavaPlugins;
 import okhttp3.OkHttpClient;
@@ -45,16 +43,15 @@ public class MusicApp extends Application {
 
     public static Boolean play = false;
 
-    public static Double press = 0.0;
+    public static Boolean Lock = false;
 
-    public static Double getPress() {
-        return press;
+    public static Boolean getLock() {
+        return Lock;
     }
 
-    public static void setPress(Double press) {
-        MusicApp.press = press;
+    public static void setLock(Boolean lock) {
+        Lock = lock;
     }
-
 
     public static Boolean getPlay() {
         return play;
@@ -107,7 +104,6 @@ public class MusicApp extends Application {
             @Override
             public void run() {
                 UpdateAppUtils.init(mContext);
-                BlurKit.init(MusicApp.this);
                 XUI.init(MusicApp.this); //初始化UI框架
                 XUI.debug(false);  //开启UI框架调试日志
                 OkGo.getInstance().init(MusicApp.this);//网络请求

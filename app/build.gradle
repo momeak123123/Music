@@ -10,13 +10,12 @@ android {
         applicationId "com.example.xiaobai.music"
         minSdkVersion 24
         targetSdkVersion 29
-        versionCode 40
-        versionName "0.4.0"
+        versionCode 42
+        versionName "0.4.2"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
             abiFilter("armeabi-v7a")
-            abiFilter("x86")
         }
     }
 
@@ -77,8 +76,8 @@ dependencies {
     //tabbar
     implementation 'com.jpeng:JPTabBar:1.4.0'
 
-    //毛玻璃
-    implementation 'io.alterac.blurkit:blurkit:1.1.1'
+    //glide-高斯模糊
+    implementation 'jp.wasabeef:glide-transformations:3.0.1'
 
     //侧滑
     implementation 'com.github.mcxtzhang:SwipeDelMenuLayout:V1.3.0'
@@ -103,9 +102,6 @@ dependencies {
 
     //缓存
     implementation 'com.danikula:videocache:2.7.1'
-
-    //选择器
-    implementation 'com.contrarywind:Android-PickerView:4.1.9'
 
 }
 

@@ -18,14 +18,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.danikula.videocache.HttpProxyCacheServer
+import com.example.xiaobai.music.LockActivity
 import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.adapter.PlayListAdapter
 import com.example.xiaobai.music.adapter.PlaySongAdapter
 import com.example.xiaobai.music.adapter.ViewPagerAdapter
 import com.example.xiaobai.music.bean.Music
-import com.example.xiaobai.music.config.Cookie
 import com.example.xiaobai.music.config.LogDownloadListener
 import com.example.xiaobai.music.config.Notifications
 import com.example.xiaobai.music.music.model.MusicPlayModel
@@ -45,9 +44,9 @@ import com.lzy.okgo.OkGo
 import com.lzy.okserver.OkDownload
 import com.xuexiang.xui.widget.dialog.materialdialog.DialogAction
 import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
-import io.alterac.blurkit.BlurKit
 import io.reactivex.Observable
 import io.reactivex.Observer
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.frag_player_lrcview.*
 import kotlinx.android.synthetic.main.head.*
@@ -77,7 +76,6 @@ class MusicPlayActivity : AppCompatActivity() {
         lateinit var t2: String
         lateinit var m: String
         lateinit var uri: String
-        lateinit var m2: Bitmap
         var max: Long = 0
         lateinit var playingMusicList: MutableList<Music>
     }
@@ -525,20 +523,9 @@ class MusicPlayActivity : AppCompatActivity() {
                     m = playingMusic.pic_url
                     lyricFragment.lrcView(playingMusic.song_id)
                     Notifications.init(1)
-
-                    object : Thread() {
-                        override fun run() {
-                            try {
-                                val bitmaps = BitmapUtils.getBitmap(m)
-                                BlurKit.getInstance().blur(bitmaps, 25)
-                                m2 = bitmaps
-                            } catch (e: java.lang.Exception) {
-                            }
-
-                        }
-                    }.start()
-
-
+                    if(MusicApp.getLock()){
+                        LockActivity.data()
+                    }
                 }
 
             }
@@ -555,6 +542,8 @@ class MusicPlayActivity : AppCompatActivity() {
             @SuppressLint("SetTextI18n")
             override fun onNext(duration: Long) {
                 coverFragment.setImagePath(playingMusic.pic_url)
+
+
                 max = duration
                 progressSb.max = duration.toInt()
                 val f = duration / 60

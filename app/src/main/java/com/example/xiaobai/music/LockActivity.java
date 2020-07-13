@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.KeyEvent;
@@ -27,27 +29,31 @@ import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Consumer;
+import jp.wasabeef.glide.transformations.BlurTransformation;
+
+import static com.bumptech.glide.request.RequestOptions.bitmapTransform;
 
 public class LockActivity extends AppCompatActivity implements SlidingFinishLayout.OnSlidingFinishListener {
 
-    private TextView tvLockTime;
-    private TextView tvLockDate;
-    private TextView songNameTv;
+    @SuppressLint("StaticFieldLeak")
+    private static TextView tvLockTime;
+    @SuppressLint("StaticFieldLeak")
+    private static TextView tvLockDate;
+    @SuppressLint("StaticFieldLeak")
+    private static TextView songNameTv;
+    @SuppressLint("StaticFieldLeak")
+    private static TextView singerTv;
+    @SuppressLint("StaticFieldLeak")
+    private static ImageView iv_audio;
+    @SuppressLint("StaticFieldLeak")
+    private static ImageView playPauseIv;
 
-    private TextView singerTv;
+    @SuppressLint("StaticFieldLeak")
+    private static ImageView back;
+    private static Context context;
 
-    private ImageView iv_audio;
-
-    private ImageView prevIv;
-
-    private ImageView playPauseIv;
-
-    private ImageView nextIv;
-
-    private ImageView back;
-
-    public static Observer<Integer> observer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,9 +62,9 @@ public class LockActivity extends AppCompatActivity implements SlidingFinishLayo
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD);
         fullScreen(this);
         setContentView(R.layout.activity_lock);
+        MusicApp.setLock(true);
+        context = this;
         initView();
-
-
     }
 
     public void fullScreen(Activity activity) {
@@ -83,19 +89,25 @@ public class LockActivity extends AppCompatActivity implements SlidingFinishLayo
         songNameTv = findViewById(R.id.tv_audio_name);
         singerTv = findViewById(R.id.tv_audio);
         iv_audio = findViewById(R.id.iv_audio);
-        prevIv = findViewById(R.id.prevIv);
+        ImageView prevIv = findViewById(R.id.prevIv);
         playPauseIv = findViewById(R.id.playPauseIv);
-        nextIv = findViewById(R.id.nextIv);
+        ImageView nextIv = findViewById(R.id.nextIv);
         back = findViewById(R.id.back);
 
+        songNameTv.setText(MusicPlayActivity.t1);
+        singerTv.setText(MusicPlayActivity.t2);
+        playPauseIv.setImageResource(R.drawable.plays);
+        Glide.with(context).load(MusicPlayActivity.m).placeholder(R.drawable.undetback).into(iv_audio);
+        Glide.with(context).load(MusicPlayActivity.m).placeholder(R.drawable.undetback).apply(bitmapTransform(new BlurTransformation(25, 3))).into(back);
+
         RxView.clicks(prevIv)
-                .throttleFirst(2, TimeUnit.SECONDS)
+                .throttleFirst(1, TimeUnit.SECONDS)
                 .subscribe(o -> {
                     Observable.just(1).subscribe(MusicPlayActivity.observerset);
 
                 });
         RxView.clicks(playPauseIv)
-                .throttleFirst(2, TimeUnit.SECONDS)
+                .throttleFirst(0, TimeUnit.SECONDS)
                 .subscribe(o -> {
                     if (MusicApp.getPlay()) {
                         Observable.just(0).subscribe(MusicPlayActivity.observerset);
@@ -106,7 +118,7 @@ public class LockActivity extends AppCompatActivity implements SlidingFinishLayo
                     }
                 });
         RxView.clicks(nextIv)
-                .throttleFirst(2, TimeUnit.SECONDS)
+                .throttleFirst(1, TimeUnit.SECONDS)
                 .subscribe(o -> {
                     Observable.just(2).subscribe(MusicPlayActivity.observerset);
 
@@ -115,21 +127,18 @@ public class LockActivity extends AppCompatActivity implements SlidingFinishLayo
 
         SlidingFinishLayout vLockRoot = findViewById(R.id.lock_root);
         vLockRoot.setOnSlidingFinishListener(this);
-        data();
     }
 
-    public void data() {
+    public static void data() {
+
         songNameTv.setText(MusicPlayActivity.t1);
         singerTv.setText(MusicPlayActivity.t2);
-        if (MusicApp.getPlay()) {
-            playPauseIv.setImageResource(R.drawable.plays);
-        } else {
-            playPauseIv.setImageResource(R.drawable.play);
-        }
-        Glide.with(this).load(MusicPlayActivity.m).placeholder(R.color.main_black_grey).into(iv_audio);
-        back.setImageBitmap(MusicPlayActivity.m2);
-    }
+        playPauseIv.setImageResource(R.drawable.plays);
+        Glide.with(context).load(MusicPlayActivity.m).placeholder(R.drawable.undetback).into(iv_audio);
+        Glide.with(context).load(MusicPlayActivity.m).apply(bitmapTransform(new BlurTransformation(25, 3))).into(back);
 
+
+    }
 
     @SuppressLint("CheckResult")
     @Override
@@ -143,10 +152,8 @@ public class LockActivity extends AppCompatActivity implements SlidingFinishLayo
                         String[] date = simpleDateFormat.format(new Date()).split("-");
                         tvLockTime.setText(date[0]);
                         tvLockDate.setText(date[1]);
-                        data();
                     }
                 });
-
     }
 
     @Override
@@ -165,6 +172,7 @@ public class LockActivity extends AppCompatActivity implements SlidingFinishLayo
      */
     @Override
     public void onSlidingFinish() {
+        MusicApp.setLock(false);
         finish();
 
     }

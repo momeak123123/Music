@@ -16,8 +16,12 @@ import com.example.xiaobai.music.R;
 import com.example.xiaobai.music.music.view.act.MusicPlayActivity;
 import com.example.xiaobai.music.utils.BitmapUtils;
 
+import static android.content.Context.NOTIFICATION_SERVICE;
+
 public class Notifications extends android.app.Notification {
 
+    private static final String PUSH_CHANNEL_ID = "xiaobai1089";
+    private static final String PUSH_CHANNEL_NAME = "小白音乐";
     private static RemoteViews mRemoteViews;
     private static NotificationManager notificationManager = null;
     private static NotificationChannel channel;
@@ -33,11 +37,18 @@ public class Notifications extends android.app.Notification {
         play = plays;
         title = MusicPlayActivity.t1;
         txt = MusicPlayActivity.t2;
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            //创建 通知通道  channelid和channelname是必须的（自己命名就好）
-            channel = new NotificationChannel("10898958", "小白音乐", NotificationManager.IMPORTANCE_DEFAULT);
+             channel = new NotificationChannel(PUSH_CHANNEL_ID, PUSH_CHANNEL_NAME, NotificationManager.IMPORTANCE_LOW);
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(channel);
+            }
+            channel.enableVibration(false);
+            channel.enableLights(true);
+            channel.setSound(null, null);
         }
-        notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
 
         //向下兼容 用NotificationCompat.Builder构造notification对象
           /* notification = new NotificationCompat.Builder(mContext,"1089")
@@ -65,7 +76,7 @@ public class Notifications extends android.app.Notification {
                 // 设定点击通知之后启动的内容，这个内容由方法中的参数：PendingIntent对象决定
                 // 设置通知的优先级
                 // 设置点击通知之后通知是否消失
-                notification = new NotificationCompat.Builder(context, "10898958")
+                notification = new NotificationCompat.Builder(context, PUSH_CHANNEL_ID)
                         .setWhen(System.currentTimeMillis())
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setCustomContentView(getContentView())
@@ -74,7 +85,7 @@ public class Notifications extends android.app.Notification {
                         .setPriority(NotificationCompat.PRIORITY_LOW) // 设置通知的优先级
                         .setDefaults(NotificationCompat.DEFAULT_ALL)
                         .setSound(null)
-                        .setChannelId("10898958")
+                        .setChannelId(PUSH_CHANNEL_ID)
                         .setOngoing(true)
                         .setVibrate(new long[]{0L})
                         .setAutoCancel(false) // 设置点击通知之后通知是否消失

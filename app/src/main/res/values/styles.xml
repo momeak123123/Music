@@ -30,6 +30,7 @@
         <item name="android:windowBackground">@drawable/play_page_default_bg</item>
         <item name="android:windowFullscreen">true</item>
         <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">false</item><!--显示虚拟按键，并腾出空间-->
     </style>
 
     <style name="LockScreenTheme" parent="AppTheme">

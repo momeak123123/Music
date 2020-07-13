@@ -44,7 +44,7 @@
     <color name="colorPrimaryDarkTheme">#111111</color>
     <color name="colorPrimaryDarkDarkTheme">#111111</color>
     <color name="colorAccentDarkTheme">#06b7ff</color>
-    <color name="colorAccentAlpha">#2706b7ff</color>
+    <color name="colorAccentAlpha">#00000000</color>
 
     <color name="colorPrimaryBlack">#000000</color>
     <color name="colorPrimaryDarkBlack">#000000</color>

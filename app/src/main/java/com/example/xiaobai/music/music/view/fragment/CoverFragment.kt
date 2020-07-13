@@ -7,6 +7,7 @@ import android.net.Uri
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions.bitmapTransform
 import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.music.contract.CoverContract
@@ -16,6 +17,7 @@ import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.android.synthetic.main.frag_player_coverviews.*
 import mvp.ljb.kt.fragment.BaseMvpFragment
 
@@ -53,7 +55,7 @@ class CoverFragment : BaseMvpFragment<CoverContract.IPresenter>(), CoverContract
             .subscribe(object : Observer<Int> {
                 override fun onSubscribe(d: Disposable) {}
                 override fun onNext(cover: Int) {
-                    context?.let { Glide.with(it).load(ima).placeholder(R.color.buttombar).into(iv_cover) }
+                    context?.let { Glide.with(it).load(ima).placeholder(R.drawable.undetback).into(iv_cover) }
                 }
                 override fun onError(e: Throwable) {}
                 override fun onComplete() {}
@@ -61,26 +63,6 @@ class CoverFragment : BaseMvpFragment<CoverContract.IPresenter>(), CoverContract
 
 
     }
-
-    /**
-     * 设置Bitmap
-     */
-    fun setImageBitmap(ima:Bitmap ) {
-
-        Observable.just(0)
-            .subscribeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : Observer<Int> {
-                override fun onSubscribe(d: Disposable) {}
-                override fun onNext(cover: Int) {
-                    iv_cover.setImageBitmap(ima)
-                }
-                override fun onError(e: Throwable) {}
-                override fun onComplete() {}
-            })
-
-
-    }
-
 
     fun initAnimator() {
         mAnimator = ObjectAnimator.ofFloat(iv_cover, "rotation", 0.0f, 360.0f)

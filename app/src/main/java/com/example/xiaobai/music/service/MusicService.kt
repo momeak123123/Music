@@ -12,6 +12,7 @@ import android.os.Build
 import android.os.IBinder
 import android.widget.Toast
 import com.danikula.videocache.HttpProxyCacheServer
+import com.example.xiaobai.music.LockActivity
 import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.bean.Music
@@ -28,6 +29,7 @@ import com.ywl5320.wlmedia.enums.WlComplete
 import com.ywl5320.wlmedia.enums.WlPlayModel
 import com.ywl5320.wlmedia.log.WlLog
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
 import java.util.*
 
 
@@ -53,7 +55,6 @@ class MusicService : Service() {
         wlMedia.source = ""
         wlMedia.setOnPreparedListener {
             if (wlMedia.duration > 0) {
-                MusicApp.setPress(0.0)
                 MusicPlayActivity.load = true
                 Observable.just(wlMedia.duration.toLong()).subscribe(MusicPlayActivity.observerui)
                 wlMedia.start()
@@ -69,7 +70,6 @@ class MusicService : Service() {
 
         }
         wlMedia.setOnTimeInfoListener { currentTime, _ ->
-            MusicApp.setPress(currentTime)
             Observable.just(currentTime).subscribe(MusicPlayActivity.observerseek)
         }
 
@@ -130,7 +130,7 @@ class MusicService : Service() {
         //创建NotificationChannel
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
-                "10898958",
+                "xiaobai1089",
                 "小白音乐",
                 NotificationManager.IMPORTANCE_HIGH
             )
@@ -144,7 +144,7 @@ class MusicService : Service() {
         val builder: Notification.Builder = Notification.Builder(this)
             .setSmallIcon(R.mipmap.ic_launcher)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            builder.setChannelId("10898958")
+            builder.setChannelId("xiaobai1089")
         }
         return builder.build()
     }
@@ -229,7 +229,7 @@ class MusicService : Service() {
                     getText(R.string.error_connection),
                     Toast.LENGTH_SHORT
                 ).show()
-                Observable.just(1).subscribe(MusicPlayActivity.observerplay)
+                Observable.just(2).subscribe(MusicPlayActivity.observerplay)
             } else {
                 if (time != "") {
                     musicpath(
