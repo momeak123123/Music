@@ -62,7 +62,7 @@ public class LogDownloadListener extends DownloadListener {
        if(type==0){
            for(int i=0;i<down.size();i++){
                down.get(i).setUri(file.getPath());
-               down.get(i).setType(1);
+               down.get(i).setType(2);
                mDownDao.update(down.get(i));
            }
        }else{

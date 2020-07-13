@@ -61,7 +61,7 @@ class SearchListAdapter(val datas: MutableList<Searchs>, val context: Context) :
             mItemClickListener?.onItemClick(v,position)
         }
         Glide.with(context).load(datas[position].music.pic_url).placeholder(R.color.main_black_grey).into(holder.iv_cover)
-        when(datas[position].type){
+       /* when(datas[position].type){
             1->
                 holder.type.setImageResource(R.drawable.qqmusic)
             2->
@@ -72,7 +72,7 @@ class SearchListAdapter(val datas: MutableList<Searchs>, val context: Context) :
                 holder.type.setImageResource(R.drawable.wangyiyun)
             5->
                 holder.type.setImageResource(R.drawable.kuwo)
-        }
+        }*/
         holder.title.text = datas[position].music.name
         val artist =  datas[position].music.all_artist
         var srtist_name = ""

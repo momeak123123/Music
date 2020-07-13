@@ -62,6 +62,7 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
     }
 
 
+    private lateinit var data: MutableList<Down>
     private var bools: Boolean = true
     private var playids: Long = 0
     private var ids: Long = 0
@@ -104,10 +105,10 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
         nums = bundle.get("num") as String
         ids = bundle.get("id") as Long
         playids = bundle.get("playid") as Long
-        val data = mDownDao.query(playids)
+        data = mDownDao.query(playids)
         val song = mutableListOf<Music>()
         val artist = mutableListOf<artistlist>()
-        if (MusicApp.network()!=-1) {
+        if (MusicApp.network() != -1) {
             getPresenter().listdata(context, playids)
         } else {
             for (it in data) {
@@ -150,22 +151,22 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
         super.initView()
 
 
-            swipe_refresh_layout.setColorSchemeColors(-0xff6634, -0xbbbc, -0x996700, -0x559934, -0x7800)
-            //下拉刷新
-            swipe_refresh_layout.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener {
-                if (MusicApp.network()!=-1) {
-                    getPresenter().listdata(context, playids)
-                } else {
-                    if (swipe_refresh_layout != null) {
-                        swipe_refresh_layout.isRefreshing = false
-                    }
-                    Toast.makeText(
-                        context,
-                        getText(R.string.error_connection),
-                        Toast.LENGTH_LONG
-                    ).show()
+        swipe_refresh_layout.setColorSchemeColors(-0xff6634, -0xbbbc, -0x996700, -0x559934, -0x7800)
+        //下拉刷新
+        swipe_refresh_layout.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener {
+            if (MusicApp.network() != -1) {
+                getPresenter().listdata(context, playids)
+            } else {
+                if (swipe_refresh_layout != null) {
+                    swipe_refresh_layout.isRefreshing = false
                 }
-            })
+                Toast.makeText(
+                    context,
+                    getText(R.string.error_connection),
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        })
 
 
 
@@ -221,13 +222,13 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
         RxView.clicks(cencel)
             .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
-                if(MusicApp.network()==-1){
+                if (MusicApp.network() == -1) {
                     Toast.makeText(
                         MusicApp.getAppContext(),
                         getText(R.string.error_connection),
                         Toast.LENGTH_SHORT
                     ).show()
-                }else {
+                } else {
                     MaterialDialog.Builder(context)
                         .title(getText(R.string.song_delsong))
                         .content(getText(R.string.song_delsongs))
@@ -265,13 +266,13 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
         RxView.clicks(down)
             .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
-                if(MusicApp.network()==-1){
+                if (MusicApp.network() == -1) {
                     Toast.makeText(
                         MusicApp.getAppContext(),
                         getText(R.string.error_connection),
                         Toast.LENGTH_SHORT
                     ).show()
-                }else {
+                } else {
                     MaterialDialog.Builder(context)
                         .title(getText(R.string.download_song))
                         .content(getText(R.string.download_playsong))
@@ -353,6 +354,55 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
                 }
             }
 
+        RxView.clicks(delect)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe {
+                if (MusicApp.userlogin()) {
+                    MaterialDialog.Builder(context)
+                        .title(getText(R.string.song_delsong))
+                        .content(getText(R.string.song_delsongs))
+                        .positiveColorRes(R.color.colorAccentDarkTheme)
+                        .negativeColorRes(R.color.red)
+                        .positiveText(getText(R.string.carry))
+                        .negativeText(getText(R.string.cancel))
+                        .onPositive { _: MaterialDialog?, _: DialogAction? ->
+
+                            val idmap = mutableListOf<Music>()
+                            for (ite in adapter.listdet) {
+                                if (ite.type == 1) {
+                                    idmap.add(ite.song)
+                                }
+                            }
+                            if (idmap.isNotEmpty()) {
+                                for (its in idmap) {
+                                    for (itsd in data) {
+                                        if (its.song_id == itsd.song_id) {
+                                            mDownDao.delete(itsd.id)
+                                            Toast.makeText(
+                                                context,
+                                                getText(R.string.song_delsongsucc),
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    }
+                                }
+
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    getText(R.string.song_collect_error),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+
+
+                        }
+                        .show()
+
+
+                }
+
+            }
 
         RxView.clicks(deter)
             .throttleFirst(3, TimeUnit.SECONDS)
@@ -374,7 +424,7 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
         super.onResume()
 
         if (MusicApp.getAblumid() == playids) {
-           adapter.notifyItemChanged(0)
+            adapter.notifyItemChanged(0)
         }
 
         observer = object : Observer<JsonArray> {
@@ -389,7 +439,7 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
                     songlist = song
 
                     val datas = mDownDao.query(playids)
-                    if(datas.size==0){
+                    if (datas.size == 0) {
                         for (it in song) {
                             val down = Down()
                             down.playid = playids
@@ -519,70 +569,104 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
                     }
 
 
+                val downs = mDownDao.querys(songlist[data].song_id)
+                if (downs.size > 0) {
+                    if (downs[0].type == 1) {
+                        imageView5.setImageResource(R.drawable.xaidel)
+                        dolw.text = getText(R.string.delete)
+                    } else {
+                        imageView5.setImageResource(R.drawable.ic_file_download)
+                        dolw.text = getText(R.string.song_download)
+                        del_txt.text = getText(R.string.song_collectsucc)
+                    }
+                }else{
+                    imageView5.setImageResource(R.drawable.ic_file_download)
+                    dolw.text = getText(R.string.song_download)
+                    del_txt.text = getText(R.string.song_collect)
+                }
+
                 RxView.clicks(relat4)
                     .throttleFirst(1, TimeUnit.SECONDS)
                     .subscribe {
-                        if(MusicApp.network()==-1){
+                        if (MusicApp.network() == -1) {
                             Toast.makeText(
                                 MusicApp.getAppContext(),
                                 getText(R.string.error_connection),
                                 Toast.LENGTH_SHORT
                             ).show()
-                        }else {
-                            MaterialDialog.Builder(context)
-                                .title(getText(R.string.download_song))
-                                .content(getText(R.string.download_playsong))
-                                .positiveText(getText(R.string.carry))
-                                .negativeText(getText(R.string.cancel))
-                                .positiveColorRes(R.color.colorAccentDarkTheme)
-                                .negativeColorRes(R.color.red)
-                                .onPositive { _: MaterialDialog?, _: DialogAction? ->
-                                    val downs = mDownDao.querys(songlist[data].song_id)
-                                    if (downs.size > 0) {
-                                        for (itd in downs) {
-                                            if (itd.type == 0) {
-                                                val request = OkGo.get<File>(songlist[data].uri)
-                                                OkDownload.request(songlist[data].uri, request) //
-                                                    .priority(0)
-                                                    .fileName("music" + songlist[data].song_id + ".mp3") //
-                                                    .save() //
-                                                    .register(
-                                                        LogDownloadListener(
-                                                            songlist[data],
-                                                            context,
-                                                            0,
-                                                            downs,
-                                                            0
-                                                        )
-                                                    ) //
-                                                    .start()
-                                            } else {
-                                                Toast.makeText(
-                                                    context,
-                                                    getText(R.string.download_carry),
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                            }
-                                        }
-                                    } else {
-                                        val request = OkGo.get<File>(songlist[data].uri)
-                                        OkDownload.request(songlist[data].uri, request) //
-                                            .priority(0)
-                                            .fileName("music" + songlist[data].song_id + ".mp3") //
-                                            .save() //
-                                            .register(
-                                                LogDownloadListener(
-                                                    songlist[data],
-                                                    context,
-                                                    0,
-                                                    downs,
-                                                    1
-                                                )
-                                            )
-                                            .start()
+                        } else {
+                            if (downs[0].type == 1) {
+                                MaterialDialog.Builder(context)
+                                    .title(getText(R.string.song_delsong))
+                                    .content(getText(R.string.song_delsongs))
+                                    .positiveColorRes(R.color.colorAccentDarkTheme)
+                                    .negativeColorRes(R.color.red)
+                                    .positiveText(getText(R.string.carry))
+                                    .negativeText(getText(R.string.cancel))
+                                    .onPositive { _: MaterialDialog?, _: DialogAction? ->
+                                        mDownDao.delete(downs[0].id)
+                                        Toast.makeText(
+                                            context,
+                                            getText(R.string.song_delsongsucc),
+                                            Toast.LENGTH_SHORT
+                                        ).show()
                                     }
+                                    .show()
+                            } else {
+                                if (MusicApp.userlogin()) {
+                                    MaterialDialog.Builder(context)
+                                        .title(getText(R.string.download_song))
+                                        .content(getText(R.string.download_playsong))
+                                        .positiveText(getText(R.string.carry))
+                                        .negativeText(getText(R.string.cancel))
+                                        .positiveColorRes(R.color.colorAccentDarkTheme)
+                                        .negativeColorRes(R.color.red)
+                                        .onPositive { _: MaterialDialog?, _: DialogAction? ->
+
+                                            val request = OkGo.get<File>(songlist[data].uri)
+                                            OkDownload.request(
+                                                songlist[data].uri,
+                                                request
+                                            ) //
+                                                .priority(0)
+                                                .fileName("music" + songlist[data].song_id + ".mp3") //
+                                                .save() //
+                                                .register(
+                                                    LogDownloadListener(
+                                                        songlist[data],
+                                                        context,
+                                                        0,
+                                                        downs,
+                                                        0
+                                                    )
+                                                ) //
+                                                .start()
+
+                                        }
+                                        .show()
+                                } else {
+                                    MaterialDialog.Builder(context)
+                                        .title(getText(R.string.go))
+                                        .content(getText(R.string.ungoset))
+                                        .positiveText(getText(R.string.carry))
+                                        .negativeText(getText(R.string.cancel))
+                                        .positiveColorRes(R.color.colorAccentDarkTheme)
+                                        .negativeColorRes(R.color.red)
+                                        .onPositive { _: MaterialDialog?, _: DialogAction? ->
+                                            val intent = Intent()
+                                            context.let {
+                                                intent.setClass(
+                                                    it,
+                                                    LoginActivity().javaClass
+                                                )
+                                            }
+                                            startActivity(intent)
+                                        }
+                                        .show()
                                 }
-                                .show()
+                            }
+
+
                         }
                     }
             }
@@ -598,8 +682,10 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
         super.onStop()
         try {
             adapter.notifyItemChanged(0)
-        }catch (e:Exception){}
+        } catch (e: Exception) {
+        }
     }
+
     /**
      * 初始化歌曲
      */
@@ -622,7 +708,7 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
                         intent.putExtra("type", 1)
                         startActivity(intent)
 
-                    }else{
+                    } else {
                         if (adapter.listdet[position].type == 0) {
                             adapter.listdet[position].type = 1
                             adapter.notifyItemChanged(position)

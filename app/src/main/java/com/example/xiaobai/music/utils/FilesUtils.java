@@ -34,9 +34,9 @@ public class FilesUtils {
      *
      * @return
      */
-    private static String getAppDir() {
+    private static File getAppDir() {
 
-        return Environment.getExternalStorageDirectory() + "/xiaobai/";
+        return Environment.getExternalStorageDirectory();
     }
 
     public static String getMusicDir() {
@@ -62,6 +62,11 @@ public class FilesUtils {
 
     public static String getLogDir() {
         String dir = getAppDir() + "Log/";
+        return mkdirs(dir);
+    }
+
+    public static String getDownload() {
+        String dir = getAppDir() + "Download/";
         return mkdirs(dir);
     }
 

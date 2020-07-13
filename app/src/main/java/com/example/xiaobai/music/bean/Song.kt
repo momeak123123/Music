@@ -3,6 +3,7 @@ package com.example.xiaobai.music.bean
 
 data class SongDet(
     val song: Music,
+    var pos: Int,
     var type: Int
 )
 

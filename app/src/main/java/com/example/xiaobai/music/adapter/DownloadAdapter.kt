@@ -33,6 +33,7 @@ class DownloadAdapter(
     companion object {
         const val TYPE_TITLE = 0
         const val TYPE_SELLER = 1
+        var pos = 0
     }
 
     private var mItemClickListener: ItemClickListener? = null
@@ -53,8 +54,8 @@ class DownloadAdapter(
      * 相当于getView()
      */
     override fun onCreateViewHolder(holder: ViewGroup, position: Int): RecyclerView.ViewHolder {
-        for (it in datas) {
-            listdet.add(SongDet(it, 0))
+        for (i in 0 until datas.size) {
+            listdet.add(SongDet(datas[i], i,0))
         }
         //加载View
         return when (position) {
@@ -235,7 +236,7 @@ class DownloadAdapter(
 
         @SuppressLint("ResourceAsColor")
         fun bindData(position: Int) {
-
+            pos = position
             itemView.setOnClickListener { v ->
                 mItemClickListener?.onItemClick(v, position)
             }
@@ -268,17 +269,25 @@ class DownloadAdapter(
     fun update(bool: Boolean) {
         if (bool) {
             listdet.clear()
-            for (it in datas) {
-                listdet.add(SongDet(it, 1))
+            for (i in 0 until datas.size) {
+                listdet.add(SongDet(datas[i], i,1))
             }
         } else {
             listdet.clear()
-            for (it in datas) {
-                listdet.add(SongDet(it, 0))
+            for (i in 0 until datas.size) {
+                listdet.add(SongDet(datas[i], i,0))
             }
         }
         notifyDataSetChanged()
     }
+
+    fun remove(position: Int) {
+        notifyItemRemoved(position)
+        if (position != datas.size) {
+            notifyItemRangeChanged(position, datas.size - position)
+        }
+    }
+
 
     interface ItemClickListener {
         fun onItemClick(view: View, position: Int)

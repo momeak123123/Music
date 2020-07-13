@@ -67,7 +67,6 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>(),
         val bundle = intent.extras
         search = bundle?.get("txt") as String
         getPresenter().qqdata(context, search, 0)
-
         swipe_refresh_layout.isRefreshing = true
 
     }
@@ -115,7 +114,7 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>(),
 
             override fun onError(e: Throwable) {}
             override fun onComplete() {
-                when (type) {
+               when (type) {
                     0 -> {
                         type++
                         getPresenter().kugoudata(context, search, 0)
@@ -125,6 +124,7 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>(),
                             swipe_refresh_layout.isRefreshing = false
                         }
                     }
+
 
                 }
 

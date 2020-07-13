@@ -19,6 +19,7 @@ import com.example.xiaobai.music.bean.artistlist
 import com.example.xiaobai.music.music.contract.DownloadContract
 import com.example.xiaobai.music.music.model.MusicPlayModel
 import com.example.xiaobai.music.music.presenter.DownloadPresenter
+import com.example.xiaobai.music.sql.bean.Down
 import com.example.xiaobai.music.sql.bean.Playlist
 import com.example.xiaobai.music.sql.dao.mDownDao
 import com.example.xiaobai.music.sql.dao.mPlaylistDao
@@ -54,6 +55,7 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
     }
 
 
+    private lateinit var data: MutableList<Down>
     private lateinit var sp: SharedPreferences
     private var bools: Boolean = true
     private lateinit var names: String
@@ -73,9 +75,7 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
         super.init(savedInstanceState)
         context = this
         cencel.visibility = View.GONE
-        down.text = getText(R.string.collect)
-        relat4.visibility = View.GONE
-
+        down.text = getText(R.string.love)
     }
 
     override fun initData() {
@@ -88,7 +88,7 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
 
     fun loadData() {
 
-        val data = mDownDao.queryt(1)
+        data = mDownDao.queryt(1)
         val song = mutableListOf<Music>()
 
         for (i in 0 until data.size) {
@@ -153,13 +153,13 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
         RxView.clicks(down)
             .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
-                if(MusicApp.network()==-1){
+                if (MusicApp.network() == -1) {
                     Toast.makeText(
                         MusicApp.getAppContext(),
                         getText(R.string.error_connection),
                         Toast.LENGTH_SHORT
                     ).show()
-                }else {
+                } else {
                     if (MusicApp.userlogin()) {
                         val idmap = mutableListOf<Music>()
                         for (ite in adapter.listdet) {
@@ -201,6 +201,56 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
 
             }
 
+        RxView.clicks(delect)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe {
+                if (MusicApp.userlogin()) {
+                    MaterialDialog.Builder(context)
+                        .title(getText(R.string.song_delsong))
+                        .content(getText(R.string.song_delsongs))
+                        .positiveColorRes(R.color.colorAccentDarkTheme)
+                        .negativeColorRes(R.color.red)
+                        .positiveText(getText(R.string.carry))
+                        .negativeText(getText(R.string.cancel))
+                        .onPositive { _: MaterialDialog?, _: DialogAction? ->
+
+                            val idmap = mutableListOf<Music>()
+                            for (ite in adapter.listdet) {
+                                if (ite.type == 1) {
+                                    idmap.add(ite.song)
+                                }
+                            }
+                            if (idmap.isNotEmpty()) {
+                                for (its in idmap) {
+                                    for (i in 0 until data.size) {
+                                        if (its.song_id == data[i].song_id) {
+                                            mDownDao.delete(data[i].id)
+                                            adapter.remove(adapter.listdet[i].pos)
+                                            Toast.makeText(
+                                                context,
+                                                getText(R.string.song_delsongsucc),
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    }
+                                }
+
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    getText(R.string.song_collect_error),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+
+
+                        }
+                        .show()
+
+
+                }
+
+            }
 
         RxView.clicks(deter)
             .throttleFirst(1, TimeUnit.SECONDS)
@@ -261,14 +311,14 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
                             if (idmap.size > 0) {
                                 for (sea in idmap) {
                                     for (det in playsong) {
-                                        if(sea.song_list_id==0L){
+                                        if (sea.song_list_id == 0L) {
                                             songs.remove(sea)
                                             Toast.makeText(
                                                 context,
                                                 getText(R.string.error_searcher),
                                                 Toast.LENGTH_LONG
                                             ).show()
-                                        }else{
+                                        } else {
                                             if (sea.song_id == det.song_id) {
                                                 songs.remove(sea)
                                             }
@@ -373,7 +423,7 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
     override fun onResume() {
         super.onResume()
         if (MusicApp.getAblumid() == album_id) {
-           adapter.notifyItemChanged(0)
+            adapter.notifyItemChanged(0)
         }
 
         observers = object : Observer<Boolean> {
@@ -460,13 +510,13 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
                 RxView.clicks(relat3)
                     .throttleFirst(3, TimeUnit.SECONDS)
                     .subscribe {
-                        if(MusicApp.network()==-1){
+                        if (MusicApp.network() == -1) {
                             Toast.makeText(
                                 MusicApp.getAppContext(),
                                 getText(R.string.error_connection),
                                 Toast.LENGTH_SHORT
                             ).show()
-                        }else {
+                        } else {
                             if (MusicApp.userlogin()) {
                                 poplue.visibility = View.GONE
                                 in_indel.visibility = View.VISIBLE
@@ -500,6 +550,40 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
                         }
 
                     }
+
+                val downs = mDownDao.querys(songlist[data].song_id)
+                imageView5.setImageResource(R.drawable.xaidel)
+                dolw.text = getText(R.string.delete)
+                if (downs.size > 0) {
+                    if (downs[0].type == 0) {
+                        del_txt.text = getText(R.string.song_collectsucc)
+                    }
+                }else{
+                    del_txt.text = getText(R.string.song_collect)
+                }
+                RxView.clicks(relat4)
+                    .throttleFirst(1, TimeUnit.SECONDS)
+                    .subscribe {
+
+                        MaterialDialog.Builder(context)
+                            .title(getText(R.string.song_delsong))
+                            .content(getText(R.string.song_delsongs))
+                            .positiveColorRes(R.color.colorAccentDarkTheme)
+                            .negativeColorRes(R.color.red)
+                            .positiveText(getText(R.string.carry))
+                            .negativeText(getText(R.string.cancel))
+                            .onPositive { _: MaterialDialog?, _: DialogAction? ->
+                                mDownDao.delete(downs[0].id)
+                                adapter.remove(data)
+                                Toast.makeText(
+                                    context,
+                                    getText(R.string.song_delsongsucc),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                            .show()
+                    }
+
             }
 
             override fun onError(e: Throwable) {}

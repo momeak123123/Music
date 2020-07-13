@@ -102,6 +102,7 @@
     <string name="song_all">全选</string>
     <string name="song_unall">全不选</string>
     <string name="song_collect">收藏到歌单</string>
+    <string name="song_collectsucc">已收藏</string>
     <string name="song_addsong">添加音乐</string>
     <string name="song_addsonglist">是否将音乐加入此歌单</string>
     <string name="song_cancel_coll">取消收藏</string>
@@ -116,6 +117,7 @@
     <string name="song_list">播放列表</string>
     <string name="song_dellist">确定要清空播放列表</string>
     <string name="song_delsong">删除音乐</string>
+    <string name="song_delsongsucc">删除成功</string>
     <string name="song_delsongs">是否删除音乐</string>
     <string name="dan">单曲循环</string>
     <string name="lie">列表循环</string>

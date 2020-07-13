@@ -53,6 +53,20 @@
         android:textColor="@color/white"
         android:textSize="@dimen/sp_16"
         app:layout_constraintBottom_toBottomOf="@+id/deter"
+        app:layout_constraintEnd_toStartOf="@+id/delect"
+        app:layout_constraintTop_toTopOf="@+id/deter"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/delect"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginEnd="@dimen/dp_20"
+        android:gravity="center"
+        android:text="@string/delete"
+        android:textColor="@color/white"
+        android:textSize="@dimen/sp_16"
+        app:layout_constraintBottom_toBottomOf="@+id/deter"
         app:layout_constraintEnd_toStartOf="@+id/deter"
         app:layout_constraintTop_toTopOf="@+id/deter" />
 
