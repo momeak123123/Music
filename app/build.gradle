@@ -10,8 +10,8 @@ android {
         applicationId "com.example.xiaobai.music"
         minSdkVersion 24
         targetSdkVersion 29
-        versionCode 43
-        versionName "0.4.3"
+        versionCode 44
+        versionName "0.4.4"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
@@ -106,7 +106,7 @@ dependencies {
 }
 
 greendao {
-    schemaVersion 9
+    schemaVersion 10
     daoPackage 'com.example.xiaobai.music.sql.gen'
     targetGenDir 'src/main/java'
 }

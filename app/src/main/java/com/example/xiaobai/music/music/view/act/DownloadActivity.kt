@@ -21,6 +21,7 @@ import com.example.xiaobai.music.music.model.MusicPlayModel
 import com.example.xiaobai.music.music.presenter.DownloadPresenter
 import com.example.xiaobai.music.sql.bean.Down
 import com.example.xiaobai.music.sql.bean.Playlist
+import com.example.xiaobai.music.sql.dao.mCollectDao
 import com.example.xiaobai.music.sql.dao.mDownDao
 import com.example.xiaobai.music.sql.dao.mPlaylistDao
 import com.google.gson.Gson
@@ -88,11 +89,12 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
 
     fun loadData() {
 
-        data = mDownDao.queryt(1)
+        data = mDownDao.queryAll()
         val song = mutableListOf<Music>()
 
-        for (i in 0 until data.size) {
-            if (data[i].type == 1) {
+        if (data.size > 0) {
+            for (i in 0 until data.size) {
+
                 val artist = mutableListOf<artistlist>()
                 artist.add(0, artistlist(data[i].artist_id, data[i].artist))
 
@@ -109,14 +111,14 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
                 )
                 song.add(music)
             }
-        }
-        if (song.isNotEmpty()) {
-            songlist.clear()
-            songlist = song
-            val one = mutableListOf<artistlist>()
-            val det = Music("", "", 0, 0, "", one, "", 0, "")
-            songlist.add(0, det)
-            initSongList(songlist)
+            if (song.isNotEmpty()) {
+                songlist.clear()
+                songlist = song
+                val one = mutableListOf<artistlist>()
+                val det = Music("", "", 0, 0, "", one, "", 0, "")
+                songlist.add(0, det)
+                initSongList(songlist)
+            }
         }
 
 
@@ -224,13 +226,26 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
                                 for (its in idmap) {
                                     for (i in 0 until data.size) {
                                         if (its.song_id == data[i].song_id) {
-                                            mDownDao.delete(data[i].id)
-                                            adapter.remove(adapter.listdet[i].pos)
-                                            Toast.makeText(
-                                                context,
-                                                getText(R.string.song_delsongsucc),
-                                                Toast.LENGTH_SHORT
-                                            ).show()
+
+                                            if(adapter.datas.size==1){
+                                                mDownDao.delete(data[i].id)
+                                                adapter.remove(adapter.listdet[i].pos)
+                                                Toast.makeText(
+                                                    context,
+                                                    getText(R.string.song_delsongsucc),
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                                finish()
+                                            }else{
+                                                mDownDao.delete(data[i].id)
+                                                adapter.remove(adapter.listdet[i].pos)
+                                                Toast.makeText(
+                                                    context,
+                                                    getText(R.string.song_delsongsucc),
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
+
                                         }
                                     }
                                 }
@@ -304,7 +319,7 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
                     .negativeColorRes(R.color.red)
                     .onPositive { _: MaterialDialog?, _: DialogAction? ->
                         val playlist: Playlist = mPlaylistDao.query(song[position].play_list_id)[0]
-                        val playsong = mDownDao.query(song[position].play_list_id)
+                        val playsong = mCollectDao.query(song[position].play_list_id)
                         val songs = mutableListOf<Music>()
                         songs.addAll(idmap)
                         if (playsong.size > 0) {
@@ -555,12 +570,12 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
                 imageView5.setImageResource(R.drawable.xaidel)
                 dolw.text = getText(R.string.delete)
                 if (downs.size > 0) {
-                    if (downs[0].type == 0) {
-                        del_txt.text = getText(R.string.song_collectsucc)
-                    }
-                }else{
+                    del_txt.text = getText(R.string.song_collectsucc)
+
+                } else {
                     del_txt.text = getText(R.string.song_collect)
                 }
+
                 RxView.clicks(relat4)
                     .throttleFirst(1, TimeUnit.SECONDS)
                     .subscribe {
@@ -573,13 +588,25 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
                             .positiveText(getText(R.string.carry))
                             .negativeText(getText(R.string.cancel))
                             .onPositive { _: MaterialDialog?, _: DialogAction? ->
-                                mDownDao.delete(downs[0].id)
-                                adapter.remove(data)
-                                Toast.makeText(
-                                    context,
-                                    getText(R.string.song_delsongsucc),
-                                    Toast.LENGTH_SHORT
-                                ).show()
+
+                                if(adapter.datas.size==1){
+                                    mDownDao.delete(downs[0].id)
+                                    adapter.remove(data)
+                                    Toast.makeText(
+                                        context,
+                                        getText(R.string.song_delsongsucc),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                    finish()
+                                }else{
+                                    mDownDao.delete(downs[0].id)
+                                    adapter.remove(data)
+                                    Toast.makeText(
+                                        context,
+                                        getText(R.string.song_delsongsucc),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
                             }
                             .show()
                     }

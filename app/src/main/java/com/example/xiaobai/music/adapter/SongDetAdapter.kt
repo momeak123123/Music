@@ -323,9 +323,10 @@ class SongDetAdapter(
     }
 
     fun remove(position: Int) {
+        datas.removeAt(position)
         notifyItemRemoved(position)
         if (position != datas.size) {
-            notifyItemRangeChanged(position, datas.size - position);
+            notifyItemRangeChanged(position, datas.size - position)
         }
     }
 

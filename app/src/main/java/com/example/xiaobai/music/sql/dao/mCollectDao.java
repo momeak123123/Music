@@ -1,20 +1,21 @@
 package com.example.xiaobai.music.sql.dao;
 
+import com.example.xiaobai.music.sql.bean.Collect;
 import com.example.xiaobai.music.sql.bean.Down;
 import com.example.xiaobai.music.sql.config.Initialization;
-import com.example.xiaobai.music.sql.gen.DownDao;
+import com.example.xiaobai.music.sql.gen.CollectDao;
 
 import java.util.List;
 
-public class mDownDao {
+public class mCollectDao {
 
     /**
      * 添加数据，如果有重复则覆盖
      *
-     * @param down
+     * @param collect
      */
-    public static void insert(Down down) {
-        Initialization.getDaoInstantDown().getDownDao().insertOrReplace(down);
+    public static void insert(Collect collect) {
+        Initialization.getDaoInstantCollect().getCollectDao().insertOrReplace(collect);
     }
 
     /**
@@ -23,7 +24,7 @@ public class mDownDao {
      * @param id
      */
     public static void delete(Long id) {
-        Initialization.getDaoInstantDown().getDownDao().deleteByKey(id);
+        Initialization.getDaoInstantCollect().getCollectDao().deleteByKey(id);
     }
 
     /**
@@ -32,16 +33,16 @@ public class mDownDao {
      * @param
      */
     public static void deleteAll() {
-        Initialization.getDaoInstantDown().getDownDao().deleteAll();
+        Initialization.getDaoInstantCollect().getCollectDao().deleteAll();
     }
 
     /**
      * 更新数据
      *
-     * @param down
+     * @param collect
      */
-    public static void update(Down down) {
-        Initialization.getDaoInstantDown().getDownDao().update(down);
+    public static void update(Collect collect) {
+        Initialization.getDaoInstantCollect().getCollectDao().update(collect);
     }
 
     /**
@@ -49,8 +50,8 @@ public class mDownDao {
      *
      * @return
      */
-    public static List<Down> query(Long playid) {
-        return Initialization.getDaoInstantDown().getDownDao().queryBuilder().where(DownDao.Properties.Playid.eq(playid)).list();
+    public static List<Collect> query(Long playid) {
+        return Initialization.getDaoInstantCollect().getCollectDao().queryBuilder().where(CollectDao.Properties.Playid.eq(playid)).list();
     }
 
     /**
@@ -58,24 +59,24 @@ public class mDownDao {
      *
      * @return
      */
-    public static List<Down> querys(Long songid) {
-        return Initialization.getDaoInstantDown().getDownDao().queryBuilder().where(DownDao.Properties.Song_id.eq(songid)).list();
+    public static List<Collect> querys(Long songid) {
+        return Initialization.getDaoInstantCollect().getCollectDao().queryBuilder().where(CollectDao.Properties.Song_id.eq(songid)).list();
     }
 
 
     /**
      * 查询全部数据
      */
-    public static List<Down> queryAll() {
-        return Initialization.getDaoInstantDown().getDownDao().loadAll();
+    public static List<Collect> queryAll() {
+        return Initialization.getDaoInstantCollect().getCollectDao().loadAll();
     }
 
     /**
      * 分页
      */
-    public static List<Down> queryBuilder(Long playid ,int set , int lim) {
+    public static List<Collect> queryBuilder(Long playid ,int set , int lim) {
 
-        return Initialization.getDaoInstantDown().getDownDao().queryBuilder().where(DownDao.Properties.Playid.eq(playid)).offset(set).limit(lim).list();
+        return Initialization.getDaoInstantCollect().getCollectDao().queryBuilder().where(CollectDao.Properties.Playid.eq(playid)).offset(set).limit(lim).list();
     }
 
     /**
@@ -96,9 +97,9 @@ public class mDownDao {
      * 排序
      */
 
-    public static List<Down> queryBuilder() {
+    public static List<Collect> queryBuilder() {
         // 正序
-        return Initialization.getDaoInstantDown().getDownDao().queryBuilder().orderAsc(DownDao.Properties.Id).list();
+        return Initialization.getDaoInstantCollect().getCollectDao().queryBuilder().orderAsc(CollectDao.Properties.Id).list();
 
         // 反序
         //Initialization.getDaoInstantMusic().getMusicDao().queryBuilder().orderDesc(UserDao.Properties.Id).list();

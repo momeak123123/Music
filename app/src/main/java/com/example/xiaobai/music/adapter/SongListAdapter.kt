@@ -58,6 +58,7 @@ class SongListAdapter  (val datas: MutableList<Playlist>, val context: Context) 
     }
 
     fun remove(position: Int) {
+        datas.removeAt(position)
         notifyItemRemoved(position)
         if (position != datas.size) {
             notifyItemRangeChanged(position, datas.size - position)

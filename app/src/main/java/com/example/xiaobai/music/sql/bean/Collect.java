@@ -3,11 +3,10 @@ package com.example.xiaobai.music.sql.bean;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
 import org.greenrobot.greendao.annotation.Index;
-
 import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
-public class Down {
+public class Collect {
 
     @Id(autoincrement = true)//设置自增长
     @Index(unique = true)//设置唯一性
@@ -23,10 +22,11 @@ public class Down {
     private String pic_url;
     private String publish_time;
     private Long song_list_id;
-    @Generated(hash = 537638538)
-    public Down(Long id, Long playid, Long song_id, String name, String album_name,
-            Long album_id, String uri, String artist, Long artist_id,
-            String pic_url, String publish_time, Long song_list_id) {
+    @Generated(hash = 1579830696)
+    public Collect(Long id, Long playid, Long song_id, String name,
+            String album_name, Long album_id, String uri, String artist,
+            Long artist_id, String pic_url, String publish_time,
+            Long song_list_id) {
         this.id = id;
         this.playid = playid;
         this.song_id = song_id;
@@ -40,8 +40,8 @@ public class Down {
         this.publish_time = publish_time;
         this.song_list_id = song_list_id;
     }
-    @Generated(hash = 1079473298)
-    public Down() {
+    @Generated(hash = 1726975718)
+    public Collect() {
     }
     public Long getId() {
         return this.id;
@@ -115,7 +115,4 @@ public class Down {
     public void setSong_list_id(Long song_list_id) {
         this.song_list_id = song_list_id;
     }
-
-
-
 }

@@ -70,9 +70,12 @@ class MyFragment : BaseMvpFragment<MyContract.IPresenter>(), MyContract.IView {
 
     override fun initData() {
         super.initData()
-        context?.let { getPresenter().data(it) }
-        sp = requireContext().getSharedPreferences("User", Context.MODE_PRIVATE)
 
+        sp = requireContext().getSharedPreferences("User", Context.MODE_PRIVATE)
+        if (sp.getBoolean("login", false)) {
+            context?.let { getPresenter().data(it) }
+            context?.let { getPresenter().listdata(it) }
+        }
 
     }
 
@@ -163,9 +166,13 @@ class MyFragment : BaseMvpFragment<MyContract.IPresenter>(), MyContract.IView {
     override fun onResume() {
         super.onResume()
 
+        if (sp.getBoolean("login", false)) {
+            context?.let { getPresenter().data(it) }
+            context?.let { getPresenter().listdata(it) }
+            nums = mDownDao.queryAll().count()
+            like_num.text = nums.toString()
+        }
 
-        nums = mDownDao.queryt(1).count()
-        like_num.text = nums.toString()
         loaddata()
 
         observer = object : Observer<Boolean> {
@@ -202,7 +209,7 @@ class MyFragment : BaseMvpFragment<MyContract.IPresenter>(), MyContract.IView {
                 play.pic_url = song.pic_url
                 play.play_list_id = song.play_list_id
                 play.song_num = song.song_num
-                play.user_id = sp.getString("userid","").toString()
+                play.user_id = sp.getString("userid", "").toString()
                 play.create_time = song.create_time
                 mPlaylistDao.insert(play)
                 adapter!!.add(play)
@@ -224,20 +231,48 @@ class MyFragment : BaseMvpFragment<MyContract.IPresenter>(), MyContract.IView {
                     object : TypeToken<MutableList<SongLists>>() {}.type
                 )
 
-                if (data.size > 0) {
-                    for (it in data) {
-                        val play = Playlist()
-                        play.name = it.name
-                        play.pic_url = it.pic_url
-                        play.play_list_id = it.play_list_id
-                        play.song_num = it.song_num
-                        play.user_id = sp.getString("userid","").toString()
-                        play.create_time = it.create_time
+                val list = mPlaylistDao.queryAll()
+                if (list.size > 0) {
+                    if (data.size > 0) {
+                        var a = 0
+                        for (it in data) {
+                            for (its in list) {
+                                if (it.play_list_id == its.play_list_id) {
+                                    a++
+                                }
+                            }
 
-                        mPlaylistDao.insert(play)
+                            if (a == 0) {
+                                val play = Playlist()
+                                play.name = it.name
+                                play.pic_url = it.pic_url
+                                play.play_list_id = it.play_list_id
+                                play.song_num = it.song_num
+                                play.user_id = sp.getString("userid", "").toString()
+                                play.create_time = it.create_time
+                                mPlaylistDao.insert(play)
+                            }
+                        }
+
                     }
-                    loaddata()
+
+
+                } else {
+                    if (data.size > 0) {
+                        for (ited in data) {
+                            val play = Playlist()
+                            play.name = ited.name
+                            play.pic_url = ited.pic_url
+                            play.play_list_id = ited.play_list_id
+                            play.song_num = ited.song_num
+                            play.user_id = sp.getString("userid", "").toString()
+                            play.create_time = ited.create_time
+                            mPlaylistDao.insert(play)
+                        }
+                    }
                 }
+
+                loaddata()
             }
 
             override fun onError(e: Throwable) {}
@@ -262,13 +297,23 @@ class MyFragment : BaseMvpFragment<MyContract.IPresenter>(), MyContract.IView {
             collect_num.text = sp.getString("collect", "")
             sign.text = sp.getString("message", "")
 
-            val list: MutableList<Playlist> = mPlaylistDao.querys(sp.getString("userid","").toString())
+
+            var num = 0
+            val list: MutableList<Playlist> =
+                mPlaylistDao.querys(sp.getString("userid", "").toString())
+            for (it in list) {
+                num += it.song_num.toInt()
+            }
+
+            collect_num.text = num.toString()
+
             if (list.size > 0) {
                 initSongList(list)
                 bools = true
             } else {
                 context?.let { getPresenter().listdata(it) }
             }
+
 
         } else {
             include.visibility = View.VISIBLE

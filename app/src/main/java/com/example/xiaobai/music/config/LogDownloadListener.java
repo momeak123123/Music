@@ -19,14 +19,12 @@ public class LogDownloadListener extends DownloadListener {
     private Context context;
     private Long playid;
     private List<Down> down;
-    private int type;
-    public LogDownloadListener(Music musics, Context contexts,Long playids,List<Down> downs,int types) {
+    public LogDownloadListener(Music musics, Context contexts,Long playids,List<Down> downs) {
         super("LogDownloadListener");
         music = musics;
         context = contexts;
         playid = playids;
         down = downs;
-        type = types;
     }
 
     @Override
@@ -59,13 +57,7 @@ public class LogDownloadListener extends DownloadListener {
     @Override
     public void onFinish(File file, Progress progress) {
 
-       if(type==0){
-           for(int i=0;i<down.size();i++){
-               down.get(i).setUri(file.getPath());
-               down.get(i).setType(2);
-               mDownDao.update(down.get(i));
-           }
-       }else{
+
            Down down = new Down();
            down.setAlbum_id(music.getAlbum_id());
            down.setAlbum_name(music.getAlbum_name());
@@ -77,10 +69,8 @@ public class LogDownloadListener extends DownloadListener {
            down.setPublish_time(music.getPublish_time());
            down.setSong_id(music.getSong_id());
            down.setSong_list_id(music.getSong_list_id());
-           down.setType(1);
            down.setUri(file.getPath());
            mDownDao.insert(down);
-       }
 
         System.out.println("File: " + file.getPath());
         Toast.makeText(

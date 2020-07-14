@@ -16,8 +16,10 @@ import com.example.xiaobai.music.common.Constants
 import com.example.xiaobai.music.music.view.act.AlbumDetActivity
 import com.example.xiaobai.music.music.view.act.MusicPlayActivity
 import com.example.xiaobai.music.music.view.fragment.HomeFragment
+import com.example.xiaobai.music.sql.bean.Collect
 import com.example.xiaobai.music.sql.bean.Down
 import com.example.xiaobai.music.sql.bean.Playlist
+import com.example.xiaobai.music.sql.dao.mCollectDao
 import com.example.xiaobai.music.sql.dao.mDownDao
 import com.example.xiaobai.music.sql.dao.mPlaylistDao
 import com.example.xiaobai.music.utils.BitmapUtils
@@ -74,6 +76,11 @@ class MusicPlayModel {
                                     ResultBeans::class.javaObjectType
                                 )
                             if (bean.code == 200) {
+                                Toast.makeText(
+                                    context,
+                                    context.getText(R.string.song_cancel_success),
+                                    Toast.LENGTH_SHORT
+                                ).show()
 
                                 val playlist: Playlist = mPlaylistDao.query(playid)[0]
                                 playlist.song_num = num
@@ -98,30 +105,31 @@ class MusicPlayModel {
                                 for (i in list) {
                                     for (it in song) {
                                         if (i.song_id == it.song_id) {
-                                            val down = Down()
-                                            down.playid = playid
-                                            down.song_id = it.song_id
-                                            down.name = it.name
-                                            down.album_name = it.album_name
-                                            down.album_id = it.album_id
-                                            down.uri = it.uri
-                                            down.artist = it.all_artist[0].name
-                                            down.artist_id = it.all_artist[0].id
-                                            down.pic_url = it.pic_url
-                                            down.publish_time = it.publish_time
-                                            down.song_list_id = it.song_list_id
-                                            down.type = 0
-                                            mDownDao.insert(down)
+                                            val collect = Collect()
+                                            collect.playid = playid
+                                            collect.song_id = it.song_id
+                                            collect.name = it.name
+                                            collect.album_name = it.album_name
+                                            collect.album_id = it.album_id
+                                            collect.uri = it.uri
+                                            collect.artist = it.all_artist[0].name
+                                            collect.artist_id = it.all_artist[0].id
+                                            collect.pic_url = it.pic_url
+                                            collect.publish_time = it.publish_time
+                                            collect.song_list_id = it.song_list_id
+                                            mCollectDao.insert(collect)
                                         }
                                     }
                                 }
 
+                            }else{
+                                Toast.makeText(
+                                    context,
+                                    bean.msg,
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
-                            Toast.makeText(
-                                context,
-                                bean.msg,
-                                Toast.LENGTH_SHORT
-                            ).show()
+
                         } catch (e: Exception) {
                         }
                     }

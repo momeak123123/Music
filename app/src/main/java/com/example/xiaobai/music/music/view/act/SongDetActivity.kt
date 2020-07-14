@@ -19,7 +19,9 @@ import com.example.xiaobai.music.bean.artistlist
 import com.example.xiaobai.music.config.LogDownloadListener
 import com.example.xiaobai.music.music.contract.SongDetContract
 import com.example.xiaobai.music.music.presenter.SongDetPresenter
+import com.example.xiaobai.music.sql.bean.Collect
 import com.example.xiaobai.music.sql.bean.Down
+import com.example.xiaobai.music.sql.dao.mCollectDao
 import com.example.xiaobai.music.sql.dao.mDownDao
 import com.google.gson.Gson
 import com.google.gson.JsonArray
@@ -62,7 +64,7 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
     }
 
 
-    private lateinit var data: MutableList<Down>
+    private lateinit var data: MutableList<Collect>
     private var bools: Boolean = true
     private var playids: Long = 0
     private var ids: Long = 0
@@ -105,7 +107,7 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
         nums = bundle.get("num") as String
         ids = bundle.get("id") as Long
         playids = bundle.get("playid") as Long
-        data = mDownDao.query(playids)
+        data = mCollectDao.query(playids)
         val song = mutableListOf<Music>()
         val artist = mutableListOf<artistlist>()
         if (MusicApp.network() != -1) {
@@ -230,8 +232,8 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
                     ).show()
                 } else {
                     MaterialDialog.Builder(context)
-                        .title(getText(R.string.song_delsong))
-                        .content(getText(R.string.song_delsongs))
+                        .title(getText(R.string.song_cancel_coll))
+                        .content(getText(R.string.song_cancel_colls))
                         .positiveText(getText(R.string.carry))
                         .negativeText(getText(R.string.cancel))
                         .positiveColorRes(R.color.colorAccentDarkTheme)
@@ -248,7 +250,7 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
                             if (idmap.isNotEmpty()) {
                                 getPresenter().delsong(context, idmap, playids)
                                 adapter.update(true)
-                                bools = false
+                                bools = true
                             } else {
                                 Toast.makeText(
                                     context,
@@ -294,31 +296,11 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
 
                                     val downs = mDownDao.querys(its.song_id)
                                     if (downs.size > 0) {
-                                        for (itd in downs) {
-                                            if (itd.type == 0) {
-                                                val request = OkGo.get<File>(its.uri)
-                                                OkDownload.request(its.uri, request) //
-                                                    .priority(0)
-                                                    .fileName("music" + its.song_id + ".mp3") //
-                                                    .save() //
-                                                    .register(
-                                                        LogDownloadListener(
-                                                            its,
-                                                            context,
-                                                            0,
-                                                            downs,
-                                                            0
-                                                        )
-                                                    ) //
-                                                    .start()
-                                            } else {
-                                                Toast.makeText(
-                                                    context,
-                                                    getText(R.string.download_carry),
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                            }
-                                        }
+                                        Toast.makeText(
+                                            context,
+                                            getText(R.string.download_carry),
+                                            Toast.LENGTH_SHORT
+                                        ).show()
                                     } else {
                                         val request = OkGo.get<File>(its.uri)
                                         OkDownload.request(its.uri, request) //
@@ -330,8 +312,7 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
                                                     its,
                                                     context,
                                                     0,
-                                                    downs,
-                                                    1
+                                                    downs
                                                 )
                                             ) //
                                             .start()
@@ -438,23 +419,22 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
                     songlist.clear()
                     songlist = song
 
-                    val datas = mDownDao.query(playids)
+                    val datas = mCollectDao.query(playids)
                     if (datas.size == 0) {
                         for (it in song) {
-                            val down = Down()
-                            down.playid = playids
-                            down.song_id = it.song_id
-                            down.name = it.name
-                            down.album_name = it.album_name
-                            down.album_id = it.album_id
-                            down.uri = it.uri
-                            down.artist = it.all_artist[0].name
-                            down.artist_id = it.all_artist[0].id
-                            down.pic_url = it.pic_url
-                            down.publish_time = it.publish_time
-                            down.song_list_id = it.song_list_id
-                            down.type = 0
-                            mDownDao.insert(down)
+                            val collect = Collect()
+                            collect.playid = playids
+                            collect.song_id = it.song_id
+                            collect.name = it.name
+                            collect.album_name = it.album_name
+                            collect.album_id = it.album_id
+                            collect.uri = it.uri
+                            collect.artist = it.all_artist[0].name
+                            collect.artist_id = it.all_artist[0].id
+                            collect.pic_url = it.pic_url
+                            collect.publish_time = it.publish_time
+                            collect.song_list_id = it.song_list_id
+                            mCollectDao.insert(collect)
                         }
                     }
 
@@ -571,19 +551,20 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
 
                 val downs = mDownDao.querys(songlist[data].song_id)
                 if (downs.size > 0) {
-                    if (downs[0].type == 1) {
-                        imageView5.setImageResource(R.drawable.xaidel)
-                        dolw.text = getText(R.string.delete)
-                    } else {
-                        imageView5.setImageResource(R.drawable.ic_file_download)
-                        dolw.text = getText(R.string.song_download)
-                        del_txt.text = getText(R.string.song_collectsucc)
-                    }
+                    imageView5.setImageResource(R.drawable.xaidel)
+                    dolw.text = getText(R.string.delete)
                 }else{
                     imageView5.setImageResource(R.drawable.ic_file_download)
                     dolw.text = getText(R.string.song_download)
+                }
+
+                val collects = mCollectDao.querys(songlist[data].song_id)
+                if (collects.size > 0) {
+                    del_txt.text = getText(R.string.song_collectsucc)
+                }else{
                     del_txt.text = getText(R.string.song_collect)
                 }
+
 
                 RxView.clicks(relat4)
                     .throttleFirst(1, TimeUnit.SECONDS)
@@ -595,7 +576,7 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
                                 Toast.LENGTH_SHORT
                             ).show()
                         } else {
-                            if (downs[0].type == 1) {
+                            if (downs.size > 0) {
                                 MaterialDialog.Builder(context)
                                     .title(getText(R.string.song_delsong))
                                     .content(getText(R.string.song_delsongs))
@@ -636,8 +617,7 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
                                                         songlist[data],
                                                         context,
                                                         0,
-                                                        downs,
-                                                        0
+                                                        downs
                                                     )
                                                 ) //
                                                 .start()

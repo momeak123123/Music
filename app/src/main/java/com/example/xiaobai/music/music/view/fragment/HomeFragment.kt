@@ -23,8 +23,10 @@ import com.example.xiaobai.music.music.model.MusicPlayModel
 import com.example.xiaobai.music.music.presenter.HomePresenter
 import com.example.xiaobai.music.music.view.act.*
 import com.example.xiaobai.music.sql.bean.Playlist
+import com.example.xiaobai.music.sql.dao.mCollectDao
 import com.example.xiaobai.music.sql.dao.mDownDao
 import com.example.xiaobai.music.sql.dao.mPlaylistDao
+import com.example.xiaobai.music.utils.FilesUtils
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
@@ -272,23 +274,49 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
 
 
 
-                RxView.clicks(relat4)
-                    .throttleFirst(3, TimeUnit.SECONDS)
-                    .subscribe {
-                        context?.let { it1 ->
-                            MaterialDialog.Builder(it1)
-                                .title("下载音乐")
-                                .content("是否下载音乐")
-                                .positiveText(getText(R.string.carry))
-                                .negativeText(getText(R.string.cancel))
-                                .onPositive { _: MaterialDialog?, _: DialogAction? ->
+                val downs = mDownDao.querys(data.song_id)
+                if (downs.size > 0) {
+                    imageView5.setImageResource(R.drawable.xaidel)
+                    dolw.text = getText(R.string.delete)
+                }else{
+                    imageView5.setImageResource(R.drawable.ic_file_download)
+                    dolw.text = getText(R.string.song_download)
+                }
 
-                                    val downs = mDownDao.querys(data.song_id)
-                                    if (downs.size > 0) {
-                                        for (itd in downs) {
-                                            if (itd.type == 0) {
+                val collects = mCollectDao.querys(data.song_id)
+                if (collects.size > 0) {
+                    del_txt.text = getText(R.string.song_collectsucc)
+                }else{
+                    del_txt.text = getText(R.string.song_collect)
+                }
+
+                RxView.clicks(relat4)
+                    .throttleFirst(1, TimeUnit.SECONDS)
+                    .subscribe {
+                        if (MusicApp.network() == -1) {
+                            Toast.makeText(
+                                MusicApp.getAppContext(),
+                                getText(R.string.error_connection),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } else {
+                            if (downs.size == 0) {
+                                if (MusicApp.userlogin()) {
+                                    context?.let { it1 ->
+                                        MaterialDialog.Builder(it1)
+                                            .title(getText(R.string.download_song))
+                                            .content(getText(R.string.download_playsong))
+                                            .positiveText(getText(R.string.carry))
+                                            .negativeText(getText(R.string.cancel))
+                                            .positiveColorRes(R.color.colorAccentDarkTheme)
+                                            .negativeColorRes(R.color.red)
+                                            .onPositive { _: MaterialDialog?, _: DialogAction? ->
+
                                                 val request = OkGo.get<File>(data.uri)
-                                                OkDownload.request(data.uri, request) //
+                                                OkDownload.request(
+                                                    data.uri,
+                                                    request
+                                                ) //
                                                     .priority(0)
                                                     .fileName("music" + data.song_id + ".mp3") //
                                                     .save() //
@@ -297,40 +325,63 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
                                                             data,
                                                             context,
                                                             0,
-                                                            downs,
-                                                            0
+                                                            downs
                                                         )
                                                     ) //
                                                     .start()
-                                            } else {
-                                                Toast.makeText(
-                                                    context,
-                                                    getText(R.string.download_carry),
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
+
+
                                             }
-                                        }
-                                    } else {
-                                        val request = OkGo.get<File>(data.uri)
-                                        OkDownload.request(data.uri, request) //
-                                            .priority(0)
-                                            .fileName("music" + data.song_id + ".mp3") //
-                                            .save() //
-                                            .register(
-                                                LogDownloadListener(
-                                                    data,
-                                                    context,
-                                                    0,
-                                                    downs,
-                                                    1
-                                                )
-                                            ) //
-                                            .start()
+                                            .show()
                                     }
-
-
+                                } else {
+                                    context?.let { it1 ->
+                                        MaterialDialog.Builder(it1)
+                                            .title(getText(R.string.go))
+                                            .content(getText(R.string.ungoset))
+                                            .positiveText(getText(R.string.carry))
+                                            .negativeText(getText(R.string.cancel))
+                                            .positiveColorRes(R.color.colorAccentDarkTheme)
+                                            .negativeColorRes(R.color.red)
+                                            .onPositive { _: MaterialDialog?, _: DialogAction? ->
+                                                val intent = Intent()
+                                                context.let {
+                                                    if (it != null) {
+                                                        intent.setClass(
+                                                            it,
+                                                            LoginActivity().javaClass
+                                                        )
+                                                    }
+                                                }
+                                                startActivity(intent)
+                                            }
+                                            .show()
+                                    }
                                 }
-                                .show()
+
+                            } else {
+                                context?.let { it1 ->
+                                    MaterialDialog.Builder(it1)
+                                        .title(getText(R.string.song_delsong))
+                                        .content(getText(R.string.song_delsongs))
+                                        .positiveColorRes(R.color.colorAccentDarkTheme)
+                                        .negativeColorRes(R.color.red)
+                                        .positiveText(getText(R.string.carry))
+                                        .negativeText(getText(R.string.cancel))
+                                        .onPositive { _: MaterialDialog?, _: DialogAction? ->
+                                            mDownDao.delete(downs[0].id)
+                                            FilesUtils.delFile(downs[0].uri)
+                                            Toast.makeText(
+                                                context,
+                                                getText(R.string.song_delsongsucc),
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                        .show()
+                                }
+                            }
+
+
                         }
                     }
             }

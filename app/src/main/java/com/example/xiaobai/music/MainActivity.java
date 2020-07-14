@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
 
         Initialization.setupDatabasePlaylist(this);
         Initialization.setupDatabaseDown(this);
+        Initialization.setupDatabaseCollect(this);
 
         initData();
 

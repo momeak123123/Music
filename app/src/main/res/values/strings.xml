@@ -106,6 +106,8 @@
     <string name="song_addsong">添加音乐</string>
     <string name="song_addsonglist">是否将音乐加入此歌单</string>
     <string name="song_cancel_coll">取消收藏</string>
+    <string name="song_cancel_colls">是否取消收藏</string>
+    <string name="song_cancel_success">收藏成功</string>
     <string name="song_collect_error">暂未选择歌曲，请选择</string>
     <string name="song_download">下载</string>
     <string name="song_downloads">下载管理</string>

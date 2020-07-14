@@ -10,6 +10,7 @@ import com.example.xiaobai.music.common.Constants
 import com.example.xiaobai.music.music.contract.SongDetContract
 import com.example.xiaobai.music.music.view.act.SongDetActivity
 import com.example.xiaobai.music.sql.bean.Playlist
+import com.example.xiaobai.music.sql.dao.mCollectDao
 import com.example.xiaobai.music.sql.dao.mDownDao
 import com.example.xiaobai.music.sql.dao.mPlaylistDao
 import com.google.gson.Gson
@@ -122,9 +123,9 @@ class SongDetModel : BaseModel(), SongDetContract.IModel {
                             for (it in song) {
                                 SongDetActivity.adapter.removedata(it)
                                 SongDetActivity.adapter.notifyDataSetChanged()
-                                val lists = mDownDao.querys(it.song_id)
+                                val lists = mCollectDao.querys(it.song_id)
                                 if (lists.size > 0) {
-                                    mDownDao.delete(lists[0].id)
+                                    mCollectDao.delete(lists[0].id)
                                 }
 
                             }
@@ -165,12 +166,15 @@ class SongDetModel : BaseModel(), SongDetContract.IModel {
                             val num = (playlist.song_num.toInt() - 1).toString()
                             playlist.song_num = num
                             mPlaylistDao.update(playlist)
-                            SongDetActivity.adapter.remove(data)
                             SongDetActivity.adapter.num = num
                             SongDetActivity.adapter.notifyItemChanged(0)
-                            val lists = mDownDao.querys(song.song_id)
+                            SongDetActivity.adapter.remove(data)
+
+                            val lists = mCollectDao.querys(song.song_id)
                             if (lists.size > 0) {
-                                mDownDao.delete(lists[0].id)
+                                mCollectDao.delete(lists[0].id)
+
+
                             }
                         } else {
                             Toast.makeText(
