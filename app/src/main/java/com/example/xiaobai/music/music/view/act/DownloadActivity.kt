@@ -24,6 +24,7 @@ import com.example.xiaobai.music.sql.bean.Playlist
 import com.example.xiaobai.music.sql.dao.mCollectDao
 import com.example.xiaobai.music.sql.dao.mDownDao
 import com.example.xiaobai.music.sql.dao.mPlaylistDao
+import com.example.xiaobai.music.utils.FilesUtils
 import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.jakewharton.rxbinding2.view.RxView
@@ -226,30 +227,18 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
                                 for (its in idmap) {
                                     for (i in 0 until data.size) {
                                         if (its.song_id == data[i].song_id) {
-
-                                            if(adapter.datas.size==1){
-                                                mDownDao.delete(data[i].id)
-                                                adapter.remove(adapter.listdet[i].pos)
-                                                Toast.makeText(
-                                                    context,
-                                                    getText(R.string.song_delsongsucc),
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                                finish()
-                                            }else{
-                                                mDownDao.delete(data[i].id)
-                                                adapter.remove(adapter.listdet[i].pos)
-                                                Toast.makeText(
-                                                    context,
-                                                    getText(R.string.song_delsongsucc),
-                                                    Toast.LENGTH_SHORT
-                                                ).show()
-                                            }
-
+                                            mDownDao.delete(data[i].id)
+                                            FilesUtils.delFile(data[i].uri)
+                                            adapter.remove(adapter.listdet[i].pos)
+                                            Toast.makeText(
+                                                context,
+                                                getText(R.string.song_delsongsucc),
+                                                Toast.LENGTH_SHORT
+                                            ).show()
                                         }
                                     }
                                 }
-
+                                adapter.notifyDataSetChanged()
                             } else {
                                 Toast.makeText(
                                     context,
@@ -588,25 +577,15 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
                             .positiveText(getText(R.string.carry))
                             .negativeText(getText(R.string.cancel))
                             .onPositive { _: MaterialDialog?, _: DialogAction? ->
-
-                                if(adapter.datas.size==1){
-                                    mDownDao.delete(downs[0].id)
-                                    adapter.remove(data)
-                                    Toast.makeText(
-                                        context,
-                                        getText(R.string.song_delsongsucc),
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                    finish()
-                                }else{
-                                    mDownDao.delete(downs[0].id)
-                                    adapter.remove(data)
-                                    Toast.makeText(
-                                        context,
-                                        getText(R.string.song_delsongsucc),
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
+                                poplue.visibility = View.GONE
+                                mDownDao.delete(downs[0].id)
+                                FilesUtils.delFile(downs[0].uri)
+                                adapter.remove(data)
+                                Toast.makeText(
+                                    context,
+                                    getText(R.string.song_delsongsucc),
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
                             .show()
                     }

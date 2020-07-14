@@ -122,14 +122,14 @@ class SongDetModel : BaseModel(), SongDetContract.IModel {
 
                             for (it in song) {
                                 SongDetActivity.adapter.removedata(it)
-                                SongDetActivity.adapter.notifyDataSetChanged()
+
                                 val lists = mCollectDao.querys(it.song_id)
                                 if (lists.size > 0) {
                                     mCollectDao.delete(lists[0].id)
                                 }
 
                             }
-
+                            SongDetActivity.adapter.notifyDataSetChanged()
 
                         } else {
                             Toast.makeText(

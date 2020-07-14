@@ -23,6 +23,7 @@ import com.example.xiaobai.music.sql.bean.Collect
 import com.example.xiaobai.music.sql.bean.Down
 import com.example.xiaobai.music.sql.dao.mCollectDao
 import com.example.xiaobai.music.sql.dao.mDownDao
+import com.example.xiaobai.music.utils.FilesUtils
 import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.reflect.TypeToken
@@ -359,6 +360,7 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
                                     for (itsd in data) {
                                         if (its.song_id == itsd.song_id) {
                                             mDownDao.delete(itsd.id)
+                                            FilesUtils.delFile(itsd.uri)
                                             Toast.makeText(
                                                 context,
                                                 getText(R.string.song_delsongsucc),
@@ -586,6 +588,7 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
                                     .negativeText(getText(R.string.cancel))
                                     .onPositive { _: MaterialDialog?, _: DialogAction? ->
                                         mDownDao.delete(downs[0].id)
+                                        FilesUtils.delFile(downs[0].uri)
                                         Toast.makeText(
                                             context,
                                             getText(R.string.song_delsongsucc),
