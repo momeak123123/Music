@@ -16,6 +16,7 @@ import com.bumptech.glide.Glide
 import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.bean.*
+import com.example.xiaobai.music.config.Screenshot
 import com.example.xiaobai.music.music.view.act.*
 import com.example.xiaobai.music.music.view.fragment.HomeFragment
 import com.google.gson.Gson

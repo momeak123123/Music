@@ -103,6 +103,9 @@ dependencies {
     //缓存
     implementation 'com.danikula:videocache:2.7.1'
 
+    //二维码
+    implementation 'com.google.zxing:core:3.4.0'
+
 }
 
 greendao {

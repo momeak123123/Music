@@ -8,7 +8,9 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
+import com.example.xiaobai.music.config.Screenshot
 import com.example.xiaobai.music.music.contract.UserSetContract
 import com.example.xiaobai.music.music.presenter.UserSetPresenter
 import com.example.xiaobai.music.utils.FilesUtils
@@ -38,8 +40,6 @@ class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>() , UserSetC
     override fun getLayoutId(): Int {
        return R.layout.user_set
     }
-
-    private lateinit var mTimeOption: Array<String?>
 
     @SuppressLint("SetTextI18n")
     override fun init(savedInstanceState: Bundle?) {
@@ -129,7 +129,7 @@ class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>() , UserSetC
         RxView.clicks(view)
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
-
+                Screenshot.screenShot(this)
             }
 
         RxView.clicks(view2)
@@ -205,7 +205,8 @@ class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>() , UserSetC
                 TimePickerDialog(this,
                     TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
                         time.text = "$hourOfDay:$minute"
-                        sp.edit().putString("starttime", "$hourOfDay:$minute").apply()
+                        MusicApp.setHourOfDay(hourOfDay)
+                        MusicApp.setMinute(minute)
                     }, 23, 0, true).show()
 
             }
@@ -216,7 +217,6 @@ class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>() , UserSetC
                 TimePickerDialog(this,
                     TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
                         times.text = "$hourOfDay:$minute"
-                        sp.edit().putString("endtime", "$hourOfDay:$minute").apply()
                     }, 2, 0, true).show()
 
             }

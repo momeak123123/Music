@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Service
 import android.content.*
 import android.os.IBinder
+import com.example.xiaobai.music.MusicApp
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -31,7 +32,15 @@ class TimeService : Service() {
             if (action == Intent.ACTION_TIME_TICK) {
                 val df = SimpleDateFormat("HH:mm") //设置日期格式
                 val date = df.format(Date()).split(":").toTypedArray()
-
+                if(MusicApp.getHourOfDay() == date[0].toInt()){
+                    if(MusicApp.getMinute() == date[1].toInt()){
+                        MusicApp.setEasy(true)
+                    }else{
+                        MusicApp.setEasy(false)
+                    }
+                }else{
+                    MusicApp.setEasy(false)
+                }
             }
         }
     }
