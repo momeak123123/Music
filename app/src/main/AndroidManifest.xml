@@ -16,6 +16,9 @@
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
+
     <uses-permission
         android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"
         tools:ignore="ProtectedPermissions" />
@@ -36,7 +39,7 @@
         <service
             android:name=".service.TimeService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true"/>
         <service
             android:name=".service.MusicService"
             android:enabled="true" />

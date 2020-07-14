@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -37,7 +38,6 @@ import com.jpeng.jptabbar.OnTabSelectListener;
 import java.util.ArrayList;
 import java.util.List;
 
-@RequiresApi(api = Build.VERSION_CODES.M)
 public class MainActivity extends AppCompatActivity implements BadgeDismissListener, OnTabSelectListener {
 
     private static Boolean dert = true;
@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WAKE_LOCK,
             Manifest.permission.CAMERA,
-            Manifest.permission.DISABLE_KEYGUARD
+            Manifest.permission.DISABLE_KEYGUARD,
 
     };
     public static Boolean bool = true;
@@ -66,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements BadgeDismissListe
      */
     private boolean isNeedCheck = true;
     private ViewPager viewPager;
+    @SuppressLint("StaticFieldLeak")
     private static JPTabBar mTabbar;
     private int indexs = 0;
     private static MainActivity context;
