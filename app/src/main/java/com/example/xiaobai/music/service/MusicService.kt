@@ -123,17 +123,6 @@ class MusicService : Service() {
         val intent = Intent(this, LockService::class.java)
         startService(intent)
 
-        val notificationManager =
-            getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        //创建NotificationChannel
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                "xiaobai1089",
-                "小白音乐",
-                NotificationManager.IMPORTANCE_HIGH
-            )
-            notificationManager.createNotificationChannel(channel)
-        }
         startForeground(1, getNotification())
 
     }
@@ -279,10 +268,13 @@ class MusicService : Service() {
         }.start()
     }
 
-    var broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+    private var broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             when (Objects.requireNonNull(intent.action)) {
-                "del" -> Notifications.deleteNotification()
+                "del" -> {
+                    stopForeground(true)
+                    //Notifications.deleteNotification()
+                }
                 "pre" ->
                     musicpre()
                 "play" -> {
@@ -374,7 +366,7 @@ class MusicService : Service() {
         count = intent.getIntExtra("count", 0)
         style = intent.getIntExtra("style", 0)
         val seek = intent.getDoubleExtra("seek", 0.0)
-
+        startForeground(1, getNotification())
         when (types) {
             0 -> {
                 musicstart(ids)
