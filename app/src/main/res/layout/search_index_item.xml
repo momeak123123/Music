@@ -83,7 +83,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentBottom="true"
-        android:src="@drawable/wangyiyun"
+        android:src="@color/colorPrimary"
         app:layout_constraintBottom_toBottomOf="@+id/item"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@+id/item" />

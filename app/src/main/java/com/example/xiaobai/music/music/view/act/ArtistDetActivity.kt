@@ -7,14 +7,13 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
-import android.widget.Toast
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.adapter.ArtistDetAdapter
-import com.example.xiaobai.music.bean.*
+import com.example.xiaobai.music.bean.Album
 import com.example.xiaobai.music.music.contract.ArtistDetContract
 import com.example.xiaobai.music.music.presenter.ArtistDetPresenter
 import com.google.gson.Gson
@@ -22,8 +21,7 @@ import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.artist_index.recyc_item
-import kotlinx.android.synthetic.main.artist_index.swipe_refresh_layout
+import kotlinx.android.synthetic.main.artist_index.*
 import mvp.ljb.kt.act.BaseMvpActivity
 
 /**

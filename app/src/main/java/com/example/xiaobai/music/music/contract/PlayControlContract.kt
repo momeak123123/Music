@@ -1,9 +1,9 @@
 package com.example.xiaobai.music.music.contract
 
 import com.example.xiaobai.music.bean.Music
+import mvp.ljb.kt.contract.IModelContract
 import mvp.ljb.kt.contract.IPresenterContract
 import mvp.ljb.kt.contract.IViewContract
-import mvp.ljb.kt.contract.IModelContract
 
 /**
  * @Author Kotlin MVP Plugin

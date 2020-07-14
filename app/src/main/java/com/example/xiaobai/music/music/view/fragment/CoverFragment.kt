@@ -1,23 +1,17 @@
 package com.example.xiaobai.music.music.view.fragment
 
 import android.animation.ObjectAnimator
-import android.content.Context
-import android.graphics.Bitmap
-import android.net.Uri
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
 import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions.bitmapTransform
 import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.music.contract.CoverContract
 import com.example.xiaobai.music.music.presenter.CoverPresenter
-import com.example.xiaobai.music.music.view.act.MusicPlayActivity
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import jp.wasabeef.glide.transformations.BlurTransformation
 import kotlinx.android.synthetic.main.frag_player_coverviews.*
 import mvp.ljb.kt.fragment.BaseMvpFragment
 

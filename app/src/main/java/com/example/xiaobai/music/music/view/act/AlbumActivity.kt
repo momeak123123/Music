@@ -9,8 +9,10 @@ import android.view.View
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.xiaobai.music.R
-import com.example.xiaobai.music.adapter.*
-import com.example.xiaobai.music.bean.*
+import com.example.xiaobai.music.adapter.AlbumListAdapter
+import com.example.xiaobai.music.adapter.AlbumTopAdapter
+import com.example.xiaobai.music.bean.Album
+import com.example.xiaobai.music.bean.TopList
 import com.example.xiaobai.music.music.contract.AlbumContract
 import com.example.xiaobai.music.music.presenter.AlbumPresenter
 import com.google.gson.Gson

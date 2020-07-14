@@ -7,7 +7,6 @@ import com.example.xiaobai.music.bean.ResultBean
 import com.example.xiaobai.music.common.Constants
 import com.example.xiaobai.music.music.contract.LyricContract
 import com.example.xiaobai.music.music.presenter.LyricPresenter
-import com.example.xiaobai.music.music.view.act.ArtistDetActivity
 import com.example.xiaobai.music.music.view.act.MusicPlayActivity
 import com.google.gson.Gson
 import com.lzy.okgo.OkGo

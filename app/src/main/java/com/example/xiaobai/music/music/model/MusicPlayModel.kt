@@ -3,8 +3,6 @@ package com.example.xiaobai.music.music.model
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.view.View
 import android.widget.TextView
 import android.widget.Toast
@@ -17,10 +15,8 @@ import com.example.xiaobai.music.music.view.act.AlbumDetActivity
 import com.example.xiaobai.music.music.view.act.MusicPlayActivity
 import com.example.xiaobai.music.music.view.fragment.HomeFragment
 import com.example.xiaobai.music.sql.bean.Collect
-import com.example.xiaobai.music.sql.bean.Down
 import com.example.xiaobai.music.sql.bean.Playlist
 import com.example.xiaobai.music.sql.dao.mCollectDao
-import com.example.xiaobai.music.sql.dao.mDownDao
 import com.example.xiaobai.music.sql.dao.mPlaylistDao
 import com.example.xiaobai.music.utils.BitmapUtils
 import com.google.gson.Gson

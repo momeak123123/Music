@@ -5,14 +5,11 @@ import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
-import android.view.Window
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import com.example.xiaobai.music.music.model.MainModel
-import com.example.xiaobai.music.music.model.MusicPlayModel.Companion
 import com.example.xiaobai.music.music.model.MusicPlayModel.Companion.getadvertising
 import com.example.xiaobai.music.music.model.MusicPlayModel.Companion.updateapp
-import com.example.xiaobai.music.service.LockService
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Observer

@@ -8,7 +8,6 @@ import com.example.xiaobai.music.bean.ResultBean
 import com.example.xiaobai.music.bean.ResultBeans
 import com.example.xiaobai.music.common.Constants
 import com.example.xiaobai.music.music.contract.MyContract
-import com.example.xiaobai.music.music.view.fragment.FindFragment
 import com.example.xiaobai.music.music.view.fragment.MyFragment
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken

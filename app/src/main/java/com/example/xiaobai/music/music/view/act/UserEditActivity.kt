@@ -6,7 +6,6 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.widget.Toast
-import androidx.fragment.app.FragmentActivity
 import com.bumptech.glide.Glide
 import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R

@@ -3,8 +3,6 @@ package  com.example.xiaobai.music.music.model
 import android.content.Context
 import android.content.SharedPreferences
 import android.widget.Toast
-import com.bumptech.glide.Glide
-import com.example.xiaobai.music.R
 import com.example.xiaobai.music.bean.ResultBean
 import com.example.xiaobai.music.common.Constants
 import com.example.xiaobai.music.config.OSS
@@ -16,7 +14,6 @@ import com.lzy.okgo.OkGo
 import com.lzy.okgo.callback.StringCallback
 import com.lzy.okgo.model.Response
 import io.reactivex.Observable
-import kotlinx.android.synthetic.main.user_edit.*
 import mvp.ljb.kt.model.BaseModel
 import java.util.*
 

@@ -1,16 +1,10 @@
 package  com.example.xiaobai.music.music.model
 
-import android.content.Context
-import android.content.SharedPreferences
-import android.widget.Toast
-import com.example.xiaobai.music.R
-import com.example.xiaobai.music.bean.*
+import com.example.xiaobai.music.bean.ResultBeans
+import com.example.xiaobai.music.bean.Sear
 import com.example.xiaobai.music.common.Constants
 import com.example.xiaobai.music.music.contract.FindContract
-import com.example.xiaobai.music.music.view.act.AlbumDetActivity
-import com.example.xiaobai.music.music.view.act.ArtistActivity
 import com.example.xiaobai.music.music.view.fragment.FindFragment
-import com.example.xiaobai.music.music.view.fragment.MyFragment
 import com.example.xiaobai.music.parsing.kugouseBean
 import com.example.xiaobai.music.parsing.kugousearch
 import com.example.xiaobai.music.sql.bean.Search

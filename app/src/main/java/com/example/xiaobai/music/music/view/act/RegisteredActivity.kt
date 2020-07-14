@@ -3,7 +3,6 @@ package com.example.xiaobai.music.music.view.act
 import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
-import android.widget.RadioGroup
 import android.widget.Toast
 import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
@@ -12,7 +11,6 @@ import com.example.xiaobai.music.music.presenter.RegisteredPresenter
 import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_registered.*
 import mvp.ljb.kt.act.BaseMvpActivity
 import java.util.concurrent.TimeUnit

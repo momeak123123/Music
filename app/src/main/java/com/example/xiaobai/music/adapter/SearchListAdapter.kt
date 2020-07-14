@@ -9,12 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.xiaobai.music.R
-import com.example.xiaobai.music.bean.Music
 import com.example.xiaobai.music.bean.Searchs
-import com.example.xiaobai.music.music.view.fragment.HomeFragment
-import com.example.xiaobai.music.sql.bean.Search
-import com.example.xiaobai.music.sql.dao.mSearchDao
-import io.reactivex.Observable
 
 class SearchListAdapter(val datas: MutableList<Searchs>, val context: Context) : RecyclerView.Adapter<SearchListAdapter.InnerHolder>() {
 

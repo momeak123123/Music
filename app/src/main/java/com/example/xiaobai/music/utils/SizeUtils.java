@@ -3,6 +3,7 @@ package com.example.xiaobai.music.utils;
 import android.content.Context;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
+
 import com.example.xiaobai.music.MusicApp;
 
 /**

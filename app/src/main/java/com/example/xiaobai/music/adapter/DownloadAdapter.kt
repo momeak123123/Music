@@ -17,7 +17,6 @@ import com.example.xiaobai.music.bean.SongDet
 import com.example.xiaobai.music.music.view.act.DownloadActivity
 import com.example.xiaobai.music.music.view.act.MusicPlayActivity
 import com.jakewharton.rxbinding2.view.RxView
-import com.xuexiang.xui.utils.ResUtils
 import io.reactivex.Observable
 import java.util.concurrent.TimeUnit
 

@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.xiaobai.music.R
-import com.example.xiaobai.music.bean.Music
 import com.example.xiaobai.music.parsing.kugouseBean
 
 class SearchAdapter(val datas: MutableList<kugouseBean>, val context: Context) : RecyclerView.Adapter<SearchAdapter.InnerHolder>() {

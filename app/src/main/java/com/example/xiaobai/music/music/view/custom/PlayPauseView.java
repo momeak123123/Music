@@ -19,9 +19,6 @@ import com.example.xiaobai.music.R;
 import com.example.xiaobai.music.music.view.act.MusicPlayActivity;
 import com.example.xiaobai.music.utils.SizeUtils;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Flowable;

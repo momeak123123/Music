@@ -1,10 +1,10 @@
 package com.example.xiaobai.music.music.presenter
 
 import android.content.Context
-import mvp.ljb.kt.presenter.BaseMvpPresenter
 import com.example.xiaobai.music.music.contract.HomeContract
 import com.example.xiaobai.music.music.model.HomeModel
 import com.xuexiang.xui.widget.banner.widget.banner.BannerItem
+import mvp.ljb.kt.presenter.BaseMvpPresenter
 
 /**
  * @Author Kotlin MVP Plugin

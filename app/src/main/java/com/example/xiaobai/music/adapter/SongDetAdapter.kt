@@ -17,7 +17,6 @@ import com.example.xiaobai.music.config.CornerTransform
 import com.example.xiaobai.music.music.view.act.MusicPlayActivity
 import com.example.xiaobai.music.music.view.act.SongDetActivity
 import com.jakewharton.rxbinding2.view.RxView
-import com.xuexiang.xui.utils.ResUtils
 import io.reactivex.Observable
 import java.util.concurrent.TimeUnit
 

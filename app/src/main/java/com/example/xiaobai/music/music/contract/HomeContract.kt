@@ -2,9 +2,9 @@ package com.example.xiaobai.music.music.contract
 
 import android.content.Context
 import com.xuexiang.xui.widget.banner.widget.banner.BannerItem
+import mvp.ljb.kt.contract.IModelContract
 import mvp.ljb.kt.contract.IPresenterContract
 import mvp.ljb.kt.contract.IViewContract
-import mvp.ljb.kt.contract.IModelContract
 
 /**
  * @Author Kotlin MVP Plugin

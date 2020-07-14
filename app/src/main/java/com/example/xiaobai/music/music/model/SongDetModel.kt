@@ -11,7 +11,6 @@ import com.example.xiaobai.music.music.contract.SongDetContract
 import com.example.xiaobai.music.music.view.act.SongDetActivity
 import com.example.xiaobai.music.sql.bean.Playlist
 import com.example.xiaobai.music.sql.dao.mCollectDao
-import com.example.xiaobai.music.sql.dao.mDownDao
 import com.example.xiaobai.music.sql.dao.mPlaylistDao
 import com.google.gson.Gson
 import com.lzy.okgo.OkGo

@@ -20,7 +20,6 @@ import com.example.xiaobai.music.config.LogDownloadListener
 import com.example.xiaobai.music.music.contract.SongDetContract
 import com.example.xiaobai.music.music.presenter.SongDetPresenter
 import com.example.xiaobai.music.sql.bean.Collect
-import com.example.xiaobai.music.sql.bean.Down
 import com.example.xiaobai.music.sql.dao.mCollectDao
 import com.example.xiaobai.music.sql.dao.mDownDao
 import com.example.xiaobai.music.utils.FilesUtils
@@ -37,10 +36,6 @@ import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.food.*
 import kotlinx.android.synthetic.main.popule.*
 import kotlinx.android.synthetic.main.song_index.*
-import kotlinx.android.synthetic.main.song_index.foods
-import kotlinx.android.synthetic.main.song_index.poplue
-import kotlinx.android.synthetic.main.song_index.recyc_item
-import kotlinx.android.synthetic.main.song_index.swipe_refresh_layout
 import kotlinx.android.synthetic.main.song_set.*
 import kotlinx.android.synthetic.main.song_set.edit_song
 import mvp.ljb.kt.act.BaseMvpActivity

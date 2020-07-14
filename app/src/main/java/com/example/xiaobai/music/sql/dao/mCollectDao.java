@@ -1,7 +1,6 @@
 package com.example.xiaobai.music.sql.dao;
 
 import com.example.xiaobai.music.sql.bean.Collect;
-import com.example.xiaobai.music.sql.bean.Down;
 import com.example.xiaobai.music.sql.config.Initialization;
 import com.example.xiaobai.music.sql.gen.CollectDao;
 

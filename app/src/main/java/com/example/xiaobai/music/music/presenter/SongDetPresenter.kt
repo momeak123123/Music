@@ -2,9 +2,9 @@ package com.example.xiaobai.music.music.presenter
 
 import android.content.Context
 import com.example.xiaobai.music.bean.Music
-import mvp.ljb.kt.presenter.BaseMvpPresenter
 import com.example.xiaobai.music.music.contract.SongDetContract
 import com.example.xiaobai.music.music.model.SongDetModel
+import mvp.ljb.kt.presenter.BaseMvpPresenter
 
 /**
  * @Author Kotlin MVP Plugin

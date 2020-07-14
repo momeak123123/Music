@@ -1,13 +1,5 @@
 package com.example.xiaobai.music;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -15,12 +7,18 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
 import com.example.xiaobai.music.adapter.ViewPagerAdapter;
 import com.example.xiaobai.music.config.SoftKeyBoardListener;
@@ -28,7 +26,6 @@ import com.example.xiaobai.music.music.view.act.StartPageActivity;
 import com.example.xiaobai.music.music.view.fragment.FindFragment;
 import com.example.xiaobai.music.music.view.fragment.HomeFragment;
 import com.example.xiaobai.music.music.view.fragment.MyFragment;
-import com.example.xiaobai.music.service.LockService;
 import com.example.xiaobai.music.service.MusicService;
 import com.example.xiaobai.music.sql.config.Initialization;
 import com.jpeng.jptabbar.BadgeDismissListener;

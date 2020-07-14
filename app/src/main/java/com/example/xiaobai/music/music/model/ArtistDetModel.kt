@@ -6,7 +6,6 @@ import com.example.xiaobai.music.R
 import com.example.xiaobai.music.bean.ResultBean
 import com.example.xiaobai.music.common.Constants
 import com.example.xiaobai.music.music.contract.ArtistDetContract
-import com.example.xiaobai.music.music.view.act.AlbumDetActivity
 import com.example.xiaobai.music.music.view.act.ArtistDetActivity
 import com.google.gson.Gson
 import com.lzy.okgo.OkGo

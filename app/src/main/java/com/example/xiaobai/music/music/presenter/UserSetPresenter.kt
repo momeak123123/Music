@@ -1,8 +1,8 @@
 package com.example.xiaobai.music.music.presenter
 
-import mvp.ljb.kt.presenter.BaseMvpPresenter
 import com.example.xiaobai.music.music.contract.UserSetContract
 import com.example.xiaobai.music.music.model.UserSetModel
+import mvp.ljb.kt.presenter.BaseMvpPresenter
 
 /**
  * @Author Kotlin MVP Plugin

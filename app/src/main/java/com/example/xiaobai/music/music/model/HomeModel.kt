@@ -6,7 +6,6 @@ import android.widget.Toast
 import com.example.xiaobai.music.bean.*
 import com.example.xiaobai.music.common.Constants
 import com.example.xiaobai.music.music.contract.HomeContract
-import com.example.xiaobai.music.music.view.fragment.FindFragment
 import com.example.xiaobai.music.music.view.fragment.HomeFragment
 import com.google.gson.Gson
 import com.lzy.okgo.OkGo
