@@ -3,12 +3,15 @@ package com.example.xiaobai.music.music.view.act
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Toast
 import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.music.contract.LoginContract
 import com.example.xiaobai.music.music.presenter.LoginPresenter
+import com.example.xiaobai.music.sql.bean.Playlist
+import com.example.xiaobai.music.sql.dao.mPlaylistDao
 import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
@@ -29,7 +32,7 @@ class LoginActivity : BaseMvpActivity<LoginContract.IPresenter>(), LoginContract
     }
 
     private lateinit var context: Context
-
+    private lateinit var sp: SharedPreferences
     override fun registerPresenter() = LoginPresenter::class.java
 
     override fun getLayoutId(): Int {
@@ -39,7 +42,7 @@ class LoginActivity : BaseMvpActivity<LoginContract.IPresenter>(), LoginContract
     override fun init(savedInstanceState: Bundle?) {
         super.init(savedInstanceState)
         context = this
-
+        sp = getSharedPreferences("User", Context.MODE_PRIVATE)
 
         val left = resources.getDrawable(R.drawable.emil,null)
         left.setBounds(0, 0, 50, 50) //必须设置图片的大小否则没有作用
@@ -79,6 +82,17 @@ class LoginActivity : BaseMvpActivity<LoginContract.IPresenter>(), LoginContract
                                     et_username_number.text.toString(),
                                     et_passs_number.text.toString()
                                 )
+                                if(sp.getString("username","")!=""){
+                                    if(et_username_number.text.toString() != sp.getString("username","")){
+                                        val list = mPlaylistDao.queryAll()
+                                        if (list.size > 0) {
+                                                for(it in list){
+                                                    mPlaylistDao.delete(it.id)
+                                                }
+                                        }
+                                    }
+                                }
+
                             } else {
                                 Toast.makeText(context, R.string.error_pass, Toast.LENGTH_SHORT).show()
                             }

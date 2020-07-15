@@ -165,8 +165,7 @@ class UserEditActivity : BaseMvpActivity<UserEditContract.IPresenter>(), UserEdi
     override fun initData() {
         super.initData()
 
-        sp =
-            getSharedPreferences("User", Context.MODE_PRIVATE)
+        sp = getSharedPreferences("User", Context.MODE_PRIVATE)
         imaurl = sp.getString("url", "").toString()
         Glide.with(context).load(imaurl).placeholder(R.color.main_black_grey)
             .into(ima)
