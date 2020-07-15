@@ -192,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        onKeyBoardListener();
+        //onKeyBoardListener();
         exit = false;
 
         if (isNeedCheck) {
