@@ -10,8 +10,8 @@ android {
         applicationId "com.example.xiaobai.music"
         minSdkVersion 24
         targetSdkVersion 29
-        versionCode 46
-        versionName "0.4.6"
+        versionCode 47
+        versionName "0.4.7"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
@@ -74,7 +74,7 @@ dependencies {
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 
     //tabbar
-    implementation 'com.jpeng:JPTabBar:1.4.0'
+    implementation 'com.github.Vincent7Wong:EasyNavigation:2.0.5'
 
     //glide-高斯模糊
     implementation 'jp.wasabeef:glide-transformations:3.0.1'

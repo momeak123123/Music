@@ -4,7 +4,7 @@ import android.animation.ObjectAnimator
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
 import com.bumptech.glide.Glide
-import com.example.xiaobai.music.MusicApp
+import com.example.xiaobai.music.MainActivity
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.music.contract.CoverContract
 import com.example.xiaobai.music.music.presenter.CoverPresenter
@@ -31,9 +31,6 @@ class CoverFragment : BaseMvpFragment<CoverContract.IPresenter>(), CoverContract
 
     private lateinit var mAnimator: ObjectAnimator
 
-    //旋转属性动画
-    private var coverAnimator: ObjectAnimator? = null
-
     override fun initView() {
         super.initView()
         initAnimator()//进入页面加载动画
@@ -43,7 +40,7 @@ class CoverFragment : BaseMvpFragment<CoverContract.IPresenter>(), CoverContract
      * 设置Bitmap
      */
     fun setImagePath(ima:String ) {
-
+        MainActivity.updoteAnimation(ima)
         Observable.just(0)
             .subscribeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<Int> {
@@ -60,7 +57,7 @@ class CoverFragment : BaseMvpFragment<CoverContract.IPresenter>(), CoverContract
 
     fun initAnimator() {
         mAnimator = ObjectAnimator.ofFloat(iv_cover, "rotation", 0.0f, 360.0f)
-        mAnimator.duration = 9600//设定转一圈的时间
+        mAnimator.duration = 7200//设定转一圈的时间
         mAnimator.repeatCount = Animation.INFINITE//设定无限循环
         mAnimator.repeatMode = ObjectAnimator.RESTART// 循环模式
         mAnimator.interpolator = object : LinearInterpolator() {}
@@ -74,9 +71,8 @@ class CoverFragment : BaseMvpFragment<CoverContract.IPresenter>(), CoverContract
      */
     fun startRotateAnimation(isPlaying: Boolean = false) {
         if (isPlaying) {
-            coverAnimator?.cancel()
-            coverAnimator?.start()
             mAnimator.start()
+            MainActivity.startAnimation()
         }
     }
 
@@ -84,36 +80,31 @@ class CoverFragment : BaseMvpFragment<CoverContract.IPresenter>(), CoverContract
      * 停止旋转
      */
     fun stopRotateAnimation() {
-        coverAnimator?.pause()
+
         mAnimator.pause()
+        MainActivity.stopAnimation()
     }
 
     /**
      * 继续旋转
      */
     fun resumeRotateAnimation() {
-        coverAnimator?.isStarted?.let {
-            if (it) coverAnimator?.resume() else coverAnimator?.start()
-        }
         mAnimator.resume()
+        MainActivity.resumeAnimation()
     }
 
     override fun onResume() {
         super.onResume()
-        if (coverAnimator != null && coverAnimator?.isPaused!! && MusicApp.getPlay()) {
-            coverAnimator?.resume()
-        }
+
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        coverAnimator?.cancel()
-        coverAnimator = null
+
     }
 
     override fun onStop() {
         super.onStop()
-        coverAnimator?.pause()
     }
 }
 

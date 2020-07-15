@@ -154,30 +154,10 @@ class HomeDetAdapter(
     }
 
     inner class SearchHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var music: ImageView
-        var banner: SimpleImageBanner
-        var name: TextView
-
-        init {
-            music = itemView.findViewById(R.id.music)
-            banner = itemView.findViewById(R.id.banner)
-            name = itemView.findViewById(R.id.name)
-        }
+        var banner: SimpleImageBanner = itemView.findViewById(R.id.banner)
 
         @SuppressLint("ResourceAsColor", "CheckResult")
         fun bindData() {
-
-
-            try {
-                if (MusicPlayActivity.bool) {
-                    music.visibility = View.VISIBLE
-                    name.visibility = View.VISIBLE
-                } else {
-                    music.visibility = View.GONE
-                    name.visibility = View.GONE
-                }
-            } catch (e: Exception) {
-            }
 
             if (ads.isNotEmpty()) {
 
@@ -200,18 +180,7 @@ class HomeDetAdapter(
 
             }
 
-            RxView.clicks(music)
-                .throttleFirst(3, TimeUnit.SECONDS)
-                .subscribe {
-                    val intent = Intent()
-                    context.let { intent.setClass(it, MusicPlayActivity().javaClass) }
-                    intent.putExtra("album_id", 0L)
-                    intent.putExtra("pos", 0)
-                    intent.putExtra("list", "")
-                    intent.putExtra("type", 0)
-                    context.startActivity(intent)
 
-                }
 
         }
     }

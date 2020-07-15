@@ -167,7 +167,7 @@ class AlbumDetAdapter(
             RxView.clicks(pre)
                 .throttleFirst(1, TimeUnit.SECONDS)
                 .subscribe {
-                    if (MusicPlayActivity.bool) {
+                    if (MusicApp.getBool()) {
                         if (MusicApp.getAblumid() == id) {
                             Observable.just(1).subscribe(MusicPlayActivity.observerset)
                         }
@@ -179,7 +179,7 @@ class AlbumDetAdapter(
             RxView.clicks(play)
                 .throttleFirst(1, TimeUnit.SECONDS)
                 .subscribe {
-                    if (MusicPlayActivity.bool) {
+                    if (MusicApp.getBool()) {
                         if (MusicApp.getAblumid() == id) {
                             if (MusicApp.getPlay()) {
                                 Observable.just(0).subscribe(MusicPlayActivity.observerset)
@@ -202,7 +202,7 @@ class AlbumDetAdapter(
             RxView.clicks(next)
                 .throttleFirst(1, TimeUnit.SECONDS)
                 .subscribe {
-                    if (MusicPlayActivity.bool) {
+                    if (MusicApp.getBool()) {
                         if (MusicApp.getAblumid() == id) {
                             Observable.just(2).subscribe(MusicPlayActivity.observerset)
                         }

@@ -80,7 +80,7 @@ class PlayListAdapter  (val datas: MutableList<Music>?, val context: Context) : 
             if(datas.size>1){
                 if(MusicPlayActivity.song_id == datas[position].song_id){
 
-                    if (MusicPlayActivity.bool) {
+                    if (MusicApp.getBool()) {
                         notifyItemRemoved(position)
                         if (position != datas.size) {
                             notifyItemRangeChanged(position, datas.size - position)

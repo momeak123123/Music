@@ -58,7 +58,6 @@ class MusicPlayActivity : AppCompatActivity() {
     companion object {
         var position: Int = 0
         var song_id: Long = 0
-        var bool: Boolean = false
         var load: Boolean = false
         var id: Int = 0
         lateinit var observer: Observer<Boolean>
@@ -108,6 +107,7 @@ class MusicPlayActivity : AppCompatActivity() {
         initView()
         initData()
         m = "http://p1.music.126.net/6y-UleORITEDbvrOLV0Q8A==/5639395138885805.jpg"
+        MusicApp.setBool(true)
     }
 
 
@@ -500,6 +500,7 @@ class MusicPlayActivity : AppCompatActivity() {
                     subTitleTv.text = srtist_name
                     Ablemname.text = playingMusic.album_name
                     coverFragment.setImagePath(playingMusic.pic_url)
+
                     t1 = playingMusic.name
                     t2 = srtist_name
                     m = playingMusic.pic_url
@@ -537,7 +538,6 @@ class MusicPlayActivity : AppCompatActivity() {
             override fun onError(e: Throwable) {}
             override fun onComplete() {
                 playPauseIv.setLoading(false)
-                bool = true
                 playPauseIv.play()
                 MusicApp.setPlay(true)
                 coverFragment.startRotateAnimation(true)

@@ -4,37 +4,19 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:jp="http://schemas.android.com/apk/res-auto"
     tools:context="com.example.xiaobai.music.MainActivity">
 
-
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/viewPager"
+    <com.next.easynavigation.view.EasyNavigationBar
+        android:id="@+id/navigationBar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:Easy_centerLayoutRule="RULE_CENTER"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <com.jpeng.jptabbar.JPTabBar
-        android:id="@+id/tabbar"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/dp_60"
-        android:background="@drawable/rectangle"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        jp:TabAnimate="Scale"
-        jp:TabMargin = "@dimen/dp_12"
-        jp:TabTextSize = "@dimen/sp_12"
-        jp:TabIconSize = "@dimen/dp_18"
-        jp:TabNormalColor="#9e9e9e"
-        jp:TabSelectColor="#06b7ff" />
-
-
-
-
+    </com.next.easynavigation.view.EasyNavigationBar>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

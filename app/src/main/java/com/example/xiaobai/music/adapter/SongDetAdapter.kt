@@ -169,7 +169,7 @@ class SongDetAdapter(
             RxView.clicks(pre)
                 .throttleFirst(1, TimeUnit.SECONDS)
                 .subscribe {
-                    if (MusicPlayActivity.bool) {
+                    if (MusicApp.getBool()) {
                         if (MusicApp.getAblumid() == id) {
                             Observable.just(1).subscribe(MusicPlayActivity.observerset)
                         }
@@ -181,7 +181,7 @@ class SongDetAdapter(
             RxView.clicks(play)
                 .throttleFirst(1, TimeUnit.SECONDS)
                 .subscribe {
-                    if (MusicPlayActivity.bool) {
+                    if (MusicApp.getBool()) {
                         if (MusicApp.getAblumid() == id) {
                             try {
                                 if (MusicApp.getPlay()) {
@@ -211,7 +211,7 @@ class SongDetAdapter(
             RxView.clicks(next)
                 .throttleFirst(1, TimeUnit.SECONDS)
                 .subscribe {
-                    if (MusicPlayActivity.bool) {
+                    if (MusicApp.getBool()) {
                         if (MusicApp.getAblumid() == id) {
                             Observable.just(2).subscribe(MusicPlayActivity.observerset)
                         }

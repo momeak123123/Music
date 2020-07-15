@@ -9,8 +9,9 @@
 
     <!-- tabbar -->
     <string name="tab1">首页</string>
-    <string name="tab2">搜索</string>
-    <string name="tab3">我的</string>
+    <string name="tab2">云搜</string>
+    <string name="tab3">分享</string>
+    <string name="tab4">用户</string>
 
 
     <!-- start_page -->
@@ -74,7 +75,7 @@
     <string name="lyric_default_hint">暂无歌词</string>
     <string name="folders">文件夹</string>
     <string name="play_time">00:00</string>
-    <string name="play_no_resource">无音乐</string>
+    <string name="play_no_resource">无音乐播放</string>
     <string name="play_mode">歌曲已存在</string>
     <string name="play_mode_random">随机播放</string>
     <string name="play_mode_repeat">单曲播放</string>
@@ -160,4 +161,5 @@
     <string name="set4">睡眠模式</string>
     <string name="set2_un">是否清理缓存</string>
     <string name="set2_sess">清理缓存成功</string>
+    <string name="main_set">再按一次退出</string>
 </resources>
