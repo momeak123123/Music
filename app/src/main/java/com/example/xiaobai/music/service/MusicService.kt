@@ -1,15 +1,16 @@
 package com.example.xiaobai.music.service
 
-import android.app.Notification
-import android.app.Service
+import android.app.*
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.IBinder
 import android.widget.Toast
 import com.danikula.videocache.HttpProxyCacheServer
+import com.example.xiaobai.music.MainActivity
 import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.bean.Music
@@ -32,6 +33,7 @@ import java.util.*
 class MusicService : Service() {
 
 
+    private lateinit var notification: Notification
     private var style: Int = 0
     private var count: Int = 2
     private var id = 0
@@ -121,17 +123,24 @@ class MusicService : Service() {
         val intent = Intent(this, LockService::class.java)
         startService(intent)
 
-        startForeground(1, getNotification())
 
-    }
-
-    private fun getNotification(): Notification? {
-        val builder: Notification.Builder = Notification.Builder(this)
-            .setSmallIcon(R.mipmap.ic_launcher)
+        val notificationChannel: NotificationChannel?
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            builder.setChannelId("xiaobai1089")
+            notificationChannel =
+                NotificationChannel("xiaobai1089", "小白音乐", NotificationManager.IMPORTANCE_HIGH)
+            val notificationManager: NotificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(notificationChannel)
         }
-        return builder.build()
+
+         notification = Notification.Builder(this, "xiaobai1089").setContentTitle("This is content title")
+                .setContentText("This is content text")
+                .setWhen(System.currentTimeMillis()).setSmallIcon(R.mipmap.ic_launcher)
+                .setLargeIcon(BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher))
+                .build()
+
+        startForeground(1, notification)
+
     }
 
     fun musicplay(type: Int, count: Int) {
@@ -364,7 +373,7 @@ class MusicService : Service() {
         count = intent.getIntExtra("count", 0)
         style = intent.getIntExtra("style", 0)
         val seek = intent.getDoubleExtra("seek", 0.0)
-        startForeground(1, getNotification())
+        startForeground(1, notification)
         when (types) {
             0 -> {
                 musicstart(ids)
