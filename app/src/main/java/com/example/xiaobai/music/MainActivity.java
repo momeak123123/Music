@@ -192,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        onKeyBoardListener();
+       // onKeyBoardListener();
         exit = false;
 
         if (isNeedCheck) {
@@ -255,7 +255,6 @@ public class MainActivity extends AppCompatActivity {
             public void keyBoardHide(int height) {
                 craetdert(false);
                 craet(false);
-
             }
         });
 
