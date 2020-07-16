@@ -57,7 +57,7 @@ class CoverFragment : BaseMvpFragment<CoverContract.IPresenter>(), CoverContract
 
     fun initAnimator() {
         mAnimator = ObjectAnimator.ofFloat(iv_cover, "rotation", 0.0f, 360.0f)
-        mAnimator.duration = 7200//设定转一圈的时间
+        mAnimator.duration = 9600//设定转一圈的时间
         mAnimator.repeatCount = Animation.INFINITE//设定无限循环
         mAnimator.repeatMode = ObjectAnimator.RESTART// 循环模式
         mAnimator.interpolator = object : LinearInterpolator() {}

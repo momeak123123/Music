@@ -153,7 +153,7 @@ class MusicService : Service() {
         when (count) {
             0 -> {
                 //单曲循环
-                uriseat(playingMusicList!![id].uri, playingMusicList!![id].publish_time)
+                uriseat(playingMusicList!![id].uri, playingMusicList!![id].publish_time,this)
             }
             1 -> {
                 //随机播放
@@ -202,10 +202,10 @@ class MusicService : Service() {
         t1 = playingMusicList!![ids].name
         t2 = srtist_name
         Observable.just(true).subscribe(MusicPlayActivity.observers)
-        uriseat(playingMusicList!![ids].uri, playingMusicList!![ids].publish_time)
+        uriseat(playingMusicList!![ids].uri, playingMusicList!![ids].publish_time,this)
     }
 
-    fun uriseat(uri: String, time: String) {
+    fun uriseat(uri: String, time: String, context : Context) {
         if (style == 1) {
             if (MusicApp.network() == -1) {
                 Toast.makeText(
@@ -218,7 +218,6 @@ class MusicService : Service() {
                 MusicPlayActivity.uri = uri
                 val proxy: HttpProxyCacheServer = getProxy()
                 val proxyUrl = proxy.getProxyUrl(uri, true)
-                println("缓存路径"+proxyUrl)
                 wlMedia.source = proxyUrl
                 wlMedia.next()
             }
@@ -271,7 +270,6 @@ class MusicService : Service() {
                                 MusicPlayActivity.uri = uri
                                 val proxy: HttpProxyCacheServer = getProxy()
                                 val proxyUrl = proxy.getProxyUrl(uri, true)
-                                println("缓存路径"+proxyUrl)
                                 wlMedia.source = proxyUrl
                                 wlMedia.next()
 
@@ -330,7 +328,7 @@ class MusicService : Service() {
         MusicApp.setPosition(ids)
         id = ids
         playingMusicList = MusicApp.getMusic()
-        uriseat(playingMusicList!![ids].uri, playingMusicList!![ids].publish_time)
+        uriseat(playingMusicList!![ids].uri, playingMusicList!![ids].publish_time,this)
         Observable.just(true).subscribe(MusicPlayActivity.observers)
     }
 

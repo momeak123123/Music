@@ -52,8 +52,7 @@ public class CipherUtil {
     // 加密
     public static String encryptString(Context context,File file) throws Exception{
         byte[] raw = getRawKey(Installation.id(context).getBytes());
-        getFile(encry(raw, getBytes(file)),file);
-        return file.getPath();
+        return getFile(encry(raw, getBytes(file)),file.getPath()+"xbm");
     }
 
     private static byte[] getBytes(File file){
@@ -76,21 +75,25 @@ public class CipherUtil {
     }
 
     // 解密
-    public static byte[] decryptString(Context context,File file) throws Exception{
+    public static String decryptString(Context context,String path) throws Exception{
+        File file = new File(path);
         byte[] raw = getRawKey(Installation.id(context).getBytes());
-        return decry(raw, getBytes(file));
+        return getFile(decry(raw, getBytes(file)),path+".mp3");
     }
 
     /**
      * 根据byte数组，生成文件
      */
-    private static void getFile(byte[] bfile, File file) {
+    private static String getFile(byte[] bfile, String path) {
         BufferedOutputStream bos = null;
         FileOutputStream fos = null;
+        File file;
         try {
+            file = new File(path);
             fos = new FileOutputStream(file);
             bos = new BufferedOutputStream(fos);
             bos.write(bfile);
+            return path;
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -109,6 +112,7 @@ public class CipherUtil {
                 }
             }
         }
+        return "";
     }
 
     private static String bytesToHexString(byte[] src){

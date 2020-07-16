@@ -229,7 +229,7 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
                                         if (its.song_id == data[i].song_id) {
                                             mDownDao.delete(data[i].id)
                                             FilesUtils.delFile(data[i].uri)
-                                            adapter.remove(adapter.listdet[i].pos)
+                                            adapter.removeAll(its)
                                             Toast.makeText(
                                                 context,
                                                 getText(R.string.song_delsongsucc),

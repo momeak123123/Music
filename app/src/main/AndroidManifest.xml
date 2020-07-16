@@ -68,7 +68,8 @@
 
         <activity
             android:name=".music.view.act.MusicPlayActivity"
-            android:launchMode="singleTop" />
+            android:launchMode="singleTop"
+            android:configChanges="orientation|keyboardHidden|screenSize"/>
         <activity
             android:name=".MainActivity"
             android:configChanges="keyboardHidden"
@@ -89,7 +90,6 @@
         <activity android:name=".music.view.act.DownloadActivity" />
         <activity android:name=".music.view.act.SearchListActivity" />
         <activity android:name=".music.view.act.UserSetActivity" />
-        <activity android:name=".music.view.act.CodeActivity" />
     </application>
 
 </manifest>

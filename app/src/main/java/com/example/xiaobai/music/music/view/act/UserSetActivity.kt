@@ -1,12 +1,11 @@
 package com.example.xiaobai.music.music.view.act
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
+import android.content.*
 import android.os.Bundle
 import android.text.InputType
 import android.widget.Toast
+import androidx.annotation.Nullable
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.config.Screenshot
 import com.example.xiaobai.music.music.contract.UserSetContract
@@ -29,7 +28,7 @@ import java.util.concurrent.TimeUnit
  * @Date 2020/07/07
  * @Description input description
  **/
-class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>() , UserSetContract.IView {
+class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>(), UserSetContract.IView {
 
     override fun registerPresenter() = UserSetPresenter::class.java
     private lateinit var inviteCode: String
@@ -37,7 +36,7 @@ class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>() , UserSetC
     private lateinit var context: Context
     private lateinit var sp: SharedPreferences
     override fun getLayoutId(): Int {
-       return R.layout.user_set
+        return R.layout.user_set
     }
 
     @SuppressLint("SetTextI18n")
@@ -49,30 +48,30 @@ class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>() , UserSetC
         val path = context.externalCacheDir!!.absolutePath
         file = File(path)
         val sizes = FilesUtils.getCurrentFolderSize(file)
-        size.text =FormetFileSize(sizes)
+        size.text = FormetFileSize(sizes)
 
 
     }
 
-     private fun FormetFileSize(file: Long): String {
-         val df = DecimalFormat("#.00")
-         var fileSizeString = "0M"
-         fileSizeString = when {
-             file < 1024 -> {
-                 df.format(file.toDouble()).toString() + "B"
-             }
-             file < 1048576 -> {
-                 df.format(file.toDouble() / 1024).toString() + "K"
-             }
-             file < 1073741824 -> {
-                 df.format(file.toDouble() / 1048576).toString() + "M"
-             }
-             else -> {
-                 df.format(file.toDouble() / 1073741824).toString() + "G"
-             }
-         }
-         return fileSizeString
-     }
+    private fun FormetFileSize(file: Long): String {
+        val df = DecimalFormat("#.00")
+        var fileSizeString = "0M"
+        fileSizeString = when {
+            file < 1024 -> {
+                df.format(file.toDouble()).toString() + "B"
+            }
+            file < 1048576 -> {
+                df.format(file.toDouble() / 1024).toString() + "K"
+            }
+            file < 1073741824 -> {
+                df.format(file.toDouble() / 1048576).toString() + "M"
+            }
+            else -> {
+                df.format(file.toDouble() / 1073741824).toString() + "G"
+            }
+        }
+        return fileSizeString
+    }
 
     @SuppressLint("CheckResult", "SetTextI18n")
     override fun initView() {
@@ -128,7 +127,7 @@ class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>() , UserSetC
         RxView.clicks(view)
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
-                Screenshot.screenShot(this)
+
             }
 
         RxView.clicks(view2)
@@ -151,7 +150,7 @@ class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>() , UserSetC
         RxView.clicks(view3)
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
-                if(code.text == ""){
+                if (code.text == "") {
                     MaterialDialog.Builder(context)
                         .title(getText(R.string.set4))
                         .inputType(
@@ -173,7 +172,7 @@ class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>() , UserSetC
                         })
                         .cancelable(false)
                         .show()
-                }else{
+                } else {
                     Toast.makeText(
                         context,
                         getText(R.string.code_captchas),
@@ -189,15 +188,42 @@ class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>() , UserSetC
     override fun initData() {
         super.initData()
 
-
+        val codetxt = getClipboardContent(this)
+        if (code.text == "") {
+            if (codetxt != "") {
+                MaterialDialog.Builder(context)
+                    .title(getText(R.string.set4))
+                    .content(getText(R.string.code_captch))
+                    .positiveColorRes(R.color.colorAccentDarkTheme)
+                    .negativeColorRes(R.color.red)
+                    .positiveText(getText(R.string.carry))
+                    .negativeText(getText(R.string.cancel))
+                    .onPositive { _: MaterialDialog?, _: DialogAction? ->
+                        code.text = codetxt
+                    }
+                    .show()
+            }
+        }
     }
 
     /**
-     *  查看剪贴板内容是否有邀请码
+     * 获取剪切板上的内容
      */
-    private fun loadClipboard() {
-        //inviteCode = ClipboardFactory.getCode(this)
+    @Nullable
+    fun getClipboardContent(context: Context): String {
+        val cm: ClipboardManager =
+            context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val data: ClipData? = cm.primaryClip
+        if (data != null) {
+            if (data.itemCount > 0) {
+                val item: ClipData.Item = data.getItemAt(0)
+                val sequence: CharSequence = item.coerceToText(context)
+                return sequence.toString()
+            }
+        }
+        return ""
     }
+
 
     override fun onDestroy() {
         super.onDestroy()

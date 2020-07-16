@@ -9,6 +9,9 @@ import android.net.Uri;
 import android.os.Environment;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.widget.Toast;
+
+import com.example.xiaobai.music.R;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -93,6 +96,12 @@ public class Screenshot {
         // 最后通知图库更新
         // context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + path)));
         context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(new File(file.getPath()))));
+
+        Toast.makeText(
+                context,
+                context.getText(R.string.code_baocs),
+                Toast.LENGTH_SHORT
+        ).show();
     }
 
 

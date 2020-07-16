@@ -288,6 +288,9 @@ class DownloadAdapter(
         }
     }
 
+    fun removeAll(music:Music){
+        datas.remove(music)
+    }
 
     interface ItemClickListener {
         fun onItemClick(view: View, position: Int)

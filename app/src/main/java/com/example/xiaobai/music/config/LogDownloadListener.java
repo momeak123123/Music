@@ -22,7 +22,8 @@ public class LogDownloadListener extends DownloadListener {
     private Long playid;
     private List<Down> down;
     private int type;
-    public LogDownloadListener(Music musics, Context contexts,Long playids,List<Down> downs,int types) {
+
+    public LogDownloadListener(Music musics, Context contexts, Long playids, List<Down> downs, int types) {
         super("LogDownloadListener");
         music = musics;
         context = contexts;
@@ -34,7 +35,7 @@ public class LogDownloadListener extends DownloadListener {
     @Override
     public void onStart(Progress progress) {
         System.out.println("onStart: " + progress);
-        if(type==0){
+        if (type == 0) {
             Toast.makeText(
                     context,
                     context.getText(R.string.download),
@@ -53,7 +54,7 @@ public class LogDownloadListener extends DownloadListener {
     @Override
     public void onError(Progress progress) {
         System.out.println("onError: " + progress);
-        if(type==0) {
+        if (type == 0) {
             Toast.makeText(
                     context,
                     context.getText(R.string.download_succe) + music.getName() + context.getText(R.string.download_error),
@@ -66,36 +67,29 @@ public class LogDownloadListener extends DownloadListener {
     @Override
     public void onFinish(File file, Progress progress) {
 
-        try {
-           String path =  CipherUtil.encryptString(context,file);
-           if(!path.equals("")){
-               if(type==0){
-                   Down down = new Down();
-                   down.setAlbum_id(music.getAlbum_id());
-                   down.setAlbum_name(music.getAlbum_name());
-                   down.setArtist(music.getAll_artist().get(0).getName());
-                   down.setArtist_id(music.getAll_artist().get(0).getId());
-                   down.setName(music.getName());
-                   down.setPic_url(music.getPic_url());
-                   down.setPublish_time(music.getPublish_time());
-                   down.setSong_id(music.getSong_id());
-                   down.setSong_list_id(music.getSong_list_id());
-                   down.setUri(path);
-                   down.setDown_date(Constants.Dates());
-                   down.setUser(Installation.id(context));
-                   mDownDao.insert(down);
-                   Toast.makeText(
-                           context,
-                           context.getText(R.string.download_succe)+music.getName()+context.getText(R.string.download_success),
-                           Toast.LENGTH_SHORT
-                   ).show();
-               }
-           }
+        if (type == 0) {
+            Down down = new Down();
+            down.setAlbum_id(music.getAlbum_id());
+            down.setAlbum_name(music.getAlbum_name());
+            down.setArtist(music.getAll_artist().get(0).getName());
+            down.setArtist_id(music.getAll_artist().get(0).getId());
+            down.setName(music.getName());
+            down.setPic_url(music.getPic_url());
+            down.setPublish_time(music.getPublish_time());
+            down.setSong_id(music.getSong_id());
+            down.setSong_list_id(music.getSong_list_id());
+            down.setUri(file.getPath());
+            down.setDown_date(Constants.Dates());
+            down.setUser(Installation.id(context));
+            mDownDao.insert(down);
+            Toast.makeText(
+                    context,
+                    context.getText(R.string.download_succe) + music.getName() + context.getText(R.string.download_success),
+                    Toast.LENGTH_SHORT
+            ).show();
 
-        } catch (Exception e) {
-            e.printStackTrace();
+
         }
-
     }
 
     @Override
