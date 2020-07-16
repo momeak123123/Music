@@ -44,14 +44,6 @@ public class mDownDao {
         Initialization.getDaoInstantDown().getDownDao().update(down);
     }
 
-    /**
-     * 查询条件为Type=TYPE_LOVE的数据
-     *
-     * @return
-     */
-    public static List<Down> query(Long playid) {
-        return Initialization.getDaoInstantDown().getDownDao().queryBuilder().where(DownDao.Properties.Playid.eq(playid)).list();
-    }
 
     /**
      * 查询条件为Type=TYPE_LOVE的数据
@@ -70,13 +62,6 @@ public class mDownDao {
         return Initialization.getDaoInstantDown().getDownDao().loadAll();
     }
 
-    /**
-     * 分页
-     */
-    public static List<Down> queryBuilder(Long playid ,int set , int lim) {
-
-        return Initialization.getDaoInstantDown().getDownDao().queryBuilder().where(DownDao.Properties.Playid.eq(playid)).offset(set).limit(lim).list();
-    }
 
     /**
      * 多表查询

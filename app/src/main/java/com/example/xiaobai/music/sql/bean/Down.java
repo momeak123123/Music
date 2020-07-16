@@ -11,7 +11,6 @@ public class Down {
     @Id(autoincrement = true)//设置自增长
     @Index(unique = true)//设置唯一性
     private Long id;
-    private Long playid;
     private Long song_id;
     private String name;
     private String album_name;
@@ -22,12 +21,14 @@ public class Down {
     private String pic_url;
     private String publish_time;
     private Long song_list_id;
-    @Generated(hash = 537638538)
-    public Down(Long id, Long playid, Long song_id, String name, String album_name,
+    private String down_date;
+    private String user;
+    @Generated(hash = 1720153343)
+    public Down(Long id, Long song_id, String name, String album_name,
             Long album_id, String uri, String artist, Long artist_id,
-            String pic_url, String publish_time, Long song_list_id) {
+            String pic_url, String publish_time, Long song_list_id,
+            String down_date, String user) {
         this.id = id;
-        this.playid = playid;
         this.song_id = song_id;
         this.name = name;
         this.album_name = album_name;
@@ -38,6 +39,8 @@ public class Down {
         this.pic_url = pic_url;
         this.publish_time = publish_time;
         this.song_list_id = song_list_id;
+        this.down_date = down_date;
+        this.user = user;
     }
     @Generated(hash = 1079473298)
     public Down() {
@@ -47,12 +50,6 @@ public class Down {
     }
     public void setId(Long id) {
         this.id = id;
-    }
-    public Long getPlayid() {
-        return this.playid;
-    }
-    public void setPlayid(Long playid) {
-        this.playid = playid;
     }
     public Long getSong_id() {
         return this.song_id;
@@ -113,6 +110,18 @@ public class Down {
     }
     public void setSong_list_id(Long song_list_id) {
         this.song_list_id = song_list_id;
+    }
+    public String getDown_date() {
+        return this.down_date;
+    }
+    public void setDown_date(String down_date) {
+        this.down_date = down_date;
+    }
+    public String getUser() {
+        return this.user;
+    }
+    public void setUser(String user) {
+        this.user = user;
     }
 
 

@@ -1,15 +1,21 @@
 package com.example.xiaobai.music
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import com.example.xiaobai.music.common.Constants
+import com.example.xiaobai.music.config.Installation
 import com.example.xiaobai.music.music.model.MainModel
 import com.example.xiaobai.music.music.model.MusicPlayModel.Companion.getadvertising
 import com.example.xiaobai.music.music.model.MusicPlayModel.Companion.updateapp
+import com.example.xiaobai.music.utils.DeleteUtil
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Observer
@@ -25,6 +31,7 @@ class StartsActivity : AppCompatActivity() {
 
     private var mdDisposable: Disposable? = null
 
+    @SuppressLint("SdCardPath")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val window = window
@@ -60,6 +67,17 @@ class StartsActivity : AppCompatActivity() {
                 override fun onError(e: Throwable) {}
                 override fun onComplete() {}
             })
+
+        println("日期" + Constants.Dates())
+        println("Installtion ID" + Installation.id(this))
+        //67700683-bb9b-4ef4-b30b-8c332a98aa2e
+        val sp: SharedPreferences = getSharedPreferences("User", Context.MODE_PRIVATE)
+
+        if(sp.getString("android_id", "").toString()==""){
+            DeleteUtil.delete("/sdcard/Download/", false, ".mp3")
+            sp.edit().putString("android_id", Installation.id(this)).apply()
+        }
+
     }
 
     private fun getVersionName(): String {

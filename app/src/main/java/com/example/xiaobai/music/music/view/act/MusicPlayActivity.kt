@@ -33,6 +33,7 @@ import com.example.xiaobai.music.service.LockService
 import com.example.xiaobai.music.service.MusicService
 import com.example.xiaobai.music.sql.bean.Down
 import com.example.xiaobai.music.sql.bean.Playlist
+import com.example.xiaobai.music.sql.dao.mCollectDao
 import com.example.xiaobai.music.sql.dao.mDownDao
 import com.example.xiaobai.music.sql.dao.mPlaylistDao
 import com.google.gson.Gson
@@ -199,14 +200,15 @@ class MusicPlayActivity : AppCompatActivity() {
                                 val request = OkGo.get<File>(uri)
                                 OkDownload.request(uri, request) //
                                     .priority(0)
-                                    .fileName("music$song_id.mp3") //
+                                    .folder(context.getExternalFilesDir("")!!.absolutePath+"/download")
+                                    .fileName("music$song_id") //
                                     .save() //
                                     .register(
                                         LogDownloadListener(
                                             playingMusic,
                                             context,
                                             0,
-                                            downs
+                                            downs,0
                                         )
                                     ) //
                                     .start()
@@ -755,7 +757,7 @@ class MusicPlayActivity : AppCompatActivity() {
                         playingMusic.let { idmap.add(it) }
                         val playlist: Playlist =
                             mPlaylistDao.query(song[position].play_list_id)[0]
-                        val playsong = mDownDao.query(song[position].play_list_id)
+                        val playsong = mCollectDao.query(song[position].play_list_id)
                         val songs = mutableListOf<Music>()
                         songs.addAll(idmap)
                         if (playsong.size > 0) {

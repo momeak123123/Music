@@ -159,8 +159,11 @@
     <string name="set1">修改密码</string>
     <string name="set2">清理缓存</string>
     <string name="set3">编辑个人资料</string>
-    <string name="set4">睡眠模式</string>
+    <string name="set4">邀请码</string>
     <string name="set2_un">是否清理缓存</string>
     <string name="set2_sess">清理缓存成功</string>
     <string name="main_set">再按一次退出</string>
+    <string name="code_captchas">邀请码已激活</string>
+    <string name="code_captcha">请输入邀请码</string>
+
 </resources>

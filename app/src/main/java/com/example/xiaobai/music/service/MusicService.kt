@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.IBinder
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import com.danikula.videocache.HttpProxyCacheServer
 import com.example.xiaobai.music.MainActivity
 import com.example.xiaobai.music.MusicApp
@@ -16,17 +17,21 @@ import com.example.xiaobai.music.R
 import com.example.xiaobai.music.bean.Music
 import com.example.xiaobai.music.config.Cookie
 import com.example.xiaobai.music.config.Dencry
+import com.example.xiaobai.music.config.LogDownloadListener
 import com.example.xiaobai.music.config.Notifications
 import com.example.xiaobai.music.music.view.act.MusicPlayActivity
+import com.example.xiaobai.music.utils.CipherUtil
 import com.google.gson.Gson
 import com.lzy.okgo.OkGo
 import com.lzy.okgo.callback.StringCallback
 import com.lzy.okgo.model.Response
+import com.lzy.okserver.OkDownload
 import com.ywl5320.wlmedia.WlMedia
 import com.ywl5320.wlmedia.enums.WlComplete
 import com.ywl5320.wlmedia.enums.WlPlayModel
 import com.ywl5320.wlmedia.log.WlLog
 import io.reactivex.Observable
+import java.io.File
 import java.util.*
 
 
@@ -46,6 +51,7 @@ class MusicService : Service() {
     private var mAllowRebind = false
 
     /** 当服务被创建时调用.  */
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate() {
         println("初始启动")
         wlMedia = WlMedia()
@@ -212,6 +218,7 @@ class MusicService : Service() {
                 MusicPlayActivity.uri = uri
                 val proxy: HttpProxyCacheServer = getProxy()
                 val proxyUrl = proxy.getProxyUrl(uri, true)
+                println("缓存路径"+proxyUrl)
                 wlMedia.source = proxyUrl
                 wlMedia.next()
             }
@@ -264,6 +271,7 @@ class MusicService : Service() {
                                 MusicPlayActivity.uri = uri
                                 val proxy: HttpProxyCacheServer = getProxy()
                                 val proxyUrl = proxy.getProxyUrl(uri, true)
+                                println("缓存路径"+proxyUrl)
                                 wlMedia.source = proxyUrl
                                 wlMedia.next()
 

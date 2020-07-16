@@ -312,14 +312,15 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
                                                     request
                                                 ) //
                                                     .priority(0)
-                                                    .fileName("music" + data.song_id + ".mp3") //
+                                                    .folder(it1.getExternalFilesDir("")!!.absolutePath+"/download")
+                                                    .fileName("music" + data.song_id ) //
                                                     .save() //
                                                     .register(
                                                         LogDownloadListener(
                                                             data,
                                                             context,
                                                             0,
-                                                            downs
+                                                            downs,0
                                                         )
                                                     ) //
                                                     .start()
@@ -407,7 +408,7 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
                     .negativeText(getText(R.string.cancel))
                     .onPositive { _: MaterialDialog?, _: DialogAction? ->
                         val playlist: Playlist = mPlaylistDao.query(song[position].play_list_id)[0]
-                        val playsong = mDownDao.query(song[position].play_list_id)
+                        val playsong = mCollectDao.query(song[position].play_list_id)
                         val songs = mutableListOf<Music>()
                         songs.addAll(idmap)
                         if (playsong.size > 0) {

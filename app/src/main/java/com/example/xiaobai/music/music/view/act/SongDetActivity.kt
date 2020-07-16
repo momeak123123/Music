@@ -301,14 +301,15 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
                                         val request = OkGo.get<File>(its.uri)
                                         OkDownload.request(its.uri, request) //
                                             .priority(0)
-                                            .fileName("music" + its.song_id + ".mp3") //
+                                            .folder(context.getExternalFilesDir("")!!.absolutePath+"/download")
+                                            .fileName("music" + its.song_id ) //
                                             .save() //
                                             .register(
                                                 LogDownloadListener(
                                                     its,
                                                     context,
                                                     0,
-                                                    downs
+                                                    downs,0
                                                 )
                                             ) //
                                             .start()
@@ -608,14 +609,15 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
                                                 request
                                             ) //
                                                 .priority(0)
-                                                .fileName("music" + songlist[data].song_id + ".mp3") //
+                                                .folder(context.getExternalFilesDir("")!!.absolutePath+"/download")
+                                                .fileName("music" + songlist[data].song_id ) //
                                                 .save() //
                                                 .register(
                                                     LogDownloadListener(
                                                         songlist[data],
                                                         context,
                                                         0,
-                                                        downs
+                                                        downs,0
                                                     )
                                                 ) //
                                                 .start()

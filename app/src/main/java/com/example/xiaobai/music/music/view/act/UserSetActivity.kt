@@ -1,14 +1,12 @@
 package com.example.xiaobai.music.music.view.act
 
 import android.annotation.SuppressLint
-import android.app.TimePickerDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.View
+import android.text.InputType
 import android.widget.Toast
-import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.config.Screenshot
 import com.example.xiaobai.music.music.contract.UserSetContract
@@ -17,8 +15,8 @@ import com.example.xiaobai.music.utils.FilesUtils
 import com.jakewharton.rxbinding2.view.RxView
 import com.xuexiang.xui.widget.dialog.materialdialog.DialogAction
 import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
+import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog.SingleButtonCallback
 import kotlinx.android.synthetic.main.head.*
-import kotlinx.android.synthetic.main.sleep.*
 import kotlinx.android.synthetic.main.user_set.*
 import mvp.ljb.kt.act.BaseMvpActivity
 import java.io.File
@@ -34,6 +32,7 @@ import java.util.concurrent.TimeUnit
 class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>() , UserSetContract.IView {
 
     override fun registerPresenter() = UserSetPresenter::class.java
+    private lateinit var inviteCode: String
     private lateinit var file: File
     private lateinit var context: Context
     private lateinit var sp: SharedPreferences
@@ -47,7 +46,7 @@ class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>() , UserSetC
         context = this
         top_title.text = getText(R.string.set)
         sp = getSharedPreferences("User", Context.MODE_PRIVATE)
-        val path = context.externalCacheDir!!.absolutePath+"/video-cache"
+        val path = context.externalCacheDir!!.absolutePath
         file = File(path)
         val sizes = FilesUtils.getCurrentFolderSize(file)
         size.text =FormetFileSize(sizes)
@@ -152,80 +151,52 @@ class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>() , UserSetC
         RxView.clicks(view3)
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
-              set.visibility = View.VISIBLE
-            }
-
-        RxView.clicks(popule_back)
-            .throttleFirst(3, TimeUnit.SECONDS)
-            .subscribe {
-                set.visibility = View.GONE
-            }
-
-        RxView.clicks(relativeLayout2)
-            .throttleFirst(3, TimeUnit.SECONDS)
-            .subscribe {
-                set.visibility = View.GONE
-            }
-
-        RxView.clicks(relat1)
-            .throttleFirst(1, TimeUnit.SECONDS)
-            .subscribe {
-                if(switch1.isChecked){
-                    switch1.isChecked = false
+                if(code.text == ""){
+                    MaterialDialog.Builder(context)
+                        .title(getText(R.string.set4))
+                        .inputType(
+                            InputType.TYPE_CLASS_TEXT
+                                    or InputType.TYPE_TEXT_FLAG_CAP_WORDS
+                        )
+                        .input(
+                            getString(R.string.code_captcha),
+                            "",
+                            false
+                        ) { dialog, input -> }
+                        .inputRange(3, 5)
+                        .positiveText(getText(R.string.carry))
+                        .negativeText(getText(R.string.cancel))
+                        .positiveColorRes(R.color.colorAccentDarkTheme)
+                        .negativeColorRes(R.color.red)
+                        .onPositive(SingleButtonCallback { dialog: MaterialDialog, which: DialogAction? ->
+                            code.text = dialog.inputEditText!!.text.toString()
+                        })
+                        .cancelable(false)
+                        .show()
                 }else{
-                    switch1.isChecked = true
-                    switch2.isChecked = false
-                }
-
-
-            }
-        RxView.clicks(relat2)
-            .throttleFirst(1, TimeUnit.SECONDS)
-            .subscribe {
-                TimePickerDialog(this,
-                    TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute -> time.text =
-                        "$hourOfDay:$minute"
-                    }, 23, 0, true).show()
-
-            }
-        RxView.clicks(relat3)
-            .throttleFirst(1, TimeUnit.SECONDS)
-            .subscribe {
-                if(switch2.isChecked){
-                    switch2.isChecked = false
-                }else{
-                    switch2.isChecked = true
-                    switch1.isChecked = false
+                    Toast.makeText(
+                        context,
+                        getText(R.string.code_captchas),
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
 
             }
-        RxView.clicks(relat4)
-            .throttleFirst(1, TimeUnit.SECONDS)
-            .subscribe {
-                TimePickerDialog(this,
-                    TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
-                        time.text = "$hourOfDay:$minute"
-                        MusicApp.setHourOfDay(hourOfDay)
-                        MusicApp.setMinute(minute)
-                    }, 23, 0, true).show()
 
-            }
-
-        RxView.clicks(relat5)
-            .throttleFirst(1, TimeUnit.SECONDS)
-            .subscribe {
-                TimePickerDialog(this,
-                    TimePickerDialog.OnTimeSetListener { _, hourOfDay, minute ->
-                        times.text = "$hourOfDay:$minute"
-                    }, 2, 0, true).show()
-
-            }
     }
+
 
     override fun initData() {
         super.initData()
 
 
+    }
+
+    /**
+     *  查看剪贴板内容是否有邀请码
+     */
+    private fun loadClipboard() {
+        //inviteCode = ClipboardFactory.getCode(this)
     }
 
     override fun onDestroy() {
