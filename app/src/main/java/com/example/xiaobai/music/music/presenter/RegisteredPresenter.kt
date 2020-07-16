@@ -13,8 +13,8 @@ import mvp.ljb.kt.presenter.BaseMvpPresenter
 class RegisteredPresenter : BaseMvpPresenter<RegisteredContract.IView, RegisteredContract.IModel>(), RegisteredContract.IPresenter{
 
     override fun registerModel() = RegisteredModel::class.java
-    override fun registerdata(context: Context, email:String, pass:String): Boolean {
-        return getModel().registerdata(context,email,pass)
+    override fun registerdata(context: Context, email:String, pass:String,code:String): Boolean {
+        return getModel().registerdata(context,email,pass,code)
     }
 
     override fun registercode(context: Context, email: String) {

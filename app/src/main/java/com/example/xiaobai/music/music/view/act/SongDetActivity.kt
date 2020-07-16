@@ -302,7 +302,7 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
                                         OkDownload.request(its.uri, request) //
                                             .priority(0)
                                             .folder(context.getExternalFilesDir("")!!.absolutePath+"/download")
-                                            .fileName("music" + its.song_id + ".mp3") //
+                                            .fileName("music" + its.song_id ) //
                                             .save() //
                                             .register(
                                                 LogDownloadListener(
@@ -610,7 +610,7 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
                                             ) //
                                                 .priority(0)
                                                 .folder(context.getExternalFilesDir("")!!.absolutePath+"/download")
-                                                .fileName("music" + songlist[data].song_id + ".mp3") //
+                                                .fileName("music" + songlist[data].song_id ) //
                                                 .save() //
                                                 .register(
                                                     LogDownloadListener(

@@ -143,6 +143,7 @@ class MusicService : Service() {
                 .setContentText("This is content text")
                 .setWhen(System.currentTimeMillis()).setSmallIcon(R.mipmap.ic_launcher)
                 .setLargeIcon(BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher))
+                .setOnlyAlertOnce(true)
                 .build()
 
         startForeground(1, notification)
@@ -242,6 +243,7 @@ class MusicService : Service() {
 
             }
         } else if (style == 4) {
+            CipherUtil.decryptString(context,uri)
             wlMedia.source = uri
             wlMedia.next()
         }

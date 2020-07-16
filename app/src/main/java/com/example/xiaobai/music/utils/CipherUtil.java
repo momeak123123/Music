@@ -7,12 +7,15 @@ import com.example.xiaobai.music.config.Installation;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.security.NoSuchAlgorithmException;
+import java.security.Provider;
 import java.security.SecureRandom;
 import java.util.Date;
 import java.util.Objects;
@@ -20,65 +23,92 @@ import java.util.Objects;
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
+
+import static com.example.xiaobai.music.config.OSS.put;
 
 public class CipherUtil {
 
-    private static byte[] getRawKey(byte[] seed) throws NoSuchAlgorithmException {
-        SecureRandom sr = SecureRandom.getInstance("SHA1PRNG"); // 获得一个随机数，传入的参数为默认方式。
-        sr.setSeed(seed);  // 设置一个种子，这个种子一般是用户设定的密码。也可以是其它某个固定的字符串
-        KeyGenerator keyGen = KeyGenerator.getInstance("AES");  // 获得一个key生成器（AES加密模式）
-        keyGen.init(128, sr);      // 设置密匙长度128位
-        SecretKey key = keyGen.generateKey();  // 获得密匙
-        return key.getEncoded();
+    private static byte[] getRawKey(byte[] seed) throws Exception {
+        KeyGenerator kgen = KeyGenerator.getInstance("AES");
+        SecureRandom sr = SecureRandom.getInstance("SHA1PRNG", new CryptoProvider());
+        sr.setSeed(seed);
+        kgen.init(128, sr);
+        SecretKey skey = kgen.generateKey();
+        return skey.getEncoded();
     }
 
-    private static byte[] encry(byte[] raw, byte[] input) throws Exception {  // 加密
-        SecretKeySpec keySpec = new SecretKeySpec(raw, "AES"); // 根据上一步生成的密匙指定一个密匙（密匙二次加密？）
-        @SuppressLint("GetInstance") Cipher cipher = Cipher.getInstance("AES");  // 获得Cypher实例对象
-        cipher.init(Cipher.ENCRYPT_MODE, keySpec);  // 初始化模式为加密模式，并指定密匙
-        return cipher.doFinal(input);                         // 返回加密后的密文（byte数组)
+    static final class CryptoProvider extends Provider {
+        /**
+         * Creates a Provider and puts parameters
+         */
+        CryptoProvider() {
+            super("Crypto", 1.0, "HARMONY (SHA1 digest; SecureRandom; SHA1withDSA signature)");
+            put("SecureRandom.SHA1PRNG",
+                    "org.apache.harmony.security.provider.crypto.SHA1PRNG_SecureRandomImpl");
+            put("SecureRandom.SHA1PRNG ImplementedIn", "Software");
+        }
     }
 
-    private static byte[] decry(byte[] raw, byte[] encode) throws Exception{ // 解密
-        SecretKeySpec keySpec = new SecretKeySpec(raw, "AES");
+    private static byte[] encrypt(byte[] raw, byte[] clear) throws Exception {
+        SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
         @SuppressLint("GetInstance") Cipher cipher = Cipher.getInstance("AES");
-        cipher.init(Cipher.DECRYPT_MODE, keySpec);   // 解密的的方法差不多，只是这里的模式不一样
-        return cipher.doFinal(encode);
+        cipher.init(Cipher.ENCRYPT_MODE, skeySpec, new IvParameterSpec(
+                new byte[cipher.getBlockSize()]));
+        return cipher.doFinal(clear);
     }
 
+    private static byte[] decrypt(byte[] raw, byte[] encrypted)
+            throws Exception {
+        SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
+        @SuppressLint("GetInstance") Cipher cipher = Cipher.getInstance("AES");
+        cipher.init(Cipher.DECRYPT_MODE, skeySpec, new IvParameterSpec(
+                new byte[cipher.getBlockSize()]));
+        return cipher.doFinal(encrypted);
+    }
 
 
     // 加密
     public static String encryptString(Context context,File file) throws Exception{
         byte[] raw = getRawKey(Installation.id(context).getBytes());
-        return getFile(encry(raw, getBytes(file)),file.getPath()+"xbm");
+        return getFile(encrypt(raw, readFile(file)),file.getPath());
     }
 
-    private static byte[] getBytes(File file){
-        byte[] buffer = null;
+    //file文件读取成byte[]
+    private static byte[] readFile(File file) {
+        RandomAccessFile rf = null;
+        byte[] data = null;
         try {
-            FileInputStream fis = new FileInputStream(file);
-            ByteArrayOutputStream bos = new ByteArrayOutputStream(1000);
-            byte[] b = new byte[1000];
-            int n;
-            while ((n = fis.read(b)) != -1) {
-                bos.write(b, 0, n);
-            }
-            fis.close();
-            bos.close();
-            buffer = bos.toByteArray();
-        } catch (IOException e) {
-            e.printStackTrace();
+            rf = new RandomAccessFile(file, "r");
+            data = new byte[(int) rf.length()];
+            rf.readFully(data);
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        } finally {
+            closeQuietly(rf);
         }
-        return buffer;
+        return data;
     }
+
+    //关闭读取file
+    private static void closeQuietly(Closeable closeable) {
+        try {
+            if (closeable != null) {
+                closeable.close();
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
+    }
+
 
     // 解密
     public static String decryptString(Context context,String path) throws Exception{
         File file = new File(path);
         byte[] raw = getRawKey(Installation.id(context).getBytes());
-        return getFile(decry(raw, getBytes(file)),path+".mp3");
+       return getFile(decrypt(raw, readFile(file)),path);
+       // return getFiles(context,decrypt(raw, readFile(file)));
     }
 
     /**
@@ -115,39 +145,38 @@ public class CipherUtil {
         return "";
     }
 
-    private static String bytesToHexString(byte[] src){
-        StringBuilder stringBuilder = new StringBuilder("");
-        if (src == null || src.length <= 0) {
-            return null;
-        }
-        for (int i = 0; i < src.length; i++) {
-            int v = src[i] & 0xFF;
-            String hv = Integer.toHexString(v);
-            if (hv.length() < 2) {
-                stringBuilder.append(0);
+
+    /**
+     * 根据byte数组，生成临时文件
+     */
+    private static String getFiles(Context context,byte[] bfile) {
+        BufferedOutputStream bos = null;
+        FileOutputStream fos = null;
+        File file;
+        try {
+            file = File.createTempFile("test", null, context.getCacheDir());
+            fos = new FileOutputStream(file);
+            bos = new BufferedOutputStream(fos);
+            bos.write(bfile);
+            return file.getPath();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (bos != null) {
+                try {
+                    bos.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
             }
-            stringBuilder.append(hv);
+            if (fos != null) {
+                try {
+                    fos.close();
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+            }
         }
-        return stringBuilder.toString();
-    }
-
-
-    private static byte[] hexStringToBytes(String hexString) {
-        if (hexString == null || hexString.equals("")) {
-            return null;
-        }
-        hexString = hexString.toUpperCase();
-        int length = hexString.length() / 2;
-        char[] hexChars = hexString.toCharArray();
-        byte[] d = new byte[length];
-        for (int i = 0; i < length; i++) {
-            int pos = i * 2;
-            d[i] = (byte) (charToByte(hexChars[pos]) << 4 | charToByte(hexChars[pos + 1]));
-        }
-        return d;
-    }
-
-    private static byte charToByte(char c) {
-        return (byte) "0123456789ABCDEF".indexOf(c);
+        return "";
     }
 }

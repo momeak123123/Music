@@ -322,7 +322,7 @@ public class PlayPauseView extends View {
                 .doOnComplete(new Action() {
                     @Override
                     public void run() throws Exception {
-                        Observable.just(5).subscribe(MusicPlayActivity.observerplay);
+                        //Observable.just(5).subscribe(MusicPlayActivity.observerplay);
                     }
                 })
                 .subscribe();

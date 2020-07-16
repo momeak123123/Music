@@ -39,6 +39,7 @@
     <string name="Password">请输入密码</string>
     <string name="forgot_your_password">忘记密码?</string>
     <string name="repeat_password">请再次输入密码</string>
+    <string name="repeat_code">请输入邀请码（选填）</string>
     <string name="protocol">用户协议</string>
     <string name="register_publish">注册</string>
     <string name="error_protocol">请勾选用户协议！</string>

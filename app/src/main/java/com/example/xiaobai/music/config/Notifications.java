@@ -84,9 +84,9 @@ public class Notifications extends android.app.Notification {
                         .setContentIntent(resultPendingIntent) // 设定点击通知之后启动的内容，这个内容由方法中的参数：PendingIntent对象决定
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT) // 设置通知的优先级
                         .setDefaults(NotificationCompat.DEFAULT_ALL)
-                        .setSound(null)
                         .setChannelId(PUSH_CHANNEL_ID)
                         .setOngoing(true)
+                        .setSound(null)
                         .setVibrate(new long[]{0L})
                         .setAutoCancel(false) // 设置点击通知之后通知是否消失
                         .build();

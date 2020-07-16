@@ -2,15 +2,18 @@ package com.example.xiaobai.music.music.view.act
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Toast
 import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.music.contract.RegisteredContract
 import com.example.xiaobai.music.music.presenter.RegisteredPresenter
+import com.example.xiaobai.music.sql.dao.mPlaylistDao
 import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_registered.*
 import mvp.ljb.kt.act.BaseMvpActivity
 import java.util.concurrent.TimeUnit
@@ -29,7 +32,7 @@ class RegisteredActivity : BaseMvpActivity<RegisteredContract.IPresenter>(),
     }
     private lateinit var context: Context
     override fun registerPresenter() = RegisteredPresenter::class.java
-
+    private lateinit var sp: SharedPreferences
     override fun getLayoutId(): Int {
         return R.layout.activity_registered
     }
@@ -37,7 +40,7 @@ class RegisteredActivity : BaseMvpActivity<RegisteredContract.IPresenter>(),
     override fun init(savedInstanceState: Bundle?) {
         super.init(savedInstanceState)
         context = this
-
+        sp = getSharedPreferences("User", Context.MODE_PRIVATE)
         val left = resources.getDrawable(R.drawable.emil,null)
         left.setBounds(0, 0, 50, 50) //必须设置图片的大小否则没有作用
         re_username_number.setCompoundDrawables(left, null, null, null)
@@ -49,6 +52,11 @@ class RegisteredActivity : BaseMvpActivity<RegisteredContract.IPresenter>(),
         val leftt = resources.getDrawable(R.drawable.pass,null)
         leftt.setBounds(0, 0, 50, 50) //必须设置图片的大小否则没有作用
         re_passs_number.setCompoundDrawables(leftt, null, null, null)
+
+        val leftd = resources.getDrawable(R.drawable.pass,null)
+        leftd.setBounds(0, 0, 50, 50) //必须设置图片的大小否则没有作用
+        re_code_number.setCompoundDrawables(leftd, null, null, null)
+
     }
 
 
@@ -86,7 +94,17 @@ class RegisteredActivity : BaseMvpActivity<RegisteredContract.IPresenter>(),
                                 if (re_passs_number.text.toString() == re_pass_number.text.toString()) {
 
                                     if(radioButton.isChecked){
-                                        getPresenter().registerdata(context,re_username_number.text.toString(),re_pass_number.text.toString())
+                                        getPresenter().registerdata(context,re_username_number.text.toString(),re_pass_number.text.toString(),re_code_number.text.toString())
+                                        if(sp.getString("username","")!=""){
+                                            if(et_username_number.text.toString() != sp.getString("username","")){
+                                                val list = mPlaylistDao.queryAll()
+                                                if (list.size > 0) {
+                                                    for(it in list){
+                                                        mPlaylistDao.delete(it.id)
+                                                    }
+                                                }
+                                            }
+                                        }
                                     } else {
                                         Toast.makeText(context, R.string.error_captchas, Toast.LENGTH_SHORT).show()
                                     }

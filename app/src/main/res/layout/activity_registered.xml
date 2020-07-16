@@ -99,21 +99,41 @@
             android:textColorHint="@color/gray"
             tools:ignore="TextFields" />
 
+
+        <EditText
+            android:id="@+id/re_code_number"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/re_passs_number"
+            android:layout_alignStart="@+id/textView2"
+            android:layout_alignEnd="@+id/re_pass_number"
+            android:layout_marginTop="@dimen/dp_20"
+            android:layout_toEndOf="@+id/textView2"
+            android:drawableStart="@drawable/pass"
+            android:drawablePadding="@dimen/dp_10"
+            android:hint="@string/repeat_code"
+            android:inputType="text"
+            android:textColor="@color/white"
+            android:textColorHint="@color/gray"
+            android:textSize="@dimen/sp_18"
+            android:theme="@style/MyEditText"
+            tools:ignore="TextFields" />
+
         <RadioGroup
             android:id="@+id/radio_group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/re_passs_number"
-            android:layout_alignStart="@+id/re_passs_number"
+            android:layout_below="@+id/re_code_number"
+            android:layout_alignStart="@+id/re_code_number"
             android:layout_marginTop="@dimen/dp_20">
 
             <RadioButton
                 android:id="@+id/radioButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:buttonTint="@color/colorAccentDarkTheme"
                 android:checked="false"
                 android:text="@string/protocol"
-                android:buttonTint="@color/colorAccentDarkTheme"
                 android:textColor="@color/white"
                 android:textSize="@dimen/sp_18" />
         </RadioGroup>

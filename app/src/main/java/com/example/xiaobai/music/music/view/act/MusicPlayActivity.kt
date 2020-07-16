@@ -201,7 +201,7 @@ class MusicPlayActivity : AppCompatActivity() {
                                 OkDownload.request(uri, request) //
                                     .priority(0)
                                     .folder(context.getExternalFilesDir("")!!.absolutePath+"/download")
-                                    .fileName("music$song_id.mp3") //
+                                    .fileName("music$song_id") //
                                     .save() //
                                     .register(
                                         LogDownloadListener(

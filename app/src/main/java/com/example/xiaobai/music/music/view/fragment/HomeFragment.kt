@@ -313,7 +313,7 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
                                                 ) //
                                                     .priority(0)
                                                     .folder(it1.getExternalFilesDir("")!!.absolutePath+"/download")
-                                                    .fileName("music" + data.song_id + ".mp3") //
+                                                    .fileName("music" + data.song_id ) //
                                                     .save() //
                                                     .register(
                                                         LogDownloadListener(

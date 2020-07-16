@@ -26,12 +26,14 @@ class RegisteredModel : BaseModel(), RegisteredContract.IModel {
     override fun registerdata(
         context: Context,
         email: String,
-        pass: String
+        pass: String,
+        code:String
     ): Boolean {
 
         OkGo.post<String>(Constants.URL + "api/login/registered")
             .params("user_email", email)
             .params("password", pass)
+            .params("invite_code", code)
             .execute(object : StringCallback() {
                 override fun onSuccess(response: Response<String>) {
                     /**
