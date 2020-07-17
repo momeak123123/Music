@@ -36,8 +36,9 @@ class RegisteredActivity : BaseMvpActivity<RegisteredContract.IPresenter>(),
         lateinit var observers: Observer<Boolean>
     }
     private lateinit var context: Context
-    override fun registerPresenter() = RegisteredPresenter::class.java
     private lateinit var sp: SharedPreferences
+    override fun registerPresenter() = RegisteredPresenter::class.java
+
     override fun getLayoutId(): Int {
         return R.layout.activity_registered
     }

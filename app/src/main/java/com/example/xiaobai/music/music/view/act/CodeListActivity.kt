@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.os.Bundle
 import android.view.View
+import android.widget.Toast
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -71,10 +72,19 @@ class CodeListActivity : BaseMvpActivity<CodeListContract.IPresenter>() , CodeLi
             override fun onSubscribe(d: Disposable) {}
             @SuppressLint("SetTextI18n")
             override fun onNext(codelist: MutableList<Code>) {
-                initSearchList(codelist)
-                if (swipe_refresh_layout != null) {
-                    swipe_refresh_layout.isRefreshing = false
+                if(codelist.size>0){
+                    initSearchList(codelist)
+                    if (swipe_refresh_layout != null) {
+                        swipe_refresh_layout.isRefreshing = false
+                    }
+                }else{
+                    Toast.makeText(
+                        context,
+                        getText(R.string.code_lists),
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
+
             }
             override fun onError(e: Throwable) {}
             override fun onComplete() {}

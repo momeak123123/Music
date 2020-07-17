@@ -49,7 +49,7 @@ class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>(), UserSetCo
         context = this
         top_title.text = getText(R.string.set)
         sp = getSharedPreferences("User", Context.MODE_PRIVATE)
-        val path = context.externalCacheDir!!.absolutePath
+        val path = context.externalCacheDir!!.absolutePath+"/video-cache"
         file = File(path)
         val sizes = FilesUtils.getCurrentFolderSize(file)
         size.text = FormetFileSize(sizes)
@@ -131,28 +131,9 @@ class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>(), UserSetCo
         RxView.clicks(view)
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
-                MaterialDialog.Builder(context)
-                    .title(getText(R.string.set1))
-                    .inputType(
-                        InputType.TYPE_CLASS_TEXT
-                                or InputType.TYPE_TEXT_FLAG_CAP_WORDS
-                    )
-                    .input(
-                        getString(R.string.set1_captcha),
-                        "",
-                        false
-                    ) { dialog, input -> }
-                    .inputRange(8, -1)
-                    .positiveText(getText(R.string.carry))
-                    .negativeText(getText(R.string.cancel))
-                    .positiveColorRes(R.color.colorAccentDarkTheme)
-                    .negativeColorRes(R.color.red)
-                    .onPositive(SingleButtonCallback { dialog: MaterialDialog, which: DialogAction? ->
-                        getPresenter().pass(context,dialog.inputEditText!!.text.toString())
-
-                    })
-                    .cancelable(false)
-                    .show()
+                val intent = Intent()
+                context.let { intent.setClass(it, ChangePassActivity().javaClass) }
+                startActivity(intent)
             }
 
         RxView.clicks(view2)

@@ -40,11 +40,14 @@
     <string name="unknown">还没有账号?</string>
     <string name="Username">请输入电子邮箱</string>
     <string name="Password">请输入密码</string>
+    <string name="old_Password">请输入旧密码</string>
+    <string name="new_Password">请输入新密码</string>
     <string name="forgot_your_password">忘记密码?</string>
     <string name="repeat_password">请再次输入密码</string>
     <string name="repeat_code">请输入邀请码（选填）</string>
     <string name="protocol">用户协议</string>
     <string name="register_publish">注册</string>
+    <string name="regis_publish">提交</string>
     <string name="error_protocol">请勾选用户协议！</string>
     <string name="error_name">邮箱不能为空！</string>
     <string name="error_pass">密码不能为空！</string>
@@ -140,7 +143,7 @@
     <string name="girl">女</string>
     <string name="user_city">国家</string>
     <string name="user_mess">简介信息</string>
-    <string name="attention">关注</string>
+    <string name="attention">下载次数</string>
     <string name="collect">收藏</string>
     <string name="like">本地</string>
     <string name="user_save">保存</string>
@@ -174,6 +177,7 @@
     <string name="code_captchas">邀请码已激活</string>
     <string name="code_copy">复制邀请链接</string>
     <string name="code_list">邀请列表</string>
+    <string name="code_lists">暂无邀请</string>
     <string name="code_baoc">保存二维码</string>
     <string name="code_baocs">已保存至系统相册</string>
     <string name="code_captch">检测到剪切板上有复制内容，是否填充为邀请码</string>

@@ -91,6 +91,7 @@
         <activity android:name=".music.view.act.SearchListActivity" />
         <activity android:name=".music.view.act.UserSetActivity" />
         <activity android:name=".music.view.act.CodeListActivity" />
+        <activity android:name=".music.view.act.ChangePassActivity" />
     </application>
 
 </manifest>
