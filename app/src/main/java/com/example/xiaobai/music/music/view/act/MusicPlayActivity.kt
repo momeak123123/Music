@@ -24,7 +24,7 @@ import com.example.xiaobai.music.adapter.PlayListAdapter
 import com.example.xiaobai.music.adapter.PlaySongAdapter
 import com.example.xiaobai.music.adapter.ViewPagerAdapter
 import com.example.xiaobai.music.bean.Music
-import com.example.xiaobai.music.common.Constants
+import com.example.xiaobai.music.config.Constants
 import com.example.xiaobai.music.config.LogDownloadListener
 import com.example.xiaobai.music.config.Notifications
 import com.example.xiaobai.music.music.model.MusicPlayModel

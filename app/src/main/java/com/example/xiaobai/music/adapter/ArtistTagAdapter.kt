@@ -61,12 +61,12 @@ class ArtistTagAdapter (val datas: List<Hierarchy>, val context: Context,val typ
         }
 
         if(datas[position].cat_hierarchy==0){
-            holder.tag.setTextColor(getResources().getColor(R.color.lightBlue))
-            holder.tag.setShapeStrokeColor(getResources().getColor(R.color.lightBlue))
+            holder.tag.setTextColor(getResources().getColor(R.color.lightBlue,null))
+            holder.tag.setShapeStrokeColor(getResources().getColor(R.color.lightBlue,null))
                 .setUseShape()
         }else{
-            holder.tag.setTextColor(getResources().getColor(R.color.white))
-            holder.tag.setShapeStrokeColor(getResources().getColor(R.color.gray))
+            holder.tag.setTextColor(getResources().getColor(R.color.white,null))
+            holder.tag.setShapeStrokeColor(getResources().getColor(R.color.gray,null))
                 .setUseShape()
         }
 

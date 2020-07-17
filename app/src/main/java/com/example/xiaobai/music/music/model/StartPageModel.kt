@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.widget.Toast
 import com.example.xiaobai.music.bean.*
-import com.example.xiaobai.music.common.Constants
+import com.example.xiaobai.music.config.Constants
 import com.example.xiaobai.music.music.contract.StartPageContract
 import com.google.gson.Gson
 import com.lzy.okgo.OkGo

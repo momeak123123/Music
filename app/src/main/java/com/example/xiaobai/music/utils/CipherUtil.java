@@ -64,7 +64,7 @@ public class CipherUtil {
 
     // 加密
     public static String encryptString(Context context,File file) throws Exception{
-        byte[] raw = getRawKey(Installation.id(context).getBytes());
+        byte[] raw = getRawKey(Installation.getUniqueID(context).getBytes());
         return getFile(encrypt(raw, readFile(file)),file.getPath());
     }
 
@@ -99,7 +99,7 @@ public class CipherUtil {
     // 解密
     public static String decryptString(Context context,String path) throws Exception{
         File file = new File(path);
-        byte[] raw = getRawKey(Installation.id(context).getBytes());
+        byte[] raw = getRawKey(Installation.getUniqueID(context).getBytes());
        //return getFile(decrypt(raw, readFile(file)),path);
         return getFiles(context,decrypt(raw, readFile(file)));
 

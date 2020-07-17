@@ -69,11 +69,11 @@ class PlayListAdapter  (val datas: MutableList<Music>?, val context: Context) : 
         holder.txt.text =  srtist_name
 
         if(MusicPlayActivity.id==position){
-            holder.txt.setTextColor(ResUtils.getResources().getColor(R.color.lightBlue))
-            holder.title.setTextColor(ResUtils.getResources().getColor(R.color.lightBlue))
+            holder.txt.setTextColor(ResUtils.getResources().getColor(R.color.lightBlue,null))
+            holder.title.setTextColor(ResUtils.getResources().getColor(R.color.lightBlue,null))
         }else{
-            holder.txt.setTextColor(ResUtils.getResources().getColor(R.color.gray))
-            holder.title.setTextColor(ResUtils.getResources().getColor(R.color.black))
+            holder.txt.setTextColor(ResUtils.getResources().getColor(R.color.gray,null))
+            holder.title.setTextColor(ResUtils.getResources().getColor(R.color.black,null))
         }
 
         holder.more.setOnClickListener {

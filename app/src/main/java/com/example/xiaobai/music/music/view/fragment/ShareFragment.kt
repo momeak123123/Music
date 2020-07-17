@@ -1,8 +1,12 @@
 package com.example.xiaobai.music.music.view.fragment
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.view.View
+import android.widget.Toast
 import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.config.Screenshot
@@ -24,6 +28,9 @@ import java.util.concurrent.TimeUnit
  **/
 class ShareFragment : BaseMvpFragment<ShareContract.IPresenter>(), ShareContract.IView {
 
+    private lateinit var sp: SharedPreferences
+    private var logins: Boolean = false
+
     override fun registerPresenter() = SharePresenter::class.java
 
     companion object {
@@ -33,19 +40,31 @@ class ShareFragment : BaseMvpFragment<ShareContract.IPresenter>(), ShareContract
        return R.layout.fragment_code
     }
 
-    override fun init(savedInstanceState: Bundle?) {
-        super.init(savedInstanceState)
-    }
 
     override fun initData() {
         super.initData()
-        context?.let { getPresenter().usercode(it) }
+        sp = requireContext().getSharedPreferences("User", Context.MODE_PRIVATE)
+        logins = sp.getBoolean("login", false)
+        if (logins) {
+            context?.let { getPresenter().usercode(it) }
+            include.visibility = View.VISIBLE
+        }else{
+            include.visibility = View.GONE
+
+        }
     }
 
     override fun onResume() {
         super.onResume()
 
-        context?.let { getPresenter().usercode(it) }
+        logins = sp.getBoolean("login", false)
+        if (logins) {
+            context?.let { getPresenter().usercode(it) }
+            include.visibility = View.VISIBLE
+        }else{
+            include.visibility = View.GONE
+
+        }
 
         observer = object : Observer<Map<String,String>> {
             override fun onSubscribe(d: Disposable) {}
@@ -79,9 +98,18 @@ class ShareFragment : BaseMvpFragment<ShareContract.IPresenter>(), ShareContract
         RxView.clicks(codelist)
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
-                val intent = Intent()
-                context?.let { intent.setClass(it, CodeListActivity().javaClass) }
-                startActivity(intent)
+                if(logins){
+                    val intent = Intent()
+                    context?.let { intent.setClass(it, CodeListActivity().javaClass) }
+                    startActivity(intent)
+                }else{
+                    Toast.makeText(
+                        context,
+                        getText(R.string.ungo),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
             }
 
     }

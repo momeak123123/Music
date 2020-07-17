@@ -30,7 +30,7 @@ class TimeService : Service() {
             val action = intent.action
             if (action == Intent.ACTION_TIME_TICK) {
                 val df = SimpleDateFormat("HH:mm") //设置日期格式
-                val date = df.format(Date()).split(":").toTypedArray()
+                df.format(Date()).split(":").toTypedArray()
             }
         }
     }

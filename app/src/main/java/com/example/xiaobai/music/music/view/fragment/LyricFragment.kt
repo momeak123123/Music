@@ -4,7 +4,7 @@ import android.os.Handler
 import android.widget.Toast
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.bean.ResultBean
-import com.example.xiaobai.music.common.Constants
+import com.example.xiaobai.music.config.Constants
 import com.example.xiaobai.music.music.contract.LyricContract
 import com.example.xiaobai.music.music.presenter.LyricPresenter
 import com.example.xiaobai.music.music.view.act.MusicPlayActivity

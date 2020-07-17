@@ -10,7 +10,7 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
-import com.example.xiaobai.music.common.Constants
+import com.example.xiaobai.music.config.Constants
 import com.example.xiaobai.music.config.Installation
 import com.example.xiaobai.music.music.model.MainModel
 import com.example.xiaobai.music.music.model.MusicPlayModel.Companion.getadvertising
@@ -24,10 +24,6 @@ import io.reactivex.disposables.Disposable
 import java.util.concurrent.TimeUnit
 
 class StartsActivity : AppCompatActivity() {
-
-    companion object {
-        lateinit var observer: Observer<Boolean>
-    }
 
     private var mdDisposable: Disposable? = null
 
@@ -46,13 +42,11 @@ class StartsActivity : AppCompatActivity() {
 
         MainModel.homedata(this)
         getadvertising()
-        mdDisposable = Flowable.intervalRange(0, 5, 0, 1, TimeUnit.SECONDS)
+        mdDisposable = Flowable.intervalRange(0, 3, 0, 1, TimeUnit.SECONDS)
             .observeOn(AndroidSchedulers.mainThread())
             .doOnNext {}
             .doOnComplete {
-
-                val it = Intent(applicationContext, MainActivity::class.java)
-                startActivity(it)
+                startActivity(Intent(applicationContext, MainActivity::class.java))
             }
             .subscribe()
 
@@ -61,7 +55,7 @@ class StartsActivity : AppCompatActivity() {
             .subscribe(object : Observer<Long> {
                 override fun onSubscribe(disposable: Disposable) {}
                 override fun onNext(number: Long) {
-                    //updateapp(getVersionName())
+                    updateapp(getVersionName())
                 }
 
                 override fun onError(e: Throwable) {}
@@ -69,13 +63,13 @@ class StartsActivity : AppCompatActivity() {
             })
 
         println("日期" + Constants.Dates())
-        println("Installtion ID" + Installation.id(this))
+        println("Installtion ID" + Installation.getUniqueID(this))
         //67700683-bb9b-4ef4-b30b-8c332a98aa2e
         val sp: SharedPreferences = getSharedPreferences("User", Context.MODE_PRIVATE)
 
         if(sp.getString("android_id", "").toString()==""){
             DeleteUtil.delete(getExternalFilesDir("")!!.absolutePath+"/download", false, "")
-            sp.edit().putString("android_id", Installation.id(this)).apply()
+            sp.edit().putString("android_id", Installation.getUniqueID(this)).apply()
         }
 
         if(sp.getString("down_date", "").toString()==""){
@@ -103,19 +97,5 @@ class StartsActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        observer = object : Observer<Boolean> {
-            override fun onSubscribe(d: Disposable) {}
-            override fun onNext(bool: Boolean) {
-                if (bool) {
-                    mdDisposable?.dispose()
-
-                    val it = Intent(applicationContext, MainActivity::class.java)
-                    startActivity(it)
-                }
-            }
-
-            override fun onError(e: Throwable) {}
-            override fun onComplete() {}
-        }
     }
 }

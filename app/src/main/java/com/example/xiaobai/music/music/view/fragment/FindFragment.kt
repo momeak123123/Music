@@ -264,7 +264,7 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
         MaterialDialog.Builder(requireContext())
             .title(R.string.sear)
             .items(R.array.menu_values)
-            .itemsCallback(ListCallback { dialog: MaterialDialog?, itemView: View?, position: Int, text: CharSequence ->
+            .itemsCallback(ListCallback { _: MaterialDialog?, _: View?, position: Int, text: CharSequence ->
                 sears = position
                 sear.text = text
             })

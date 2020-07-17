@@ -7,7 +7,7 @@ import com.example.xiaobai.music.R
 import com.example.xiaobai.music.bean.Hierarchy
 import com.example.xiaobai.music.bean.ResultBean
 import com.example.xiaobai.music.bean.ResultBeans
-import com.example.xiaobai.music.common.Constants
+import com.example.xiaobai.music.config.Constants
 import com.example.xiaobai.music.music.contract.ArtistContract
 import com.example.xiaobai.music.music.view.act.ArtistActivity
 import com.google.gson.Gson

@@ -59,7 +59,7 @@ class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>(), UserSetCo
 
     private fun FormetFileSize(file: Long): String {
         val df = DecimalFormat("#.00")
-        var fileSizeString = "0M"
+        val fileSizeString: String
         fileSizeString = when {
             file < 1024 -> {
                 df.format(file.toDouble()).toString() + "B"
@@ -167,13 +167,13 @@ class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>(), UserSetCo
                             getString(R.string.code_captcha),
                             "",
                             false
-                        ) { dialog, input -> }
+                        ) { _, _ -> }
                         .inputRange(6, 6)
                         .positiveText(getText(R.string.carry))
                         .negativeText(getText(R.string.cancel))
                         .positiveColorRes(R.color.colorAccentDarkTheme)
                         .negativeColorRes(R.color.red)
-                        .onPositive(SingleButtonCallback { dialog: MaterialDialog, which: DialogAction? ->
+                        .onPositive(SingleButtonCallback { dialog: MaterialDialog, _: DialogAction? ->
                             getPresenter().code(context,dialog.inputEditText!!.text.toString())
 
                         })

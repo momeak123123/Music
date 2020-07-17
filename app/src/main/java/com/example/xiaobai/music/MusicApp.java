@@ -50,6 +50,16 @@ public class MusicApp extends Application {
 
     public static int minute = 0;
 
+    public static Long adstime = 0L;
+
+
+    public static Long getAdstime() {
+        return adstime;
+    }
+
+    public static void setAdstime(Long adstime) {
+        MusicApp.adstime = adstime;
+    }
 
     public static Boolean getBool() {
         return bool;

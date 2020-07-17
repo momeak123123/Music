@@ -7,7 +7,6 @@ import android.widget.Toast;
 import com.example.xiaobai.music.MusicApp;
 import com.example.xiaobai.music.R;
 import com.example.xiaobai.music.bean.Music;
-import com.example.xiaobai.music.common.Constants;
 import com.example.xiaobai.music.sql.bean.Down;
 import com.example.xiaobai.music.sql.dao.mDownDao;
 import com.example.xiaobai.music.utils.CipherUtil;
@@ -88,7 +87,7 @@ public class LogDownloadListener extends DownloadListener {
                 down.setSong_list_id(music.getSong_list_id());
                 down.setUri(path);
                 down.setDown_date(Constants.Dates());
-                down.setUser(Installation.id(context));
+                down.setUser(Installation.getUniqueID(context));
                 mDownDao.insert(down);
                 Toast.makeText(
                         context,

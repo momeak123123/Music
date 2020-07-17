@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.example.xiaobai.music.bean.Code
 import com.example.xiaobai.music.bean.ResultBean
-import com.example.xiaobai.music.common.Constants
+import com.example.xiaobai.music.config.Constants
 import com.example.xiaobai.music.music.contract.CodeListContract
 import com.example.xiaobai.music.music.view.act.CodeListActivity
 import com.google.gson.Gson

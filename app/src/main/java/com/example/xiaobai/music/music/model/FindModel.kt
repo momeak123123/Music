@@ -2,7 +2,7 @@ package  com.example.xiaobai.music.music.model
 
 import com.example.xiaobai.music.bean.ResultBeans
 import com.example.xiaobai.music.bean.Sear
-import com.example.xiaobai.music.common.Constants
+import com.example.xiaobai.music.config.Constants
 import com.example.xiaobai.music.music.contract.FindContract
 import com.example.xiaobai.music.music.view.fragment.FindFragment
 import com.example.xiaobai.music.parsing.kugouseBean

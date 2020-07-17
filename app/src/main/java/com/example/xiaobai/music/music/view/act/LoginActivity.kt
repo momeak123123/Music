@@ -85,8 +85,8 @@ class LoginActivity : BaseMvpActivity<LoginContract.IPresenter>(), LoginContract
                                     if(et_username_number.text.toString() != sp.getString("username","")){
                                         val list = mPlaylistDao.queryAll()
                                         if (list.size > 0) {
-                                                for(it in list){
-                                                    mPlaylistDao.delete(it.id)
+                                                for(its in list){
+                                                    mPlaylistDao.delete(its.id)
                                                 }
                                         }
                                     }

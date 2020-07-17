@@ -10,7 +10,7 @@ import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.StartsActivity
 import com.example.xiaobai.music.bean.*
-import com.example.xiaobai.music.common.Constants
+import com.example.xiaobai.music.config.Constants
 import com.example.xiaobai.music.music.view.act.AlbumDetActivity
 import com.example.xiaobai.music.music.view.act.MusicPlayActivity
 import com.example.xiaobai.music.music.view.fragment.HomeFragment
@@ -221,18 +221,18 @@ class MusicPlayModel {
                                 Gson().fromJson(response.body(), ResultBeans::class.javaObjectType)
                             if (bean.code == 200) {
 
-                                val ads: List<Banner> = Gson().fromJson<Array<Banner>>(
+                                val ads: List<Ads> = Gson().fromJson<Array<Ads>>(
                                     bean.data,
-                                    Array<Banner>::class.java
+                                    Array<Ads>::class.java
                                 ).toList()
-
+                               MusicApp.setAdstime(ads[0].seconds)
                                 object : Thread() {
                                     override fun run() {
-                                        if(ads[0].img!=""){
-                                            val bm = BitmapUtils.getBitmap(ads[0].img)
+                                        if(ads[0].url!="") {
+                                            val bm = BitmapUtils.getBitmap(ads[0].url)
                                             MusicApp.setStartback(bm)
-                                            Observable.just(true).subscribe(StartsActivity.observer)
                                         }
+
                                     }
                                 }.start()
 

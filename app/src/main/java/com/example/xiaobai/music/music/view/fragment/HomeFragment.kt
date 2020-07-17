@@ -17,7 +17,7 @@ import com.example.xiaobai.music.R
 import com.example.xiaobai.music.adapter.HomeDetAdapter
 import com.example.xiaobai.music.adapter.PlaySongAdapter
 import com.example.xiaobai.music.bean.*
-import com.example.xiaobai.music.common.Constants
+import com.example.xiaobai.music.config.Constants
 import com.example.xiaobai.music.config.LogDownloadListener
 import com.example.xiaobai.music.music.contract.HomeContract
 import com.example.xiaobai.music.music.model.MusicPlayModel

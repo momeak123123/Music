@@ -16,7 +16,7 @@ import com.example.xiaobai.music.R
 import com.example.xiaobai.music.adapter.SongDetAdapter
 import com.example.xiaobai.music.bean.Music
 import com.example.xiaobai.music.bean.artistlist
-import com.example.xiaobai.music.common.Constants
+import com.example.xiaobai.music.config.Constants
 import com.example.xiaobai.music.config.LogDownloadListener
 import com.example.xiaobai.music.music.contract.SongDetContract
 import com.example.xiaobai.music.music.presenter.SongDetPresenter
