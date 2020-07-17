@@ -46,11 +46,7 @@ public class MusicApp extends Application {
 
     public static Boolean Lock = false;
 
-    public static Boolean easy = false;
-
     public static Boolean bool = false;
-
-    public static int hourOfDay = 21;
 
     public static int minute = 0;
 
@@ -63,28 +59,12 @@ public class MusicApp extends Application {
         MusicApp.bool = bool;
     }
 
-    public static int getHourOfDay() {
-        return hourOfDay;
-    }
-
-    public static void setHourOfDay(int hourOfDay) {
-        MusicApp.hourOfDay = hourOfDay;
-    }
-
     public static int getMinute() {
         return minute;
     }
 
     public static void setMinute(int minute) {
         MusicApp.minute = minute;
-    }
-
-    public static Boolean getEasy() {
-        return easy;
-    }
-
-    public static void setEasy(Boolean easy) {
-        MusicApp.easy = easy;
     }
 
     public static Boolean getLock() {

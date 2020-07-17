@@ -24,7 +24,6 @@ import mvp.ljb.kt.model.BaseModel
  **/
 class SearchListModel : BaseModel(), SearchListContract.IModel {
     override fun qqdata(context: Context, search: String, limi: Int) {
-        val musicall = mutableListOf<Searchs>()
         OkGo.get<String>("https://c.y.qq.com/soso/fcgi-bin/client_search_cp?ct=24&qqmusic_ver=1298&new_json=1&remoteplace=txt.yqq.song&searchid=55196029248120147&t=0&aggr=1&cr=1&catZhida=1&lossless=0&flag_qc=0&&g_tk=5381&loginUin=0&hostUin=0&format=json&inCharset=utf8&outCharset=utf-8&notice=0&platform=yqq.json&needNewCode=0&n=30")
             .params("p", limi)
             .params("w", search)
@@ -59,7 +58,6 @@ class SearchListModel : BaseModel(), SearchListContract.IModel {
     }
 
     override fun kugoudata(context: Context, search: String, limi: Int) {
-        val musicall = mutableListOf<Searchs>()
         OkGo.get<String>("http://songsearch.kugou.com/song_search_v2?keyword=$search&page=$limi&pagesize=50&userid=-1&clientver=&platform=WebFilter&tag=em&filter=2&iscorrection=1&privilege_filter=0")
             .execute(object : StringCallback() {
                 override fun onSuccess(response: Response<String>) {

@@ -30,6 +30,9 @@
     <!-- search -->
     <string name="history">历史搜索</string>
     <string name="delhistory">大家都在搜</string>
+    <string name="sear1">线路一</string>
+    <string name="sear2">线路二</string>
+    <string name="sear">线路选择</string>
 
     <!--login-->
     <string name="login">欢迎回来</string>
@@ -91,6 +94,7 @@
     <string name="delete">删除</string>
     <string name="list_dow">关闭</string>
     <string name="album">专辑</string>
+    <string name="codelist_txt">被邀请人</string>
 
     <!--song-->
     <string name="song">我的歌单</string>
@@ -148,19 +152,22 @@
     <string name="download_error">下载失败，请重新下载</string>
     <string name="download_carry">歌曲已下载</string>
     <string name="download_succe">歌曲：</string>
-
     <string name="download_song">下载音乐</string>
     <string name="download_playsong">是否下载音乐</string>
     <string name="download_success">下载成功</string>
+    <string name="download_num">今日下载次数已用完</string>
 
 
 
     <!--set-->
     <string name="set">设置</string>
     <string name="set1">修改密码</string>
+    <string name="set1_captcha">请输入密码</string>
     <string name="set2">清理缓存</string>
     <string name="set3">编辑个人资料</string>
-    <string name="set4">邀请码</string>
+    <string name="set4">您的邀请码为</string>
+    <string name="set4_suss">已成功邀请</string>
+    <string name="set4_set">人</string>
     <string name="set2_un">是否清理缓存</string>
     <string name="set2_sess">清理缓存成功</string>
     <string name="main_set">再按一次退出</string>

@@ -1,6 +1,9 @@
 package com.example.xiaobai.music.service
 
-import android.app.*
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -11,13 +14,11 @@ import android.os.IBinder
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.danikula.videocache.HttpProxyCacheServer
-import com.example.xiaobai.music.MainActivity
 import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.bean.Music
 import com.example.xiaobai.music.config.Cookie
 import com.example.xiaobai.music.config.Dencry
-import com.example.xiaobai.music.config.LogDownloadListener
 import com.example.xiaobai.music.config.Notifications
 import com.example.xiaobai.music.music.view.act.MusicPlayActivity
 import com.example.xiaobai.music.utils.CipherUtil
@@ -25,13 +26,11 @@ import com.google.gson.Gson
 import com.lzy.okgo.OkGo
 import com.lzy.okgo.callback.StringCallback
 import com.lzy.okgo.model.Response
-import com.lzy.okserver.OkDownload
 import com.ywl5320.wlmedia.WlMedia
 import com.ywl5320.wlmedia.enums.WlComplete
 import com.ywl5320.wlmedia.enums.WlPlayModel
 import com.ywl5320.wlmedia.log.WlLog
 import io.reactivex.Observable
-import java.io.File
 import java.util.*
 
 
@@ -243,8 +242,8 @@ class MusicService : Service() {
 
             }
         } else if (style == 4) {
-            CipherUtil.decryptString(context,uri)
-            wlMedia.source = uri
+
+            wlMedia.source = CipherUtil.decryptString(context,uri)
             wlMedia.next()
         }
     }

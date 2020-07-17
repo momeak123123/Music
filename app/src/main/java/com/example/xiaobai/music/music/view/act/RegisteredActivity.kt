@@ -1,19 +1,24 @@
 package com.example.xiaobai.music.music.view.act
 
 import android.annotation.SuppressLint
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.text.Editable
 import android.widget.Toast
+import androidx.annotation.Nullable
 import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.music.contract.RegisteredContract
 import com.example.xiaobai.music.music.presenter.RegisteredPresenter
 import com.example.xiaobai.music.sql.dao.mPlaylistDao
 import com.jakewharton.rxbinding2.view.RxView
+import com.xuexiang.xui.widget.dialog.materialdialog.DialogAction
+import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
-import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_registered.*
 import mvp.ljb.kt.act.BaseMvpActivity
 import java.util.concurrent.TimeUnit
@@ -53,7 +58,7 @@ class RegisteredActivity : BaseMvpActivity<RegisteredContract.IPresenter>(),
         leftt.setBounds(0, 0, 50, 50) //必须设置图片的大小否则没有作用
         re_passs_number.setCompoundDrawables(leftt, null, null, null)
 
-        val leftd = resources.getDrawable(R.drawable.pass,null)
+        val leftd = resources.getDrawable(R.drawable.codeima,null)
         leftd.setBounds(0, 0, 50, 50) //必须设置图片的大小否则没有作用
         re_code_number.setCompoundDrawables(leftd, null, null, null)
 
@@ -63,6 +68,41 @@ class RegisteredActivity : BaseMvpActivity<RegisteredContract.IPresenter>(),
     override fun initData() {
         super.initData()
 
+        val codetxt = getClipboardContent(this)
+        if (re_code_number.text.toString() == "") {
+            if (codetxt != "") {
+                MaterialDialog.Builder(context)
+                    .title(getText(R.string.set4))
+                    .content(getText(R.string.code_captch))
+                    .positiveColorRes(R.color.colorAccentDarkTheme)
+                    .negativeColorRes(R.color.red)
+                    .positiveText(getText(R.string.carry))
+                    .negativeText(getText(R.string.cancel))
+                    .onPositive { _: MaterialDialog?, _: DialogAction? ->
+                        re_code_number.text = Editable.Factory.getInstance().newEditable(codetxt)
+                    }
+                    .show()
+            }
+        }
+
+    }
+
+    /**
+     * 获取剪切板上的内容
+     */
+    @Nullable
+    fun getClipboardContent(context: Context): String {
+        val cm: ClipboardManager =
+            context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val data: ClipData? = cm.primaryClip
+        if (data != null) {
+            if (data.itemCount > 0) {
+                val item: ClipData.Item = data.getItemAt(0)
+                val sequence: CharSequence = item.coerceToText(context)
+                return sequence.toString()
+            }
+        }
+        return ""
     }
 
     @SuppressLint("CheckResult")
@@ -96,11 +136,11 @@ class RegisteredActivity : BaseMvpActivity<RegisteredContract.IPresenter>(),
                                     if(radioButton.isChecked){
                                         getPresenter().registerdata(context,re_username_number.text.toString(),re_pass_number.text.toString(),re_code_number.text.toString())
                                         if(sp.getString("username","")!=""){
-                                            if(et_username_number.text.toString() != sp.getString("username","")){
+                                            if(re_username_number.text.toString() != sp.getString("username","")){
                                                 val list = mPlaylistDao.queryAll()
                                                 if (list.size > 0) {
-                                                    for(it in list){
-                                                        mPlaylistDao.delete(it.id)
+                                                    for(its in list){
+                                                        mPlaylistDao.delete(its.id)
                                                     }
                                                 }
                                             }

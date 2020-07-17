@@ -7,7 +7,6 @@ import android.text.InputType
 import android.widget.Toast
 import androidx.annotation.Nullable
 import com.example.xiaobai.music.R
-import com.example.xiaobai.music.config.Screenshot
 import com.example.xiaobai.music.music.contract.UserSetContract
 import com.example.xiaobai.music.music.presenter.UserSetPresenter
 import com.example.xiaobai.music.utils.FilesUtils
@@ -15,6 +14,8 @@ import com.jakewharton.rxbinding2.view.RxView
 import com.xuexiang.xui.widget.dialog.materialdialog.DialogAction
 import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
 import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog.SingleButtonCallback
+import io.reactivex.Observer
+import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.head.*
 import kotlinx.android.synthetic.main.user_set.*
 import mvp.ljb.kt.act.BaseMvpActivity
@@ -30,8 +31,11 @@ import java.util.concurrent.TimeUnit
  **/
 class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>(), UserSetContract.IView {
 
+    companion object {
+        lateinit var observer: Observer<String>
+    }
+
     override fun registerPresenter() = UserSetPresenter::class.java
-    private lateinit var inviteCode: String
     private lateinit var file: File
     private lateinit var context: Context
     private lateinit var sp: SharedPreferences
@@ -127,7 +131,28 @@ class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>(), UserSetCo
         RxView.clicks(view)
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
+                MaterialDialog.Builder(context)
+                    .title(getText(R.string.set1))
+                    .inputType(
+                        InputType.TYPE_CLASS_TEXT
+                                or InputType.TYPE_TEXT_FLAG_CAP_WORDS
+                    )
+                    .input(
+                        getString(R.string.set1_captcha),
+                        "",
+                        false
+                    ) { dialog, input -> }
+                    .inputRange(8, -1)
+                    .positiveText(getText(R.string.carry))
+                    .negativeText(getText(R.string.cancel))
+                    .positiveColorRes(R.color.colorAccentDarkTheme)
+                    .negativeColorRes(R.color.red)
+                    .onPositive(SingleButtonCallback { dialog: MaterialDialog, which: DialogAction? ->
+                        getPresenter().pass(context,dialog.inputEditText!!.text.toString())
 
+                    })
+                    .cancelable(false)
+                    .show()
             }
 
         RxView.clicks(view2)
@@ -162,13 +187,14 @@ class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>(), UserSetCo
                             "",
                             false
                         ) { dialog, input -> }
-                        .inputRange(3, 5)
+                        .inputRange(6, 6)
                         .positiveText(getText(R.string.carry))
                         .negativeText(getText(R.string.cancel))
                         .positiveColorRes(R.color.colorAccentDarkTheme)
                         .negativeColorRes(R.color.red)
                         .onPositive(SingleButtonCallback { dialog: MaterialDialog, which: DialogAction? ->
-                            code.text = dialog.inputEditText!!.text.toString()
+                            getPresenter().code(context,dialog.inputEditText!!.text.toString())
+
                         })
                         .cancelable(false)
                         .show()
@@ -199,7 +225,7 @@ class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>(), UserSetCo
                     .positiveText(getText(R.string.carry))
                     .negativeText(getText(R.string.cancel))
                     .onPositive { _: MaterialDialog?, _: DialogAction? ->
-                        code.text = codetxt
+                        getPresenter().code(context,codetxt)
                     }
                     .show()
             }
@@ -222,6 +248,19 @@ class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>(), UserSetCo
             }
         }
         return ""
+    }
+
+    override fun onResume() {
+        super.onResume()
+        observer = object : Observer<String> {
+            override fun onSubscribe(d: Disposable) {}
+            override fun onNext(text: String) {
+                      code.text = text
+            }
+            override fun onError(e: Throwable) {}
+            override fun onComplete() {}
+
+        }
     }
 
 

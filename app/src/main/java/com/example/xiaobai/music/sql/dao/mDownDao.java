@@ -44,6 +44,14 @@ public class mDownDao {
         Initialization.getDaoInstantDown().getDownDao().update(down);
     }
 
+    /**
+     * 查询条件为Type=TYPE_LOVE的数据
+     *
+     * @return
+     */
+    public static List<Down> query(String date) {
+        return Initialization.getDaoInstantDown().getDownDao().queryBuilder().where(DownDao.Properties.Down_date.eq(date)).list();
+    }
 
     /**
      * 查询条件为Type=TYPE_LOVE的数据

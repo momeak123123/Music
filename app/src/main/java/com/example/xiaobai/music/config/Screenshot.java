@@ -34,7 +34,7 @@ public class Screenshot {
         int width = (int) getDeviceDisplaySize(activity)[0];
         int height = (int) getDeviceDisplaySize(activity)[1];
 
-        Bitmap ret = Bitmap.createBitmap(bmp, 0, statusBarHeight, width, height - statusBarHeight);
+        Bitmap ret = Bitmap.createBitmap(bmp, 0, statusBarHeight, width, height - statusBarHeight-30);
         view.destroyDrawingCache();
 
         saveImageToGallery(activity,ret);

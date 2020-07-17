@@ -10,7 +10,6 @@ import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.music.contract.LoginContract
 import com.example.xiaobai.music.music.presenter.LoginPresenter
-import com.example.xiaobai.music.sql.bean.Playlist
 import com.example.xiaobai.music.sql.dao.mPlaylistDao
 import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.Observer

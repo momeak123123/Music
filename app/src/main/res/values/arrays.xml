@@ -91,10 +91,8 @@
     </string-array>
 
     <string-array name="menu_values">
-        <item>添加</item>
-        <item>修改</item>
-        <item>更新</item>
-        <item>删除</item>
+        <item>线路一</item>
+        <item>线路二</item>
     </string-array>
 
     <string-array name="router_choice_entry">

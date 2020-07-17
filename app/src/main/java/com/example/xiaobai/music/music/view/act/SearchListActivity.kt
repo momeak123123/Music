@@ -39,6 +39,7 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>(),
         lateinit var observer: Observer<JsonArray>
         lateinit var observers: Observer<Boolean>
     }
+
     val musicall = mutableListOf<Searchs>()
     val datas = mutableListOf<Searchs>()
     private lateinit var search: String
@@ -62,7 +63,11 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>(),
         super.initData()
         val bundle = intent.extras
         search = bundle?.get("txt") as String
-        getPresenter().qqdata(context, search, 0)
+        type = bundle.get("sear") as Int
+        when (type) {
+            0 -> getPresenter().qqdata(context, search, 0)
+            1 -> getPresenter().kugoudata(context, search, 0)
+        }
         swipe_refresh_layout.isRefreshing = true
 
     }
@@ -101,10 +106,12 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>(),
                             if (music.isJsonObject) {
                                 jsonObj = music.asJsonObject
                             }
-                            val mid =
-                                "http://symusic.top/music.php?source=tencent&types=url&mid=" + jsonObj!!.get(
-                                    "mid"
-                                ).asString + "&br=hq"
+                            val midest = jsonObj!!.get("mid").asString
+                            var mid =""
+                            if(midest!=""){
+                                 mid = "http://symusic.top/music.php?source=tencent&types=url&mid=$midest&br=hq"
+                            }
+
                             val title = jsonObj.get("title").asString
                             val id = jsonObj.get("id").asLong
                             val album = jsonObj.get("album").asJsonObject
@@ -159,15 +166,25 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>(),
                             if (music.isJsonObject) {
                                 jsonObj = music.asJsonObject
                             }
-                            val mid =
-                                "http://symusic.top/music.php?source=kugou&types=url&mid=" + jsonObj!!.get(
-                                    "HQFileHash"
-                                ).asString + "&br=hq"
+                            val midhq = jsonObj!!.get("HQFileHash").asString
+                            val midsq = jsonObj.get("SQFileHash").asString
+                            var mid =""
+                            if(midhq!=""){
+                                mid = "http://symusic.top/music.php?source=kugou&types=url&mid=$midhq&br=hq"
+                            }else{
+                                if(midsq!=""){
+                                    mid = "http://symusic.top/music.php?source=kugou&types=url&mid=$midsq&br=sq"
+                                }
+                            }
                             val title = jsonObj.get("SongName").asString
-                            val id = jsonObj.get("ID").asString.toLong()
-                            var album =  jsonObj.get("AlbumID").asString
-                            if(album==""){
-                                album="0"
+                            var ids = jsonObj.get("ID").asString
+                            if (ids == "") {
+                                ids = "0"
+                            }
+                            val id = ids.toLong()
+                            var album = jsonObj.get("AlbumID").asString
+                            if (album == "") {
+                                album = "0"
                             }
                             val album_id = album.toLong()
                             val album_name = jsonObj.get("AlbumName").asString
@@ -178,11 +195,14 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>(),
                                 jsonObj.get("SingerId").asJsonArray,
                                 Array<Long>::class.java
                             ).toMutableList()
-
-                            val ca = jsonObj.get("SingerName").asString.substring(4)
-                            val da = ca.substring(0, ca.lastIndexOf('<'))
-                            one.add(artistlist(singer[0], da))
-
+                            val ca = jsonObj.get("SingerName").asString
+                            if(ca!=""){
+                                val ea = ca.substring(4)
+                                val da = ea.substring(0, ea.lastIndexOf('<'))
+                                one.add(artistlist(singer[0], da))
+                            }else{
+                                one.add(artistlist(singer[0], ""))
+                            }
 
                             musicall.add(
                                 Searchs(
@@ -211,42 +231,31 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>(),
 
             override fun onError(e: Throwable) {}
             override fun onComplete() {
-               when (type) {
-                    0 -> {
-                        type++
-                        getPresenter().kugoudata(context, search, 0)
-                    }
-                    1 -> {
+                if (swipe_refresh_layout != null) {
+                    swipe_refresh_layout.isRefreshing = false
+                }
+            }
+
+        }
+
+        observers =
+            object : Observer<Boolean> {
+                override fun onSubscribe(d: Disposable) {}
+
+                override fun onNext(data: Boolean) {
+                    if (data) {
                         if (swipe_refresh_layout != null) {
                             swipe_refresh_layout.isRefreshing = false
                         }
                     }
 
-
                 }
 
-
-            }
-
-        }
-
-        observers = object : Observer<Boolean> {
-            override fun onSubscribe(d: Disposable) {}
-
-            override fun onNext(data: Boolean) {
-                if (data) {
-                    if (swipe_refresh_layout != null) {
-                        swipe_refresh_layout.isRefreshing = false
-                    }
+                override fun onError(e: Throwable) {}
+                override fun onComplete() {
                 }
 
             }
-
-            override fun onError(e: Throwable) {}
-            override fun onComplete() {
-            }
-
-        }
 
     }
 

@@ -17,6 +17,7 @@ import com.example.xiaobai.music.R
 import com.example.xiaobai.music.adapter.HomeDetAdapter
 import com.example.xiaobai.music.adapter.PlaySongAdapter
 import com.example.xiaobai.music.bean.*
+import com.example.xiaobai.music.common.Constants
 import com.example.xiaobai.music.config.LogDownloadListener
 import com.example.xiaobai.music.music.contract.HomeContract
 import com.example.xiaobai.music.music.model.MusicPlayModel
@@ -306,24 +307,33 @@ class HomeFragment : BaseMvpFragment<HomeContract.IPresenter>(), HomeContract.IV
                                             .negativeColorRes(R.color.red)
                                             .onPositive { _: MaterialDialog?, _: DialogAction? ->
 
-                                                val request = OkGo.get<File>(data.uri)
-                                                OkDownload.request(
-                                                    data.uri,
-                                                    request
-                                                ) //
-                                                    .priority(0)
-                                                    .folder(it1.getExternalFilesDir("")!!.absolutePath+"/download")
-                                                    .fileName("music" + data.song_id ) //
-                                                    .save() //
-                                                    .register(
-                                                        LogDownloadListener(
-                                                            data,
-                                                            context,
-                                                            0,
-                                                            downs,0
-                                                        )
+                                                if(Constants.Downnum()){
+                                                    val request = OkGo.get<File>(data.uri)
+                                                    OkDownload.request(
+                                                        data.uri,
+                                                        request
                                                     ) //
-                                                    .start()
+                                                        .priority(0)
+                                                        .folder(it1.getExternalFilesDir("")!!.absolutePath+"/download")
+                                                        .fileName("music" + data.song_id ) //
+                                                        .save() //
+                                                        .register(
+                                                            LogDownloadListener(
+                                                                data,
+                                                                context,
+                                                                0,
+                                                                downs
+                                                            )
+                                                        ) //
+                                                        .start()
+                                                }else{
+                                                    Toast.makeText(
+                                                        context,
+                                                        getText(R.string.download_num),
+                                                        Toast.LENGTH_SHORT
+                                                    ).show()
+                                                }
+
 
 
                                             }

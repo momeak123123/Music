@@ -16,6 +16,7 @@ import com.example.xiaobai.music.R
 import com.example.xiaobai.music.adapter.SongDetAdapter
 import com.example.xiaobai.music.bean.Music
 import com.example.xiaobai.music.bean.artistlist
+import com.example.xiaobai.music.common.Constants
 import com.example.xiaobai.music.config.LogDownloadListener
 import com.example.xiaobai.music.music.contract.SongDetContract
 import com.example.xiaobai.music.music.presenter.SongDetPresenter
@@ -298,21 +299,30 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
                                             Toast.LENGTH_SHORT
                                         ).show()
                                     } else {
-                                        val request = OkGo.get<File>(its.uri)
-                                        OkDownload.request(its.uri, request) //
-                                            .priority(0)
-                                            .folder(context.getExternalFilesDir("")!!.absolutePath+"/download")
-                                            .fileName("music" + its.song_id ) //
-                                            .save() //
-                                            .register(
-                                                LogDownloadListener(
-                                                    its,
-                                                    context,
-                                                    0,
-                                                    downs,0
-                                                )
-                                            ) //
-                                            .start()
+                                        if(Constants.Downnum()){
+                                            val request = OkGo.get<File>(its.uri)
+                                            OkDownload.request(its.uri, request) //
+                                                .priority(0)
+                                                .folder(context.getExternalFilesDir("")!!.absolutePath+"/download")
+                                                .fileName("music" + its.song_id ) //
+                                                .save() //
+                                                .register(
+                                                    LogDownloadListener(
+                                                        its,
+                                                        context,
+                                                        0,
+                                                        downs
+                                                    )
+                                                ) //
+                                                .start()
+                                        }else{
+                                            Toast.makeText(
+                                                context,
+                                                getText(R.string.download_num),
+                                                Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+
                                     }
 
 
@@ -603,24 +613,33 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
                                         .negativeColorRes(R.color.red)
                                         .onPositive { _: MaterialDialog?, _: DialogAction? ->
 
-                                            val request = OkGo.get<File>(songlist[data].uri)
-                                            OkDownload.request(
-                                                songlist[data].uri,
-                                                request
-                                            ) //
-                                                .priority(0)
-                                                .folder(context.getExternalFilesDir("")!!.absolutePath+"/download")
-                                                .fileName("music" + songlist[data].song_id ) //
-                                                .save() //
-                                                .register(
-                                                    LogDownloadListener(
-                                                        songlist[data],
-                                                        context,
-                                                        0,
-                                                        downs,0
-                                                    )
+                                            if(Constants.Downnum()){
+                                                val request = OkGo.get<File>(songlist[data].uri)
+                                                OkDownload.request(
+                                                    songlist[data].uri,
+                                                    request
                                                 ) //
-                                                .start()
+                                                    .priority(0)
+                                                    .folder(context.getExternalFilesDir("")!!.absolutePath+"/download")
+                                                    .fileName("music" + songlist[data].song_id ) //
+                                                    .save() //
+                                                    .register(
+                                                        LogDownloadListener(
+                                                            songlist[data],
+                                                            context,
+                                                            0,
+                                                            downs
+                                                        )
+                                                    ) //
+                                                    .start()
+                                            }else{
+                                                Toast.makeText(
+                                                    context,
+                                                    getText(R.string.download_num),
+                                                    Toast.LENGTH_SHORT
+                                                ).show()
+                                            }
+
 
                                         }
                                         .show()

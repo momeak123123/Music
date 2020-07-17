@@ -27,8 +27,6 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
-import com.example.xiaobai.music.common.Constants;
-import com.example.xiaobai.music.config.Installation;
 import com.example.xiaobai.music.config.SoftKeyBoardListener;
 import com.example.xiaobai.music.music.view.act.MusicPlayActivity;
 import com.example.xiaobai.music.music.view.act.StartPageActivity;

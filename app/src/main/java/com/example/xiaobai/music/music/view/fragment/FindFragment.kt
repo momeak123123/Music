@@ -28,6 +28,8 @@ import com.example.xiaobai.music.sql.bean.Search
 import com.example.xiaobai.music.sql.config.Initialization
 import com.example.xiaobai.music.sql.dao.mSearchDao
 import com.jakewharton.rxbinding2.view.RxView
+import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
+import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog.ListCallback
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.artist_index.*
@@ -45,10 +47,10 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
     companion object {
         lateinit var observer: Observer<MutableList<kugouseBean>>
         lateinit var observert: Observer<List<Sear>>
-        lateinit var observerts: Observer<List<Sear>>
         lateinit var observers: Observer<Boolean>
     }
 
+    private var sears: Int =0
     private var sreachtxt: String = ""
     private var bools = true
     var lists = mutableListOf<String>()
@@ -84,6 +86,12 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
                 sreachtitle.visibility = View.GONE
                 flowLayout2.visibility = View.GONE
                 del.visibility = View.GONE
+            }
+
+        RxView.clicks(sear)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe {
+                showContextMenuDialog()
             }
     }
 
@@ -237,6 +245,7 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
             val intent = Intent()
             context?.let { intent.setClass(it, SearchListActivity().javaClass) }
             intent.putExtra("txt", bean)
+            intent.putExtra("sear", sears)
             startActivity(intent)
         } else {
             Toast.makeText(
@@ -246,6 +255,20 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
             ).show()
         }
 
+    }
+
+    /**
+     * 类似系统的上下文菜单ContextMenu的Dialog
+     */
+    private fun showContextMenuDialog() {
+        MaterialDialog.Builder(requireContext())
+            .title(R.string.sear)
+            .items(R.array.menu_values)
+            .itemsCallback(ListCallback { dialog: MaterialDialog?, itemView: View?, position: Int, text: CharSequence ->
+                sears = position
+                sear.text = text
+            })
+            .show()
     }
 
     /**

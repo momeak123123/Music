@@ -6,18 +6,13 @@ import android.content.Context;
 import com.example.xiaobai.music.config.Installation;
 
 import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.security.NoSuchAlgorithmException;
 import java.security.Provider;
 import java.security.SecureRandom;
-import java.util.Date;
 import java.util.Objects;
 
 import javax.crypto.Cipher;
@@ -25,8 +20,6 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-
-import static com.example.xiaobai.music.config.OSS.put;
 
 public class CipherUtil {
 
@@ -107,8 +100,9 @@ public class CipherUtil {
     public static String decryptString(Context context,String path) throws Exception{
         File file = new File(path);
         byte[] raw = getRawKey(Installation.id(context).getBytes());
-       return getFile(decrypt(raw, readFile(file)),path);
-       // return getFiles(context,decrypt(raw, readFile(file)));
+       //return getFile(decrypt(raw, readFile(file)),path);
+        return getFiles(context,decrypt(raw, readFile(file)));
+
     }
 
     /**
@@ -146,21 +140,31 @@ public class CipherUtil {
     }
 
 
+
+
+
     /**
-     * 根据byte数组，生成临时文件
+     *  根据byte数组，生成文件
+     * @param bfile byte字节流
+     * @return
      */
-    private static String getFiles(Context context,byte[] bfile) {
+    private static String getFiles(Context context, byte[] bfile) {
         BufferedOutputStream bos = null;
         FileOutputStream fos = null;
-        File file;
+        File file = null;
+        String path = "";
         try {
-            file = File.createTempFile("test", null, context.getCacheDir());
+            //创建临时文件的api参数 (文件前缀,文件后缀,存放目录)
+            file = new File(Objects.requireNonNull(context.getCacheDir()).getAbsolutePath(),"test");
             fos = new FileOutputStream(file);
             bos = new BufferedOutputStream(fos);
             bos.write(bfile);
-            return file.getPath();
+            path = file.getPath();
+            return path;
         } catch (Exception e) {
             e.printStackTrace();
+            System.out.println("创建临时文件失败!" + e.getMessage());
+            return "";
         } finally {
             if (bos != null) {
                 try {
@@ -177,6 +181,5 @@ public class CipherUtil {
                 }
             }
         }
-        return "";
     }
 }

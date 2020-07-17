@@ -46,7 +46,7 @@ class StartsActivity : AppCompatActivity() {
 
         MainModel.homedata(this)
         getadvertising()
-        mdDisposable = Flowable.intervalRange(0, 3, 0, 1, TimeUnit.SECONDS)
+        mdDisposable = Flowable.intervalRange(0, 5, 0, 1, TimeUnit.SECONDS)
             .observeOn(AndroidSchedulers.mainThread())
             .doOnNext {}
             .doOnComplete {
@@ -56,7 +56,7 @@ class StartsActivity : AppCompatActivity() {
             }
             .subscribe()
 
-        Observable.timer(6, TimeUnit.SECONDS)
+        Observable.timer(10, TimeUnit.SECONDS)
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<Long> {
                 override fun onSubscribe(disposable: Disposable) {}
@@ -74,8 +74,13 @@ class StartsActivity : AppCompatActivity() {
         val sp: SharedPreferences = getSharedPreferences("User", Context.MODE_PRIVATE)
 
         if(sp.getString("android_id", "").toString()==""){
-            DeleteUtil.delete("/sdcard/Download/", false, ".mp3")
+            DeleteUtil.delete(getExternalFilesDir("")!!.absolutePath+"/download", false, "")
             sp.edit().putString("android_id", Installation.id(this)).apply()
+        }
+
+        if(sp.getString("down_date", "").toString()==""){
+            sp.edit().putInt("down_num", 0).apply()
+            sp.edit().putString("down_date", Constants.Dates()).apply()
         }
 
     }

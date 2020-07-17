@@ -1,5 +1,6 @@
 package com.example.xiaobai.music.music.contract
 
+import android.content.Context
 import mvp.ljb.kt.contract.IModelContract
 import mvp.ljb.kt.contract.IPresenterContract
 import mvp.ljb.kt.contract.IViewContract
@@ -15,7 +16,13 @@ interface UserSetContract {
 
     }
 
-    interface IPresenter : IPresenterContract
+    interface IPresenter : IPresenterContract {
+         fun code(context : Context, code: String)
+        fun pass(context: Context, pass: String)
+    }
 
-    interface IModel : IModelContract
+    interface IModel : IModelContract{
+        fun code(context :Context ,code: String)
+        fun pass(context: Context, pass: String)
+    }
 }

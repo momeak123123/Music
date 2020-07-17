@@ -16,13 +16,11 @@ import android.view.View;
 import androidx.annotation.Nullable;
 
 import com.example.xiaobai.music.R;
-import com.example.xiaobai.music.music.view.act.MusicPlayActivity;
 import com.example.xiaobai.music.utils.SizeUtils;
 
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Flowable;
-import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;

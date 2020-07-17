@@ -109,7 +109,7 @@
             android:layout_alignEnd="@+id/re_pass_number"
             android:layout_marginTop="@dimen/dp_20"
             android:layout_toEndOf="@+id/textView2"
-            android:drawableStart="@drawable/pass"
+            android:drawableStart="@drawable/codeima"
             android:drawablePadding="@dimen/dp_10"
             android:hint="@string/repeat_code"
             android:inputType="text"

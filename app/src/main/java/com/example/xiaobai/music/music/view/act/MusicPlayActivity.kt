@@ -24,6 +24,7 @@ import com.example.xiaobai.music.adapter.PlayListAdapter
 import com.example.xiaobai.music.adapter.PlaySongAdapter
 import com.example.xiaobai.music.adapter.ViewPagerAdapter
 import com.example.xiaobai.music.bean.Music
+import com.example.xiaobai.music.common.Constants
 import com.example.xiaobai.music.config.LogDownloadListener
 import com.example.xiaobai.music.config.Notifications
 import com.example.xiaobai.music.music.model.MusicPlayModel
@@ -197,22 +198,31 @@ class MusicPlayActivity : AppCompatActivity() {
 
                         } else {
                             if (uri != "") {
-                                val request = OkGo.get<File>(uri)
-                                OkDownload.request(uri, request) //
-                                    .priority(0)
-                                    .folder(context.getExternalFilesDir("")!!.absolutePath+"/download")
-                                    .fileName("music$song_id") //
-                                    .save() //
-                                    .register(
-                                        LogDownloadListener(
-                                            playingMusic,
-                                            context,
-                                            0,
-                                            downs,0
-                                        )
-                                    ) //
-                                    .start()
-                                icon2.setImageResource(R.drawable.xiazais)
+                                if(Constants.Downnum()){
+                                    val request = OkGo.get<File>(uri)
+                                    OkDownload.request(uri, request) //
+                                        .priority(0)
+                                        .folder(context.getExternalFilesDir("")!!.absolutePath+"/download")
+                                        .fileName("music$song_id") //
+                                        .save() //
+                                        .register(
+                                            LogDownloadListener(
+                                                playingMusic,
+                                                context,
+                                                0,
+                                                downs
+                                            )
+                                        ) //
+                                        .start()
+                                    icon2.setImageResource(R.drawable.xiazais)
+                                }else{
+                                    Toast.makeText(
+                                        context,
+                                        getText(R.string.download_num),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+
                             } else {
                                 Toast.makeText(
                                     context,

@@ -1,5 +1,6 @@
 package com.example.xiaobai.music.music.presenter
 
+import android.content.Context
 import com.example.xiaobai.music.music.contract.ShareContract
 import com.example.xiaobai.music.music.model.ShareModel
 import mvp.ljb.kt.presenter.BaseMvpPresenter
@@ -12,5 +13,8 @@ import mvp.ljb.kt.presenter.BaseMvpPresenter
 class SharePresenter : BaseMvpPresenter<ShareContract.IView, ShareContract.IModel>(), ShareContract.IPresenter{
 
     override fun registerModel() = ShareModel::class.java
+    override fun usercode(context: Context) {
+        getModel().usercode(context)
+    }
 
 }

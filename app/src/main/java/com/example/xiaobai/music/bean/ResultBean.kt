@@ -15,6 +15,12 @@ data class ResultBeans (
     val data: JsonArray
 )
 
+data class ResultBeant (
+    val code: Int,
+    val msg: String
+
+)
+
 data class UpdateApp(
     val update: String,
     val new_version: String,
