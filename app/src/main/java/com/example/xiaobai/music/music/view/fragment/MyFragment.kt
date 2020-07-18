@@ -140,7 +140,7 @@ class MyFragment : BaseMvpFragment<MyContract.IPresenter>(), MyContract.IView {
 
         if (sp.getBoolean("login", false)) {
             context?.let { getPresenter().data(it) }
-            nums = mDownDao.queryAll().count()
+            nums = mDownDao.query(sp.getString("user_id","")).count()
             like_num.text = nums.toString()
         }
 
