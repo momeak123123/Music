@@ -20,7 +20,7 @@ import mvp.ljb.kt.model.BaseModel
 class SongEditModel : BaseModel(), SongEditContract.IModel {
     override fun registerdata(context: Context, name: String, playid: Long) {
         val sp: SharedPreferences = context.getSharedPreferences("User", Context.MODE_PRIVATE)
-        OkGo.get<String>(Constants.URL + "user/edit_play_list")
+        OkGo.post<String>(Constants.URL + "user/edit_play_list")
             .params("token",sp.getString("token", ""))
             .params("name",name)
             .params("play_list_id",playid)
