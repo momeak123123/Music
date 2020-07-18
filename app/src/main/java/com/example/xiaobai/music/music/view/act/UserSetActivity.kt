@@ -53,7 +53,7 @@ class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>(), UserSetCo
         file = File(path)
         val sizes = FilesUtils.getCurrentFolderSize(file)
         size.text = FormetFileSize(sizes)
-
+        code.text = sp.getString("code","")
 
     }
 
