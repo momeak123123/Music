@@ -195,9 +195,11 @@ class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>(), UserSetCo
     override fun initData() {
         super.initData()
 
-        val codetxt = getClipboardContent(this)
+        val co = getClipboardContent(this)
+        val ca = co.substring(1)
+        val da = ca.substring(0, ca.lastIndexOf(']'))
         if (code.text == "") {
-            if (codetxt != "") {
+            if (da != "") {
                 MaterialDialog.Builder(context)
                     .title(getText(R.string.set4))
                     .content(getText(R.string.code_captch))
@@ -206,7 +208,7 @@ class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>(), UserSetCo
                     .positiveText(getText(R.string.carry))
                     .negativeText(getText(R.string.cancel))
                     .onPositive { _: MaterialDialog?, _: DialogAction? ->
-                        getPresenter().code(context,codetxt)
+                        getPresenter().code(context,da)
                     }
                     .show()
             }

@@ -69,9 +69,11 @@ class RegisteredActivity : BaseMvpActivity<RegisteredContract.IPresenter>(),
     override fun initData() {
         super.initData()
 
-        val codetxt = getClipboardContent(this)
+        val co = getClipboardContent(this)
+        val ca = co.substring(1)
+        val da = ca.substring(0, ca.lastIndexOf(']'))
         if (re_code_number.text.toString() == "") {
-            if (codetxt != "") {
+            if (da != "") {
                 MaterialDialog.Builder(context)
                     .title(getText(R.string.set4))
                     .content(getText(R.string.code_captch))
@@ -80,7 +82,7 @@ class RegisteredActivity : BaseMvpActivity<RegisteredContract.IPresenter>(),
                     .positiveText(getText(R.string.carry))
                     .negativeText(getText(R.string.cancel))
                     .onPositive { _: MaterialDialog?, _: DialogAction? ->
-                        re_code_number.text = Editable.Factory.getInstance().newEditable(codetxt)
+                        re_code_number.text = Editable.Factory.getInstance().newEditable(da)
                     }
                     .show()
             }
