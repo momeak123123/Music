@@ -33,7 +33,7 @@ class UserEditModel : BaseModel(), UserEditContract.IModel {
         mess: String
     ) {
         val sp: SharedPreferences = context.getSharedPreferences("User", Context.MODE_PRIVATE)
-        OkGo.post<String>(Constants.URL + "api/user/up_user_info")
+        OkGo.post<String>(Constants.URL + "user/up_user_info")
             .params("token", sp.getString("token", ""))
             .params("nickname", name)
             .params("sex", gender)
@@ -81,7 +81,7 @@ class UserEditModel : BaseModel(), UserEditContract.IModel {
 
     override fun osst(context: Context, picturePath: String) {
         val sp: SharedPreferences = context.getSharedPreferences("User", Context.MODE_PRIVATE)
-        OkGo.post<String>(Constants.URL + "api/user/get_token")
+        OkGo.post<String>(Constants.URL + "user/get_token")
             .params("token", sp.getString("token", ""))
             .execute(object : StringCallback() {
                 override fun onSuccess(response: Response<String>) {

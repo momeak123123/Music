@@ -13,11 +13,14 @@ import com.example.xiaobai.music.config.Screenshot
 import com.example.xiaobai.music.music.contract.ShareContract
 import com.example.xiaobai.music.music.presenter.SharePresenter
 import com.example.xiaobai.music.music.view.act.CodeListActivity
+import com.example.xiaobai.music.music.view.act.LoginActivity
 import com.example.xiaobai.music.utils.QRCodeCreator
 import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.fragment_code.*
+import kotlinx.android.synthetic.main.fragment_code.code
+import kotlinx.android.synthetic.main.fragment_uncode.*
 import mvp.ljb.kt.fragment.BaseMvpFragment
 import java.util.concurrent.TimeUnit
 
@@ -60,9 +63,9 @@ class ShareFragment : BaseMvpFragment<ShareContract.IPresenter>(), ShareContract
         logins = sp.getBoolean("login", false)
         if (logins) {
             context?.let { getPresenter().usercode(it) }
-            include.visibility = View.VISIBLE
-        }else{
             include.visibility = View.GONE
+        }else{
+            include.visibility = View.VISIBLE
 
         }
 
@@ -110,6 +113,15 @@ class ShareFragment : BaseMvpFragment<ShareContract.IPresenter>(), ShareContract
                     ).show()
                 }
 
+            }
+
+
+        RxView.clicks(btn_login)
+            .throttleFirst(3, TimeUnit.SECONDS)
+            .subscribe {
+                val intent = Intent()
+                context?.let { intent.setClass(it, LoginActivity().javaClass) }
+                startActivity(intent)
             }
 
     }

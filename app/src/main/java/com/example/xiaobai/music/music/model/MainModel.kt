@@ -19,7 +19,7 @@ class MainModel {
         fun addsonglist(context: Context, et_name: String){
             val sp: SharedPreferences = context.getSharedPreferences("User", Context.MODE_PRIVATE)
 
-            OkGo.post<String>(Constants.URL + "api/user/create_play_list")
+            OkGo.post<String>(Constants.URL + "user/create_play_list")
                 .params("token", sp.getString("token", ""))
                 .params("name", et_name)
                 .execute(object : StringCallback() {
@@ -52,7 +52,7 @@ class MainModel {
         }
 
         fun homedata(context: Context){
-            OkGo.get<String>(Constants.URL + "api")
+            OkGo.get<String>(Constants.URL)
                 .execute(object : StringCallback() {
                     override fun onSuccess(response: Response<String>) {
                         /**

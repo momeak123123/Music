@@ -22,7 +22,7 @@ class StartPageModel : BaseModel(), StartPageContract.IModel {
     override fun homedata(context: Context) {
 
 
-        OkGo.get<String>(Constants.URL + "api")
+        OkGo.get<String>(Constants.URL)
             .execute(object : StringCallback() {
                 override fun onSuccess(response: Response<String>) {
                     /**

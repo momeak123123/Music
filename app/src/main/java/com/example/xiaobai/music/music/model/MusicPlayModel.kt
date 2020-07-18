@@ -56,7 +56,7 @@ class MusicPlayModel {
             for (it in song) {
                 idmap.add(it.song_id)
             }
-            OkGo.post<String>(Constants.URL + "api/user/add_play_list")
+            OkGo.post<String>(Constants.URL + "user/add_play_list")
                 .params("token", sp.getString("token", ""))
                 .params("play_list_id", playid)
                 .params("song_id", Gson().toJson(idmap))
@@ -135,7 +135,7 @@ class MusicPlayModel {
 
         fun updateapp(version: String) {
 
-            OkGo.get<String>(Constants.URL + "api/Version/index")
+            OkGo.get<String>(Constants.URL + "Version/index")
                 //.params("token", sp.getString("token", ""))
                 .params("version", version)
                 .execute(object : StringCallback() {
@@ -209,7 +209,7 @@ class MusicPlayModel {
         }
 
         fun getadvertising() {
-            OkGo.get<String>(Constants.URL + "api/ads/get_ads")
+            OkGo.get<String>(Constants.URL + "ads/get_ads")
                 .params("type", 1)
                 .execute(object : StringCallback() {
                     override fun onSuccess(response: Response<String>) {
@@ -228,8 +228,8 @@ class MusicPlayModel {
                                MusicApp.setAdstime(ads[0].seconds)
                                 object : Thread() {
                                     override fun run() {
-                                        if(ads[0].url!="") {
-                                            val bm = BitmapUtils.getBitmap(ads[0].url)
+                                        if(ads[0].img!="") {
+                                            val bm = BitmapUtils.getBitmap(ads[0].img)
                                             MusicApp.setStartback(bm)
                                         }
 

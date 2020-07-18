@@ -28,7 +28,7 @@ class FindModel : BaseModel(), FindContract.IModel {
     }
 
     override fun listcean(){
-        OkGo.get<String>(Constants.URL + "api/Serach/index")
+        OkGo.get<String>(Constants.URL + "Serach/index")
             .execute(object : StringCallback() {
                 override fun onSuccess(response: Response<String>) {
                     /**

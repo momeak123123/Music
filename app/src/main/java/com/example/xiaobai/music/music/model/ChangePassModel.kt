@@ -20,7 +20,7 @@ import mvp.ljb.kt.model.BaseModel
 class ChangePassModel : BaseModel(), ChangePassContract.IModel {
     override fun data(context: Context, pass: String, passs: String) {
         val sp: SharedPreferences = context.getSharedPreferences("User", Context.MODE_PRIVATE)
-        OkGo.post<String>(Constants.URL + "api/user/edit_user_passwd")
+        OkGo.post<String>(Constants.URL + "user/edit_user_passwd")
             .params("token", sp.getString("token", ""))
             .params("or_pw", pass)
             .params("now_pw", passs)

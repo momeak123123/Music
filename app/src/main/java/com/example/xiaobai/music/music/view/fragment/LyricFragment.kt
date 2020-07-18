@@ -45,7 +45,7 @@ class LyricFragment : BaseMvpFragment<LyricContract.IPresenter>(), LyricContract
     fun lrcView(songid: Long) {
         super.initView()
 
-        OkGo.get<String>(Constants.URL + "api/index/get_lrclink")
+        OkGo.get<String>(Constants.URL + "index/get_lrclink")
             .params("song_id", songid)
             .execute(object : StringCallback() {
                 override fun onSuccess(response: Response<String>) {

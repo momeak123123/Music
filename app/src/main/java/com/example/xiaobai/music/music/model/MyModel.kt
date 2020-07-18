@@ -26,7 +26,7 @@ class MyModel : BaseModel(), MyContract.IModel {
     override fun data(context: Context) {
         val sp: SharedPreferences = context.getSharedPreferences("User", Context.MODE_PRIVATE)
 
-        OkGo.post<String>(Constants.URL + "api/user/get_user_info")
+        OkGo.post<String>(Constants.URL + "user/get_user_info")
             .params("token", sp.getString("token", ""))
             .execute(object : StringCallback() {
                 override fun onSuccess(response: Response<String>) {
@@ -76,7 +76,7 @@ class MyModel : BaseModel(), MyContract.IModel {
 
         val sp: SharedPreferences = context.getSharedPreferences("User", Context.MODE_PRIVATE)
 
-        OkGo.post<String>(Constants.URL + "api/user/create_play_list")
+        OkGo.post<String>(Constants.URL + "user/create_play_list")
             .params("token", sp.getString("token", ""))
             .params("name", et_name)
             .execute(object : StringCallback() {
@@ -113,7 +113,7 @@ class MyModel : BaseModel(), MyContract.IModel {
     override fun listdata(context: Context) {
         val sp: SharedPreferences = context.getSharedPreferences("User", Context.MODE_PRIVATE)
 
-        OkGo.post<String>(Constants.URL + "api/user/get_play_list")
+        OkGo.post<String>(Constants.URL + "user/get_play_list")
             .params("token", sp.getString("token", ""))
             .execute(object : StringCallback() {
                 override fun onSuccess(response: Response<String>) {

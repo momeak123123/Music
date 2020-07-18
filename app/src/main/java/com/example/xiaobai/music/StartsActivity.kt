@@ -63,7 +63,7 @@ class StartsActivity : AppCompatActivity() {
             })
 
         println("日期" + Constants.Dates())
-        println("Installtion ID" + Installation.getUniqueID(this))
+        println("Unique ID" + Installation.getUniqueID(this))
         //67700683-bb9b-4ef4-b30b-8c332a98aa2e
         val sp: SharedPreferences = getSharedPreferences("User", Context.MODE_PRIVATE)
 

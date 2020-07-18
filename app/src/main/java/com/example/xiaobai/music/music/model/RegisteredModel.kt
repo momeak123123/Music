@@ -30,7 +30,7 @@ class RegisteredModel : BaseModel(), RegisteredContract.IModel {
         code:String
     ): Boolean {
 
-        OkGo.post<String>(Constants.URL + "api/login/registered")
+        OkGo.post<String>(Constants.URL + "login/registered")
             .params("user_email", email)
             .params("password", pass)
             .params("invite_code", code)
@@ -83,7 +83,7 @@ class RegisteredModel : BaseModel(), RegisteredContract.IModel {
     }
 
     override fun registercode(context: Context, email: String) {
-        OkGo.post<String>(Constants.URL + "api/login/send_code")
+        OkGo.post<String>(Constants.URL + "login/send_code")
             .params("user_email", email)
             .execute(object : StringCallback() {
                 override fun onSuccess(response: Response<String>) {

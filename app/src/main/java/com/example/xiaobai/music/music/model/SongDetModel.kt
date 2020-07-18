@@ -27,7 +27,7 @@ import mvp.ljb.kt.model.BaseModel
 class SongDetModel : BaseModel(), SongDetContract.IModel {
     override fun listdata(context: Context, id: Long) {
         val sp: SharedPreferences = context.getSharedPreferences("User", Context.MODE_PRIVATE)
-        OkGo.post<String>(Constants.URL + "api/user/get_song_list")
+        OkGo.post<String>(Constants.URL + "user/get_song_list")
             .params("play_list_id", id)
             .params("token", sp.getString("token", ""))
             .execute(object : StringCallback() {
@@ -62,7 +62,7 @@ class SongDetModel : BaseModel(), SongDetContract.IModel {
 
     override fun deldata(context: Context, ids: Long, playids: Long) {
         val sp: SharedPreferences = context.getSharedPreferences("User", Context.MODE_PRIVATE)
-        OkGo.post<String>(Constants.URL + "api/user/del_play_list")
+        OkGo.post<String>(Constants.URL + "user/del_play_list")
             .params("play_list_id", playids)
             .params("token", sp.getString("token", ""))
             .execute(object : StringCallback() {
@@ -100,7 +100,7 @@ class SongDetModel : BaseModel(), SongDetContract.IModel {
         for (it in song) {
             idmap.add(it.song_list_id)
         }
-        OkGo.post<String>(Constants.URL + "api/user/del_song_list")
+        OkGo.post<String>(Constants.URL + "user/del_song_list")
             .params("song_list_id", Gson().toJson(idmap))
             .params("token", sp.getString("token", ""))
             .execute(object : StringCallback() {
@@ -149,7 +149,7 @@ class SongDetModel : BaseModel(), SongDetContract.IModel {
         val sp: SharedPreferences = context.getSharedPreferences("User", Context.MODE_PRIVATE)
         val idmap = mutableListOf<Long>()
         idmap.add(song.song_list_id)
-        OkGo.post<String>(Constants.URL + "api/user/del_song_list")
+        OkGo.post<String>(Constants.URL + "user/del_song_list")
             .params("song_list_id", Gson().toJson(idmap))
             .params("token", sp.getString("token", ""))
             .execute(object : StringCallback() {

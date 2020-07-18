@@ -7,5 +7,6 @@ data class Banner(
 
 data class Ads(
     val url :String,
+    val img :String,
     val seconds :Long
 )

@@ -13,6 +13,8 @@ import com.example.xiaobai.music.adapter.CodeListAdapter
 import com.example.xiaobai.music.bean.Code
 import com.example.xiaobai.music.music.contract.CodeListContract
 import com.example.xiaobai.music.music.presenter.CodeListPresenter
+import com.google.gson.Gson
+import com.google.gson.JsonArray
 import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
@@ -26,13 +28,14 @@ import java.util.concurrent.TimeUnit
  * @Date 2020/07/17
  * @Description input description
  **/
-class CodeListActivity : BaseMvpActivity<CodeListContract.IPresenter>() , CodeListContract.IView {
+class CodeListActivity : BaseMvpActivity<CodeListContract.IPresenter>(), CodeListContract.IView {
 
     private lateinit var context: Context
 
     companion object {
-        lateinit var observer: Observer<MutableList<Code>>
+        lateinit var observer: Observer<JsonArray>
     }
+
     override fun registerPresenter() = CodeListPresenter::class.java
     override fun getLayoutId(): Int {
         return R.layout.code_index
@@ -68,16 +71,19 @@ class CodeListActivity : BaseMvpActivity<CodeListContract.IPresenter>() , CodeLi
 
     override fun onResume() {
         super.onResume()
-        observer = object : Observer<MutableList<Code>> {
+        observer = object : Observer<JsonArray> {
             override fun onSubscribe(d: Disposable) {}
+
             @SuppressLint("SetTextI18n")
-            override fun onNext(codelist: MutableList<Code>) {
-                if(codelist.size>0){
-                    initSearchList(codelist)
-                    if (swipe_refresh_layout != null) {
-                        swipe_refresh_layout.isRefreshing = false
-                    }
-                }else{
+            override fun onNext(codelist: JsonArray) {
+                if (codelist.size() > 0) {
+                    val list = Gson().fromJson<Array<Code>>(
+                        codelist,
+                        Array<Code>::class.java
+                    ).toMutableList()
+
+                    initSearchList(list)
+                } else {
                     Toast.makeText(
                         context,
                         getText(R.string.code_lists),
@@ -85,7 +91,12 @@ class CodeListActivity : BaseMvpActivity<CodeListContract.IPresenter>() , CodeLi
                     ).show()
                 }
 
+                if (swipe_refresh_layout != null) {
+                    swipe_refresh_layout.isRefreshing = false
+                }
+
             }
+
             override fun onError(e: Throwable) {}
             override fun onComplete() {}
 

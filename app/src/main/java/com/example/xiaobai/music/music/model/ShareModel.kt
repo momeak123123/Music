@@ -23,7 +23,7 @@ import mvp.ljb.kt.model.BaseModel
 class ShareModel : BaseModel(), ShareContract.IModel {
     override fun usercode(context: Context) {
         val sp: SharedPreferences = context.getSharedPreferences("User", Context.MODE_PRIVATE)
-        OkGo.post<String>(Constants.URL + "api/user/get_invite")
+        OkGo.post<String>(Constants.URL + "user/get_invite")
             .params("token", sp.getString("token", ""))
             .execute(object : StringCallback() {
                 override fun onSuccess(response: Response<String>) {

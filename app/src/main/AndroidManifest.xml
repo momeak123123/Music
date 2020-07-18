@@ -37,8 +37,7 @@
         tools:targetApi="n">
         <service
             android:name=".service.TimeService"
-            android:enabled="true"
-            android:exported="true"/>
+            android:enabled="true" />
         <service
             android:name=".service.MusicService"
             android:enabled="true" />
@@ -68,8 +67,7 @@
 
         <activity
             android:name=".music.view.act.MusicPlayActivity"
-            android:launchMode="singleTop"
-            android:configChanges="orientation|keyboardHidden|screenSize"/>
+            android:launchMode="singleTop" />
         <activity
             android:name=".MainActivity"
             android:configChanges="keyboardHidden"
@@ -78,6 +76,7 @@
         <activity
             android:name=".music.view.act.StartPageActivity"
             android:launchMode="singleTop" />
+
         <activity android:name=".music.view.act.LoginActivity" />
         <activity android:name=".music.view.act.RegisteredActivity" />
         <activity android:name=".music.view.act.AlbumActivity" />

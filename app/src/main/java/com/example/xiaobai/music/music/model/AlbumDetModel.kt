@@ -23,7 +23,7 @@ class AlbumDetModel : BaseModel(), AlbumDetContract.IModel {
 
     override fun songdata(id: Long, type: Int, context: Context) {
 
-        OkGo.get<String>(Constants.URL + "api/album/getAlbumSonglist")
+        OkGo.get<String>(Constants.URL + "album/getAlbumSonglist")
             .params("album_id", id)
             .execute(object : StringCallback() {
                 override fun onSuccess(response: Response<String>) {
@@ -66,7 +66,7 @@ class AlbumDetModel : BaseModel(), AlbumDetContract.IModel {
     override fun songdatas(id: Long, type: Int, time: Long ,context: Context) {
 
 
-        OkGo.get<String>(Constants.URL + "api/ranking/rankList")
+        OkGo.get<String>(Constants.URL + "ranking/rankList")
             .params("from_id", id)
             .params("from", type)
             .params("update_time", time)

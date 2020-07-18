@@ -38,5 +38,17 @@ public class Constants {
         }
     }
 
+    public static Boolean Downokgo(){
+
+        SharedPreferences sp = MusicApp.getAppContext().getSharedPreferences("User", Context.MODE_PRIVATE);
+        if(sp.getString("down_date", "").equals(Dates())){
+            int num = sp.getInt("down_num",0);
+            return num < MusicApp.getMinute();
+        }else{
+            sp.edit().putInt("down_num", 0).apply();
+            return true;
+        }
+    }
+
 
 }
