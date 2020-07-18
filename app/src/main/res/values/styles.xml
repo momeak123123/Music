@@ -12,8 +12,7 @@
         <item name="android:textColor">@color/black</item>
         <item name="subtitleTextColor">@color/half_black</item>
         <item name="android:actionMenuTextColor">@color/black</item>
-
-        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowContentTransitions">true</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowBackground">@color/colorPrimaryDark</item>
     </style>
@@ -29,7 +28,6 @@
     <style name="AppTheme.Full" parent="AppTheme.NoActionBar">
         <item name="android:windowBackground">@drawable/play_page_default_bg</item>
         <item name="android:windowFullscreen">true</item>
-        <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds">false</item><!--显示虚拟按键，并腾出空间-->
     </style>
 

@@ -71,7 +71,7 @@ public class LogDownloadListener extends DownloadListener {
             SharedPreferences sp = MusicApp.getAppContext().getSharedPreferences("User", Context.MODE_PRIVATE);
             int num = sp.getInt("down_num",0);
             sp.edit().putInt("down_num", num+1).apply();
-
+            Constants.Downokgo(context);
             String path = CipherUtil.encryptString(context, file);
             System.out.println("File" + path);
             if (!path.equals("")) {

@@ -17,7 +17,6 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.DISABLE_KEYGUARD" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
-
     <uses-permission
         android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"
         tools:ignore="ProtectedPermissions" />
@@ -35,6 +34,16 @@
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup"
         tools:targetApi="n">
+        <!--region 适配全面屏-->
+        <meta-data
+            android:name="android.max_aspect"
+            android:value="2.4" />
+        <!--endregion-->
+        <activity android:name=".IndexActivity"
+            android:configChanges="keyboardHidden"
+            android:launchMode="singleTask"
+            android:windowSoftInputMode="adjustPan|stateHidden"/>
+
         <service
             android:name=".service.TimeService"
             android:enabled="true" />
@@ -68,15 +77,10 @@
         <activity
             android:name=".music.view.act.MusicPlayActivity"
             android:launchMode="singleTop" />
-        <activity
-            android:name=".MainActivity"
-            android:configChanges="keyboardHidden"
-            android:launchMode="singleTask"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
+
         <activity
             android:name=".music.view.act.StartPageActivity"
             android:launchMode="singleTop" />
-
         <activity android:name=".music.view.act.LoginActivity" />
         <activity android:name=".music.view.act.RegisteredActivity" />
         <activity android:name=".music.view.act.AlbumActivity" />

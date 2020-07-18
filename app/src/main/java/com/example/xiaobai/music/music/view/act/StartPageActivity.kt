@@ -7,7 +7,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
-import com.example.xiaobai.music.MainActivity
+import com.example.xiaobai.music.IndexActivity
 import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.music.contract.StartPageContract
@@ -50,7 +50,7 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>(), Start
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
         window.statusBarColor = Color.TRANSPARENT
         context = this
-        MainActivity.bool = false
+        IndexActivity.bool = false
         adss.setImageBitmap(MusicApp.getStartback())
 
     }
@@ -88,7 +88,6 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>(), Start
 
     override fun onResume() {
         super.onResume()
-
     }
 
     override fun onDestroy() {

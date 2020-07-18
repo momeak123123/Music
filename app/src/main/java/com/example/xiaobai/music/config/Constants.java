@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 import com.example.xiaobai.music.MusicApp;
+import com.example.xiaobai.music.music.model.MusicPlayModel;
 import com.example.xiaobai.music.sql.bean.Down;
 import com.example.xiaobai.music.sql.dao.mDownDao;
 
@@ -19,7 +20,7 @@ public class Constants {
 
     public static final String URL = "http://api.xiaobai.de/";
 
-    public static String Dates(){
+    static String Dates(){
         @SuppressLint("SimpleDateFormat") SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd");// HH:mm:ss
         //获取当前时间
         Date date = new Date(System.currentTimeMillis());
@@ -27,27 +28,11 @@ public class Constants {
     }
 
     public static Boolean Downnum(){
-
-        SharedPreferences sp = MusicApp.getAppContext().getSharedPreferences("User", Context.MODE_PRIVATE);
-        if(sp.getString("down_date", "").equals(Dates())){
-           int num = sp.getInt("down_num",0);
-            return num < MusicApp.getMinute();
-        }else{
-            sp.edit().putInt("down_num", 0).apply();
-            return true;
-        }
+       return MusicApp.getMinute() > 0;
     }
 
-    public static Boolean Downokgo(){
-
-        SharedPreferences sp = MusicApp.getAppContext().getSharedPreferences("User", Context.MODE_PRIVATE);
-        if(sp.getString("down_date", "").equals(Dates())){
-            int num = sp.getInt("down_num",0);
-            return num < MusicApp.getMinute();
-        }else{
-            sp.edit().putInt("down_num", 0).apply();
-            return true;
-        }
+    static void Downokgo(Context context){
+        MusicPlayModel.Companion.downnum(context);
     }
 
 

@@ -2,6 +2,8 @@ package  com.example.xiaobai.music.music.model
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.widget.Toast
+import com.example.xiaobai.music.R
 import com.example.xiaobai.music.bean.Code
 import com.example.xiaobai.music.bean.ResultBean
 import com.example.xiaobai.music.bean.ResultBeans
@@ -40,9 +42,13 @@ class CodeListModel : BaseModel(), CodeListContract.IModel {
                         } catch (e: Exception) {
 
                         }
+                    }else {
+                        Toast.makeText(
+                            context,
+                            R.string.error_connection,
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
-
-
 
                 }
             })

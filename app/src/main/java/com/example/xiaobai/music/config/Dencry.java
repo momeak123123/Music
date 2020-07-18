@@ -3,13 +3,14 @@ package com.example.xiaobai.music.config;
 import android.util.Base64;
 
 import java.security.MessageDigest;
+import java.util.Objects;
 
 import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 public class Dencry {
-    public static String decrypt(String str, String str2) {
+    private static String decrypt(String str, String str2) {
         Cipher cipher;
         try {
             cipher = Cipher.getInstance("AES/CBC/NoPadding");
@@ -29,7 +30,7 @@ public class Dencry {
         return null;
     }
     //取MD5
-    public static String md5(byte[] bArr) {
+    private static String md5(byte[] bArr) {
         char[] cArr = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
         try {
             MessageDigest instance = MessageDigest.getInstance("MD5");
@@ -52,6 +53,6 @@ public class Dencry {
     //解密字符串
     public static String dencryptString(String str) {
         String key = "vipmusic";
-        return decrypt(str, md5(key.getBytes()).substring(8, 24));
+        return decrypt(str, Objects.requireNonNull(md5(key.getBytes())).substring(8, 24));
     }
 }

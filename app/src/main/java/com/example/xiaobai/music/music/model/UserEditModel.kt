@@ -45,34 +45,38 @@ class UserEditModel : BaseModel(), UserEditContract.IModel {
                     /**
                      * 成功回调
                      */
-                    val bean =
-                        Gson().fromJson(response.body(), ResultBean::class.javaObjectType)
-                    if (bean.code == 200) {
+                    try{
+                        val bean =
+                            Gson().fromJson(response.body(), ResultBean::class.javaObjectType)
+                        if (bean.code == 200) {
 
-                        val user: Map<String, String> = Gson().fromJson(
-                            bean.data,
-                            object : TypeToken<Map<String, String>>() {}.type
-                        )
+                            val user: Map<String, String> = Gson().fromJson(
+                                bean.data,
+                                object : TypeToken<Map<String, String>>() {}.type
+                            )
 
-                        sp.edit().putString("username", user["username"]).apply()
-                        sp.edit().putString("nickname", user["nickname"]).apply()
-                        sp.edit().putString("url", user["headimgurl"]).apply()
-                        sp.edit().putString("countries", user["countries"]).apply()
-                        sp.edit().putString("sex", user["sex"]).apply()
-                        sp.edit().putString("message", user["message"]).apply()
-                        sp.edit().putString("token", user["token"]).apply()
-                        sp.edit().putString("user_id", user["user_id"]).apply()
-                        sp.edit().putString("follow", user["follow"]).apply()
-                        sp.edit().putString("collect", user["collect"]).apply()
-                        sp.edit().putString("like", user["like"]).apply()
+                            sp.edit().putString("username", user["username"]).apply()
+                            sp.edit().putString("nickname", user["nickname"]).apply()
+                            sp.edit().putString("url", user["headimgurl"]).apply()
+                            sp.edit().putString("countries", user["countries"]).apply()
+                            sp.edit().putString("sex", user["sex"]).apply()
+                            sp.edit().putString("message", user["message"]).apply()
+                            sp.edit().putString("token", user["token"]).apply()
+                            sp.edit().putString("user_id", user["user_id"]).apply()
+                            sp.edit().putString("follow", user["follow"]).apply()
+                            sp.edit().putString("collect", user["collect"]).apply()
+                            sp.edit().putString("like", user["like"]).apply()
 
-                        Observable.just(true).subscribe(UserEditActivity.observer)
-                    }
-                    Toast.makeText(
-                        context,
-                        bean.msg,
-                        Toast.LENGTH_SHORT
-                    ).show()
+                            Observable.just(true).subscribe(UserEditActivity.observer)
+                        }
+                        Toast.makeText(
+                            context,
+                            bean.msg,
+                            Toast.LENGTH_SHORT
+                        ).show()
+
+                    }catch (e:Exception){}
+
 
 
                 }
@@ -88,30 +92,33 @@ class UserEditModel : BaseModel(), UserEditContract.IModel {
                     /**
                      * 成功回调
                      */
-                    val bean =
-                        Gson().fromJson(response.body(), ResultBean::class.javaObjectType)
-                    if (bean.code == 200) {
-                        val accsess: Map<String, String> = Gson().fromJson(
-                            bean.data,
-                            object : TypeToken<Map<String, String>>() {}.type
-                        )
+                    try{
+                        val bean =
+                            Gson().fromJson(response.body(), ResultBean::class.javaObjectType)
+                        if (bean.code == 200) {
+                            val accsess: Map<String, String> = Gson().fromJson(
+                                bean.data,
+                                object : TypeToken<Map<String, String>>() {}.type
+                            )
 
-                        OSS.init(
-                            context,
-                            accsess["AccessKeyId"],
-                            accsess["AccessKeySecret"],
-                            accsess["SecurityToken"]
-                        )
-                        val imaurl = sp.getString("user_id", "") + Date().time.toString() + ".png"
-                        OSS.put(imaurl, picturePath)
-                        Observable.just(imaurl).subscribe(UserEditActivity.observert)
-                    }else{
-                        Toast.makeText(
-                            context,
-                            bean.msg,
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
+                            OSS.init(
+                                context,
+                                accsess["AccessKeyId"],
+                                accsess["AccessKeySecret"],
+                                accsess["SecurityToken"]
+                            )
+                            val imaurl = sp.getString("user_id", "") + Date().time.toString() + ".png"
+                            OSS.put(imaurl, picturePath)
+                            Observable.just(imaurl).subscribe(UserEditActivity.observert)
+                        }else{
+                            Toast.makeText(
+                                context,
+                                bean.msg,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }catch (e:Exception){}
+
                 }
             })
     }

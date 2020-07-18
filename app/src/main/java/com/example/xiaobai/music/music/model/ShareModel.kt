@@ -31,23 +31,26 @@ class ShareModel : BaseModel(), ShareContract.IModel {
                      * 成功回调
                      */
                     if (response.code() == 200) {
-                        val bean =
-                            Gson().fromJson(response.body(), ResultBean::class.javaObjectType)
-                        if (bean.code == 200) {
-                            val code: Map<String, String> = Gson().fromJson(
-                                bean.data,
-                                object : TypeToken<Map<String, String>>() {}.type
-                            )
+                        try {
+                            val bean =
+                                Gson().fromJson(response.body(), ResultBean::class.javaObjectType)
+                            if (bean.code == 200) {
+                                val code: Map<String, String> = Gson().fromJson(
+                                    bean.data,
+                                    object : TypeToken<Map<String, String>>() {}.type
+                                )
 
-                            Observable.just(code).subscribe(ShareFragment.observer)
+                                Observable.just(code).subscribe(ShareFragment.observer)
 
-                        } else {
-                            Toast.makeText(
-                                context,
-                                bean.msg,
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
+                            } else {
+                                Toast.makeText(
+                                    context,
+                                    bean.msg,
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }catch (e:Exception){}
+
                     }
                 }
             })

@@ -1,10 +1,7 @@
 package com.example.xiaobai.music.music.view.fragment
 
 import android.annotation.SuppressLint
-import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
-import android.os.Bundle
+import android.content.*
 import android.view.View
 import android.widget.Toast
 import com.example.xiaobai.music.MusicApp
@@ -35,7 +32,7 @@ class ShareFragment : BaseMvpFragment<ShareContract.IPresenter>(), ShareContract
     private var logins: Boolean = false
 
     override fun registerPresenter() = SharePresenter::class.java
-
+    private lateinit var urls:String
     companion object {
         lateinit var observer: Observer<Map<String,String>>
     }
@@ -81,7 +78,8 @@ class ShareFragment : BaseMvpFragment<ShareContract.IPresenter>(), ShareContract
                 }
 
                 code.text = getText(R.string.set4).toString()+":"+codemap["invite_code"]+","+getText(R.string.set4_suss).toString()+codemap["invite_num"]+getText(R.string.set4_set).toString()
-                codeima.setImageBitmap(QRCodeCreator.createQRCode(codemap["apk"].toString(),400,400,null))
+                urls = codemap["url"].toString()
+                codeima.setImageBitmap(QRCodeCreator.createQRCode(urls,400,400,null))
             }
             override fun onError(e: Throwable) {}
             override fun onComplete() {}
@@ -96,6 +94,12 @@ class ShareFragment : BaseMvpFragment<ShareContract.IPresenter>(), ShareContract
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
                 Screenshot.screenShot(requireActivity())
+            }
+
+        RxView.clicks(btn1)
+            .throttleFirst(3, TimeUnit.SECONDS)
+            .subscribe {
+                clipboard()
             }
 
         RxView.clicks(codelist)
@@ -125,4 +129,18 @@ class ShareFragment : BaseMvpFragment<ShareContract.IPresenter>(), ShareContract
             }
 
     }
+
+    fun clipboard(){
+
+        val str:ClipData=ClipData.newPlainText("Label",urls)
+        val cm:ClipboardManager= requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        cm.setPrimaryClip(str)
+        Toast.makeText(
+            context,
+            getText(R.string.code_copysuss),
+            Toast.LENGTH_SHORT
+        ).show()
+    }
+
 }
+

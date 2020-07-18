@@ -620,12 +620,7 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
                     dolw.text = getText(R.string.song_download)
                 }
 
-                val collects = mCollectDao.querys(songlist[data].song_id)
-                if (collects.size > 0) {
-                    del_txt.text = getText(R.string.song_collectsucc)
-                }else{
-                    del_txt.text = getText(R.string.song_collect)
-                }
+
 
                 RxView.clicks(relat4)
                     .throttleFirst(1, TimeUnit.SECONDS)
@@ -752,6 +747,13 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
 
                     }
 
+                val collects = mCollectDao.querys(songlist[data].song_id)
+                if (collects.size > 0) {
+                    del_txt.text = getText(R.string.song_collectsucc)
+                }else{
+                    del_txt.text = getText(R.string.song_collect)
+                }
+
                 RxView.clicks(relat3)
                     .throttleFirst(3, TimeUnit.SECONDS)
                     .subscribe {
@@ -762,35 +764,37 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
                                 Toast.LENGTH_SHORT
                             ).show()
                         } else {
-                            if (MusicApp.userlogin()) {
-                                poplue.visibility = View.GONE
-                                in_indel.visibility = View.VISIBLE
-                                del.visibility = View.GONE
-                                in_title.text = getText(R.string.song_but)
-                                val list: MutableList<Playlist> =
-                                    mPlaylistDao.querys(sp.getString("userid", "").toString())
-                                val idmap = mutableListOf<Music>()
-                                idmap.add(songlist[data])
-                                initSongLists(list, idmap)
-                            } else {
-                                MaterialDialog.Builder(context)
-                                    .title(getText(R.string.go))
-                                    .content(getText(R.string.ungoset))
-                                    .positiveText(getText(R.string.carry))
-                                    .negativeText(getText(R.string.cancel))
-                                    .positiveColorRes(R.color.colorAccentDarkTheme)
-                                    .negativeColorRes(R.color.red)
-                                    .onPositive { _: MaterialDialog?, _: DialogAction? ->
-                                        val intent = Intent()
-                                        context.let {
-                                            intent.setClass(
-                                                it,
-                                                LoginActivity().javaClass
-                                            )
+                            if (collects.size == 0) {
+                                if (MusicApp.userlogin()) {
+                                    poplue.visibility = View.GONE
+                                    in_indel.visibility = View.VISIBLE
+                                    del.visibility = View.GONE
+                                    in_title.text = getText(R.string.song_but)
+                                    val list: MutableList<Playlist> =
+                                        mPlaylistDao.querys(sp.getString("userid", "").toString())
+                                    val idmap = mutableListOf<Music>()
+                                    idmap.add(songlist[data])
+                                    initSongLists(list, idmap)
+                                } else {
+                                    MaterialDialog.Builder(context)
+                                        .title(getText(R.string.go))
+                                        .content(getText(R.string.ungoset))
+                                        .positiveText(getText(R.string.carry))
+                                        .negativeText(getText(R.string.cancel))
+                                        .positiveColorRes(R.color.colorAccentDarkTheme)
+                                        .negativeColorRes(R.color.red)
+                                        .onPositive { _: MaterialDialog?, _: DialogAction? ->
+                                            val intent = Intent()
+                                            context.let {
+                                                intent.setClass(
+                                                    it,
+                                                    LoginActivity().javaClass
+                                                )
+                                            }
+                                            startActivity(intent)
                                         }
-                                        startActivity(intent)
-                                    }
-                                    .show()
+                                        .show()
+                                }
                             }
                         }
 

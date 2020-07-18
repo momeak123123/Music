@@ -10,12 +10,12 @@ import android.widget.Toast
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
-import com.example.xiaobai.music.MainActivity
+import com.example.xiaobai.music.IndexActivity
+import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.adapter.SongListAdapter
 import com.example.xiaobai.music.bean.SongLists
 import com.example.xiaobai.music.music.contract.MyContract
-import com.example.xiaobai.music.music.model.MainModel
 import com.example.xiaobai.music.music.presenter.MyPresenter
 import com.example.xiaobai.music.music.view.act.DownloadActivity
 import com.example.xiaobai.music.music.view.act.LoginActivity
@@ -29,12 +29,13 @@ import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.google.gson.reflect.TypeToken
 import com.jakewharton.rxbinding2.view.RxView
+import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.activity_index.*
 import kotlinx.android.synthetic.main.fragment_my.*
 import kotlinx.android.synthetic.main.fragment_my.iv_cover
 import kotlinx.android.synthetic.main.fragment_unlogin.*
-import kotlinx.android.synthetic.main.song_add.*
 import mvp.ljb.kt.fragment.BaseMvpFragment
 import java.util.concurrent.TimeUnit
 
@@ -85,35 +86,7 @@ class MyFragment : BaseMvpFragment<MyContract.IPresenter>(), MyContract.IView {
         RxView.clicks(add)
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
-                in_add.visibility = View.VISIBLE
-                MainActivity.craetdert(true)
-                MainActivity.craet(true)
-
-            }
-
-        RxView.clicks(in_deter)
-            .throttleFirst(1, TimeUnit.SECONDS)
-            .subscribe {
-                if (et_name.isNotEmpty) {
-                    context?.let { MainModel.addsonglist(it, et_name.editValue) }
-                    et_name.clear()
-                    in_add.visibility = View.GONE
-                    MainActivity.craetdert(false)
-                    MainActivity.craet(false)
-
-                } else {
-                    Toast.makeText(
-                        context,
-                        getText(R.string.song_error_name),
-                        Toast.LENGTH_LONG
-                    ).show()
-                }
-            }
-        RxView.clicks(in_cancel)
-            .throttleFirst(1, TimeUnit.SECONDS)
-            .subscribe {
-                in_add.visibility = View.GONE
-                MainActivity.craet(true)
+                Observable.just(true).subscribe(IndexActivity.observer)
             }
 
         RxView.clicks(item1)
@@ -185,6 +158,7 @@ class MyFragment : BaseMvpFragment<MyContract.IPresenter>(), MyContract.IView {
                     attention_num.text = sp.getString("follow", "")
                     collect_num.text = sp.getString("collect", "")
                     sign.text = sp.getString("message", "")
+                    MusicApp.setMinute(sp.getString("follow", "").toString().toInt())
                 }
 
             }
@@ -265,7 +239,7 @@ class MyFragment : BaseMvpFragment<MyContract.IPresenter>(), MyContract.IView {
             attention_num.text = sp.getString("follow", "")
             collect_num.text = sp.getString("collect", "")
             sign.text = sp.getString("message", "")
-
+            MusicApp.setMinute(sp.getString("follow", "").toString().toInt())
 
             var num = 0
             val list: MutableList<Playlist> =

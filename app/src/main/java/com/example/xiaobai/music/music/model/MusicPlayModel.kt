@@ -11,8 +11,10 @@ import com.example.xiaobai.music.R
 import com.example.xiaobai.music.StartsActivity
 import com.example.xiaobai.music.bean.*
 import com.example.xiaobai.music.config.Constants
+import com.example.xiaobai.music.config.OSS
 import com.example.xiaobai.music.music.view.act.AlbumDetActivity
 import com.example.xiaobai.music.music.view.act.MusicPlayActivity
+import com.example.xiaobai.music.music.view.act.UserEditActivity
 import com.example.xiaobai.music.music.view.fragment.HomeFragment
 import com.example.xiaobai.music.sql.bean.Collect
 import com.example.xiaobai.music.sql.bean.Playlist
@@ -30,6 +32,7 @@ import listener.OnInitUiListener
 import model.UiConfig
 import model.UpdateConfig
 import update.UpdateAppUtils
+import java.util.*
 
 class MusicPlayModel {
     companion object {
@@ -118,7 +121,7 @@ class MusicPlayModel {
                                     }
                                 }
 
-                            }else{
+                            } else {
                                 Toast.makeText(
                                     context,
                                     bean.msg,
@@ -225,10 +228,10 @@ class MusicPlayModel {
                                     bean.data,
                                     Array<Ads>::class.java
                                 ).toList()
-                               MusicApp.setAdstime(ads[0].seconds)
+                                MusicApp.setAdstime(ads[0].seconds)
                                 object : Thread() {
                                     override fun run() {
-                                        if(ads[0].img!="") {
+                                        if (ads[0].img != "") {
                                             val bm = BitmapUtils.getBitmap(ads[0].img)
                                             MusicApp.setStartback(bm)
                                         }
@@ -244,6 +247,31 @@ class MusicPlayModel {
 
                 })
 
+        }
+
+
+        fun downnum(context: Context) {
+            val sp: SharedPreferences = context.getSharedPreferences("User", Context.MODE_PRIVATE)
+            OkGo.post<String>(Constants.URL + "user/reduce_times")
+                .params("token", sp.getString("token", ""))
+                .execute(object : StringCallback() {
+                    override fun onSuccess(response: Response<String>) {
+                        /**
+                         * 成功回调
+                         */
+                        try {
+                            val bean =
+                                Gson().fromJson(response.body(), ResultBean::class.javaObjectType)
+                            if (bean.code == 200) {
+                               val num = bean.data.getAsJsonObject("num").asInt
+                                MusicApp.setMinute(num)
+                            }
+
+                        } catch (e: Exception) {
+                        }
+
+                    }
+                })
         }
 
     }

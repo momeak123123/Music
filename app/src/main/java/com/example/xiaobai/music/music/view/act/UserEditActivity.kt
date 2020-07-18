@@ -20,6 +20,7 @@ import com.luck.picture.lib.config.PictureMimeType
 import com.luck.picture.lib.entity.LocalMedia
 import com.luck.picture.lib.language.LanguageConfig
 import com.luck.picture.lib.listener.OnResultCallbackListener
+import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
@@ -43,6 +44,7 @@ class UserEditActivity : BaseMvpActivity<UserEditContract.IPresenter>(), UserEdi
         lateinit var observert: Observer<String>
     }
 
+    private lateinit var doalog: MaterialDialog
     private val mAdapter: GridImageAdapter? = null
     private var picturePath: String = ""
     private var mSexOption = arrayOf("男", "女")
@@ -148,6 +150,12 @@ class UserEditActivity : BaseMvpActivity<UserEditContract.IPresenter>(), UserEdi
             for (media in result) {
                 if(media.compressPath!=null){
                     Observable.just(media.compressPath).subscribe(observers)
+                }else{
+                    Toast.makeText(
+                        MusicApp.getAppContext(),
+                        MusicApp.getAppContext().getText(R.string.secret_erro),
+                        Toast.LENGTH_LONG
+                    ).show()
                 }
             }
             if (mAdapterWeakReference.get() != null) {
@@ -204,7 +212,10 @@ class UserEditActivity : BaseMvpActivity<UserEditContract.IPresenter>(), UserEdi
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(media: String) {
                     picturePath = media
+                Glide.with(context).load(picturePath)
+                    .placeholder(R.color.main_black_grey).into(ima)
                     getPresenter().osst(context, picturePath)
+                showCircleLoadingProgressDialog()
             }
 
             override fun onError(e: Throwable) {}
@@ -215,10 +226,16 @@ class UserEditActivity : BaseMvpActivity<UserEditContract.IPresenter>(), UserEdi
         observert = object : Observer<String> {
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(data: String) {
+                doalog.dismiss()
                 if (data != "") {
                     imaurl = "https://music-imgs.oss-cn-shenzhen.aliyuncs.com/user/avatar/$data"
                     Glide.with(context).load(imaurl)
                         .placeholder(R.color.main_black_grey).into(ima)
+                    Toast.makeText(
+                        context,
+                        getText(R.string.title_dashboard),
+                        Toast.LENGTH_LONG
+                    ).show()
                 } else {
                     Toast.makeText(
                         context,
@@ -233,6 +250,21 @@ class UserEditActivity : BaseMvpActivity<UserEditContract.IPresenter>(), UserEdi
             override fun onComplete() {}
 
         }
+    }
+
+    /**
+     * 带圆形Loading的Dialog
+     */
+    private fun showCircleLoadingProgressDialog() {
+        doalog =  MaterialDialog.Builder(context)
+            .limitIconToDefaultSize()
+            .title(R.string.title_d)
+            .content(R.string.title_dash)
+            .progress(true, 0)
+            .progressIndeterminateStyle(false)
+            .show()
+
+
     }
 
     override fun onDestroy() {

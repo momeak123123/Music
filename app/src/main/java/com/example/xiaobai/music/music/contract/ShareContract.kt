@@ -12,7 +12,9 @@ import mvp.ljb.kt.contract.IViewContract
  **/
 interface ShareContract {
 
-    interface IView : IViewContract
+    interface IView : IViewContract {
+
+    }
 
     interface IPresenter : IPresenterContract {
         fun usercode(context: Context)

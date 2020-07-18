@@ -11,6 +11,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.xiaobai.music.IndexActivity
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.bean.*
 import com.example.xiaobai.music.music.view.act.*
@@ -978,7 +979,7 @@ class HomeDetAdapter(
                 txt.text = srtist_name
 
                 more.setOnClickListener {
-                    Observable.just(song[0]).subscribe(HomeFragment.observert)
+                    Observable.just(song[0]).subscribe(IndexActivity.observert)
                 }
 
                 Glide.with(context).load(song[1].pic_url)
@@ -996,7 +997,7 @@ class HomeDetAdapter(
                 txt1.text = srtist_name1
 
                 more1.setOnClickListener {
-                    Observable.just(song[2]).subscribe(HomeFragment.observert)
+                    Observable.just(song[2]).subscribe(IndexActivity.observert)
                 }
 
                 Glide.with(context).load(song[2].pic_url)
@@ -1014,7 +1015,7 @@ class HomeDetAdapter(
                 txt2.text = srtist_name2
 
                 more2.setOnClickListener {
-                    Observable.just(song[2]).subscribe(HomeFragment.observert)
+                    Observable.just(song[2]).subscribe(IndexActivity.observert)
                 }
 
                 Glide.with(context).load(song[3].pic_url)
@@ -1032,7 +1033,7 @@ class HomeDetAdapter(
                 txt3.text = srtist_name3
 
                 more3.setOnClickListener {
-                    Observable.just(song[3]).subscribe(HomeFragment.observert)
+                    Observable.just(song[3]).subscribe(IndexActivity.observert)
                 }
             }
 
@@ -1051,7 +1052,7 @@ class HomeDetAdapter(
             txt4.text = srtist_name4
 
             more4.setOnClickListener {
-                Observable.just(song[4]).subscribe(HomeFragment.observert)
+                Observable.just(song[4]).subscribe(IndexActivity.observert)
             }
 
 
@@ -1070,7 +1071,7 @@ class HomeDetAdapter(
             txt5.text = srtist_name5
 
             more5.setOnClickListener {
-                Observable.just(song[5]).subscribe(HomeFragment.observert)
+                Observable.just(song[5]).subscribe(IndexActivity.observert)
             }
 
             Glide.with(context).load(song[6].pic_url)
@@ -1088,7 +1089,7 @@ class HomeDetAdapter(
             txt6.text = srtist_name6
 
             more6.setOnClickListener {
-                Observable.just(song[6]).subscribe(HomeFragment.observert)
+                Observable.just(song[6]).subscribe(IndexActivity.observert)
             }
 
             Glide.with(context).load(song[7].pic_url)
@@ -1106,7 +1107,7 @@ class HomeDetAdapter(
             txt7.text = srtist_name7
 
             more7.setOnClickListener {
-                Observable.just(song[7]).subscribe(HomeFragment.observert)
+                Observable.just(song[7]).subscribe(IndexActivity.observert)
             }
 
             RxView.clicks(idea)

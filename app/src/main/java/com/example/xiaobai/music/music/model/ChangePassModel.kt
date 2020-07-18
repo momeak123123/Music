@@ -3,13 +3,18 @@ package  com.example.xiaobai.music.music.model
 import android.content.Context
 import android.content.SharedPreferences
 import android.widget.Toast
+import com.example.xiaobai.music.R
+import com.example.xiaobai.music.bean.ResultBeans
 import com.example.xiaobai.music.bean.ResultBeant
 import com.example.xiaobai.music.config.Constants
 import com.example.xiaobai.music.music.contract.ChangePassContract
+import com.example.xiaobai.music.music.view.act.AlbumDetActivity
+import com.example.xiaobai.music.music.view.act.ArtistActivity
 import com.google.gson.Gson
 import com.lzy.okgo.OkGo
 import com.lzy.okgo.callback.StringCallback
 import com.lzy.okgo.model.Response
+import io.reactivex.Observable
 import mvp.ljb.kt.model.BaseModel
 
 /**
@@ -29,17 +34,34 @@ class ChangePassModel : BaseModel(), ChangePassContract.IModel {
                     /**
                      * 成功回调
                      */
+                    if (response.code() == 200) {
+                        try {
+                            val bean =
+                                Gson().fromJson(
+                                    response.body(),
+                                    ResultBeant::class.javaObjectType
+                                )
+                            Toast.makeText(
+                                context,
+                                bean.msg,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } catch (e: Exception) {
+                            Toast.makeText(
+                                context,
+                                R.string.error_connection,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    } else {
+                        Toast.makeText(
+                            context,
+                            R.string.error_connection,
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        Observable.just(true).subscribe(AlbumDetActivity.observers)
+                    }
 
-                    val bean =
-                        Gson().fromJson(
-                            response.body(),
-                            ResultBeant::class.javaObjectType
-                        )
-                    Toast.makeText(
-                        context,
-                        bean.msg,
-                        Toast.LENGTH_SHORT
-                    ).show()
                 }
             })
     }

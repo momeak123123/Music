@@ -89,7 +89,9 @@
     <string name="play_mode_loop">顺序播放</string>
     <string name="title_activity_index">IndexActivity</string>
     <string name="secret_erro">加载失败</string>
-    <string name="title_dashboard">Dashboard</string>
+    <string name="title_d">提示</string>
+    <string name="title_dash">头像上传中，请稍后</string>
+    <string name="title_dashboard">头像上传成功</string>
     <string name="title_notifications">图片分辨率太高，无法加载</string>
 
 
@@ -161,7 +163,6 @@
     <string name="download_num">今日下载次数已用完</string>
 
 
-
     <!--set-->
     <string name="set">设置</string>
     <string name="set1">修改密码</string>
@@ -177,6 +178,7 @@
     <string name="main_set">再按一次退出</string>
     <string name="code_captchas">邀请码已激活</string>
     <string name="code_copy">复制邀请链接</string>
+    <string name="code_copysuss">复制成功</string>
     <string name="code_list">邀请列表</string>
     <string name="code_lists">暂无邀请</string>
     <string name="code_baoc">保存二维码</string>

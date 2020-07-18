@@ -31,6 +31,7 @@ class UserSetModel : BaseModel(), UserSetContract.IModel {
                      * 成功回调
                      */
                     if (response.code() == 200) {
+                        try{
                             val bean =
                                 Gson().fromJson(response.body(), ResultBeant::class.javaObjectType)
                             if (bean.code == 200) {
@@ -43,6 +44,8 @@ class UserSetModel : BaseModel(), UserSetContract.IModel {
                                     Toast.LENGTH_SHORT
                                 ).show()
                             }
+                        }catch (e:Exception){}
+
                     }
                 }
             })

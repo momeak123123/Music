@@ -4,7 +4,7 @@ import android.animation.ObjectAnimator
 import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
 import com.bumptech.glide.Glide
-import com.example.xiaobai.music.MainActivity
+import com.example.xiaobai.music.IndexActivity
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.music.contract.CoverContract
 import com.example.xiaobai.music.music.presenter.CoverPresenter
@@ -40,7 +40,7 @@ class CoverFragment : BaseMvpFragment<CoverContract.IPresenter>(), CoverContract
      * 设置Bitmap
      */
     fun setImagePath(ima:String ) {
-        MainActivity.updoteAnimation(ima)
+        IndexActivity.updoteAnimation(ima)
         Observable.just(0)
             .subscribeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<Int> {
@@ -72,7 +72,7 @@ class CoverFragment : BaseMvpFragment<CoverContract.IPresenter>(), CoverContract
     fun startRotateAnimation(isPlaying: Boolean = false) {
         if (isPlaying) {
             mAnimator.start()
-            MainActivity.startAnimation()
+            IndexActivity.startAnimation()
         }
     }
 
@@ -82,7 +82,7 @@ class CoverFragment : BaseMvpFragment<CoverContract.IPresenter>(), CoverContract
     fun stopRotateAnimation() {
 
         mAnimator.pause()
-        MainActivity.stopAnimation()
+        IndexActivity.stopAnimation()
     }
 
     /**
@@ -90,7 +90,7 @@ class CoverFragment : BaseMvpFragment<CoverContract.IPresenter>(), CoverContract
      */
     fun resumeRotateAnimation() {
         mAnimator.resume()
-        MainActivity.resumeAnimation()
+        IndexActivity.resumeAnimation()
     }
 
     override fun onResume() {
