@@ -21,7 +21,7 @@ import static android.content.Context.NOTIFICATION_SERVICE;
 public class Notifications extends android.app.Notification {
 
     private static final String PUSH_CHANNEL_ID = "xiaobai1089";
-    private static final String PUSH_CHANNEL_NAME = "小白音乐";
+    private static String PUSH_CHANNEL_NAME = "";
     private static RemoteViews mRemoteViews;
     private static NotificationManager notificationManager = null;
     private static NotificationChannel channel;
@@ -34,6 +34,7 @@ public class Notifications extends android.app.Notification {
 
     public static void init(int plays) {
         context = MusicApp.getAppContext();
+        PUSH_CHANNEL_NAME = context.getText(R.string.app_name).toString();
         play = plays;
         title = MusicPlayActivity.t1;
         txt = MusicPlayActivity.t2;

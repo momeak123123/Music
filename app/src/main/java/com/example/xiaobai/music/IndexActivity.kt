@@ -292,7 +292,7 @@ class IndexActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        //onKeyBoardListener();
+
         exit = false
         if (isNeedCheck) {
             checkPermissions(needPermissions)
@@ -367,21 +367,19 @@ class IndexActivity : AppCompatActivity() {
                             initSongLists(list, idmap)
 
                         } else {
-                            context.let { it1 ->
-                                MaterialDialog.Builder(it1)
-                                    .title("登录")
-                                    .content("未登陆账号，是否登录")
-                                    .positiveText(getText(R.string.carry))
-                                    .negativeText(getText(R.string.cancel))
-                                    .onPositive { _: MaterialDialog?, _: DialogAction? ->
-                                        val intent = Intent()
-                                        context.let {
-                                            intent.setClass(it1, LoginActivity().javaClass)
-                                        }
-                                        startActivity(intent)
-                                    }
-                                    .show()
-                            }
+                            MaterialDialog.Builder(context)
+                                .title(getText(R.string.go))
+                                .content(getText(R.string.ungoset))
+                                .positiveText(getText(R.string.carry))
+                                .negativeText(getText(R.string.cancel))
+                                .positiveColorRes(R.color.colorAccentDarkTheme)
+                                .negativeColorRes(R.color.red)
+                                .onPositive { _: MaterialDialog?, _: DialogAction? ->
+                                    val intent = Intent()
+                                    context.let { intent.setClass(it, LoginActivity().javaClass) }
+                                    startActivity(intent)
+                                }
+                                .show()
                         }
 
                     }
@@ -530,8 +528,8 @@ class IndexActivity : AppCompatActivity() {
         HomeFragment.adaptert.setOnItemClickListener(object : PlaySongAdapter.ItemClickListener {
             override fun onItemClick(view: View, position: Int) {
                 MaterialDialog.Builder(context)
-                    .title("添加音乐")
-                    .content("是否将音乐加入此歌单")
+                    .title(getText(R.string.song_addsong))
+                    .content(getText(R.string.song_addsonglist))
                     .positiveText(getText(R.string.carry))
                     .negativeText(getText(R.string.cancel))
                     .onPositive { _: MaterialDialog?, _: DialogAction? ->
@@ -603,6 +601,8 @@ class IndexActivity : AppCompatActivity() {
             mObjectAnimator?.interpolator = LinearInterpolator()
             mObjectAnimator?.repeatCount = ValueAnimator.INFINITE
         }
+
+
     }
 
 

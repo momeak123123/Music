@@ -1,0 +1,190 @@
+<resources>
+
+    <string name="app_name">小白音樂</string>
+    <string name="notifyTitle">提示</string>
+    <string name="notifyMsg">當前應用缺少必要權限。\n\n請點擊\"設置\"-\"權限\"-打開所需權限。</string>
+    <string name="setting">設置</string>
+    <string name="carry">確認</string>
+    <string name="cancel">取消</string>
+    <string name="lock"> >>> 滑動解鎖</string>
+
+    <!-- tabbar -->
+    <string name="tab1">首頁</string>
+    <string name="tab2">雲搜</string>
+    <string name="tab3">分享</string>
+    <string name="tab4">用戶</string>
+
+
+    <!-- start_page -->
+    <string name="over">跳過</string>
+
+    <!-- home -->
+    <string name="search">搜索結果</string>
+    <string name="item1">排行榜</string>
+    <string name="item2">推薦專輯</string>
+    <string name="item3">熱門歌星</string>
+    <string name="item3s">歌星</string>
+    <string name="item4">隨便聽聽</string>
+    <string name="more">更多</string>
+    <string name="artist">歌星</string>
+
+    <!-- search -->
+    <string name="history">歷史搜索</string>
+    <string name="delhistory">大家都在搜</string>
+    <string name="sear1">線路壹</string>
+    <string name="sear2">線路二</string>
+    <string name="sear">線路選擇</string>
+
+    <!--login-->
+    <string name="login">歡迎回來</string>
+    <string name="register">創建賬號</string>
+    <string name="unknown">還沒有賬號?</string>
+    <string name="Username">請輸入電子郵箱</string>
+    <string name="Password">請輸入密碼</string>
+    <string name="old_Password">請輸入舊密碼</string>
+    <string name="new_Password">請輸入新密碼</string>
+    <string name="forgot_your_password">忘記密碼?</string>
+    <string name="repeat_password">請再次輸入密碼</string>
+    <string name="repeat_code">請輸入邀請碼（選填）</string>
+    <string name="protocol">用戶協議</string>
+    <string name="register_publish">註冊</string>
+    <string name="regis_publish">提交</string>
+    <string name="error_protocol">請勾選用戶協議！</string>
+    <string name="error_name">郵箱不能為空！</string>
+    <string name="error_pass">密碼不能為空！</string>
+    <string name="error_passs">兩次密碼輸入不壹樣，請重新輸入</string>
+    <string name="error_login">賬號或密碼錯誤，請重新輸入！</string>
+    <string name="error_register">註冊失敗，請重試！</string>
+    <string name="error_captcha">驗證碼不能為空</string>
+    <string name="succes_login">登陸成功</string>
+    <string name="error_captchas">請勾選用戶協議</string>
+    <string name="succes_register">註冊成功</string>
+    <string name="captcha">獲取驗證碼</string>
+    <string name="captchas">請輸入驗證碼</string>
+    <string name="succes_code">驗證碼發送成功，請登陸郵箱查看，如未找到，請註意查看垃圾郵件</string>
+    <string name="go">登錄</string>
+    <string name="goset">登錄後顯示歌單</string>
+    <string name="ungoset">未登陸賬號，是否登錄</string>
+    <string name="ungo">未登錄</string>
+    <string name="delgo">退出登錄</string>
+    <string name="tip_name_number_error">無效的郵箱,請重新輸入！</string>\
+    <string name="tip_verify_code_error">請輸入4位數驗證碼</string>
+
+    <!--play-->
+    <string name="love">收藏</string>
+    <string name="equalizer">均衡器</string>
+    <string name="error_connection">網絡連接異常，請稍後重試！</string>
+    <string name="error_search">搜索失敗，請稍後重試</string>
+    <string name="error_searcher">搜索歌曲暫時無法收藏</string>
+    <string name="secret_num">~~ 加載中 ~~</string>
+    <string name="error_playing_track">播放錯誤</string>
+    <string name="error_playing_tracks">播放失敗</string>
+    <string name="error_playing_trackt">出錯啦</string>
+    <string name="lyric_default_hint">暫無歌詞</string>
+    <string name="folders">文件夾</string>
+    <string name="play_time">00:00</string>
+    <string name="play_no_resource">無音樂播放</string>
+    <string name="play_mode">歌曲已存在</string>
+    <string name="play_mode_random">隨機播放</string>
+    <string name="play_mode_repeat">單曲播放</string>
+    <string name="play_mode_loop">順序播放</string>
+    <string name="title_activity_index">IndexActivity</string>
+    <string name="secret_erro">加載失敗</string>
+    <string name="title_d">提示</string>
+    <string name="title_dash">頭像上傳中，請稍後</string>
+    <string name="title_dashboard">頭像上傳成功</string>
+    <string name="title_notifications">圖片分辨率太高，無法加載</string>
+
+
+    <!--list-->
+    <string name="delete">刪除</string>
+    <string name="list_dow">關閉</string>
+    <string name="album">專輯</string>
+    <string name="codelist_txt">被邀請人</string>
+
+    <!--song-->
+    <string name="song">我的歌單</string>
+    <string name="song_add">添加</string>
+    <string name="song_deter">確定</string>
+    <string name="song_cancel">取消</string>
+    <string name="song_create">創建歌單</string>
+    <string name="song_but">選擇歌單</string>
+    <string name="song_name">歌單名字</string>
+    <string name="song_error_name">請輸入歌單名稱</string>
+    <string name="song_all">全選</string>
+    <string name="song_unall">全不選</string>
+    <string name="song_collect">收藏到歌單</string>
+    <string name="song_collectsucc">已收藏</string>
+    <string name="song_addsong">添加音樂</string>
+    <string name="song_addsonglist">是否將音樂加入此歌單</string>
+    <string name="song_cancel_coll">取消收藏</string>
+    <string name="song_cancel_colls">是否取消收藏</string>
+    <string name="song_cancel_success">收藏成功</string>
+    <string name="song_collect_error">暫未選擇歌曲，請選擇</string>
+    <string name="song_download">下載</string>
+    <string name="song_downloads">下載管理</string>
+    <string name="song_download_error">暫未下載歌曲，請先下載</string>
+    <string name="song_carry">完成</string>
+    <string name="song_edit">編輯歌單</string>
+    <string name="song_alls">多選</string>
+    <string name="song_del">刪除歌單</string>
+    <string name="song_list">播放列表</string>
+    <string name="song_dellist">確定要清空播放列表</string>
+    <string name="song_delsong">刪除音樂</string>
+    <string name="song_delsongsucc">刪除成功</string>
+    <string name="song_delsongs">是否刪除音樂</string>
+    <string name="dan">單曲循環</string>
+    <string name="lie">列表循環</string>
+    <string name="sui">隨機播放</string>
+
+    <!--user-->
+    <string name="updown">編輯</string>
+    <string name="user_updown">編輯資料</string>
+    <string name="user_name">昵稱</string>
+    <string name="user_gra">性別(男/女)</string>
+    <string name="man">男</string>
+    <string name="girl">女</string>
+    <string name="user_city">國家</string>
+    <string name="user_mess">簡介信息</string>
+    <string name="attention">下載次數</string>
+    <string name="collect">收藏</string>
+    <string name="like">本地</string>
+    <string name="user_save">保存</string>
+    <string name="error_user">資料不能為空</string>
+
+
+    <!--download-->
+    <string name="download">後臺開始下載</string>
+    <string name="download_error">下載失敗，請重新下載</string>
+    <string name="download_carry">歌曲已下載</string>
+    <string name="download_succe">歌曲：</string>
+    <string name="download_song">下載音樂</string>
+    <string name="download_playsong">是否下載音樂</string>
+    <string name="download_success">下載成功</string>
+    <string name="download_num">今日下載次數已用完</string>
+
+
+    <!--set-->
+    <string name="set">設置</string>
+    <string name="set1">修改密碼</string>
+    <string name="set1_captcha">請輸入密碼</string>
+    <string name="set2">清理緩存</string>
+    <string name="set3">編輯個人資料</string>
+    <string name="set4">您的邀請碼為</string>
+    <string name="set4_un">登陸後點擊分享，即可獲得更多下載次數，快來試試吧</string>
+    <string name="set4_suss">已成功邀請</string>
+    <string name="set4_set">人</string>
+    <string name="set2_un">是否清理緩存</string>
+    <string name="set2_sess">清理緩存成功</string>
+    <string name="main_set">再按壹次退出</string>
+    <string name="code_captchas">邀請碼已激活</string>
+    <string name="code_copy">復制邀請鏈接</string>
+    <string name="code_copysuss">復制成功</string>
+    <string name="code_list">邀請列表</string>
+    <string name="code_lists">暫無邀請</string>
+    <string name="code_baoc">保存二維碼</string>
+    <string name="code_baocs">已保存至系統相冊</string>
+    <string name="code_captch">檢測到剪切板上有復制內容，是否填充為邀請碼</string>
+    <string name="code_captcha">請輸入邀請碼</string>
+
+</resources>

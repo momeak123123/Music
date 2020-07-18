@@ -121,7 +121,8 @@
                 android:progress="0"
                 android:thumbOffset="@dimen/dp_4"
                 android:secondaryProgress="0"
-                android:tag="tint_accent_color" />
+                android:tag="tint_accent_color"
+                style="@style/CustomSeekbarStyle"/>
 
             <TextView
                 android:id="@+id/durationTv"

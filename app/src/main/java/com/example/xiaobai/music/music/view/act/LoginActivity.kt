@@ -1,10 +1,13 @@
 package com.example.xiaobai.music.music.view.act
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
@@ -71,6 +74,15 @@ class LoginActivity : BaseMvpActivity<LoginContract.IPresenter>(), LoginContract
         RxView.clicks(btn_login)
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
+                val view: View? = this.currentFocus
+                if (view != null) {
+                    val inputMethodManager =
+                        (context.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager)
+                    inputMethodManager.hideSoftInputFromWindow(
+                        view.windowToken,
+                        InputMethodManager.HIDE_NOT_ALWAYS
+                    )
+                }
                 if(MusicApp.network()!=-1){
                     if (et_username_number.text.toString() != "") {
                         if(isEmail(et_username_number.text.toString())){

@@ -151,6 +151,8 @@ public class MusicApp extends Application {
                 System.out.println("异常处理" + throwable.getMessage());
             }
         });
+
+
     }
 
     private HttpProxyCacheServer proxy;

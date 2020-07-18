@@ -109,6 +109,7 @@ class SongDetActivity : BaseMvpActivity<SongDetContract.IPresenter>(), SongDetCo
         val artist = mutableListOf<artistlist>()
         if (MusicApp.network() != -1) {
             getPresenter().listdata(context, playids)
+            swipe_refresh_layout.isRefreshing = true
         } else {
             for (it in data) {
                 artist.add(artistlist(0, it.artist))
