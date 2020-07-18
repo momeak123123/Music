@@ -64,6 +64,7 @@ public class LockActivity extends AppCompatActivity implements SlidingFinishLayo
         context = this;
         initView();
 
+
         IntentFilter filter=new IntentFilter();
         filter.addAction(Intent.ACTION_TIME_TICK);
         registerReceiver(receiver,filter);
@@ -83,6 +84,8 @@ public class LockActivity extends AppCompatActivity implements SlidingFinishLayo
 
         }
     }
+
+
 
     @SuppressLint("CheckResult")
     private void initView() {

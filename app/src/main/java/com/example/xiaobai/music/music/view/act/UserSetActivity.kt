@@ -242,10 +242,7 @@ class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>(), UserSetCo
         observer = object : Observer<String> {
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(text: String) {
-                      code.text = text
-                val sp: SharedPreferences =
-                    context.getSharedPreferences("User", Context.MODE_PRIVATE)
-
+                code.text = text
                 sp.edit().putString("code", text).apply()
             }
             override fun onError(e: Throwable) {}

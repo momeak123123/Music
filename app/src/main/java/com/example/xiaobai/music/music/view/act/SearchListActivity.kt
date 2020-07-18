@@ -4,9 +4,11 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.adapter.SearchListAdapter
@@ -39,7 +41,11 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>(),
         lateinit var observer: Observer<JsonArray>
         lateinit var observers: Observer<Boolean>
     }
+    private var mShouldScroll = false
 
+    //记录目标项位置
+    private var mToPosition = 0
+    private var add: Int = 0
     val musicall = mutableListOf<Searchs>()
     val datas = mutableListOf<Searchs>()
     private lateinit var search: String
@@ -64,11 +70,14 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>(),
         val bundle = intent.extras
         search = bundle?.get("txt") as String
         type = bundle.get("sear") as Int
+        add=0
+
         when (type) {
-            0 -> getPresenter().qqdata(context, search, 0)
-            1 -> getPresenter().kugoudata(context, search, 0)
+            0 -> getPresenter().qqdata(context, search, add)
+            1 -> getPresenter().kugoudata(context, search, add)
         }
         swipe_refresh_layout.isRefreshing = true
+
 
     }
 
@@ -96,7 +105,8 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>(),
         observer = object : Observer<JsonArray> {
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(list: JsonArray) {
-
+                add++
+                mToPosition = add*29
                 when (type) {
                     0 -> {
                         for (i in 0 until list.size()) {
@@ -107,9 +117,10 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>(),
                                 jsonObj = music.asJsonObject
                             }
                             val midest = jsonObj!!.get("mid").asString
-                            var mid =""
-                            if(midest!=""){
-                                 mid = "http://symusic.top/music.php?source=tencent&types=url&mid=$midest&br=hq"
+                            var mid = ""
+                            if (midest != "") {
+                                mid =
+                                    "http://symusic.top/music.php?source=tencent&types=url&mid=$midest&br=hq"
                             }
 
                             val title = jsonObj.get("title").asString
@@ -156,7 +167,6 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>(),
                             )
                         }
                         initSearchList(musicall)
-
                     }
                     1 -> {
                         for (i in 0 until list.size()) {
@@ -168,12 +178,14 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>(),
                             }
                             val midhq = jsonObj!!.get("HQFileHash").asString
                             val midsq = jsonObj.get("SQFileHash").asString
-                            var mid =""
-                            if(midhq!=""){
-                                mid = "http://symusic.top/music.php?source=kugou&types=url&mid=$midhq&br=hq"
-                            }else{
-                                if(midsq!=""){
-                                    mid = "http://symusic.top/music.php?source=kugou&types=url&mid=$midsq&br=sq"
+                            var mid = ""
+                            if (midhq != "") {
+                                mid =
+                                    "http://symusic.top/music.php?source=kugou&types=url&mid=$midhq&br=hq"
+                            } else {
+                                if (midsq != "") {
+                                    mid =
+                                        "http://symusic.top/music.php?source=kugou&types=url&mid=$midsq&br=sq"
                                 }
                             }
                             val title = jsonObj.get("SongName").asString
@@ -196,11 +208,11 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>(),
                                 Array<Long>::class.java
                             ).toMutableList()
                             val ca = jsonObj.get("SingerName").asString
-                            if(ca!=""){
+                            if (ca != "") {
                                 val ea = ca.substring(4)
                                 val da = ea.substring(0, ea.lastIndexOf('<'))
                                 one.add(artistlist(singer[0], da))
-                            }else{
+                            } else {
                                 one.add(artistlist(singer[0], ""))
                             }
 
@@ -220,9 +232,12 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>(),
                                 )
 
                             )
+
+                            initSearchList(musicall)
+
                         }
 
-                        initSearchList(musicall)
+
                     }
 
                 }
@@ -260,11 +275,39 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>(),
     }
 
 
+    private fun smoothMoveToPosition(mRecyclerView: RecyclerView, position: Int) {
+        // 第一个可见位置
+        val firstItem = mRecyclerView.getChildLayoutPosition(mRecyclerView.getChildAt(0))
+        // 最后一个可见位置
+        val lastItem =
+            mRecyclerView.getChildLayoutPosition(mRecyclerView.getChildAt(mRecyclerView.childCount - 1))
+        if (position < firstItem) {
+            // 第一种可能:跳转位置在第一个可见位置之前，使用smoothScrollToPosition
+            mRecyclerView.smoothScrollToPosition(position)
+        } else if (position <= lastItem) {
+            // 第二种可能:跳转位置在第一个可见位置之后，最后一个可见项之前
+            val movePosition = position - firstItem
+            if (movePosition >= 0 && movePosition < mRecyclerView.childCount) {
+                val top = mRecyclerView.getChildAt(movePosition).top
+                // smoothScrollToPosition 不会有效果，此时调用smoothScrollBy来滑动到指定位置
+                mRecyclerView.smoothScrollBy(0, top)
+            }
+        } else {
+            // 第三种可能:跳转位置在最后可见项之后，则先调用smoothScrollToPosition将要跳转的位置滚动到可见位置
+            // 再通过onScrollStateChanged控制再次调用smoothMoveToPosition，执行上一个判断中的方法
+            mRecyclerView.smoothScrollToPosition(position)
+            mToPosition = position
+            mShouldScroll = true
+        }
+    }
+
     /**
      * 初始化
      */
     private fun initSearchList(datas: MutableList<Searchs>) {
-        recyclerView.layoutManager = LinearLayoutManager(this)
+
+        val manager = LinearLayoutManager(this)
+        recyclerView.layoutManager = manager
         recyclerView.itemAnimator = DefaultItemAnimator()
         adapter = SearchListAdapter(datas, this)
         recyclerView.adapter = adapter
@@ -283,6 +326,23 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>(),
                 intent.putExtra("type", 3)
                 startActivity(intent)
 
+            }
+        })
+
+        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                //managerrecycler的布局管理器
+                val lastVisibleItemPosition: Int = manager.findLastVisibleItemPosition()
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItemPosition == adapter.itemCount - 1) {
+                    Log.d("MainActivity===$add", "=============最后一条")
+                    smoothMoveToPosition(recyclerView,mToPosition)
+                    when (type) {
+                        0 -> getPresenter().qqdata(context, search, add)
+                        1 -> getPresenter().kugoudata(context, search, add)
+                    }
+
+                }
             }
         })
     }

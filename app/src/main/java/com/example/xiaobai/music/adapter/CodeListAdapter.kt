@@ -55,7 +55,7 @@ class CodeListAdapter (val datas: MutableList<Code>, val context: Context) : Rec
             mItemClickListener?.onItemClick(v,position)
         }
 
-        holder.name.text = datas[position].username
+        holder.name.text = datas[position].nickname
         holder.time.text = getDateToString(datas[position].created_time)
     }
 

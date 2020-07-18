@@ -176,8 +176,64 @@ class MusicPlayActivity : AppCompatActivity() {
                         Toast.LENGTH_SHORT
                     ).show()
                 } else {
-                    if (style != 4) {
-                        if (downs.size > 0) {
+                    if (MusicApp.userlogin()) {
+                        if (style != 4) {
+                            if (downs.size > 0) {
+                                MaterialDialog.Builder(context)
+                                    .title(getText(R.string.song_delsong))
+                                    .content(getText(R.string.song_delsongs))
+                                    .positiveColorRes(R.color.colorAccentDarkTheme)
+                                    .negativeColorRes(R.color.red)
+                                    .positiveText(getText(R.string.carry))
+                                    .negativeText(getText(R.string.cancel))
+                                    .onPositive { _: MaterialDialog?, _: DialogAction? ->
+                                        mDownDao.delete(downs[0].id)
+                                        icon2.setImageResource(R.drawable.xiazai)
+                                        Toast.makeText(
+                                            context,
+                                            getText(R.string.song_delsongsucc),
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                    .show()
+
+                            } else {
+                                if (uri != "") {
+                                    if(Constants.Downnum()){
+                                        val request = OkGo.get<File>(uri)
+                                        OkDownload.request(uri, request) //
+                                            .priority(0)
+                                            .folder(context.getExternalFilesDir("")!!.absolutePath+"/download")
+                                            .fileName("music$song_id") //
+                                            .save() //
+                                            .register(
+                                                LogDownloadListener(
+                                                    playingMusic,
+                                                    context,
+                                                    0,
+                                                    downs
+                                                )
+                                            ) //
+                                            .start()
+                                        icon2.setImageResource(R.drawable.xiazais)
+                                    }else{
+                                        Toast.makeText(
+                                            context,
+                                            getText(R.string.download_num),
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+
+                                } else {
+                                    Toast.makeText(
+                                        context,
+                                        getText(R.string.download_error),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }
+
+                        } else {
                             MaterialDialog.Builder(context)
                                 .title(getText(R.string.song_delsong))
                                 .content(getText(R.string.song_delsongs))
@@ -186,80 +242,43 @@ class MusicPlayActivity : AppCompatActivity() {
                                 .positiveText(getText(R.string.carry))
                                 .negativeText(getText(R.string.cancel))
                                 .onPositive { _: MaterialDialog?, _: DialogAction? ->
-                                    mDownDao.delete(downs[0].id)
-                                    icon2.setImageResource(R.drawable.xiazai)
-                                    Toast.makeText(
-                                        context,
-                                        getText(R.string.song_delsongsucc),
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                    val downs = mDownDao.querys(song_id)
+                                    if (downs.size > 0) {
+                                        mDownDao.delete(downs[0].id)
+                                        icon2.setImageResource(R.drawable.xiazai)
+                                        Toast.makeText(
+                                            context,
+                                            getText(R.string.song_delsongsucc),
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    } else {
+                                        Toast.makeText(
+                                            context,
+                                            getText(R.string.song_download_error),
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
                                 }
                                 .show()
-
-                        } else {
-                            if (uri != "") {
-                                if(Constants.Downnum()){
-                                    val request = OkGo.get<File>(uri)
-                                    OkDownload.request(uri, request) //
-                                        .priority(0)
-                                        .folder(context.getExternalFilesDir("")!!.absolutePath+"/download")
-                                        .fileName("music$song_id") //
-                                        .save() //
-                                        .register(
-                                            LogDownloadListener(
-                                                playingMusic,
-                                                context,
-                                                0,
-                                                downs
-                                            )
-                                        ) //
-                                        .start()
-                                    icon2.setImageResource(R.drawable.xiazais)
-                                }else{
-                                    Toast.makeText(
-                                        context,
-                                        getText(R.string.download_num),
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-
-                            } else {
-                                Toast.makeText(
-                                    context,
-                                    getText(R.string.download_error),
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
                         }
+
 
                     } else {
                         MaterialDialog.Builder(context)
-                            .title(getText(R.string.song_delsong))
-                            .content(getText(R.string.song_delsongs))
-                            .positiveColorRes(R.color.colorAccentDarkTheme)
-                            .negativeColorRes(R.color.red)
+                            .title(getText(R.string.go))
+                            .content(getText(R.string.ungoset))
                             .positiveText(getText(R.string.carry))
                             .negativeText(getText(R.string.cancel))
+                            .positiveColorRes(R.color.colorAccentDarkTheme)
+                            .negativeColorRes(R.color.red)
                             .onPositive { _: MaterialDialog?, _: DialogAction? ->
-                                val downs = mDownDao.querys(song_id)
-                                if (downs.size > 0) {
-                                    mDownDao.delete(downs[0].id)
-                                    icon2.setImageResource(R.drawable.xiazai)
-                                    Toast.makeText(
-                                        context,
-                                        getText(R.string.song_delsongsucc),
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                } else {
-                                    Toast.makeText(
-                                        context,
-                                        getText(R.string.song_download_error),
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
+                                val intent = Intent()
+                                context.let { intent.setClass(it, LoginActivity().javaClass) }
+                                startActivity(intent)
                             }
                             .show()
                     }
+
                 }
 
             }

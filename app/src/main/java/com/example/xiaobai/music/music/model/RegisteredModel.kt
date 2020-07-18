@@ -62,6 +62,7 @@ class RegisteredModel : BaseModel(), RegisteredContract.IModel {
                             sp.edit().putString("follow", user["follow"]).apply()
                             sp.edit().putString("collect", user["collect"]).apply()
                             sp.edit().putString("like", user["like"]).apply()
+                            sp.edit().putString("code", user["is_invite_code"]).apply()
                             Observable.just(true).subscribe(RegisteredActivity.observer)
 
                         }else{

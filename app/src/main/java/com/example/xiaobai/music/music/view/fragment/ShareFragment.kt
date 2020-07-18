@@ -70,14 +70,11 @@ class ShareFragment : BaseMvpFragment<ShareContract.IPresenter>(), ShareContract
             override fun onSubscribe(d: Disposable) {}
             @SuppressLint("SetTextI18n")
             override fun onNext(codemap: Map<String,String>) {
-                val num = codemap["invite_num"].toString().toInt()
-                if(num==0){
-                    MusicApp.setMinute(10)
-                }else{
-                    MusicApp.setMinute(codemap["invite_num"].toString().toInt()*10)
+                var num = codemap["invite_num"].toString().toInt()
+                if(num>0){
+                    num /= 10
                 }
-
-                code.text = getText(R.string.set4).toString()+":"+codemap["invite_code"]+","+getText(R.string.set4_suss).toString()+codemap["invite_num"]+getText(R.string.set4_set).toString()
+                code.text = getText(R.string.set4).toString()+":"+codemap["invite_code"]+","+getText(R.string.set4_suss).toString()+num+getText(R.string.set4_set).toString()
                 urls = codemap["url"].toString()
                 codeima.setImageBitmap(QRCodeCreator.createQRCode(urls,400,400,null))
             }

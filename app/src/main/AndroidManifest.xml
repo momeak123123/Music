@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.xiaobai.music">
+    package="com.example.xiaobai.music"
+    xmlns:tool="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -33,15 +34,17 @@
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true"
         tools:replace="android:allowBackup"
-        tools:targetApi="n">
+        tools:targetApi="n"
+        tool:ignore="LockedOrientationActivity">
         <!--region 适配全面屏-->
         <meta-data
             android:name="android.max_aspect"
             android:value="2.4" />
         <!--endregion-->
         <activity android:name=".IndexActivity"
-            android:configChanges="keyboardHidden"
             android:launchMode="singleTask"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateHidden"/>
 
         <service
@@ -53,6 +56,7 @@
 
         <activity
             android:name=".StartsActivity"
+            android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Full">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -66,7 +70,7 @@
             android:exported="false"
             android:launchMode="singleInstance"
             android:noHistory="true"
-            android:screenOrientation="unspecified"
+            android:screenOrientation="portrait"
             android:theme="@style/LockScreenTheme" />
 
         <service
@@ -76,25 +80,43 @@
 
         <activity
             android:name=".music.view.act.MusicPlayActivity"
+            android:screenOrientation="portrait"
             android:launchMode="singleTop" />
 
         <activity
             android:name=".music.view.act.StartPageActivity"
+            android:screenOrientation="portrait"
             android:launchMode="singleTop" />
-        <activity android:name=".music.view.act.LoginActivity" />
-        <activity android:name=".music.view.act.RegisteredActivity" />
-        <activity android:name=".music.view.act.AlbumActivity" />
-        <activity android:name=".music.view.act.AlbumDetActivity" />
-        <activity android:name=".music.view.act.ArtistActivity" />
-        <activity android:name=".music.view.act.ArtistDetActivity" />
-        <activity android:name=".music.view.act.UserEditActivity" />
-        <activity android:name=".music.view.act.SongDetActivity" />
-        <activity android:name=".music.view.act.SongEditActivity" />
-        <activity android:name=".music.view.act.DownloadActivity" />
-        <activity android:name=".music.view.act.SearchListActivity" />
-        <activity android:name=".music.view.act.UserSetActivity" />
-        <activity android:name=".music.view.act.CodeListActivity" />
-        <activity android:name=".music.view.act.ChangePassActivity" />
+        <activity android:name=".music.view.act.LoginActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".music.view.act.RegisteredActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".music.view.act.AlbumActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".music.view.act.AlbumDetActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".music.view.act.ArtistActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".music.view.act.ArtistDetActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".music.view.act.UserEditActivity"
+            />
+        <activity android:name=".music.view.act.SongDetActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".music.view.act.SongEditActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".music.view.act.DownloadActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".music.view.act.SearchListActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".music.view.act.UserSetActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".music.view.act.CodeListActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".music.view.act.ChangePassActivity"
+            android:screenOrientation="portrait"/>
+        <activity android:name=".music.view.act.WebViewActivity"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

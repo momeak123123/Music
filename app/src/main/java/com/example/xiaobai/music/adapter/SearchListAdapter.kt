@@ -87,4 +87,5 @@ class SearchListAdapter(val datas: MutableList<Searchs>, val context: Context) :
         datas.add(item)
         notifyItemChanged(datas.size)
     }
+
 }
