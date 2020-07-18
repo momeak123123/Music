@@ -35,7 +35,6 @@ public class LogDownloadListener extends DownloadListener {
     @Override
     public void onStart(Progress progress) {
         System.out.println("onStart: " + progress);
-
         Toast.makeText(
                 context,
                 context.getText(R.string.download),
@@ -54,7 +53,6 @@ public class LogDownloadListener extends DownloadListener {
     @Override
     public void onError(Progress progress) {
         System.out.println("onError: " + progress);
-
         Toast.makeText(
                 context,
                 context.getText(R.string.download_succe) + music.getName() + context.getText(R.string.download_error),
@@ -68,12 +66,9 @@ public class LogDownloadListener extends DownloadListener {
     public void onFinish(File file, Progress progress) {
 
         try {
-            SharedPreferences sp = MusicApp.getAppContext().getSharedPreferences("User", Context.MODE_PRIVATE);
-            int num = sp.getInt("down_num",0);
-            sp.edit().putInt("down_num", num+1).apply();
-            Constants.Downokgo(context);
+            System.out.println("File地址" + file);
             String path = CipherUtil.encryptString(context, file);
-            System.out.println("File" + path);
+            System.out.println("File地址" + path);
             if (!path.equals("")) {
                 Down down = new Down();
                 down.setAlbum_id(music.getAlbum_id());
@@ -94,6 +89,7 @@ public class LogDownloadListener extends DownloadListener {
                         context.getText(R.string.download_succe) + music.getName() + context.getText(R.string.download_success),
                         Toast.LENGTH_SHORT
                 ).show();
+                Constants.Downokgo(context);
             }
 
         } catch (Exception e) {

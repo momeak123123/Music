@@ -20,6 +20,7 @@ import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.activity_registered.*
+import kotlinx.android.synthetic.main.user_set.*
 import mvp.ljb.kt.act.BaseMvpActivity
 import java.util.concurrent.TimeUnit
 import java.util.regex.Pattern
@@ -69,24 +70,28 @@ class RegisteredActivity : BaseMvpActivity<RegisteredContract.IPresenter>(),
     override fun initData() {
         super.initData()
 
-        val co = getClipboardContent(this)
-        val ca = co.substring(1)
-        val da = ca.substring(0, ca.lastIndexOf(']'))
-        if (re_code_number.text.toString() == "") {
-            if (da != "") {
-                MaterialDialog.Builder(context)
-                    .title(getText(R.string.set4))
-                    .content(getText(R.string.code_captch))
-                    .positiveColorRes(R.color.colorAccentDarkTheme)
-                    .negativeColorRes(R.color.red)
-                    .positiveText(getText(R.string.carry))
-                    .negativeText(getText(R.string.cancel))
-                    .onPositive { _: MaterialDialog?, _: DialogAction? ->
-                        re_code_number.text = Editable.Factory.getInstance().newEditable(da)
-                    }
-                    .show()
+        try {
+            val co = getClipboardContent(this)
+            val ca = co.substring(1)
+            val da = ca.substring(0, ca.lastIndexOf(']'))
+            if (re_code_number.text.toString() == "") {
+                if (da != "") {
+                    MaterialDialog.Builder(context)
+                        .title(getText(R.string.set4))
+                        .content(getText(R.string.code_captch))
+                        .positiveColorRes(R.color.colorAccentDarkTheme)
+                        .negativeColorRes(R.color.red)
+                        .positiveText(getText(R.string.carry))
+                        .negativeText(getText(R.string.cancel))
+                        .onPositive { _: MaterialDialog?, _: DialogAction? ->
+                            re_code_number.text = Editable.Factory.getInstance().newEditable(da)
+                        }
+                        .show()
+                }
             }
-        }
+        }catch (e:java.lang.Exception){}
+
+
 
     }
 

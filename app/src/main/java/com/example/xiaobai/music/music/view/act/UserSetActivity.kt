@@ -195,24 +195,28 @@ class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>(), UserSetCo
     override fun initData() {
         super.initData()
 
-        val co = getClipboardContent(this)
-        val ca = co.substring(1)
-        val da = ca.substring(0, ca.lastIndexOf(']'))
-        if (code.text == "") {
-            if (da != "") {
-                MaterialDialog.Builder(context)
-                    .title(getText(R.string.set4))
-                    .content(getText(R.string.code_captch))
-                    .positiveColorRes(R.color.colorAccentDarkTheme)
-                    .negativeColorRes(R.color.red)
-                    .positiveText(getText(R.string.carry))
-                    .negativeText(getText(R.string.cancel))
-                    .onPositive { _: MaterialDialog?, _: DialogAction? ->
-                        getPresenter().code(context,da)
-                    }
-                    .show()
+        try {
+            val co = getClipboardContent(context)
+            val ca = co.substring(1)
+            val da = ca.substring(0, ca.lastIndexOf(']'))
+
+            if (code.text == "") {
+                if (da != "") {
+                    MaterialDialog.Builder(context)
+                        .title(getText(R.string.set4))
+                        .content(getText(R.string.code_captch))
+                        .positiveColorRes(R.color.colorAccentDarkTheme)
+                        .negativeColorRes(R.color.red)
+                        .positiveText(getText(R.string.carry))
+                        .negativeText(getText(R.string.cancel))
+                        .onPositive { _: MaterialDialog?, _: DialogAction? ->
+                            getPresenter().code(context,da)
+                        }
+                        .show()
+                }
             }
-        }
+        }catch (e:java.lang.Exception){}
+
     }
 
     /**

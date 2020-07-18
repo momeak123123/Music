@@ -44,49 +44,64 @@
         app:layout_constraintTop_toBottomOf="@+id/codelist"
         app:srcCompat="@drawable/img_invite" />
 
-    <com.xuexiang.xui.widget.button.roundbutton.RoundButton
-        android:id="@+id/btn1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/dp_20"
-        android:layout_marginTop="@dimen/dp_40"
-        android:paddingStart="@dimen/dp_20"
-        android:paddingTop="@dimen/dp_10"
-        android:paddingBottom="@dimen/dp_10"
-        android:paddingEnd="@dimen/dp_20"
-        android:text="@string/code_copy"
-        android:textColor="@color/white_pressed"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/codeima"
-        app:rb_backgroundColor="@color/colorAccentDarkTheme"
-        app:rb_borderColor="@color/colorAccentDarkTheme"
-        app:rb_isRadiusAdjustBounds="true"
-        tools:ignore="RtlSymmetry" />
 
-    <com.xuexiang.xui.widget.button.roundbutton.RoundButton
-        android:id="@+id/btn2"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/playview"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_40"
-        android:layout_marginEnd="@dimen/dp_20"
-        android:text="@string/code_baoc"
-        android:paddingStart="@dimen/dp_20"
-        android:paddingTop="@dimen/dp_10"
-        android:paddingBottom="@dimen/dp_10"
-        android:paddingEnd="@dimen/dp_20"
-        android:textColor="@color/white_pressed"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/codeima"
-        app:rb_backgroundColor="@color/colorAccentDarkTheme"
-        app:rb_borderColor="@color/colorAccentDarkTheme"
-        app:rb_isRadiusAdjustBounds="true" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/dp_20"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/codeima">
+
+        <com.xuexiang.xui.widget.button.roundbutton.RoundButton
+            android:id="@+id/btn1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dp_20"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:layout_weight="1"
+            android:paddingStart="@dimen/dp_20"
+            android:paddingTop="@dimen/dp_10"
+            android:paddingEnd="@dimen/dp_20"
+            android:paddingBottom="@dimen/dp_10"
+            android:text="@string/code_copy"
+            android:textColor="@color/white_pressed"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/codeima"
+            app:rb_backgroundColor="@color/colorAccentDarkTheme"
+            app:rb_borderColor="@color/colorAccentDarkTheme"
+            app:rb_isRadiusAdjustBounds="true"
+            tools:ignore="RtlSymmetry" />
+
+        <com.xuexiang.xui.widget.button.roundbutton.RoundButton
+            android:id="@+id/btn2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/dp_20"
+            android:layout_weight="1"
+            android:paddingStart="@dimen/dp_20"
+            android:paddingTop="@dimen/dp_10"
+            android:paddingEnd="@dimen/dp_20"
+            android:paddingBottom="@dimen/dp_10"
+            android:text="@string/code_baoc"
+            android:textColor="@color/white_pressed"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/codeima"
+            app:rb_backgroundColor="@color/colorAccentDarkTheme"
+            app:rb_borderColor="@color/colorAccentDarkTheme"
+            app:rb_isRadiusAdjustBounds="true" />
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/code"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/dp_20"
         android:layout_marginEnd="@dimen/dp_20"
+        android:gravity="center"
         android:text="@string/set4_un"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"

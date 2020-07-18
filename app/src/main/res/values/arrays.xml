@@ -91,8 +91,8 @@
     </string-array>
 
     <string-array name="menu_values">
-        <item>线路一</item>
-        <item>线路二</item>
+        <item>@string/sear1</item>
+        <item>@string/sear2</item>
     </string-array>
 
     <string-array name="router_choice_entry">

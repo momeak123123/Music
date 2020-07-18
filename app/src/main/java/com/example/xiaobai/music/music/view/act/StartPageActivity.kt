@@ -58,11 +58,11 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>(), Start
     @SuppressLint("CheckResult")
     override fun initView() {
         super.initView()
-
-        mDisposable = Flowable.intervalRange(0, MusicApp.getAdstime()+1, 0, 1, TimeUnit.SECONDS)
+       val num =  MusicApp.getAdstime()
+        mDisposable = Flowable.intervalRange(0, num, 0, 1, TimeUnit.SECONDS)
             .observeOn(AndroidSchedulers.mainThread())
             .doOnNext { t ->
-                time.text = (3 - t).toString()
+                time.text = (num - t).toString()
             }
             .doOnComplete {
                 finish()

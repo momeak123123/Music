@@ -2,7 +2,6 @@ package com.example.xiaobai.music.utils;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-
 import com.example.xiaobai.music.config.Installation;
 
 import java.io.BufferedOutputStream;
@@ -11,6 +10,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.charset.StandardCharsets;
 import java.security.Provider;
 import java.security.SecureRandom;
 import java.util.Objects;
@@ -23,27 +23,10 @@ import javax.crypto.spec.SecretKeySpec;
 
 public class CipherUtil {
 
-    private static byte[] getRawKey(byte[] seed) throws Exception {
-        KeyGenerator kgen = KeyGenerator.getInstance("AES");
-        SecureRandom sr = SecureRandom.getInstance("SHA1PRNG", new CryptoProvider());
-        sr.setSeed(seed);
-        kgen.init(128, sr);
-        SecretKey skey = kgen.generateKey();
-        return skey.getEncoded();
+    private static byte[] getRawKey(byte[] seed) {
+        byte[] rawKey = InsecureSHA1PRNGKeyDerivator.deriveInsecureKey(seed, 32);
+        return rawKey;
     }
-
-    static final class CryptoProvider extends Provider {
-        /**
-         * Creates a Provider and puts parameters
-         */
-        CryptoProvider() {
-            super("Crypto", 1.0, "HARMONY (SHA1 digest; SecureRandom; SHA1withDSA signature)");
-            put("SecureRandom.SHA1PRNG",
-                    "org.apache.harmony.security.provider.crypto.SHA1PRNG_SecureRandomImpl");
-            put("SecureRandom.SHA1PRNG ImplementedIn", "Software");
-        }
-    }
-
     private static byte[] encrypt(byte[] raw, byte[] clear) throws Exception {
         SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
         @SuppressLint("GetInstance") Cipher cipher = Cipher.getInstance("AES");
