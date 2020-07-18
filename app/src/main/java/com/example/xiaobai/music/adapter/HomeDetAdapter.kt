@@ -166,8 +166,8 @@ class HomeDetAdapter(
 
                 for (it in ads) {
                     val item1 = BannerItem()
-                    item1.imgUrl = it.url
-                    item1.title = ""
+                    item1.imgUrl = it.img
+                    item1.title = it.url
                     bannerdata.add(item1)
                 }
 
@@ -175,7 +175,7 @@ class HomeDetAdapter(
                     .setOnItemClickListener(BaseBanner.OnItemClickListener<BannerItem?> { _, _, position ->
                         val intent = Intent()
                         intent.setClass(context, WebViewActivity().javaClass)
-                        intent.putExtra("url", bannerdata[position].imgUrl)
+                        intent.putExtra("url", bannerdata[position].title)
                         context.startActivity(intent)
                     })
                     .setIsOnePageLoop(false).startScroll()
