@@ -70,43 +70,13 @@ class IndexActivity : AppCompatActivity() {
 
         var bool = true
         lateinit var observer: Observer<Boolean>
+        lateinit var observers: Observer<Int>
         lateinit var observert: Observer<Music>
         @SuppressLint("StaticFieldLeak")
         var mCurrentPlayTime: Long = 0
         lateinit var iv_cover: RadiusImageView
         var mObjectAnimator: ObjectAnimator? = null
-        /**
-         * 设置旋转的动画
-         */
-        fun updoteAnimation(ima: String?) {
 
-            Glide.with(MusicApp.getAppContext()).load(ima).placeholder(R.drawable.undetback)
-                    .into(iv_cover)
-
-        }
-
-        /**
-         * 暂停旋转
-         */
-        fun stopAnimation() {
-            mCurrentPlayTime = mObjectAnimator!!.currentPlayTime
-            mObjectAnimator?.pause()
-        }
-
-        /**
-         * 开始旋转
-         */
-        fun startAnimation() {
-            mObjectAnimator?.start()
-        }
-
-        /**
-         * 开始旋转
-         */
-        fun resumeAnimation() {
-            mObjectAnimator?.resume()
-            mObjectAnimator?.currentPlayTime = mCurrentPlayTime
-        }
     }
 
 
@@ -305,6 +275,29 @@ class IndexActivity : AppCompatActivity() {
                     in_add.visibility = View.VISIBLE
                 }else{
                     in_add.visibility = View.GONE
+                }
+
+            }
+
+            override fun onError(e: Throwable) {}
+            override fun onComplete() {
+            }
+
+        }
+        observers = object : Observer<Int> {
+            override fun onSubscribe(d: Disposable) {}
+            override fun onNext(data: Int) {
+                when(data){
+                    0->{
+                        updoteAnimation()
+                        startAnimation()
+                    }
+                    1->{
+                        stopAnimation()
+                    }
+                    2->{
+                        resumeAnimation()
+                    }
                 }
 
             }
@@ -604,6 +597,40 @@ class IndexActivity : AppCompatActivity() {
 
 
     }
+
+    /**
+     * 设置旋转的动画
+     */
+    fun updoteAnimation() {
+
+        Glide.with(MusicApp.getAppContext()).load(MusicPlayActivity.m).placeholder(R.drawable.undetback)
+            .into(iv_cover)
+
+    }
+
+    /**
+     * 暂停旋转
+     */
+    fun stopAnimation() {
+        mCurrentPlayTime = mObjectAnimator!!.currentPlayTime
+        mObjectAnimator?.pause()
+    }
+
+    /**
+     * 开始旋转
+     */
+    fun startAnimation() {
+        mObjectAnimator?.start()
+    }
+
+    /**
+     * 开始旋转
+     */
+    fun resumeAnimation() {
+        mObjectAnimator?.resume()
+        mObjectAnimator?.currentPlayTime = mCurrentPlayTime
+    }
+
 
 
 

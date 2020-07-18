@@ -8,6 +8,7 @@ import com.example.xiaobai.music.IndexActivity
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.music.contract.CoverContract
 import com.example.xiaobai.music.music.presenter.CoverPresenter
+import com.example.xiaobai.music.music.view.act.SearchListActivity
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -40,7 +41,6 @@ class CoverFragment : BaseMvpFragment<CoverContract.IPresenter>(), CoverContract
      * 设置Bitmap
      */
     fun setImagePath(ima:String ) {
-        IndexActivity.updoteAnimation(ima)
         Observable.just(0)
             .subscribeOn(AndroidSchedulers.mainThread())
             .subscribe(object : Observer<Int> {
@@ -72,7 +72,7 @@ class CoverFragment : BaseMvpFragment<CoverContract.IPresenter>(), CoverContract
     fun startRotateAnimation(isPlaying: Boolean = false) {
         if (isPlaying) {
             mAnimator.start()
-            IndexActivity.startAnimation()
+            Observable.just(0).subscribe(IndexActivity.observers)
         }
     }
 
@@ -82,7 +82,7 @@ class CoverFragment : BaseMvpFragment<CoverContract.IPresenter>(), CoverContract
     fun stopRotateAnimation() {
 
         mAnimator.pause()
-        IndexActivity.stopAnimation()
+        Observable.just(1).subscribe(IndexActivity.observers)
     }
 
     /**
@@ -90,7 +90,7 @@ class CoverFragment : BaseMvpFragment<CoverContract.IPresenter>(), CoverContract
      */
     fun resumeRotateAnimation() {
         mAnimator.resume()
-        IndexActivity.resumeAnimation()
+        Observable.just(2).subscribe(IndexActivity.observers)
     }
 
     override fun onResume() {
