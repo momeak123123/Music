@@ -430,6 +430,8 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
             adapter.notifyItemChanged(0)
         }
 
+        loadData()
+
         observers = object : Observer<Boolean> {
             override fun onSubscribe(d: Disposable) {}
 

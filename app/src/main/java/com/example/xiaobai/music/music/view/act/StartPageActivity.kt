@@ -27,7 +27,6 @@ import java.util.concurrent.TimeUnit
  **/
 class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>(), StartPageContract.IView {
 
-    private lateinit var sp: SharedPreferences
     private lateinit var mDisposable: Disposable
     private lateinit var context: Context
 
@@ -68,16 +67,6 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>(), Start
                 finish()
             }
             .subscribe()
-
-        RxView.clicks(view)
-            .throttleFirst(3, TimeUnit.SECONDS)
-            .subscribe {
-                if (mDisposable.isDisposed) {
-                    mDisposable.dispose()
-                }
-
-                finish()
-            }
     }
 
     override fun initData() {
