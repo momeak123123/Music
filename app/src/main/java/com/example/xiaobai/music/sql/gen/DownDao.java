@@ -35,7 +35,7 @@ public class DownDao extends AbstractDao<Down, Long> {
         public final static Property Pic_url = new Property(8, String.class, "pic_url", false, "PIC_URL");
         public final static Property Publish_time = new Property(9, String.class, "publish_time", false, "PUBLISH_TIME");
         public final static Property Song_list_id = new Property(10, Long.class, "song_list_id", false, "SONG_LIST_ID");
-        public final static Property Down_date = new Property(11, String.class, "down_date", false, "DOWN_DATE");
+        public final static Property User_id = new Property(11, String.class, "user_id", false, "USER_ID");
         public final static Property User = new Property(12, String.class, "user", false, "USER");
     }
 
@@ -63,7 +63,7 @@ public class DownDao extends AbstractDao<Down, Long> {
                 "\"PIC_URL\" TEXT," + // 8: pic_url
                 "\"PUBLISH_TIME\" TEXT," + // 9: publish_time
                 "\"SONG_LIST_ID\" INTEGER," + // 10: song_list_id
-                "\"DOWN_DATE\" TEXT," + // 11: down_date
+                "\"USER_ID\" TEXT," + // 11: user_id
                 "\"USER\" TEXT);"); // 12: user
         // Add Indexes
         db.execSQL("CREATE UNIQUE INDEX " + constraint + "IDX_DOWN__id ON \"DOWN\"" +
@@ -135,9 +135,9 @@ public class DownDao extends AbstractDao<Down, Long> {
             stmt.bindLong(11, song_list_id);
         }
  
-        String down_date = entity.getDown_date();
-        if (down_date != null) {
-            stmt.bindString(12, down_date);
+        String user_id = entity.getUser_id();
+        if (user_id != null) {
+            stmt.bindString(12, user_id);
         }
  
         String user = entity.getUser();
@@ -205,9 +205,9 @@ public class DownDao extends AbstractDao<Down, Long> {
             stmt.bindLong(11, song_list_id);
         }
  
-        String down_date = entity.getDown_date();
-        if (down_date != null) {
-            stmt.bindString(12, down_date);
+        String user_id = entity.getUser_id();
+        if (user_id != null) {
+            stmt.bindString(12, user_id);
         }
  
         String user = entity.getUser();
@@ -235,7 +235,7 @@ public class DownDao extends AbstractDao<Down, Long> {
             cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // pic_url
             cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // publish_time
             cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10), // song_list_id
-            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // down_date
+            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // user_id
             cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12) // user
         );
         return entity;
@@ -254,7 +254,7 @@ public class DownDao extends AbstractDao<Down, Long> {
         entity.setPic_url(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
         entity.setPublish_time(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
         entity.setSong_list_id(cursor.isNull(offset + 10) ? null : cursor.getLong(offset + 10));
-        entity.setDown_date(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
+        entity.setUser_id(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
         entity.setUser(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
      }
     

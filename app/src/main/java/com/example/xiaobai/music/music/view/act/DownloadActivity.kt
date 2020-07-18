@@ -90,7 +90,7 @@ class DownloadActivity : BaseMvpActivity<DownloadContract.IPresenter>(), Downloa
 
     fun loadData() {
 
-        data = mDownDao.queryAll()
+        data = mDownDao.query(sp.getString("user_id",""))
         val song = mutableListOf<Music>()
 
         if (data.size > 0) {

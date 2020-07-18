@@ -49,8 +49,8 @@ public class mDownDao {
      *
      * @return
      */
-    public static List<Down> query(String date) {
-        return Initialization.getDaoInstantDown().getDownDao().queryBuilder().where(DownDao.Properties.Down_date.eq(date)).list();
+    public static List<Down> query(String userid) {
+        return Initialization.getDaoInstantDown().getDownDao().queryBuilder().where(DownDao.Properties.User_id.eq(userid)).list();
     }
 
     /**

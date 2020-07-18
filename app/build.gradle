@@ -118,7 +118,7 @@ dependencies {
 }
 
 greendao {
-    schemaVersion 11
+    schemaVersion 12
     daoPackage 'com.example.xiaobai.music.sql.gen'
     targetGenDir 'src/main/java'
 }

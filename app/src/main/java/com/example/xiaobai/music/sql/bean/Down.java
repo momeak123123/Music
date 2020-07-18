@@ -21,13 +21,13 @@ public class Down {
     private String pic_url;
     private String publish_time;
     private Long song_list_id;
-    private String down_date;
+    private String user_id;
     private String user;
-    @Generated(hash = 1720153343)
+    @Generated(hash = 383280572)
     public Down(Long id, Long song_id, String name, String album_name,
             Long album_id, String uri, String artist, Long artist_id,
-            String pic_url, String publish_time, Long song_list_id,
-            String down_date, String user) {
+            String pic_url, String publish_time, Long song_list_id, String user_id,
+            String user) {
         this.id = id;
         this.song_id = song_id;
         this.name = name;
@@ -39,7 +39,7 @@ public class Down {
         this.pic_url = pic_url;
         this.publish_time = publish_time;
         this.song_list_id = song_list_id;
-        this.down_date = down_date;
+        this.user_id = user_id;
         this.user = user;
     }
     @Generated(hash = 1079473298)
@@ -111,11 +111,11 @@ public class Down {
     public void setSong_list_id(Long song_list_id) {
         this.song_list_id = song_list_id;
     }
-    public String getDown_date() {
-        return this.down_date;
+    public String getUser_id() {
+        return this.user_id;
     }
-    public void setDown_date(String down_date) {
-        this.down_date = down_date;
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
     }
     public String getUser() {
         return this.user;
@@ -123,7 +123,6 @@ public class Down {
     public void setUser(String user) {
         this.user = user;
     }
-
 
 
 }

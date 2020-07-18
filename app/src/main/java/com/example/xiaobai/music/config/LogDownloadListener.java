@@ -65,10 +65,11 @@ public class LogDownloadListener extends DownloadListener {
     @Override
     public void onFinish(File file, Progress progress) {
 
+        SharedPreferences sp = context.getSharedPreferences("User", Context.MODE_PRIVATE);
+
+
         try {
-            System.out.println("File地址" + file);
             String path = CipherUtil.encryptString(context, file);
-            System.out.println("File地址" + path);
             if (!path.equals("")) {
                 Down down = new Down();
                 down.setAlbum_id(music.getAlbum_id());
@@ -81,7 +82,7 @@ public class LogDownloadListener extends DownloadListener {
                 down.setSong_id(music.getSong_id());
                 down.setSong_list_id(music.getSong_list_id());
                 down.setUri(path);
-                down.setDown_date(Constants.Dates());
+                down.setUser_id( sp.getString("user_id",""));
                 down.setUser(Installation.getUniqueID(context));
                 mDownDao.insert(down);
                 Toast.makeText(
