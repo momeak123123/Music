@@ -45,6 +45,7 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>(),
 
     //记录目标项位置
     private var mToPosition = 0
+    private var mToPositions = 0
     private var add: Int = 0
     val musicall = mutableListOf<Searchs>()
     val datas = mutableListOf<Searchs>()
@@ -106,7 +107,8 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>(),
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(list: JsonArray) {
                 add++
-                mToPosition = add*29
+                mToPositions = add*29
+
                 when (type) {
                     0 -> {
                         for (i in 0 until list.size()) {
@@ -311,6 +313,7 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>(),
         recyclerView.itemAnimator = DefaultItemAnimator()
         adapter = SearchListAdapter(datas, this)
         recyclerView.adapter = adapter
+        smoothMoveToPosition(recyclerView,mToPositions)
         adapter.setOnItemClickListener(object : SearchListAdapter.ItemClickListener {
             override fun onItemClick(view: View, position: Int) {
                 val music = mutableListOf<Music>()
@@ -336,7 +339,7 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>(),
                 val lastVisibleItemPosition: Int = manager.findLastVisibleItemPosition()
                 if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItemPosition == adapter.itemCount - 1) {
                     Log.d("MainActivity===$add", "=============最后一条")
-                    smoothMoveToPosition(recyclerView,mToPosition)
+
                     when (type) {
                         0 -> getPresenter().qqdata(context, search, add)
                         1 -> getPresenter().kugoudata(context, search, add)

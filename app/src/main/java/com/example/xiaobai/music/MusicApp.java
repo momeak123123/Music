@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 
 import com.danikula.videocache.HttpProxyCacheServer;
+import com.example.xiaobai.music.bean.Ads;
 import com.example.xiaobai.music.bean.Music;
 import com.example.xiaobai.music.utils.NetWorkUtils;
 import com.lzy.okgo.OkGo;
@@ -50,15 +51,15 @@ public class MusicApp extends Application {
 
     public static int minute = 0;
 
-    public static Long adstime = 0L;
+    public static Ads ads;
 
 
-    public static Long getAdstime() {
-        return adstime;
+    public static Ads getAds() {
+        return ads;
     }
 
-    public static void setAdstime(Long adstime) {
-        MusicApp.adstime = adstime;
+    public static void setAds(Ads ads) {
+        MusicApp.ads = ads;
     }
 
     public static Boolean getBool() {

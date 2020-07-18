@@ -1,7 +1,11 @@
 package com.example.xiaobai.music.music.view.act
 
 import android.annotation.SuppressLint
-import android.content.*
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.InputType
 import android.widget.Toast
@@ -36,6 +40,7 @@ class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>(), UserSetCo
     }
 
     override fun registerPresenter() = UserSetPresenter::class.java
+    private lateinit var cm: ClipboardManager
     private lateinit var file: File
     private lateinit var context: Context
     private lateinit var sp: SharedPreferences
@@ -224,8 +229,7 @@ class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>(), UserSetCo
      */
     @Nullable
     fun getClipboardContent(context: Context): String {
-        val cm: ClipboardManager =
-            context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+         cm = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         val data: ClipData? = cm.primaryClip
         if (data != null) {
             if (data.itemCount > 0) {
@@ -234,16 +238,22 @@ class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>(), UserSetCo
                 return sequence.toString()
             }
         }
+
         return ""
     }
 
     override fun onResume() {
         super.onResume()
+
+        code.text = sp.getString("code","")
+
         observer = object : Observer<String> {
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(text: String) {
                 code.text = text
                 sp.edit().putString("code", text).apply()
+                val mClipData = ClipData.newPlainText("Label", "")
+                cm.setPrimaryClip(mClipData)
             }
             override fun onError(e: Throwable) {}
             override fun onComplete() {}

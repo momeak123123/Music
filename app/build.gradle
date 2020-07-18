@@ -113,6 +113,8 @@ dependencies {
     //二维码
     implementation 'com.google.zxing:core:3.4.0'
 
+    //webview
+    implementation 'com.github.delight-im:Android-AdvancedWebView:v3.0.0'
 }
 
 greendao {

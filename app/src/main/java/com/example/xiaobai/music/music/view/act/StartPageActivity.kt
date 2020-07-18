@@ -57,7 +57,14 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>(), Start
     @SuppressLint("CheckResult")
     override fun initView() {
         super.initView()
-       val num =  MusicApp.getAdstime()
+        RxView.clicks(adss)
+            .throttleFirst(3, TimeUnit.SECONDS)
+            .subscribe {
+                intent.setClass(context, WebViewActivity().javaClass)
+                intent.putExtra("url",MusicApp.getAds().url)
+                context.startActivity(intent)
+            }
+       val num =  MusicApp.getAds().seconds
         mDisposable = Flowable.intervalRange(0, num, 0, 1, TimeUnit.SECONDS)
             .observeOn(AndroidSchedulers.mainThread())
             .doOnNext { t ->

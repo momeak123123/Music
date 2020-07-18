@@ -228,7 +228,7 @@ class MusicPlayModel {
                                     bean.data,
                                     Array<Ads>::class.java
                                 ).toList()
-                                MusicApp.setAdstime(ads[0].seconds)
+                                MusicApp.setAds(ads[0])
                                 object : Thread() {
                                     override fun run() {
                                         if (ads[0].img != "") {
