@@ -51,7 +51,7 @@ public class MusicApp extends Application {
 
     public static int minute = 0;
 
-    public static Ads ads;
+    public static Ads ads = new Ads("","",3);
 
 
     public static Ads getAds() {

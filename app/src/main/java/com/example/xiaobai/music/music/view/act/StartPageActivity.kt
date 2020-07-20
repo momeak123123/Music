@@ -2,11 +2,13 @@ package com.example.xiaobai.music.music.view.act
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.SharedPreferences
+import android.content.Intent
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
+import com.bumptech.glide.Glide
 import com.example.xiaobai.music.IndexActivity
 import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
@@ -50,7 +52,7 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>(), Start
         window.statusBarColor = Color.TRANSPARENT
         context = this
         IndexActivity.bool = false
-        adss.setImageBitmap(MusicApp.getStartback())
+        Glide.with(this).load(MusicApp.getAds().img).placeholder(R.drawable.play_page_default_bg).into(adss)
 
     }
 
@@ -60,9 +62,11 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>(), Start
         RxView.clicks(adss)
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
-                intent.setClass(context, WebViewActivity().javaClass)
-                intent.putExtra("url",MusicApp.getAds().url)
-                context.startActivity(intent)
+                val intent = Intent()
+                intent.action = "android.intent.action.VIEW"
+                val uri: Uri = Uri.parse(MusicApp.getAds().url)
+                intent.data = uri
+                startActivity(intent)
             }
        val num =  MusicApp.getAds().seconds
         mDisposable = Flowable.intervalRange(0, num, 0, 1, TimeUnit.SECONDS)
@@ -71,7 +75,8 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>(), Start
                 time.text = (num - t).toString()
             }
             .doOnComplete {
-                finish()
+                val intent = Intent(context, IndexActivity::class.java)
+                startActivity(intent)
             }
             .subscribe()
     }

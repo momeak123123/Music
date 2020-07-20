@@ -136,10 +136,6 @@ class IndexActivity : AppCompatActivity() {
         iv_cover = view.findViewById(R.id.iv_cover)
         initData()
         context = this
-        if (bool) {
-            val intent = Intent(context, StartPageActivity::class.java)
-            startActivity(intent)
-        }
         setAnimation()
     }
 

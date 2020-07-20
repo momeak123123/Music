@@ -13,6 +13,7 @@ import com.example.xiaobai.music.bean.*
 import com.example.xiaobai.music.config.Constants
 import com.example.xiaobai.music.config.OSS
 import com.example.xiaobai.music.music.view.act.AlbumDetActivity
+import com.example.xiaobai.music.music.view.act.CodeListActivity
 import com.example.xiaobai.music.music.view.act.MusicPlayActivity
 import com.example.xiaobai.music.music.view.act.UserEditActivity
 import com.example.xiaobai.music.music.view.fragment.HomeFragment
@@ -229,16 +230,7 @@ class MusicPlayModel {
                                     Array<Ads>::class.java
                                 ).toList()
                                 MusicApp.setAds(ads[0])
-                                object : Thread() {
-                                    override fun run() {
-                                        if (ads[0].img != "") {
-                                            val bm = BitmapUtils.getBitmap(ads[0].img)
-                                            MusicApp.setStartback(bm)
-                                        }
-
-                                    }
-                                }.start()
-
+                                Observable.just(true).subscribe(StartsActivity.observer)
                             }
                         } catch (e: Exception) {
 

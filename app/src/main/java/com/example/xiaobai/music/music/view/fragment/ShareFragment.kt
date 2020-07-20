@@ -74,7 +74,7 @@ class ShareFragment : BaseMvpFragment<ShareContract.IPresenter>(), ShareContract
                 if(num>0){
                     num /= 10
                 }
-                code.text = getText(R.string.set4).toString()+":"+codemap["invite_code"]+","+getText(R.string.set4_suss).toString()+num+getText(R.string.set4_set).toString()
+                code.text = getText(R.string.set4s).toString()+","+getText(R.string.set4_suss).toString()+num+getText(R.string.set4_set).toString()
                 urls = codemap["url"].toString()
                 codeima.setImageBitmap(QRCodeCreator.createQRCode(urls,400,400,null))
             }

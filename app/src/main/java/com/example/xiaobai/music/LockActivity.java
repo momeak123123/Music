@@ -65,26 +65,25 @@ public class LockActivity extends AppCompatActivity implements SlidingFinishLayo
         initView();
 
 
-        IntentFilter filter=new IntentFilter();
+        IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_TIME_TICK);
-        registerReceiver(receiver,filter);
+        registerReceiver(receiver, filter);
     }
 
     public void fullScreen(Activity activity) {
-        {
 
-            Window window = activity.getWindow();
-            View decorView = window.getDecorView();
+        Window window = activity.getWindow();
+        View decorView = window.getDecorView();
 
-            int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-            decorView.setSystemUiVisibility(option);
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(Color.TRANSPARENT);
+        int option = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
+        decorView.setSystemUiVisibility(option);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(Color.TRANSPARENT);
 
-        }
+
+
     }
-
 
 
     @SuppressLint("CheckResult")

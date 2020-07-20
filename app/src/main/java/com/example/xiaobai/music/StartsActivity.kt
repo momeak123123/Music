@@ -11,32 +11,49 @@ import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
+import com.bumptech.glide.Glide
 import com.example.xiaobai.music.config.Constants
 import com.example.xiaobai.music.config.Installation
 import com.example.xiaobai.music.music.model.MainModel
 import com.example.xiaobai.music.music.model.MusicPlayModel.Companion.getadvertising
 import com.example.xiaobai.music.music.model.MusicPlayModel.Companion.updateapp
+import com.example.xiaobai.music.music.view.act.StartPageActivity
+import com.example.xiaobai.music.music.view.fragment.MyFragment
 import com.example.xiaobai.music.utils.DeleteUtil
+import com.google.gson.JsonArray
+import com.google.gson.JsonObject
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.fragment_my.*
 import java.util.concurrent.TimeUnit
 
 class StartsActivity : Activity() {
+
+    companion object {
+        lateinit var observer: Observer<Boolean>
+    }
 
     @SuppressLint("SdCardPath")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        Flowable.intervalRange(0, 1, 0, 1, TimeUnit.SECONDS)
+
+
+        Observable.timer(8, TimeUnit.SECONDS)
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnNext {}
-            .doOnComplete {
-                startActivity(Intent(applicationContext, IndexActivity::class.java))
-            }
-            .subscribe()
+            .subscribe(object : Observer<Long> {
+                override fun onSubscribe(disposable: Disposable) {}
+                override fun onNext(number: Long) {
+                    updateapp(getVersionName())
+                }
+
+                override fun onError(e: Throwable) {}
+                override fun onComplete() {}
+            })
+
 
     }
 
@@ -59,22 +76,24 @@ class StartsActivity : Activity() {
     override fun onResume() {
         super.onResume()
 
-
         getadvertising()
+
+        observer = object : Observer<Boolean> {
+            override fun onSubscribe(d: Disposable) {}
+            override fun onNext(data: Boolean) {
+                if (data) {
+                    startActivity(Intent(applicationContext, StartPageActivity::class.java))
+                }
+
+            }
+
+            override fun onError(e: Throwable) {}
+            override fun onComplete() {}
+
+        }
 
         MainModel.homedata(this)
 
-        Observable.timer(8, TimeUnit.SECONDS)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : Observer<Long> {
-                override fun onSubscribe(disposable: Disposable) {}
-                override fun onNext(number: Long) {
-                    updateapp(getVersionName())
-                }
-
-                override fun onError(e: Throwable) {}
-                override fun onComplete() {}
-            })
 
         val sp: SharedPreferences = getSharedPreferences("User", Context.MODE_PRIVATE)
 

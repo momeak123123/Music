@@ -3,6 +3,7 @@ package com.example.xiaobai.music.adapter
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +13,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.xiaobai.music.IndexActivity
+import com.example.xiaobai.music.MusicApp
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.bean.*
 import com.example.xiaobai.music.music.view.act.*
@@ -174,8 +176,9 @@ class HomeDetAdapter(
                 banner.setSource(bannerdata)
                     .setOnItemClickListener(BaseBanner.OnItemClickListener<BannerItem?> { _, _, position ->
                         val intent = Intent()
-                        intent.setClass(context, WebViewActivity().javaClass)
-                        intent.putExtra("url", bannerdata[position].title)
+                        intent.action = "android.intent.action.VIEW"
+                        val uri: Uri = Uri.parse(bannerdata[position].title)
+                        intent.data = uri
                         context.startActivity(intent)
                     })
                     .setIsOnePageLoop(false).startScroll()
