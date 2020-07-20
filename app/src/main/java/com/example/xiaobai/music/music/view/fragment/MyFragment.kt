@@ -155,10 +155,14 @@ class MyFragment : BaseMvpFragment<MyContract.IPresenter>(), MyContract.IView {
                         .placeholder(R.color.main_black_grey).into(iv_cover)
                     name.text = sp.getString("nickname", "")
                     city.text = sp.getString("countries", "")
-                    attention_num.text = sp.getString("follow", "")
+                    attention_num.text = sp.getString("download", "")
                     collect_num.text = sp.getString("collect", "")
                     sign.text = sp.getString("message", "")
-                    MusicApp.setMinute(sp.getString("follow", "").toString().toInt())
+                    if(sp.getString("download", "").toString()!=""){
+                        MusicApp.setMinute(sp.getString("download", "").toString().toInt())
+                    }else{
+                        MusicApp.setMinute(0)
+                    }
                 }
 
             }
@@ -236,10 +240,15 @@ class MyFragment : BaseMvpFragment<MyContract.IPresenter>(), MyContract.IView {
                 .placeholder(R.color.main_black_grey).into(iv_cover)
             name.text = sp.getString("nickname", "")
             city.text = sp.getString("countries", "")
-            attention_num.text = sp.getString("follow", "")
+            attention_num.text = sp.getString("download", "")
             collect_num.text = sp.getString("collect", "")
             sign.text = sp.getString("message", "")
-            MusicApp.setMinute(sp.getString("follow", "").toString().toInt())
+            if(sp.getString("download", "").toString()!=""){
+                MusicApp.setMinute(sp.getString("download", "").toString().toInt())
+            }else{
+                MusicApp.setMinute(0)
+            }
+
 
             var num = 0
             val list: MutableList<Playlist> =
