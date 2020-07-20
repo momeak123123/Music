@@ -74,6 +74,8 @@
 
 
 #-----------实体类[Bean类]---------
+-keep class com.example.xiaobai.music.** {*;}
+
 -keep class com.example.xiaobai.music.bean.**{*;}
 #keep 适配器
 -keep class com.example.xiaobai.music.adapter.**{*;}

@@ -132,15 +132,18 @@ class MusicService : Service() {
         val notificationChannel: NotificationChannel?
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             notificationChannel =
-                NotificationChannel("xiaobai1089", "小白音乐", NotificationManager.IMPORTANCE_HIGH)
+                NotificationChannel("xiaobai1089",
+                    getText(R.string.app_name).toString(), NotificationManager.IMPORTANCE_MIN)
             val notificationManager: NotificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(notificationChannel)
         }
 
-         notification = Notification.Builder(this, "xiaobai1089").setContentTitle("This is content title")
+         notification = Notification.Builder(this, "xiaobai1089")
+                .setContentTitle("This is content title")
                 .setContentText("This is content text")
-                .setWhen(System.currentTimeMillis()).setSmallIcon(R.mipmap.ic_launcher)
+                .setWhen(System.currentTimeMillis())
+                .setSmallIcon(R.mipmap.ic_launcher)
                 .setLargeIcon(BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher))
                 .setOnlyAlertOnce(true)
                 .build()
@@ -380,7 +383,6 @@ class MusicService : Service() {
         count = intent.getIntExtra("count", 0)
         style = intent.getIntExtra("style", 0)
         val seek = intent.getDoubleExtra("seek", 0.0)
-        startForeground(1, notification)
         when (types) {
             0 -> {
                 musicstart(ids)
