@@ -41,11 +41,6 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>(),
         lateinit var observer: Observer<JsonArray>
         lateinit var observers: Observer<Boolean>
     }
-    private var mShouldScroll = false
-
-    //记录目标项位置
-    private var mToPosition = 0
-    private var mToPositions = 0
     private var add: Int = 0
     val musicall = mutableListOf<Searchs>()
     val datas = mutableListOf<Searchs>()
@@ -78,7 +73,7 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>(),
             1 -> getPresenter().kugoudata(context, search, add)
         }
         swipe_refresh_layout.isRefreshing = true
-
+        initSearchList(musicall)
 
     }
 
@@ -89,7 +84,10 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>(),
         swipe_refresh_layout.setColorSchemeColors(-0xff6634, -0xbbbc, -0x996700, -0x559934, -0x7800)
         //下拉刷新
         swipe_refresh_layout.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener {
-            swipe_refresh_layout.isRefreshing = false
+            when (type) {
+                0 -> getPresenter().qqdata(context, search, 0)
+                1 -> getPresenter().kugoudata(context, search, 0)
+            }
         })
 
         RxView.clicks(top_flot)
@@ -107,7 +105,6 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>(),
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(list: JsonArray) {
                 add++
-                mToPositions = add*29
 
                 when (type) {
                     0 -> {
@@ -168,7 +165,7 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>(),
 
                             )
                         }
-                        initSearchList(musicall)
+                       adapter.add(musicall)
                     }
                     1 -> {
                         for (i in 0 until list.size()) {
@@ -234,11 +231,10 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>(),
                                 )
 
                             )
-
-                            initSearchList(musicall)
-
                         }
 
+
+                        adapter.add(musicall)
 
                     }
 
@@ -277,32 +273,6 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>(),
     }
 
 
-    private fun smoothMoveToPosition(mRecyclerView: RecyclerView, position: Int) {
-        // 第一个可见位置
-        val firstItem = mRecyclerView.getChildLayoutPosition(mRecyclerView.getChildAt(0))
-        // 最后一个可见位置
-        val lastItem =
-            mRecyclerView.getChildLayoutPosition(mRecyclerView.getChildAt(mRecyclerView.childCount - 1))
-        if (position < firstItem) {
-            // 第一种可能:跳转位置在第一个可见位置之前，使用smoothScrollToPosition
-            mRecyclerView.smoothScrollToPosition(position)
-        } else if (position <= lastItem) {
-            // 第二种可能:跳转位置在第一个可见位置之后，最后一个可见项之前
-            val movePosition = position - firstItem
-            if (movePosition >= 0 && movePosition < mRecyclerView.childCount) {
-                val top = mRecyclerView.getChildAt(movePosition).top
-                // smoothScrollToPosition 不会有效果，此时调用smoothScrollBy来滑动到指定位置
-                mRecyclerView.smoothScrollBy(0, top)
-            }
-        } else {
-            // 第三种可能:跳转位置在最后可见项之后，则先调用smoothScrollToPosition将要跳转的位置滚动到可见位置
-            // 再通过onScrollStateChanged控制再次调用smoothMoveToPosition，执行上一个判断中的方法
-            mRecyclerView.smoothScrollToPosition(position)
-            mToPosition = position
-            mShouldScroll = true
-        }
-    }
-
     /**
      * 初始化
      */
@@ -313,7 +283,7 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>(),
         recyclerView.itemAnimator = DefaultItemAnimator()
         adapter = SearchListAdapter(datas, this)
         recyclerView.adapter = adapter
-        smoothMoveToPosition(recyclerView,mToPositions)
+
         adapter.setOnItemClickListener(object : SearchListAdapter.ItemClickListener {
             override fun onItemClick(view: View, position: Int) {
                 val music = mutableListOf<Music>()

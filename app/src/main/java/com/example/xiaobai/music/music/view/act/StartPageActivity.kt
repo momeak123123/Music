@@ -32,7 +32,7 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>(), Start
     private lateinit var mDisposable: Disposable
     private lateinit var context: Context
 
-
+    private  var num: Long = 3
     override fun registerPresenter() = StartPagePresenter::class.java
 
     override fun getLayoutId(): Int {
@@ -68,17 +68,8 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>(), Start
                 intent.data = uri
                 startActivity(intent)
             }
-       val num =  MusicApp.getAds().seconds
-        mDisposable = Flowable.intervalRange(0, num, 0, 1, TimeUnit.SECONDS)
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnNext { t ->
-                time.text = (num - t).toString()
-            }
-            .doOnComplete {
-                val intent = Intent(context, IndexActivity::class.java)
-                startActivity(intent)
-            }
-            .subscribe()
+
+
     }
 
     override fun initData() {
@@ -89,6 +80,17 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>(), Start
 
     override fun onResume() {
         super.onResume()
+        num =  MusicApp.getAds().seconds
+        mDisposable = Flowable.intervalRange(0, num, 0, 1, TimeUnit.SECONDS)
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnNext { t ->
+                time.text = (num-t).toString()
+            }
+            .doOnComplete {
+                val intent = Intent(context, IndexActivity::class.java)
+                startActivity(intent)
+            }
+            .subscribe()
     }
 
     override fun onDestroy() {

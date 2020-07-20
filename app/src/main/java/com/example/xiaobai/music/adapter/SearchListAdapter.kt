@@ -11,7 +11,7 @@ import com.bumptech.glide.Glide
 import com.example.xiaobai.music.R
 import com.example.xiaobai.music.bean.Searchs
 
-class SearchListAdapter(val datas: MutableList<Searchs>, val context: Context) : RecyclerView.Adapter<SearchListAdapter.InnerHolder>() {
+class SearchListAdapter(var datas: MutableList<Searchs>, val context: Context) : RecyclerView.Adapter<SearchListAdapter.InnerHolder>() {
 
 
     private var mItemClickListener: ItemClickListener? = null
@@ -83,9 +83,9 @@ class SearchListAdapter(val datas: MutableList<Searchs>, val context: Context) :
     }
 
 
-    fun add(item: Searchs) {
-        datas.add(item)
-        notifyItemChanged(datas.size)
+    fun add(item: MutableList<Searchs>) {
+        datas=item
+        notifyDataSetChanged()
     }
 
 }

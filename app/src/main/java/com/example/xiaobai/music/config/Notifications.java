@@ -40,7 +40,7 @@ public class Notifications extends android.app.Notification {
         txt = MusicPlayActivity.t2;
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-             channel = new NotificationChannel(PUSH_CHANNEL_ID, PUSH_CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
+             channel = new NotificationChannel(PUSH_CHANNEL_ID, PUSH_CHANNEL_NAME, NotificationManager.IMPORTANCE_MIN);
             if (notificationManager != null) {
                 notificationManager.createNotificationChannel(channel);
             }
@@ -84,7 +84,7 @@ public class Notifications extends android.app.Notification {
                         .setCustomBigContentView(getContentViews())
                         .setContentIntent(resultPendingIntent) // 设定点击通知之后启动的内容，这个内容由方法中的参数：PendingIntent对象决定
                         .setPriority(NotificationCompat.PRIORITY_DEFAULT) // 设置通知的优先级
-                        .setDefaults(NotificationCompat.DEFAULT_ALL)
+                        .setDefaults(NotificationCompat.FLAG_ONLY_ALERT_ONCE)
                         .setChannelId(PUSH_CHANNEL_ID)
                         .setOngoing(true)
                         .setSound(null)
@@ -94,10 +94,6 @@ public class Notifications extends android.app.Notification {
 
 
                 notification.flags |= android.app.Notification.FLAG_NO_CLEAR;
-
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    notificationManager.createNotificationChannel(channel);
-                }
                 notificationManager.notify(1, notification);
 
             }
