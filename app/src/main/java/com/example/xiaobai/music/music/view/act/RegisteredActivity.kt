@@ -36,6 +36,7 @@ class RegisteredActivity : BaseMvpActivity<RegisteredContract.IPresenter>(),
         lateinit var observer: Observer<Boolean>
         lateinit var observers: Observer<Boolean>
     }
+
     private lateinit var context: Context
     private lateinit var sp: SharedPreferences
     override fun registerPresenter() = RegisteredPresenter::class.java
@@ -48,50 +49,23 @@ class RegisteredActivity : BaseMvpActivity<RegisteredContract.IPresenter>(),
         super.init(savedInstanceState)
         context = this
         sp = getSharedPreferences("User", Context.MODE_PRIVATE)
-        val left = resources.getDrawable(R.drawable.emil,null)
+        val left = resources.getDrawable(R.drawable.emil, null)
         left.setBounds(0, 0, 50, 50) //必须设置图片的大小否则没有作用
         re_username_number.setCompoundDrawables(left, null, null, null)
 
-        val lefts = resources.getDrawable(R.drawable.pass,null)
+        val lefts = resources.getDrawable(R.drawable.pass, null)
         lefts.setBounds(0, 0, 50, 50) //必须设置图片的大小否则没有作用
         re_pass_number.setCompoundDrawables(lefts, null, null, null)
 
-        val leftt = resources.getDrawable(R.drawable.pass,null)
+        val leftt = resources.getDrawable(R.drawable.pass, null)
         leftt.setBounds(0, 0, 50, 50) //必须设置图片的大小否则没有作用
         re_passs_number.setCompoundDrawables(leftt, null, null, null)
-
-        val leftd = resources.getDrawable(R.drawable.codeima,null)
-        leftd.setBounds(0, 0, 50, 50) //必须设置图片的大小否则没有作用
-        re_code_number.setCompoundDrawables(leftd, null, null, null)
 
     }
 
 
     override fun initData() {
         super.initData()
-
-        try {
-            val co = getClipboardContent(this)
-            val ca = co.substring(1)
-            val da = ca.substring(0, ca.lastIndexOf(']'))
-            if (re_code_number.text.toString() == "") {
-                if (da != "") {
-                    MaterialDialog.Builder(context)
-                        .title(getText(R.string.set4))
-                        .content(getText(R.string.code_captch))
-                        .positiveColorRes(R.color.colorAccentDarkTheme)
-                        .negativeColorRes(R.color.red)
-                        .positiveText(getText(R.string.carry))
-                        .negativeText(getText(R.string.cancel))
-                        .onPositive { _: MaterialDialog?, _: DialogAction? ->
-                            re_code_number.text = Editable.Factory.getInstance().newEditable(da)
-                        }
-                        .show()
-                }
-            }
-        }catch (e:java.lang.Exception){}
-
-
 
     }
 
@@ -122,57 +96,82 @@ class RegisteredActivity : BaseMvpActivity<RegisteredContract.IPresenter>(),
                 finish()
             }
 
-       /* RxView.clicks(btn_captcha)
-            .throttleFirst(3, TimeUnit.SECONDS)
-            .subscribe {
-                if (re_username_number.text.toString() != "") {
-                    getPresenter().registercode(context,re_username_number.text.toString())
-                }else{
-                    Toast.makeText(context, R.string.error_name, Toast.LENGTH_SHORT).show()
-                }
-            }*/
-
         RxView.clicks(btn_register)
             .throttleFirst(3, TimeUnit.SECONDS)
             .subscribe {
-                if(MusicApp.network()!=-1){
+                if (MusicApp.network() != -1) {
                     if (re_username_number.text.toString() != "") {
-                        if(isEmail(re_username_number.text.toString())){
+                        if (isEmail(re_username_number.text.toString())) {
                             if (re_pass_number.text.toString() != "") {
                                 if (re_passs_number.text.toString() == re_pass_number.text.toString()) {
 
-                                    if(radioButton.isChecked){
-                                        getPresenter().registerdata(context,re_username_number.text.toString(),re_pass_number.text.toString(),re_code_number.text.toString())
-                                        if(sp.getString("username","")!=""){
-                                            if(re_username_number.text.toString() != sp.getString("username","")){
-                                                val list = mPlaylistDao.queryAll()
-                                                if (list.size > 0) {
-                                                    for(its in list){
-                                                        mPlaylistDao.delete(its.id)
+                                    if (radioButton.isChecked) {
+
+                                        try {
+                                            val co = getClipboardContent(this)
+                                            var da = ""
+                                            if (co != "") {
+                                                val ca = co.substring(1)
+                                                da = ca.substring(0, ca.lastIndexOf(']'))
+                                            }
+                                            getPresenter().registerdata(
+                                                context,
+                                                re_username_number.text.toString(),
+                                                re_pass_number.text.toString(),
+                                                da
+                                            )
+                                            if (sp.getString("username", "") != "") {
+                                                if (re_username_number.text.toString() != sp.getString(
+                                                        "username",
+                                                        ""
+                                                    )
+                                                ) {
+                                                    val list = mPlaylistDao.queryAll()
+                                                    if (list.size > 0) {
+                                                        for (its in list) {
+                                                            mPlaylistDao.delete(its.id)
+                                                        }
                                                     }
                                                 }
                                             }
+
+
+                                        } catch (e: java.lang.Exception) {
                                         }
+
                                     } else {
-                                        Toast.makeText(context, R.string.error_captchas, Toast.LENGTH_SHORT).show()
+                                        Toast.makeText(
+                                            context,
+                                            R.string.error_captchas,
+                                            Toast.LENGTH_SHORT
+                                        ).show()
                                     }
 
                                 } else {
-                                    Toast.makeText(context, R.string.error_passs, Toast.LENGTH_SHORT).show()
+                                    Toast.makeText(
+                                        context,
+                                        R.string.error_passs,
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
 
                             } else {
-                                Toast.makeText(context, R.string.error_pass, Toast.LENGTH_SHORT).show()
+                                Toast.makeText(context, R.string.error_pass, Toast.LENGTH_SHORT)
+                                    .show()
                             }
-                        }else{
-                            Toast.makeText(context, R.string.tip_name_number_error, Toast.LENGTH_SHORT).show()
+                        } else {
+                            Toast.makeText(
+                                context,
+                                R.string.tip_name_number_error,
+                                Toast.LENGTH_SHORT
+                            ).show()
                         }
 
 
                     } else {
                         Toast.makeText(context, R.string.error_name, Toast.LENGTH_SHORT).show()
                     }
-                }else{
+                } else {
                     Toast.makeText(
                         context,
                         getText(R.string.error_connection),
@@ -208,32 +207,6 @@ class RegisteredActivity : BaseMvpActivity<RegisteredContract.IPresenter>(),
             override fun onComplete() {}
 
         }
-
-       /* observers = object : Observer<Boolean> {
-            override fun onSubscribe(d: Disposable) {}
-            @SuppressLint("SetTextI18n")
-            override fun onNext(bool: Boolean) {
-
-                btn_captcha.isEnabled = false
-                Flowable.intervalRange(0, 60 + 1, 0, 1, TimeUnit.SECONDS)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext {
-                    btn_captcha.text=""+(60-it)+"s"
-                }
-                .doOnComplete{
-                    btn_captcha.isEnabled = true
-                    btn_captcha.text= getText(R.string.captcha)
-                }
-                .subscribe()
-            }
-
-            override fun onError(e: Throwable) {}
-            override fun onComplete() {}
-
-        }*/
-
-
     }
 
 }
