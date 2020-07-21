@@ -11,6 +11,7 @@ import com.example.xiaobai.music.R
 import com.example.xiaobai.music.StartsActivity
 import com.example.xiaobai.music.bean.*
 import com.example.xiaobai.music.config.Constants
+import com.example.xiaobai.music.config.Installation
 import com.example.xiaobai.music.config.OSS
 import com.example.xiaobai.music.music.view.act.AlbumDetActivity
 import com.example.xiaobai.music.music.view.act.CodeListActivity
@@ -22,6 +23,7 @@ import com.example.xiaobai.music.sql.bean.Playlist
 import com.example.xiaobai.music.sql.dao.mCollectDao
 import com.example.xiaobai.music.sql.dao.mPlaylistDao
 import com.example.xiaobai.music.utils.BitmapUtils
+import com.example.xiaobai.music.utils.MD5Utils
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import com.lzy.okgo.OkGo
@@ -235,6 +237,21 @@ class MusicPlayModel {
                         } catch (e: Exception) {
 
                         }
+                    }
+
+                })
+
+        }
+
+        fun getapp(context:Context) {
+            OkGo.post<String>("http://www.xiaobai.de/api/app")
+                .params("eid", Installation.getUniqueID(context))
+                .params("code", "")
+                .params("device", "android")
+                .params("sign", MD5Utils.md5(Installation.getUniqueID(context)+""+"android"+"FB1w5wwx"))
+                .execute(object : StringCallback() {
+                    override fun onSuccess(response: Response<String>) {
+                        println("启动统计${response.body()}")
                     }
 
                 })

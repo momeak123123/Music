@@ -16,6 +16,7 @@ import com.example.xiaobai.music.config.Constants
 import com.example.xiaobai.music.config.Installation
 import com.example.xiaobai.music.music.model.MainModel
 import com.example.xiaobai.music.music.model.MusicPlayModel.Companion.getadvertising
+import com.example.xiaobai.music.music.model.MusicPlayModel.Companion.getapp
 import com.example.xiaobai.music.music.model.MusicPlayModel.Companion.updateapp
 import com.example.xiaobai.music.music.view.act.StartPageActivity
 import com.example.xiaobai.music.music.view.fragment.MyFragment
@@ -77,6 +78,8 @@ class StartsActivity : Activity() {
         super.onResume()
 
         getadvertising()
+
+        getapp(this)
 
         observer = object : Observer<Boolean> {
             override fun onSubscribe(d: Disposable) {}
