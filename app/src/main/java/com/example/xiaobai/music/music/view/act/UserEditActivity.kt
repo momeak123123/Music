@@ -3,8 +3,10 @@ package com.example.xiaobai.music.music.view.act
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.Paint
 import android.os.Bundle
 import android.text.Editable
+import android.view.View
 import android.widget.Toast
 import com.bumptech.glide.Glide
 import com.example.xiaobai.music.MusicApp
@@ -24,6 +26,7 @@ import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.fragment_find.*
 import kotlinx.android.synthetic.main.head.*
 import kotlinx.android.synthetic.main.user_edit.*
 import mvp.ljb.kt.act.BaseMvpActivity
@@ -96,6 +99,20 @@ class UserEditActivity : BaseMvpActivity<UserEditContract.IPresenter>(), UserEdi
                     .withAspectRatio(1, 1)
                     .minimumCompressSize(100)// 小于多少kb的图片不压缩
                     .forResult(MyResultCallback(mAdapter))
+
+            }
+
+        RxView.clicks(gender)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe {
+                showContextMenuDialog()
+
+            }
+
+        RxView.clicks(city)
+            .throttleFirst(1, TimeUnit.SECONDS)
+            .subscribe {
+                showContextMenuDialogs()
 
             }
 
@@ -265,6 +282,32 @@ class UserEditActivity : BaseMvpActivity<UserEditContract.IPresenter>(), UserEdi
             .show()
 
 
+    }
+
+    /**
+     * 类似系统的上下文菜单ContextMenu的Dialog
+     */
+    private fun showContextMenuDialog() {
+        MaterialDialog.Builder(context)
+            .title(R.string.user_gras)
+            .items(R.array.sex_option)
+            .itemsCallback(MaterialDialog.ListCallback { _: MaterialDialog?, _: View?, _: Int, text: CharSequence ->
+                gender.text =  Editable.Factory.getInstance().newEditable(text)
+            })
+            .show()
+    }
+
+    /**
+     * 类似系统的上下文菜单ContextMenu的Dialog
+     */
+    private fun showContextMenuDialogs() {
+        MaterialDialog.Builder(context)
+            .title(R.string.user_sear)
+            .items(R.array.country_entry)
+            .itemsCallback(MaterialDialog.ListCallback { _: MaterialDialog?, _: View?, _: Int, text: CharSequence ->
+                city.text =  Editable.Factory.getInstance().newEditable(text)
+            })
+            .show()
     }
 
     override fun onDestroy() {

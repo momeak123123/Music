@@ -35,6 +35,7 @@
     <string name="sear2">线路二</string>
     <string name="sear">线路选择</string>
 
+
     <!--login-->
     <string name="login">欢迎回来</string>
     <string name="register">创建账号</string>
@@ -141,10 +142,12 @@
     <string name="updown">编辑</string>
     <string name="user_updown">编辑资料</string>
     <string name="user_name">昵称</string>
-    <string name="user_gra">性别(男/女)</string>
+    <string name="user_gra">性别</string>
+    <string name="user_gras">性别选择</string>
     <string name="man">男</string>
     <string name="girl">女</string>
     <string name="user_city">国家</string>
+    <string name="user_sear">国家选择</string>
     <string name="user_mess">简介信息</string>
     <string name="attention">下载次数</string>
     <string name="collect">收藏</string>
@@ -187,5 +190,6 @@
     <string name="code_baocs">已保存至系统相册</string>
     <string name="code_captch">检测到剪切板上有复制内容，是否填充为邀请码</string>
     <string name="code_captcha">请输入邀请码</string>
+
 
 </resources>

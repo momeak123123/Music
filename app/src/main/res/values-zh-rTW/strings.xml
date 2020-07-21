@@ -141,10 +141,12 @@
     <string name="updown">編輯</string>
     <string name="user_updown">編輯資料</string>
     <string name="user_name">昵稱</string>
-    <string name="user_gra">性別(男/女)</string>
+    <string name="user_gra">性別</string>
+    <string name="user_gras">性別選擇</string>
     <string name="man">男</string>
     <string name="girl">女</string>
     <string name="user_city">國家</string>
+    <string name="user_sear">國家選擇</string>
     <string name="user_mess">簡介信息</string>
     <string name="attention">下載次數</string>
     <string name="collect">收藏</string>
@@ -187,5 +189,7 @@
     <string name="code_baocs">已保存至系統相冊</string>
     <string name="code_captch">檢測到剪切板上有復制內容，是否填充為邀請碼</string>
     <string name="code_captcha">請輸入邀請碼</string>
+
+
 
 </resources>
