@@ -6,11 +6,11 @@ android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
     defaultConfig {
-        applicationId "com.example.xiaobai.music"
-        minSdkVersion 24
+        applicationId "com.app.xiaobai.music"
+        minSdkVersion 26
         targetSdkVersion 29
-        versionCode 103
-        versionName "1.0.3"
+        versionCode 105
+        versionName "1.0.5"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
             abiFilter("armeabi-v7a")
@@ -117,6 +117,6 @@ dependencies {
 
 greendao {
     schemaVersion 12
-    daoPackage 'com.example.xiaobai.music.sql.gen'
+    daoPackage 'com.app.xiaobai.music.sql.gen'
     targetGenDir 'src/main/java'
 }

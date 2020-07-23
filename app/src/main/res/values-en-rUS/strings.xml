@@ -47,6 +47,7 @@
     <string name="repeat_password">please enter the password again</string>
     <string name="repeat_code">Please enter the invitation code (optional) </string>
     <string name="protocol">User Agreement</string>
+    <string name="protocols">Privacy Policy</string>
     <string name="register_publish">registration</string>
     <string name="regis_publish">Submit</string>
     <string name="error_protocol">Please check the user agreement!</string>

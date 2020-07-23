@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.example.xiaobai.music.music.view.custom.SlidingFinishLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.app.xiaobai.music.music.view.custom.SlidingFinishLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
 
     android:id="@+id/lock_root"
@@ -132,7 +132,7 @@
 
         </LinearLayout>
 
-        <com.example.xiaobai.music.music.view.custom.HintTextView
+        <com.app.xiaobai.music.music.view.custom.HintTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/dp_40"
@@ -141,4 +141,4 @@
             android:textColor="#ffffff"
             android:textSize="18sp" />
     </LinearLayout>
-</com.example.xiaobai.music.music.view.custom.SlidingFinishLayout>
+</com.app.xiaobai.music.music.view.custom.SlidingFinishLayout>

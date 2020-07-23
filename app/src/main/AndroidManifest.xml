@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.example.xiaobai.music"
+    package="com.app.xiaobai.music"
     xmlns:tool="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
@@ -23,7 +23,7 @@
         tools:ignore="ProtectedPermissions" />
 
     <application
-        android:name=".MusicApp"
+        android:name="com.app.xiaobai.music.MusicApp"
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -41,21 +41,21 @@
             android:name="android.max_aspect"
             android:value="2.4" />
         <!--endregion-->
-        <activity android:name=".IndexActivity"
+        <activity android:name="com.app.xiaobai.music.IndexActivity"
             android:launchMode="singleTask"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateHidden"/>
 
         <service
-            android:name=".service.TimeService"
+            android:name="com.app.xiaobai.music.service.TimeService"
             android:enabled="true" />
         <service
-            android:name=".service.MusicService"
+            android:name="com.app.xiaobai.music.service.MusicService"
             android:enabled="true" />
 
         <activity
-            android:name=".StartsActivity"
+            android:name="com.app.xiaobai.music.StartsActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.Full">
             <intent-filter>
@@ -65,7 +65,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LockActivity"
+            android:name="com.app.xiaobai.music.LockActivity"
             android:excludeFromRecents="true"
             android:exported="false"
             android:launchMode="singleInstance"
@@ -74,48 +74,48 @@
             android:theme="@style/LockScreenTheme" />
 
         <service
-            android:name=".service.LockService"
+            android:name="com.app.xiaobai.music.service.LockService"
             android:enabled="true"
             android:process=":main" />
 
         <activity
-            android:name=".music.view.act.MusicPlayActivity"
+            android:name="com.app.xiaobai.music.music.view.act.MusicPlayActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleTop" />
 
         <activity
-            android:name=".music.view.act.StartPageActivity"
+            android:name="com.app.xiaobai.music.music.view.act.StartPageActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleTop" />
-        <activity android:name=".music.view.act.LoginActivity"
+        <activity android:name="com.app.xiaobai.music.music.view.act.LoginActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".music.view.act.RegisteredActivity"
+        <activity android:name="com.app.xiaobai.music.music.view.act.RegisteredActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".music.view.act.AlbumActivity"
+        <activity android:name="com.app.xiaobai.music.music.view.act.AlbumActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".music.view.act.AlbumDetActivity"
+        <activity android:name="com.app.xiaobai.music.music.view.act.AlbumDetActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".music.view.act.ArtistActivity"
+        <activity android:name="com.app.xiaobai.music.music.view.act.ArtistActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".music.view.act.ArtistDetActivity"
+        <activity android:name="com.app.xiaobai.music.music.view.act.ArtistDetActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".music.view.act.UserEditActivity"
+        <activity android:name="com.app.xiaobai.music.music.view.act.UserEditActivity"
             />
-        <activity android:name=".music.view.act.SongDetActivity"
+        <activity android:name="com.app.xiaobai.music.music.view.act.SongDetActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".music.view.act.SongEditActivity"
+        <activity android:name="com.app.xiaobai.music.music.view.act.SongEditActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".music.view.act.DownloadActivity"
+        <activity android:name="com.app.xiaobai.music.music.view.act.DownloadActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".music.view.act.SearchListActivity"
+        <activity android:name="com.app.xiaobai.music.music.view.act.SearchListActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".music.view.act.UserSetActivity"
+        <activity android:name="com.app.xiaobai.music.music.view.act.UserSetActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".music.view.act.CodeListActivity"
+        <activity android:name="com.app.xiaobai.music.music.view.act.CodeListActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".music.view.act.ChangePassActivity"
+        <activity android:name="com.app.xiaobai.music.music.view.act.ChangePassActivity"
             android:screenOrientation="portrait"/>
-        <activity android:name=".music.view.act.WebViewActivity"
+        <activity android:name="com.app.xiaobai.music.music.view.act.WebViewActivity"
             android:screenOrientation="portrait"/>
     </application>
 
