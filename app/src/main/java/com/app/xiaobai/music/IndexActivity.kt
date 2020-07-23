@@ -88,7 +88,6 @@ class IndexActivity : AppCompatActivity() {
         Manifest.permission.WRITE_EXTERNAL_STORAGE,
         Manifest.permission.READ_EXTERNAL_STORAGE,
         Manifest.permission.WAKE_LOCK,
-        Manifest.permission.CAMERA,
         Manifest.permission.DISABLE_KEYGUARD
     )
 

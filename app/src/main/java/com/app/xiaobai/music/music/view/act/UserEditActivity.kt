@@ -84,7 +84,7 @@ class UserEditActivity : BaseMvpActivity<UserEditContract.IPresenter>(), UserEdi
                     .isWeChatStyle(true)
                     .isEnableCrop(true)// 是否裁剪
                     .isCompress(true)// 是否压缩
-                    .isCamera(true) // 是否显示拍照按钮
+                    .isCamera(false) // 是否显示拍照按钮
                     .freeStyleCropEnabled(true) // 裁剪框是否可拖拽
                     .showCropFrame(true) // 是否显示裁剪矩形边框 圆形裁剪时建议设为false
                     .showCropGrid(true) // 是否显示裁剪矩形网格 圆形裁剪时建议设为false

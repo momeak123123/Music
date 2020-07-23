@@ -37,7 +37,7 @@ class StartsActivity : Activity() {
             .subscribe(object : Observer<Long> {
                 override fun onSubscribe(disposable: Disposable) {}
                 override fun onNext(number: Long) {
-                    updateapp(getVersionName())
+                   // updateapp(getVersionName())
                 }
 
                 override fun onError(e: Throwable) {}
