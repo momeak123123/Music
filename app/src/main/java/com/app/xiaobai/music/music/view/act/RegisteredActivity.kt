@@ -95,7 +95,7 @@ class RegisteredActivity : BaseMvpActivity<RegisteredContract.IPresenter>(),
             .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
                 intent.setClass(context, WebViewActivity().javaClass)
-                intent.putExtra("url","http://www.xiaobai.de/static/user_pipixie.html")
+                intent.putExtra("url","http://www.xiaobai.de/protocol/user_pipixie.html")
                 context.startActivity(intent)
             }
 
@@ -103,7 +103,7 @@ class RegisteredActivity : BaseMvpActivity<RegisteredContract.IPresenter>(),
             .throttleFirst(1, TimeUnit.SECONDS)
             .subscribe {
                 intent.setClass(context, WebViewActivity().javaClass)
-                intent.putExtra("url","http://www.xiaobai.de/static/privacy_pipixie.html")
+                intent.putExtra("url","http://www.xiaobai.de/protocol/privacy_pipixie.html")
                 context.startActivity(intent)
             }
 

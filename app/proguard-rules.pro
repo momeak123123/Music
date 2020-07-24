@@ -74,13 +74,13 @@
 
 
 #-----------实体类[Bean类]---------
--keep class com.example.xiaobai.music.** {*;}
+-keep class com.app.xiaobai.music.** {*;}
 
--keep class com.example.xiaobai.music.bean.**{*;}
+-keep class com.app.xiaobai.music.bean.**{*;}
 #keep 适配器
--keep class com.example.xiaobai.music.adapter.**{*;}
+-keep class com.app.xiaobai.music.adapter.**{*;}
 
--keep class com.example.xiaobai.music.music.view.custom.**{*;}
+-keep class com.app.xiaobai.music.music.view.custom.**{*;}
 
 #保持 Serializable 不被混淆
 -keepnames class * implements java.io.Serializable

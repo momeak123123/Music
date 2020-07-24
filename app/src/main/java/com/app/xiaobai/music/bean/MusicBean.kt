@@ -1,4 +1,4 @@
-package com.app.xiaobai.music.parsing
+package com.app.xiaobai.music.bean
 
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject

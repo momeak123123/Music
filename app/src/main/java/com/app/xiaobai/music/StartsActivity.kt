@@ -37,7 +37,7 @@ class StartsActivity : Activity() {
             .subscribe(object : Observer<Long> {
                 override fun onSubscribe(disposable: Disposable) {}
                 override fun onNext(number: Long) {
-                   // updateapp(getVersionName())
+                    updateapp(getVersionName())
                 }
 
                 override fun onError(e: Throwable) {}
@@ -90,8 +90,11 @@ class StartsActivity : Activity() {
         val sp: SharedPreferences = getSharedPreferences("User", Context.MODE_PRIVATE)
 
         if(sp.getString("android_id", "").toString()==""){
-            DeleteUtil.delete(getExternalFilesDir("")!!.absolutePath+"/download", false, "")
-            sp.edit().putString("android_id", Installation.getUniqueID(this)).apply()
+            try{
+                DeleteUtil.delete(getExternalFilesDir("")!!.absolutePath+"/download", false, "")
+                sp.edit().putString("android_id", Installation.getUniqueID(this)).apply()
+            }catch (e:Exception){}
+
         }
     }
 }

@@ -2,12 +2,9 @@ package  com.app.xiaobai.music.music.model
 
 import android.content.Context
 import android.widget.Toast
-import com.app.xiaobai.music.bean.Music
-import com.app.xiaobai.music.bean.Searchs
-import com.app.xiaobai.music.bean.artistlist
+import com.app.xiaobai.music.bean.*
 import com.app.xiaobai.music.music.contract.SearchListContract
 import com.app.xiaobai.music.music.view.act.SearchListActivity
-import com.app.xiaobai.music.parsing.*
 import com.google.gson.Gson
 import com.google.gson.JsonObject
 import com.lzy.okgo.OkGo

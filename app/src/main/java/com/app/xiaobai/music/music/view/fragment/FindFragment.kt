@@ -23,7 +23,7 @@ import com.app.xiaobai.music.bean.Sear
 import com.app.xiaobai.music.music.contract.FindContract
 import com.app.xiaobai.music.music.presenter.FindPresenter
 import com.app.xiaobai.music.music.view.act.SearchListActivity
-import com.app.xiaobai.music.parsing.kugouseBean
+import com.app.xiaobai.music.bean.kugouseBean
 import com.app.xiaobai.music.sql.bean.Search
 import com.app.xiaobai.music.sql.config.Initialization
 import com.app.xiaobai.music.sql.dao.mSearchDao

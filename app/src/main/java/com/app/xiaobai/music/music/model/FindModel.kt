@@ -5,8 +5,8 @@ import com.app.xiaobai.music.bean.Sear
 import com.app.xiaobai.music.config.Constants
 import com.app.xiaobai.music.music.contract.FindContract
 import com.app.xiaobai.music.music.view.fragment.FindFragment
-import com.app.xiaobai.music.parsing.kugouseBean
-import com.app.xiaobai.music.parsing.kugousearch
+import com.app.xiaobai.music.bean.kugouseBean
+import com.app.xiaobai.music.bean.kugousearch
 import com.app.xiaobai.music.sql.bean.Search
 import com.app.xiaobai.music.sql.dao.mSearchDao
 import com.google.gson.Gson

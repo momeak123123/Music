@@ -268,7 +268,7 @@ class MusicService : Service() {
                                 val bean =
                                     Gson().fromJson(
                                         da,
-                                        com.app.xiaobai.music.parsing.musicpath::class.javaObjectType
+                                        com.app.xiaobai.music.bean.musicpath::class.javaObjectType
                                     )
                                 val uri = Dencry.dencryptString(bean.geturl)
                                 MusicPlayActivity.uri = uri
