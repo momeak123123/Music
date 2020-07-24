@@ -47,7 +47,7 @@ class SearchIndexActivity : AppCompatActivity() {
     private var type: Int = 0
     private var add: Int = 1
     private val musicall = mutableListOf<Searchs>()
-    private val mDataList = listOf("歌曲", "歌手", "专辑")
+    private val mDataList = mutableListOf<String>()
     private lateinit var context: Context
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,10 +75,9 @@ class SearchIndexActivity : AppCompatActivity() {
     }
 
     fun initView(){
+        mDataList.add(resources.getText(R.string.songs).toString())
         val list: MutableList<Fragment> = ArrayList()
         list.add(SongFragment())
-        list.add(SingerFragment())
-        list.add(SAlbumFragment())
         mViewPager.adapter = ViewPagerAdapter(supportFragmentManager, list)
 
         val commonNavigator = CommonNavigator(context)
