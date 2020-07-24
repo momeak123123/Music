@@ -33,8 +33,7 @@ public class LogDownloadListeners extends DownloadListener {
     @Override
     public void onError(Progress progress) {
         System.out.println("onError: " + progress);
-        Intent pIntent = new Intent("error");
-        MusicApp.getAppContext().sendBroadcast(pIntent);
+
         progress.exception.printStackTrace();
     }
 

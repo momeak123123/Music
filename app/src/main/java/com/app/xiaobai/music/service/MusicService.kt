@@ -11,6 +11,7 @@ import android.content.IntentFilter
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.IBinder
+import android.provider.ContactsContract
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.danikula.videocache.HttpProxyCacheServer
@@ -213,15 +214,30 @@ class MusicService : Service() {
     }
 
     fun prox(uri: String) {
-
+        val path = cacheDir.absolutePath
+        val file = File(path)
+        if (file.isDirectory) {
+            val files: Array<File> = file.listFiles()
+            if(files.size>20){
+                println("测试"+files.size)
+                for (i in files.indices) {
+                    val f = files[i]
+                    try {
+                        f.delete()
+                    } catch (e: Exception) {
+                    }
+                }
+            }
+        }
         val request = OkGo.get<File>(uri)
+
         OkDownload.request(
             uri,
             request
         )
             .priority(0)
             .folder(cacheDir.absolutePath)
-            .fileName("music_test") //
+            .fileName(System.currentTimeMillis().toString()) //
             .save() //
             .register(
                 LogDownloadListeners()
