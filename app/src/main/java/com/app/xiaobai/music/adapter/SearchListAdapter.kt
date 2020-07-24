@@ -29,7 +29,7 @@ class SearchListAdapter(var datas: MutableList<Searchs>, val context: Context) :
     override fun onCreateViewHolder(holder: ViewGroup, position: Int): InnerHolder {
         //加载View
         val itemView: View =
-            LayoutInflater.from(context).inflate(R.layout.search_index_item, holder, false)
+            LayoutInflater.from(context).inflate(R.layout.search_song_item, holder, false)
 
         return InnerHolder(itemView)
 

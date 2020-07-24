@@ -18,11 +18,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.cy.cyflowlayoutlibrary.FlowLayoutAdapter
 import com.app.xiaobai.music.MusicApp
 import com.app.xiaobai.music.R
+import com.app.xiaobai.music.SearchIndexActivity
 import com.app.xiaobai.music.adapter.SearchAdapter
 import com.app.xiaobai.music.bean.Sear
 import com.app.xiaobai.music.music.contract.FindContract
 import com.app.xiaobai.music.music.presenter.FindPresenter
-import com.app.xiaobai.music.music.view.act.SearchListActivity
 import com.app.xiaobai.music.bean.kugouseBean
 import com.app.xiaobai.music.sql.bean.Search
 import com.app.xiaobai.music.sql.config.Initialization
@@ -243,7 +243,7 @@ class FindFragment : BaseMvpFragment<FindContract.IPresenter>(), FindContract.IV
     fun intent(bean: String?) {
         if (bools) {
             val intent = Intent()
-            context?.let { intent.setClass(it, SearchListActivity().javaClass) }
+            context?.let { intent.setClass(it, SearchIndexActivity().javaClass) }
             intent.putExtra("txt", bean)
             intent.putExtra("sear", sears)
             startActivity(intent)

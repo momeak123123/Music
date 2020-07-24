@@ -508,12 +508,17 @@ class MusicPlayActivity : AppCompatActivity() {
                     id = MusicApp.getPosition()
                     playingMusic = playingMusicList[id]
                     song_id = playingMusic.song_id
-                    downs = mDownDao.querys(song_id)
-                    if (downs.size > 0) {
-                        icon2.setImageResource(R.drawable.xiazais)
-                    } else {
+                    try {
+                        downs = mDownDao.querys(song_id)
+                        if (downs.size > 0) {
+                            icon2.setImageResource(R.drawable.xiazais)
+                        } else {
+                            icon2.setImageResource(R.drawable.xiazai)
+                        }
+                    }catch (e:java.lang.Exception){
                         icon2.setImageResource(R.drawable.xiazai)
                     }
+
 
                     //更新标题
                     titleIv.text = playingMusic.name

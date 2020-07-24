@@ -100,7 +100,7 @@ public class Notifications extends android.app.Notification {
     }
 
     private static RemoteViews getContentView() {
-        mRemoteViews = new RemoteViews("com.example.xiaobai.music", R.layout.activity_notification);
+        mRemoteViews = new RemoteViews("com.app.xiaobai.music", R.layout.activity_notification);
         mRemoteViews.setTextViewText(R.id.title, title);
         mRemoteViews.setTextViewText(R.id.txt, txt);
         mRemoteViews.setImageViewBitmap(R.id.ima, bitmap);
@@ -135,7 +135,7 @@ public class Notifications extends android.app.Notification {
     }
 
     private static RemoteViews getContentViews() {
-        mRemoteViews = new RemoteViews("com.example.xiaobai.music", R.layout.activity_bignotification);
+        mRemoteViews = new RemoteViews("com.app.xiaobai.music", R.layout.activity_bignotification);
         mRemoteViews.setTextViewText(R.id.title, title);
         mRemoteViews.setTextViewText(R.id.txt, txt);
         mRemoteViews.setImageViewBitmap(R.id.ima, bitmap);

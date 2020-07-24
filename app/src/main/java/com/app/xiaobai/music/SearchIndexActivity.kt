@@ -1,92 +1,138 @@
-package com.app.xiaobai.music.music.view.act
+package com.app.xiaobai.music
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
+import android.graphics.Color
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.View
-import androidx.recyclerview.widget.DefaultItemAnimator
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import android.view.animation.AccelerateInterpolator
+import android.view.animation.DecelerateInterpolator
+import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.app.xiaobai.music.R
-import com.app.xiaobai.music.adapter.SearchListAdapter
 import com.app.xiaobai.music.bean.Music
 import com.app.xiaobai.music.bean.Searchs
 import com.app.xiaobai.music.bean.artistlist
-import com.app.xiaobai.music.music.contract.SearchListContract
-import com.app.xiaobai.music.music.presenter.SearchListPresenter
-import com.app.xiaobai.music.sql.config.Initialization
+import com.app.xiaobai.music.music.model.SearchModel
+import com.app.xiaobai.music.music.view.custom.ColorFlipPagerTitleView
+import com.app.xiaobai.music.music.view.fragment.SAlbumFragment
+import com.app.xiaobai.music.music.view.fragment.SingerFragment
+import com.app.xiaobai.music.music.view.fragment.SongFragment
 import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
 import com.jakewharton.rxbinding2.view.RxView
+import com.next.easynavigation.adapter.ViewPagerAdapter
+import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.activity_search_index.*
 import kotlinx.android.synthetic.main.head.*
-import kotlinx.android.synthetic.main.search_index.*
-import mvp.ljb.kt.act.BaseMvpActivity
+import net.lucode.hackware.magicindicator.ViewPagerHelper
+import net.lucode.hackware.magicindicator.buildins.UIUtil
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerIndicator
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerTitleView
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.indicators.LinePagerIndicator
+import net.lucode.hackware.magicindicator.buildins.commonnavigator.titles.SimplePagerTitleView
 import java.util.concurrent.TimeUnit
 
-/**
- * @Author Kotlin MVP Plugin
- * @Date 2020/06/24
- * @Description input description
- **/
-class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>(),
-    SearchListContract.IView {
-
+class SearchIndexActivity : AppCompatActivity() {
     companion object {
         lateinit var observer: Observer<JsonArray>
         lateinit var observers: Observer<Boolean>
     }
-    private var add: Int = 0
-    val musicall = mutableListOf<Searchs>()
-    val datas = mutableListOf<Searchs>()
-    private lateinit var search: String
+
+    lateinit var search: String
+    private var type: Int = 0
+    private var add: Int = 1
+    private val musicall = mutableListOf<Searchs>()
+    private val mDataList = listOf("歌曲", "歌手", "专辑")
     private lateinit var context: Context
-    private lateinit var adapter: SearchListAdapter
-    private var type = 0
-    override fun registerPresenter() = SearchListPresenter::class.java
 
-    override fun getLayoutId(): Int {
-        return R.layout.search_index
-    }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_search_index)
 
-    override fun init(savedInstanceState: Bundle?) {
-        super.init(savedInstanceState)
-        Initialization.setupDatabaseSearch(this)
-        context = this
-        top_title.text = getText(R.string.search)
-    }
-
-    override fun initData() {
-        super.initData()
         val bundle = intent.extras
         search = bundle?.get("txt") as String
-        type = bundle.get("sear") as Int
-        add=0
+        type = (bundle.get("sear") as Int)
 
+        context = this
+        top_title.text = getText(R.string.search)
+
+        initView()
+        initData()
+
+    }
+
+    fun initData(){
         when (type) {
-            0 -> getPresenter().qqdata(context, search, add)
-            1 -> getPresenter().kugoudata(context, search, add)
+            0 ->  SearchModel.qqdata(context, search, add)
+            1 -> SearchModel.kugoudata(context, search, add)
         }
         swipe_refresh_layout.isRefreshing = true
-        initSearchList(musicall)
+    }
 
+    fun initView(){
+        val list: MutableList<Fragment> = ArrayList()
+        list.add(SongFragment())
+        list.add(SingerFragment())
+        list.add(SAlbumFragment())
+        mViewPager.adapter = ViewPagerAdapter(supportFragmentManager, list)
+
+        val commonNavigator = CommonNavigator(context)
+        magicIndicator.setBackgroundColor(resources.getColor(R.color.colorPrimary,null))
+        commonNavigator.scrollPivotX = 0.65f
+        commonNavigator.adapter = object : CommonNavigatorAdapter() {
+            override fun getCount(): Int {
+                return mDataList.size
+            }
+
+            override fun getTitleView(context: Context, index: Int): IPagerTitleView {
+                val simplePagerTitleView: SimplePagerTitleView = ColorFlipPagerTitleView(context)
+                simplePagerTitleView.text = mDataList[index]
+                simplePagerTitleView.normalColor = Color.parseColor("#9e9e9e")
+                simplePagerTitleView.selectedColor = Color.parseColor("#ffffff")
+                simplePagerTitleView.setOnClickListener { mViewPager.currentItem = index }
+                return simplePagerTitleView
+            }
+
+            override fun getIndicator(context: Context): IPagerIndicator {
+                val indicator = LinePagerIndicator(context)
+                indicator.mode = LinePagerIndicator.MODE_EXACTLY
+                indicator.lineHeight = UIUtil.dip2px(
+                    context,
+                    6.0
+                ).toFloat()
+                indicator.lineWidth = UIUtil.dip2px(
+                    context,
+                    10.0
+                ).toFloat()
+                indicator.roundRadius = UIUtil.dip2px(
+                    context,
+                    3.0
+                ).toFloat()
+                indicator.startInterpolator = AccelerateInterpolator()
+                indicator.endInterpolator = DecelerateInterpolator(2.0f)
+                indicator.setColors(Color.parseColor("#ffffff"))
+                return indicator
+            }
+        }
+        magicIndicator.navigator = commonNavigator
+        ViewPagerHelper.bind(magicIndicator, mViewPager)
     }
 
     @SuppressLint("CheckResult")
-    override fun initView() {
-        super.initView()
+    override fun onResume() {
+        super.onResume()
 
         swipe_refresh_layout.setColorSchemeColors(-0xff6634, -0xbbbc, -0x996700, -0x559934, -0x7800)
         //下拉刷新
         swipe_refresh_layout.setOnRefreshListener(SwipeRefreshLayout.OnRefreshListener {
             when (type) {
-                0 -> getPresenter().qqdata(context, search, 0)
-                1 -> getPresenter().kugoudata(context, search, 0)
+                0 ->  SearchModel.qqdata(context, search, 1)
+                1 ->  SearchModel.kugoudata(context, search, 1)
             }
         })
 
@@ -97,15 +143,10 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>(),
             }
 
 
-    }
-
-    override fun onResume() {
-        super.onResume()
         observer = object : Observer<JsonArray> {
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(list: JsonArray) {
                 add++
-
                 when (type) {
                     0 -> {
                         for (i in 0 until list.size()) {
@@ -165,7 +206,7 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>(),
 
                             )
                         }
-                       adapter.add(musicall)
+                        Observable.just(musicall).subscribe(SongFragment.observer)
                     }
                     1 -> {
                         for (i in 0 until list.size()) {
@@ -232,9 +273,7 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>(),
 
                             )
                         }
-
-
-                        adapter.add(musicall)
+                        Observable.just(musicall).subscribe(SongFragment.observer)
 
                     }
 
@@ -260,6 +299,11 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>(),
                         if (swipe_refresh_layout != null) {
                             swipe_refresh_layout.isRefreshing = false
                         }
+                    }else{
+                        when (type) {
+                            0 ->  SearchModel.qqdata(context, search, add)
+                            1 -> SearchModel.kugoudata(context, search, add)
+                        }
                     }
 
                 }
@@ -269,55 +313,6 @@ class SearchListActivity : BaseMvpActivity<SearchListContract.IPresenter>(),
                 }
 
             }
-
-    }
-
-
-    /**
-     * 初始化
-     */
-    private fun initSearchList(datas: MutableList<Searchs>) {
-
-        val manager = LinearLayoutManager(this)
-        recyclerView.layoutManager = manager
-        recyclerView.itemAnimator = DefaultItemAnimator()
-        adapter = SearchListAdapter(datas, this)
-        recyclerView.adapter = adapter
-
-        adapter.setOnItemClickListener(object : SearchListAdapter.ItemClickListener {
-            override fun onItemClick(view: View, position: Int) {
-                val music = mutableListOf<Music>()
-                for (it in datas) {
-                    music.add(it.music)
-                }
-                val json: String = Gson().toJson(music)
-                val intent = Intent()
-                intent.setClass(context, MusicPlayActivity().javaClass)
-                intent.putExtra("album_id", 3L)
-                intent.putExtra("pos", position)
-                intent.putExtra("list", json)
-                intent.putExtra("type", 3)
-                startActivity(intent)
-
-            }
-        })
-
-        recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                //managerrecycler的布局管理器
-                val lastVisibleItemPosition: Int = manager.findLastVisibleItemPosition()
-                if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItemPosition == adapter.itemCount - 1) {
-                    Log.d("MainActivity===$add", "=============最后一条")
-
-                    when (type) {
-                        0 -> getPresenter().qqdata(context, search, add)
-                        1 -> getPresenter().kugoudata(context, search, add)
-                    }
-
-                }
-            }
-        })
     }
 
 }
