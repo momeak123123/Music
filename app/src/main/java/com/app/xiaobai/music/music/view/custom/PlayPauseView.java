@@ -16,11 +16,13 @@ import android.view.View;
 import androidx.annotation.Nullable;
 
 import com.app.xiaobai.music.R;
+import com.app.xiaobai.music.music.view.act.MusicPlayActivity;
 import com.app.xiaobai.music.utils.SizeUtils;
 
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Flowable;
+import io.reactivex.Observable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Action;
@@ -320,7 +322,7 @@ public class PlayPauseView extends View {
                 .doOnComplete(new Action() {
                     @Override
                     public void run() throws Exception {
-                        //Observable.just(5).subscribe(MusicPlayActivity.observerplay);
+                        Observable.just(5).subscribe(MusicPlayActivity.observerplay);
                     }
                 })
                 .subscribe();

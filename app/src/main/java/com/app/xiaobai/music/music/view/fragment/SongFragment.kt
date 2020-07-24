@@ -56,7 +56,6 @@ class SongFragment : BaseMvpFragment<SongContract.IPresenter>(), SongContract.IV
     override fun initData() {
         super.initData()
 
-        initSearchList(musicall)
     }
 
     override fun initView() {
@@ -71,7 +70,12 @@ class SongFragment : BaseMvpFragment<SongContract.IPresenter>(), SongContract.IV
 
                 override fun onNext(data: MutableList<Searchs>) {
 
-                    adapter.add(data)
+                    if(musicall.size==0){
+                        initSearchList(data)
+                    }else{
+                        adapter.add(data)
+                    }
+
 
                 }
 

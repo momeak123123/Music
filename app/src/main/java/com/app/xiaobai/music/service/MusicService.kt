@@ -17,20 +17,20 @@ import com.danikula.videocache.HttpProxyCacheServer
 import com.app.xiaobai.music.MusicApp
 import com.app.xiaobai.music.R
 import com.app.xiaobai.music.bean.Music
-import com.app.xiaobai.music.config.Cookie
-import com.app.xiaobai.music.config.Dencry
-import com.app.xiaobai.music.config.Notifications
+import com.app.xiaobai.music.config.*
 import com.app.xiaobai.music.music.view.act.MusicPlayActivity
 import com.app.xiaobai.music.utils.CipherUtil
 import com.google.gson.Gson
 import com.lzy.okgo.OkGo
 import com.lzy.okgo.callback.StringCallback
 import com.lzy.okgo.model.Response
+import com.lzy.okserver.OkDownload
 import com.ywl5320.wlmedia.WlMedia
 import com.ywl5320.wlmedia.enums.WlComplete
 import com.ywl5320.wlmedia.enums.WlPlayModel
 import com.ywl5320.wlmedia.log.WlLog
 import io.reactivex.Observable
+import java.io.File
 import java.util.*
 
 
@@ -122,6 +122,8 @@ class MusicService : Service() {
         intentFilter.addAction("pre")
         intentFilter.addAction("play")
         intentFilter.addAction("next")
+        intentFilter.addAction("uri")
+        intentFilter.addAction("error")
         registerReceiver(broadcastReceiver, intentFilter)
 
 
@@ -132,21 +134,23 @@ class MusicService : Service() {
         val notificationChannel: NotificationChannel?
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             notificationChannel =
-                NotificationChannel("xiaobai1089",
-                    getText(R.string.app_name).toString(), NotificationManager.IMPORTANCE_MIN)
+                NotificationChannel(
+                    "xiaobai1089",
+                    getText(R.string.app_name).toString(), NotificationManager.IMPORTANCE_MIN
+                )
             val notificationManager: NotificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(notificationChannel)
         }
 
-         notification = Notification.Builder(this, "xiaobai1089")
-                .setContentTitle("This is content title")
-                .setContentText("This is content text")
-                .setWhen(System.currentTimeMillis())
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setLargeIcon(BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher))
-                .setOnlyAlertOnce(true)
-                .build()
+        notification = Notification.Builder(this, "xiaobai1089")
+            .setContentTitle("This is content title")
+            .setContentText("This is content text")
+            .setWhen(System.currentTimeMillis())
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setLargeIcon(BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher))
+            .setOnlyAlertOnce(true)
+            .build()
 
         startForeground(1, notification)
 
@@ -156,7 +160,7 @@ class MusicService : Service() {
         when (count) {
             0 -> {
                 //单曲循环
-                uriseat(playingMusicList!![id].uri, playingMusicList!![id].publish_time,this)
+                uriseat(playingMusicList!![id].uri, playingMusicList!![id].publish_time, this)
             }
             1 -> {
                 //随机播放
@@ -205,10 +209,32 @@ class MusicService : Service() {
         t1 = playingMusicList!![ids].name
         t2 = srtist_name
         Observable.just(true).subscribe(MusicPlayActivity.observers)
-        uriseat(playingMusicList!![ids].uri, playingMusicList!![ids].publish_time,this)
+        uriseat(playingMusicList!![ids].uri, playingMusicList!![ids].publish_time, this)
     }
 
-    fun uriseat(uri: String, time: String, context : Context) {
+    fun prox(uri: String) {
+
+        val request = OkGo.get<File>(uri)
+        OkDownload.request(
+            uri,
+            request
+        )
+            .priority(0)
+            .folder(cacheDir.absolutePath)
+            .fileName("music_test") //
+            .save() //
+            .register(
+                LogDownloadListeners()
+            )
+            .start()
+    }
+
+    fun music() {
+        wlMedia.source = MusicApp.getUri()
+        wlMedia.next()
+    }
+
+    fun uriseat(uri: String, time: String, context: Context) {
         if (style == 1) {
             if (MusicApp.network() == -1) {
                 Toast.makeText(
@@ -235,6 +261,7 @@ class MusicService : Service() {
                 Observable.just(2).subscribe(MusicPlayActivity.observerplay)
             } else {
                 if (time != "") {
+
                     musicpath(
                         time,
                         Cookie.getCookie()
@@ -246,7 +273,7 @@ class MusicService : Service() {
             }
         } else if (style == 4) {
 
-            wlMedia.source = CipherUtil.decryptString(context,uri)
+            wlMedia.source = CipherUtil.decryptString(context, uri)
             wlMedia.next()
         }
     }
@@ -272,10 +299,11 @@ class MusicService : Service() {
                                     )
                                 val uri = Dencry.dencryptString(bean.geturl)
                                 MusicPlayActivity.uri = uri
-                                val proxy: HttpProxyCacheServer = getProxy()
-                                val proxyUrl = proxy.getProxyUrl(uri, true)
-                                wlMedia.source = proxyUrl
-                                wlMedia.next()
+                                prox(uri)
+                                /* val proxy: HttpProxyCacheServer = getProxy()
+                                 val proxyUrl = proxy.getProxyUrl(uri, true)
+                                 wlMedia.source = proxyUrl
+                                 wlMedia.next()*/
 
                             } catch (e: Exception) {
                             }
@@ -303,6 +331,12 @@ class MusicService : Service() {
                 }
                 "next" ->
                     musicnext()
+                "uri" -> {
+                    music()
+                }
+                "error" -> {
+                    Observable.just(5).subscribe(MusicPlayActivity.observerplay)
+                }
                 else -> {
                 }
             }
@@ -332,7 +366,8 @@ class MusicService : Service() {
         MusicApp.setPosition(ids)
         id = ids
         playingMusicList = MusicApp.getMusic()
-        uriseat(playingMusicList!![ids].uri, playingMusicList!![ids].publish_time,this)
+        uriseat(playingMusicList!![ids].uri, playingMusicList!![ids].publish_time, this)
+
         Observable.just(true).subscribe(MusicPlayActivity.observers)
     }
 

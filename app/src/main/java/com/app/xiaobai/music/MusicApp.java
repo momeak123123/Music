@@ -37,8 +37,6 @@ public class MusicApp extends Application {
 
     public static Long ablumid = 0L;
 
-    public static Bitmap startback;
-
     public static int position = 0;
 
     public static List<Music> music;
@@ -50,6 +48,17 @@ public class MusicApp extends Application {
     public static Boolean bool = false;
 
     public static int minute = 0;
+
+    public static String uri ;
+
+
+    public static String getUri() {
+        return uri;
+    }
+
+    public static void setUri(String uri) {
+        MusicApp.uri = uri;
+    }
 
     public static Ads ads = new Ads("","",3);
 
@@ -118,13 +127,6 @@ public class MusicApp extends Application {
         MusicApp.ablumid = ablumid;
     }
 
-    public static Bitmap getStartback() {
-        return startback;
-    }
-
-    public static void setStartback(Bitmap startback) {
-        MusicApp.startback = startback;
-    }
 
     @Override
     public void onCreate() {
