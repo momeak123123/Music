@@ -11,38 +11,44 @@ import android.content.IntentFilter
 import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.IBinder
-import android.provider.ContactsContract
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import com.danikula.videocache.HttpProxyCacheServer
 import com.app.xiaobai.music.MusicApp
 import com.app.xiaobai.music.R
 import com.app.xiaobai.music.bean.Music
-import com.app.xiaobai.music.config.*
+import com.app.xiaobai.music.config.Cookie
+import com.app.xiaobai.music.config.Dencry
+import com.app.xiaobai.music.config.LogDownloadListeners
+import com.app.xiaobai.music.config.Notifications
 import com.app.xiaobai.music.music.view.act.MusicPlayActivity
 import com.app.xiaobai.music.utils.CipherUtil
+import com.danikula.videocache.HttpProxyCacheServer
 import com.google.gson.Gson
 import com.lzy.okgo.OkGo
 import com.lzy.okgo.callback.StringCallback
 import com.lzy.okgo.model.Response
 import com.lzy.okserver.OkDownload
-import com.ywl5320.wlmedia.WlMedia
-import com.ywl5320.wlmedia.enums.WlComplete
-import com.ywl5320.wlmedia.enums.WlPlayModel
-import com.ywl5320.wlmedia.log.WlLog
+import com.ywl5320.libenum.MuteEnum
+import com.ywl5320.libmusic.WlMusic
+import io.reactivex.Flowable
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import java.io.File
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 
 class MusicService : Service() {
 
 
+    private var min: Long = 0
+    private lateinit var mDisposable: Disposable
     private lateinit var notification: Notification
     private var style: Int = 0
     private var count: Int = 2
     private var id = 0
-    lateinit var wlMedia: WlMedia
+    lateinit var wlMusic: WlMusic
     var playingMusicList: MutableList<Music>? = null
     lateinit var t1: String
     lateinit var t2: String
@@ -54,68 +60,55 @@ class MusicService : Service() {
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate() {
         println("初始启动")
-        wlMedia = WlMedia()
-        wlMedia.setPlayModel(WlPlayModel.PLAYMODEL_ONLY_AUDIO) //设置只播放音频（必须）
-        wlMedia.source = ""
-        wlMedia.setOnPreparedListener {
-            if (wlMedia.duration > 0) {
+        interval(0,0)
+        wlMusic = WlMusic.getInstance()
+        wlMusic.source = "" //设置音频源
+        wlMusic.setCallBackPcmData(false) //是否返回音频PCM数据
+        wlMusic.setShowPCMDB(false) //是否返回音频分贝大小
+        wlMusic.isPlayCircle = false //设置不间断循环播放音频
+        wlMusic.volume = 100 //设置音量 65%
+        wlMusic.playSpeed = 1.0f //设置播放速度 (1.0正常) 范围：0.25---4.0f
+        wlMusic.playPitch = 1.0f //设置播放速度 (1.0正常) 范围：0.25---4.0f
+        wlMusic.mute = MuteEnum.MUTE_CENTER //设置立体声（左声道、右声道和立体声）
+        wlMusic.setConvertSampleRate(null) //设定恒定采样率（null为取消）
+
+        wlMusic.setOnPreparedListener {
+
+            if (wlMusic.duration > 0) {
                 MusicPlayActivity.load = true
-                Observable.just(wlMedia.duration.toLong()).subscribe(MusicPlayActivity.observerui)
-                wlMedia.start()
+                Observable.just(wlMusic.duration.toLong()).subscribeOn(AndroidSchedulers.mainThread()).subscribe(MusicPlayActivity.observerui)
+                wlMusic.start()
+                interval(0,wlMusic.duration.toLong())
             } else {
                 Toast.makeText(
                     MusicApp.getAppContext(),
                     getText(R.string.error_playing_track),
                     Toast.LENGTH_SHORT
                 ).show()
+                mDisposable.dispose()
                 MusicPlayActivity.load = false
-                Observable.just(1).subscribe(MusicPlayActivity.observerplay)
+                Observable.just(1).subscribeOn(AndroidSchedulers.mainThread()).subscribe(MusicPlayActivity.observerplay)
             }
 
         }
-        wlMedia.setOnTimeInfoListener { currentTime, _ ->
-            Observable.just(currentTime).subscribe(MusicPlayActivity.observerseek)
-        }
 
-        wlMedia.setOnLoadListener { b ->
-            if (b) {
-                WlLog.d("Loading")
-            } else {
-                WlLog.d("Loading carry")
-                Observable.just(4).subscribe(MusicPlayActivity.observerplay)
+        wlMusic.setOnLoadListener { b ->
+            if (!b) {
+                Observable.just(4).subscribeOn(AndroidSchedulers.mainThread()).subscribe(MusicPlayActivity.observerplay)
             }
         }
 
-        wlMedia.setOnErrorListener { code, msg ->
-            WlLog.d("playback error")
-            WlLog.d("code$code - msg$msg")
+        wlMusic.setOnErrorListener { code, msg ->
+            MusicPlayActivity.load = false
+            mDisposable.dispose()
+            Observable.just(2).subscribeOn(AndroidSchedulers.mainThread()).subscribe(MusicPlayActivity.observerplay)
         }
 
-        wlMedia.setOnCompleteListener { type ->
-            when {
-                type === WlComplete.WL_COMPLETE_EOF -> {
-                    WlLog.d("Normal playback ends 1")
-                    Observable.just(2).subscribe(MusicPlayActivity.observerplay)
-                    musicnext()
-                }
-                type === WlComplete.WL_COMPLETE_NEXT -> {
-                    WlLog.d("Switch to the next song, causing the current end   2")
-                    Observable.just(2).subscribe(MusicPlayActivity.observerplay)
-                }
-                type === WlComplete.WL_COMPLETE_HANDLE -> {
-                    WlLog.d("End manually   3")
-                    MusicPlayActivity.load = false
-                    Observable.just(2).subscribe(MusicPlayActivity.observerplay)
-                }
-                type === WlComplete.WL_COMPLETE_ERROR -> {
-                    WlLog.d("Play ended with an error   4")
-                    MusicPlayActivity.load = false
-                    Observable.just(2).subscribe(MusicPlayActivity.observerplay)
-                    musicnext()
-                }
-            }
+        wlMusic.setOnCompleteListener {
+
         }
-        wlMedia.prepared()
+
+        wlMusic.prePared()
 
         //广播 添加广播的action
         val intentFilter = IntentFilter()
@@ -142,19 +135,36 @@ class MusicService : Service() {
             val notificationManager: NotificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(notificationChannel)
+
+            notification = Notification.Builder(this, "xiaobai1089")
+                .setContentTitle("This is content title")
+                .setContentText("This is content text")
+                .setWhen(System.currentTimeMillis())
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setLargeIcon(BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher))
+                .setOnlyAlertOnce(true)
+                .build()
+
+            startForeground(1, notification)
         }
+    }
 
-        notification = Notification.Builder(this, "xiaobai1089")
-            .setContentTitle("This is content title")
-            .setContentText("This is content text")
-            .setWhen(System.currentTimeMillis())
-            .setSmallIcon(R.mipmap.ic_launcher)
-            .setLargeIcon(BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher))
-            .setOnlyAlertOnce(true)
-            .build()
+    fun interval(mins :Long , max :Long){
+        mDisposable = Flowable.intervalRange(mins, max, 0, 1, TimeUnit.SECONDS)
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnNext { t ->
+                min = t
+                Observable.just(t).subscribe(MusicPlayActivity.observerseek)
+            }
+            .doOnComplete {
+                if(max>0){
+                    wlMusic.stop()
+                    Observable.just(2).subscribeOn(AndroidSchedulers.mainThread()).subscribe(MusicPlayActivity.observerplay)
+                    musicnext()
+                }
 
-        startForeground(1, notification)
-
+            }
+            .subscribe()
     }
 
     fun musicplay(type: Int, count: Int) {
@@ -209,7 +219,7 @@ class MusicService : Service() {
         }
         t1 = playingMusicList!![ids].name
         t2 = srtist_name
-        Observable.just(true).subscribe(MusicPlayActivity.observers)
+        Observable.just(true).subscribeOn(AndroidSchedulers.mainThread()).subscribe(MusicPlayActivity.observers)
         uriseat(playingMusicList!![ids].uri, playingMusicList!![ids].publish_time, this)
     }
 
@@ -219,7 +229,6 @@ class MusicService : Service() {
         if (file.isDirectory) {
             val files: Array<File> = file.listFiles()
             if(files.size>20){
-                println("测试"+files.size)
                 for (i in files.indices) {
                     val f = files[i]
                     try {
@@ -246,8 +255,7 @@ class MusicService : Service() {
     }
 
     fun music() {
-        wlMedia.source = MusicApp.getUri()
-        wlMedia.next()
+        wlMusic.playNext(MusicApp.getUri())
     }
 
     fun uriseat(uri: String, time: String, context: Context) {
@@ -258,13 +266,12 @@ class MusicService : Service() {
                     getText(R.string.error_connection),
                     Toast.LENGTH_SHORT
                 ).show()
-                Observable.just(2).subscribe(MusicPlayActivity.observerplay)
+                Observable.just(2).subscribeOn(AndroidSchedulers.mainThread()).subscribe(MusicPlayActivity.observerplay)
             } else {
                 MusicPlayActivity.uri = uri
                 val proxy: HttpProxyCacheServer = getProxy()
                 val proxyUrl = proxy.getProxyUrl(uri, true)
-                wlMedia.source = proxyUrl
-                wlMedia.next()
+                wlMusic.playNext(proxyUrl)
             }
 
         } else if (style == 3) {
@@ -274,7 +281,7 @@ class MusicService : Service() {
                     getText(R.string.error_connection),
                     Toast.LENGTH_SHORT
                 ).show()
-                Observable.just(2).subscribe(MusicPlayActivity.observerplay)
+                Observable.just(2).subscribeOn(AndroidSchedulers.mainThread()).subscribe(MusicPlayActivity.observerplay)
             } else {
                 if (time != "") {
 
@@ -283,14 +290,13 @@ class MusicService : Service() {
                         Cookie.getCookie()
                     )
                 } else {
-                    Observable.just(1).subscribe(MusicPlayActivity.observerplay)
+                    Observable.just(1).subscribeOn(AndroidSchedulers.mainThread()).subscribe(MusicPlayActivity.observerplay)
                 }
 
             }
         } else if (style == 4) {
 
-            wlMedia.source = CipherUtil.decryptString(context, uri)
-            wlMedia.next()
+            wlMusic.playNext(CipherUtil.decryptString(context, uri))
         }
     }
 
@@ -351,7 +357,7 @@ class MusicService : Service() {
                     music()
                 }
                 "error" -> {
-                    Observable.just(5).subscribe(MusicPlayActivity.observerplay)
+                    Observable.just(5).subscribeOn(AndroidSchedulers.mainThread()).subscribe(MusicPlayActivity.observerplay)
                 }
                 else -> {
                 }
@@ -366,9 +372,9 @@ class MusicService : Service() {
 
     fun musicresme() {
         println("恢复")
-        Observable.just(true).subscribe(MusicPlayActivity.observers)
+        Observable.just(true).subscribeOn(AndroidSchedulers.mainThread()).subscribe(MusicPlayActivity.observers)
         if (MusicApp.getPlay()) {
-            Observable.just(wlMedia.duration.toLong()).subscribe(MusicPlayActivity.observerui)
+            Observable.just(wlMusic.duration.toLong()).subscribeOn(AndroidSchedulers.mainThread()).subscribe(MusicPlayActivity.observerui)
         }
 
     }
@@ -377,24 +383,25 @@ class MusicService : Service() {
 
         println("切歌")
         if (MusicApp.getPlay()) {
-            wlMedia.stop()
+            wlMusic.stop()
         }
         MusicApp.setPosition(ids)
         id = ids
         playingMusicList = MusicApp.getMusic()
         uriseat(playingMusicList!![ids].uri, playingMusicList!![ids].publish_time, this)
-
-        Observable.just(true).subscribe(MusicPlayActivity.observers)
+        mDisposable.dispose()
+        Observable.just(true).subscribeOn(AndroidSchedulers.mainThread()).subscribe(MusicPlayActivity.observers)
     }
 
     fun musicnext() {
 
         println("下一首")
         MusicPlayActivity.load = false
-        Observable.just(0).subscribe(MusicPlayActivity.observerplay)
+        Observable.just(0).subscribeOn(AndroidSchedulers.mainThread()).subscribe(MusicPlayActivity.observerplay)
         if (MusicApp.getPlay()) {
-            wlMedia.stop()
+            wlMusic.stop()
         }
+        mDisposable.dispose()
         musicplay(2, count)
 
 
@@ -404,26 +411,29 @@ class MusicService : Service() {
 
         println("上一首")
         MusicPlayActivity.load = false
-        Observable.just(0).subscribe(MusicPlayActivity.observerplay)
+        Observable.just(0).subscribeOn(AndroidSchedulers.mainThread()).subscribe(MusicPlayActivity.observerplay)
         if (MusicApp.getPlay()) {
-            wlMedia.stop()
+            wlMusic.stop()
         }
+        mDisposable.dispose()
         musicplay(1, count)
 
     }
 
     fun musicresume() {
         println("继续")
-        wlMedia.resume()
+        wlMusic.resume()
+        interval(min,wlMusic.duration.toLong())
         Notifications.init(1)
-        Observable.just(4).subscribe(MusicPlayActivity.observerplay)
+        Observable.just(4).subscribeOn(AndroidSchedulers.mainThread()).subscribe(MusicPlayActivity.observerplay)
     }
 
     fun musicpause() {
         println("暂停")
-        wlMedia.pause()
+        wlMusic.pause()
+        mDisposable.dispose()
         Notifications.init(0)
-        Observable.just(3).subscribe(MusicPlayActivity.observerplay)
+        Observable.just(3).subscribeOn(AndroidSchedulers.mainThread()).subscribe(MusicPlayActivity.observerplay)
     }
 
     /** 调用startService()启动服务时回调  */
@@ -433,7 +443,7 @@ class MusicService : Service() {
         val ids = intent.getIntExtra("id", 0)
         count = intent.getIntExtra("count", 0)
         style = intent.getIntExtra("style", 0)
-        val seek = intent.getDoubleExtra("seek", 0.0)
+        val seek = intent.getIntExtra("seek", 0)
         when (types) {
             0 -> {
                 musicstart(ids)
@@ -451,14 +461,15 @@ class MusicService : Service() {
                 musicresume()
             }
             5 -> {
-                wlMedia.seek(seek)
-                wlMedia.seekTimeCallBack(false)
+                wlMusic.seek(seek,false,false)
             }
             6 -> {
-                wlMedia.seek(seek)
-                wlMedia.seekTimeCallBack(true)
+                wlMusic.seek(seek,true,true)
+                mDisposable.dispose()
+
+                interval(seek.toLong(),wlMusic.duration.toLong())
                 if (MusicApp.getPlay()) {
-                    wlMedia.start()
+                    wlMusic.start()
                 }
             }
             7 -> {
@@ -487,8 +498,10 @@ class MusicService : Service() {
 
     /** 服务不再有用且将要被销毁时调用  */
     override fun onDestroy() {
-        wlMedia.exit()
-
+        if (MusicApp.getPlay()) {
+            wlMusic.stop()
+        }
+        mDisposable.dispose()
         val lockservice = Intent(this, LockService::class.java)
         stopService(lockservice)
 

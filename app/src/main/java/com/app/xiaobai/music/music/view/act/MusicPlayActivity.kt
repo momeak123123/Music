@@ -67,7 +67,7 @@ class MusicPlayActivity : AppCompatActivity() {
         lateinit var observerui: Observer<Long>
 
         lateinit var observerset: Observer<Int>
-        lateinit var observerseek: Observer<Double>
+        lateinit var observerseek: Observer<Long>
         lateinit var observerseeks: Observer<Long>
         lateinit var observerplay: Observer<Int>
         lateinit var adapter: PlaySongAdapter
@@ -384,11 +384,12 @@ class MusicPlayActivity : AppCompatActivity() {
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {
-                musicplay(5, position.toDouble(), id)
+                musicplay(5, position, id)
             }
 
             override fun onStopTrackingTouch(seekBar: SeekBar) {
-                musicplay(6, position.toDouble(), id)
+                println("点击seek"+ position)
+                musicplay(6, position, id)
             }
         })
     }
@@ -404,7 +405,7 @@ class MusicPlayActivity : AppCompatActivity() {
 
         when (styles) {
             0 -> {
-                musicplay(7, 0.0, pos)
+                musicplay(7, 0, pos)
             }
             1 -> {
                 style = 1
@@ -436,14 +437,14 @@ class MusicPlayActivity : AppCompatActivity() {
             song.removeAt(0)
             if (song.isNotEmpty()) {
                 if (song[pos].song_id == song_id && pos == id) {
-                    musicplay(7, 0.0, pos)
+                    musicplay(7, 0, pos)
                 } else {
                     MusicApp.setAblumid(album_id)
                     MusicApp.setMusic(song)
                     playingMusicList = song
                     MusicApp.setPosition(pos)
                     playPauseIv.setLoading(true)
-                    musicplay(0, 0.0, pos)
+                    musicplay(0, 0, pos)
                 }
 
             }
@@ -455,14 +456,14 @@ class MusicPlayActivity : AppCompatActivity() {
             )
             if (song.isNotEmpty()) {
                 if (song[pos].song_id == song_id && pos == id) {
-                    musicplay(7, 0.0, pos)
+                    musicplay(7, 0, pos)
                 } else {
                     MusicApp.setAblumid(album_id)
                     MusicApp.setMusic(song)
                     playingMusicList = song
                     MusicApp.setPosition(pos)
                     playPauseIv.setLoading(true)
-                    musicplay(0, 0.0, pos)
+                    musicplay(0, 0, pos)
                 }
             }
         }
@@ -504,7 +505,8 @@ class MusicPlayActivity : AppCompatActivity() {
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(boolean: Boolean) {
                 if (boolean) {
-
+                    progressSb.progress = 0
+                    progressTv.text = "00:00"
                     id = MusicApp.getPosition()
                     playingMusic = playingMusicList[id]
                     song_id = playingMusic.song_id
@@ -589,21 +591,21 @@ class MusicPlayActivity : AppCompatActivity() {
                 try {
                     when (data) {
                         0 -> {
-                            musicplay(3, 0.0, id)
+                            musicplay(3, 0, id)
                         }
                         1 -> {
 
-                            musicplay(1, 0.0, id)
+                            musicplay(1, 0, id)
                         }
                         2 -> {
-                            musicplay(2, 0.0, id)
+                            musicplay(2, 0, id)
                         }
                         3 -> {
                             if (load) {
-                                musicplay(4, 0.0, id)
+                                musicplay(4, 0, id)
                             } else {
                                 playPauseIv.setLoading(true)
-                                musicplay(0, 0.0, id)
+                                musicplay(0, 0, id)
                             }
 
                         }
@@ -621,13 +623,13 @@ class MusicPlayActivity : AppCompatActivity() {
 
 
         //进度更新接口
-        observerseek = object : Observer<Double> {
+        observerseek = object : Observer<Long> {
             override fun onSubscribe(d: Disposable) {}
 
             @SuppressLint("SetTextI18n")
-            override fun onNext(bools: Double) {
+            override fun onNext(bools: Long) {
                 try {
-                    min = bools.toLong()
+                    min = bools
                     val fs = min / 60
                     val ms = min % 60
                     progressTv.text = unitFormat(fs.toInt()) + ":" + unitFormat(ms.toInt())
@@ -649,7 +651,7 @@ class MusicPlayActivity : AppCompatActivity() {
 
             @SuppressLint("SetTextI18n")
             override fun onNext(bool: Long) {
-                musicplay(6, (bool / 1000).toDouble(), id)
+                musicplay(6, (bool / 1000).toInt(), id)
 
             }
 
@@ -665,6 +667,8 @@ class MusicPlayActivity : AppCompatActivity() {
             override fun onNext(bool: Int) {
                 when (bool) {
                     0 -> {
+                        progressSb.progress = 0
+                        progressTv.text = "00:00"
                         playPauseIv.setLoading(true)
                     }
                     1 -> {
@@ -672,8 +676,6 @@ class MusicPlayActivity : AppCompatActivity() {
                     }
                     2 -> {
                         try {
-                            progressSb.progress = 0
-                            progressTv.text = "00:00"
                             MusicApp.setPlay(false)
                             if (playPauseIv.isPlaying) {
                                 playPauseIv.pause()
@@ -719,7 +721,7 @@ class MusicPlayActivity : AppCompatActivity() {
                                 getText(R.string.error_playing_trackt),
                                 Toast.LENGTH_SHORT
                             ).show()
-                            musicplay(2, 0.0, id)
+                            musicplay(2, 0, id)
                         } catch (e: java.lang.Exception) {
                         }
                     }
@@ -761,7 +763,7 @@ class MusicPlayActivity : AppCompatActivity() {
                     id = position
                     adaptert!!.notifyDataSetChanged()
                     playPauseIv.setLoading(true)
-                    musicplay(0, 0.0, position)
+                    musicplay(0, 0, position)
                 }
             }
         })
@@ -848,7 +850,7 @@ class MusicPlayActivity : AppCompatActivity() {
     }
 
 
-    fun musicplay(type: Int, seek: Double, id: Int) {
+    fun musicplay(type: Int, seek: Int, id: Int) {
 
 
         val intent = Intent(this, MusicService::class.java)
