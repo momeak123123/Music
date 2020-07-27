@@ -12,105 +12,143 @@ import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.IBinder
 import android.widget.Toast
-import androidx.annotation.RequiresApi
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.Observer
 import com.app.xiaobai.music.MusicApp
 import com.app.xiaobai.music.R
 import com.app.xiaobai.music.bean.Music
+import com.app.xiaobai.music.bean.musicpath
 import com.app.xiaobai.music.config.Cookie
 import com.app.xiaobai.music.config.Dencry
 import com.app.xiaobai.music.config.LogDownloadListeners
 import com.app.xiaobai.music.config.Notifications
 import com.app.xiaobai.music.music.view.act.MusicPlayActivity
+import com.app.xiaobai.music.music.view.act.MusicPlayActivity.Companion.observerplay
 import com.app.xiaobai.music.utils.CipherUtil
-import com.danikula.videocache.HttpProxyCacheServer
 import com.google.gson.Gson
+import com.lzx.starrysky.StarrySky
+import com.lzx.starrysky.common.PlaybackStage
+import com.lzx.starrysky.control.RepeatMode.Companion.REPEAT_MODE_NONE
+import com.lzx.starrysky.control.RepeatMode.Companion.REPEAT_MODE_ONE
+import com.lzx.starrysky.control.RepeatMode.Companion.REPEAT_MODE_SHUFFLE
+import com.lzx.starrysky.provider.SongInfo
+import com.lzx.starrysky.utils.TimerTaskManager
 import com.lzy.okgo.OkGo
 import com.lzy.okgo.callback.StringCallback
 import com.lzy.okgo.model.Response
+import com.lzy.okgo.request.GetRequest
 import com.lzy.okserver.OkDownload
-import com.ywl5320.libenum.MuteEnum
-import com.ywl5320.libmusic.WlMusic
-import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
 import java.io.File
 import java.util.*
-import java.util.concurrent.TimeUnit
-
 
 class MusicService : Service() {
 
-
-    private var min: Long = 0
-    private lateinit var mDisposable: Disposable
-    private lateinit var notification: Notification
-    private var style: Int = 0
-    private var count: Int = 2
+    private var count = 0
+    private var style = 2
+    private var types = 0
+    private var ids = 0
+    private var seek = 0L
+    private lateinit var playingMusicList: MutableList<Music>
     private var id = 0
-    lateinit var wlMusic: WlMusic
-    var playingMusicList: MutableList<Music>? = null
-    lateinit var t1: String
-    lateinit var t2: String
+    private lateinit var mTimerTask: TimerTaskManager
+    override fun onBind(intent: Intent): IBinder? {
+        return null
+    }
 
-    /** 标识是否可以使用onRebind  */
-    private var mAllowRebind = false
-
-    /** 当服务被创建时调用.  */
-    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate() {
-        println("初始启动")
-        interval(0,0)
-        wlMusic = WlMusic.getInstance()
-        wlMusic.source = "" //设置音频源
-        wlMusic.setCallBackPcmData(false) //是否返回音频PCM数据
-        wlMusic.setShowPCMDB(false) //是否返回音频分贝大小
-        wlMusic.isPlayCircle = false //设置不间断循环播放音频
-        wlMusic.volume = 100 //设置音量 65%
-        wlMusic.playSpeed = 1.0f //设置播放速度 (1.0正常) 范围：0.25---4.0f
-        wlMusic.playPitch = 1.0f //设置播放速度 (1.0正常) 范围：0.25---4.0f
-        wlMusic.mute = MuteEnum.MUTE_CENTER //设置立体声（左声道、右声道和立体声）
-        wlMusic.setConvertSampleRate(null) //设定恒定采样率（null为取消）
+        super.onCreate()
+        println("初始化")
+        mTimerTask = TimerTaskManager()
 
-        wlMusic.setOnPreparedListener {
+        StarrySky.with().playbackState()
+            .observe((this as LifecycleOwner), Observer { playbackStage: PlaybackStage? ->
+                if (playbackStage == null) {
+                    return@Observer
+                }
+                when (Objects.requireNonNull(playbackStage.getStage())) {
+                    PlaybackStage.NONE ->                     //空状态
+                        Observable.just(1)
+                            .subscribe(MusicPlayActivity.observerplay)
+                    PlaybackStage.START -> {
+                        //开始播放
+                        println("开始播放")
+                        MusicPlayActivity.load = "start"
+                        mTimerTask.startToUpdateProgress()
+                        val duration = StarrySky.with().getDuration()
+                        Observable.just(duration)
+                            .subscribe(MusicPlayActivity.observerui)
+                    }
+                    PlaybackStage.PAUSE -> {
+                        //暂停
+                        MusicPlayActivity.load = "pause"
+                        mTimerTask.stopToUpdateProgress()
+                        Observable.just(1)
+                            .subscribe(MusicPlayActivity.observerplay)
+                    }
+                    PlaybackStage.STOP -> {
+                        //停止
+                        MusicPlayActivity.load = "stop"
+                        mTimerTask.stopToUpdateProgress()
+                        Observable.just(1)
+                            .subscribe(MusicPlayActivity.observerplay)
+                    }
+                    PlaybackStage.COMPLETION -> {
+                        //播放完成
+                        println("播放完成")
+                        mTimerTask.stopToUpdateProgress()
+                        if (StarrySky.with().isSkipToNextEnabled()) {
+                            Observable.just(0)
+                                .subscribeOn(AndroidSchedulers.mainThread())
+                                .subscribe(MusicPlayActivity.observerplay)
+                            if (MusicApp.getPlay()) {
+                                StarrySky.with().stopMusic()
+                            }
+                            StarrySky.with().skipToNext()
+                        }
+                    }
+                    PlaybackStage.BUFFERING -> {
+                    }
+                    PlaybackStage.ERROR -> {
+                        //播放出错
+                        println("播放出错")
+                        mTimerTask.stopToUpdateProgress()
+                        Observable.just(2)
+                            .subscribeOn(AndroidSchedulers.mainThread())
+                            .subscribe(MusicPlayActivity.observerplay)
+                    }
+                    else -> {
+                    }
+                }
+            })
 
-            if (wlMusic.duration > 0) {
-                MusicPlayActivity.load = true
-                Observable.just(wlMusic.duration.toLong()).subscribeOn(AndroidSchedulers.mainThread()).subscribe(MusicPlayActivity.observerui)
-                wlMusic.start()
-                interval(0,wlMusic.duration.toLong())
-            } else {
-                Toast.makeText(
-                    MusicApp.getAppContext(),
-                    getText(R.string.error_playing_track),
-                    Toast.LENGTH_SHORT
-                ).show()
-                mDisposable.dispose()
-                MusicPlayActivity.load = false
-                Observable.just(1).subscribeOn(AndroidSchedulers.mainThread()).subscribe(MusicPlayActivity.observerplay)
-            }
 
+        StarrySky.with().prepare()
+
+        mTimerTask.setUpdateProgressTask(Runnable {
+            val position = StarrySky.with().getPlayingPosition()
+            val buffered = StarrySky.with().getBufferedPosition()
+            Observable.just(position)
+                .subscribe(MusicPlayActivity.observerseek)
+            Observable.just(buffered)
+                .subscribe(MusicPlayActivity.observerseeks)
+        })
+
+
+        StarrySky.with().setRepeatMode(REPEAT_MODE_NONE, true)
+
+        val music: List<Music> = MusicPlayActivity.playingMusicList
+        val infolist: MutableList<SongInfo> = ArrayList()
+        for (i in music.indices) {
+            val info = SongInfo()
+            info.songId = music[i].song_id.toString()
+            info.songUrl = music[i].uri
+            infolist.add(info)
         }
 
-        wlMusic.setOnLoadListener { b ->
-            if (!b) {
-                Observable.just(4).subscribeOn(AndroidSchedulers.mainThread()).subscribe(MusicPlayActivity.observerplay)
-            }
-        }
+        StarrySky.with().playMusic(infolist, 0)
 
-        wlMusic.setOnErrorListener { code, msg ->
-            MusicPlayActivity.load = false
-            mDisposable.dispose()
-            Observable.just(2).subscribeOn(AndroidSchedulers.mainThread()).subscribe(MusicPlayActivity.observerplay)
-        }
-
-        wlMusic.setOnCompleteListener {
-
-        }
-
-        wlMusic.prePared()
-
-        //广播 添加广播的action
         val intentFilter = IntentFilter()
         intentFilter.addAction("del")
         intentFilter.addAction("pre")
@@ -120,145 +158,210 @@ class MusicService : Service() {
         intentFilter.addAction("error")
         registerReceiver(broadcastReceiver, intentFilter)
 
-
-        val intent = Intent(this, LockService::class.java)
+        val intent = Intent(this as Context, LockService::class.java)
         startService(intent)
-
-
-        val notificationChannel: NotificationChannel?
+        val notificationChannel: NotificationChannel
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            notificationChannel =
-                NotificationChannel(
-                    "xiaobai1089",
-                    getText(R.string.app_name).toString(), NotificationManager.IMPORTANCE_MIN
-                )
-            val notificationManager: NotificationManager =
-                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationChannel = NotificationChannel(
+                "xiaobai1089",
+                getText(R.string.app_name).toString(),
+                NotificationManager.IMPORTANCE_MIN
+            )
+            val notificationManager =
+                (getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager)
             notificationManager.createNotificationChannel(notificationChannel)
-
-            notification = Notification.Builder(this, "xiaobai1089")
-                .setContentTitle("This is content title")
-                .setContentText("This is content text")
-                .setWhen(System.currentTimeMillis())
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setLargeIcon(BitmapFactory.decodeResource(resources, R.mipmap.ic_launcher))
-                .setOnlyAlertOnce(true)
-                .build()
-
-            startForeground(1, notification)
+            val notification: Notification =
+                Notification.Builder(this, "xiaobai1089")
+                    .setContentTitle("This is content title")
+                    .setContentText("This is content text")
+                    .setWhen(System.currentTimeMillis())
+                    .setSmallIcon(R.mipmap.ic_launcher)
+                    .setLargeIcon(
+                        BitmapFactory.decodeResource(
+                            resources,
+                            R.mipmap.ic_launcher
+                        )
+                    )
+                    .setOnlyAlertOnce(true)
+                    .build()
+            this.startForeground(1, notification)
         }
     }
 
-    fun interval(mins :Long , max :Long){
-        mDisposable = Flowable.intervalRange(mins, max, 0, 1, TimeUnit.SECONDS)
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnNext { t ->
-                min = t
-                Observable.just(t).subscribe(MusicPlayActivity.observerseek)
-            }
-            .doOnComplete {
-                if(max>0){
-                    wlMusic.stop()
-                    Observable.just(2).subscribeOn(AndroidSchedulers.mainThread()).subscribe(MusicPlayActivity.observerplay)
-                    musicnext()
+    private val broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val string =
+                Objects.requireNonNull(intent.action)
+            when (string) {
+                "del" -> {
+                    stopForeground(true)
                 }
-
+                "pre" -> {
+                    if (StarrySky.with().isSkipToPreviousEnabled()) {
+                        Observable.just(0)
+                            .subscribeOn(AndroidSchedulers.mainThread())
+                            .subscribe(observerplay)
+                        if (MusicApp.getPlay()) {
+                            StarrySky.with().stopMusic()
+                        }
+                        StarrySky.with().skipToPrevious()
+                    }
+                }
+                "play" -> {
+                    val bl = MusicApp.getPlay()
+                    if (bl) {
+                        StarrySky.with().pauseMusic()
+                        Notifications.init(0)
+                        Observable.just(3)
+                            .subscribeOn(AndroidSchedulers.mainThread())
+                            .subscribe(observerplay)
+                    } else {
+                        StarrySky.with().restoreMusic()
+                        Notifications.init(1)
+                        Observable.just(4)
+                            .subscribeOn(AndroidSchedulers.mainThread())
+                            .subscribe(observerplay)
+                    }
+                }
+                "next" -> {
+                    if (StarrySky.with().isSkipToNextEnabled()) {
+                        Observable.just(0)
+                            .subscribeOn(AndroidSchedulers.mainThread())
+                            .subscribe(observerplay)
+                        if (MusicApp.getPlay()) {
+                            StarrySky.with().stopMusic()
+                        }
+                        StarrySky.with().skipToNext()
+                    }
+                }
+                "uri" -> {
+                }
+                "error" -> {
+                    Observable.just(5)
+                        .subscribeOn(AndroidSchedulers.mainThread())
+                        .subscribe(observerplay)
+                }
             }
-            .subscribe()
+        }
     }
 
-    fun musicplay(type: Int, count: Int) {
-        when (count) {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        types = intent!!.getIntExtra("type", 0)
+        ids = intent.getIntExtra("id", 0)
+        count = intent.getIntExtra("count", 0)
+        style = intent.getIntExtra("style", 0)
+        seek = intent.getLongExtra("seek", 0)
+
+        when (types) {
             0 -> {
-                //单曲循环
-                uriseat(playingMusicList!![id].uri, playingMusicList!![id].publish_time, this)
+                try {
+                    musicstart(ids)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
             1 -> {
-                //随机播放
-                val randoms = (0 until playingMusicList!!.size).random()
-                id = randoms
-                data(id)
+                if (StarrySky.with().isSkipToPreviousEnabled()) {
+                    Observable.just(0).subscribeOn(AndroidSchedulers.mainThread())
+                        .subscribe(observerplay)
+                    if (MusicApp.getPlay()) {
+                        StarrySky.with().stopMusic()
+                    }
+                    StarrySky.with().skipToPrevious()
+                }
             }
             2 -> {
-                if (type == 1) {
-                    if (id == 0) {
-                        id = playingMusicList!!.size - 1
-                        data(id)
-
-                    } else {
-                        id -= 1
-                        data(id)
+                if (StarrySky.with().isSkipToNextEnabled()) {
+                    Observable.just(0).subscribeOn(AndroidSchedulers.mainThread())
+                        .subscribe(observerplay)
+                    if (MusicApp.getPlay()) {
+                        StarrySky.with().stopMusic()
                     }
-                } else if (type == 2) {
-                    if (playingMusicList!!.size - 1 == id) {
-                        id = 0
-                        data(id)
-                    } else {
-                        id += 1
-                        data(id)
-                    }
-
+                    StarrySky.with().skipToNext()
                 }
-
+            }
+            3 -> {
+                StarrySky.with().pauseMusic()
+                Notifications.init(0)
+                Observable.just(3).subscribeOn(AndroidSchedulers.mainThread())
+                    .subscribe(observerplay)
+            }
+            4 -> {
+                StarrySky.with().restoreMusic()
+                Notifications.init(1)
+                Observable.just(4).subscribeOn(AndroidSchedulers.mainThread())
+                    .subscribe(observerplay)
+            }
+            5 -> {
+                StarrySky.with().seekTo(seek)
+            }
+            6 -> {
+                when (count) {
+                    0 -> StarrySky.with().setRepeatMode(REPEAT_MODE_ONE, true)
+                    1 -> StarrySky.with().setRepeatMode(REPEAT_MODE_SHUFFLE, true)
+                    2 -> StarrySky.with().setRepeatMode(REPEAT_MODE_NONE, true)
+                }
+            }
+            7 -> {
+                musicresme()
+            }
+            8 -> {
+                try {
+                    val music: List<Music> = MusicPlayActivity.playingMusicList
+                    val infolist: MutableList<SongInfo> =
+                        ArrayList()
+                    var i = 0
+                    while (i < music.size) {
+                        val info = SongInfo()
+                        info.songId = "0"
+                        info.songUrl = ""
+                        infolist.add(info)
+                        i++
+                    }
+                    StarrySky.with().updatePlayList(infolist)
+                    musicstart(ids)
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }
-
+        return super.onStartCommand(intent, flags, startId)
     }
 
-    fun data(ids: Int) {
+    private fun musicresme() {
+        println("恢复")
+        Observable.just(true)
+            .subscribeOn(AndroidSchedulers.mainThread()).subscribe(MusicPlayActivity.observers)
+        if (MusicApp.getPlay()) {
+            Observable.just(StarrySky.with().getDuration())
+                .subscribeOn(AndroidSchedulers.mainThread()).subscribe(MusicPlayActivity.observerui)
+        }
+    }
+
+
+    @Throws(java.lang.Exception::class)
+    private fun musicstart(ids: Int) {
+        println("切歌")
+        if (MusicApp.getPlay()) {
+            StarrySky.with().stopMusic()
+        }
         MusicApp.setPosition(ids)
-        val artist = playingMusicList!![ids].all_artist
-        var srtist_name = ""
-        for (it in artist) {
-            if (srtist_name != "") {
-                srtist_name += "/" + it.name
-            } else {
-                srtist_name = it.name
-            }
-
-        }
-        t1 = playingMusicList!![ids].name
-        t2 = srtist_name
-        Observable.just(true).subscribeOn(AndroidSchedulers.mainThread()).subscribe(MusicPlayActivity.observers)
-        uriseat(playingMusicList!![ids].uri, playingMusicList!![ids].publish_time, this)
+        id = ids
+        playingMusicList = MusicApp.getMusic()
+        val info = SongInfo()
+        info.songId = playingMusicList[ids].song_id.toString()
+        info.songUrl = playingMusicList[ids].uri
+        uriseat(info, playingMusicList[ids].publish_time, this)
+        Observable.just(true)
+            .subscribeOn(AndroidSchedulers.mainThread()).subscribe(MusicPlayActivity.observers)
     }
 
-    fun prox(uri: String) {
-        val path = cacheDir.absolutePath
-        val file = File(path)
-        if (file.isDirectory) {
-            val files: Array<File> = file.listFiles()
-            if(files.size>20){
-                for (i in files.indices) {
-                    val f = files[i]
-                    try {
-                        f.delete()
-                    } catch (e: Exception) {
-                    }
-                }
-            }
-        }
-        val request = OkGo.get<File>(uri)
-
-        OkDownload.request(
-            uri,
-            request
-        )
-            .priority(0)
-            .folder(cacheDir.absolutePath)
-            .fileName(System.currentTimeMillis().toString()) //
-            .save() //
-            .register(
-                LogDownloadListeners()
-            )
-            .start()
-    }
-
-    fun music() {
-        wlMusic.playNext(MusicApp.getUri())
-    }
-
-    fun uriseat(uri: String, time: String, context: Context) {
+    @Throws(java.lang.Exception::class)
+    private fun uriseat(
+        info: SongInfo,
+        time: String,
+        context: Context
+    ) {
         if (style == 1) {
             if (MusicApp.network() == -1) {
                 Toast.makeText(
@@ -266,14 +369,12 @@ class MusicService : Service() {
                     getText(R.string.error_connection),
                     Toast.LENGTH_SHORT
                 ).show()
-                Observable.just(2).subscribeOn(AndroidSchedulers.mainThread()).subscribe(MusicPlayActivity.observerplay)
+                Observable.just(2).subscribeOn(AndroidSchedulers.mainThread())
+                    .subscribe(observerplay)
             } else {
-                MusicPlayActivity.uri = uri
-                val proxy: HttpProxyCacheServer = getProxy()
-                val proxyUrl = proxy.getProxyUrl(uri, true)
-                wlMusic.playNext(proxyUrl)
+                MusicPlayActivity.uri = info.songUrl
+                StarrySky.with().playMusicByInfo(info)
             }
-
         } else if (style == 3) {
             if (MusicApp.network() == -1) {
                 Toast.makeText(
@@ -281,234 +382,80 @@ class MusicService : Service() {
                     getText(R.string.error_connection),
                     Toast.LENGTH_SHORT
                 ).show()
-                Observable.just(2).subscribeOn(AndroidSchedulers.mainThread()).subscribe(MusicPlayActivity.observerplay)
+                Observable.just(2).subscribeOn(AndroidSchedulers.mainThread())
+                    .subscribe(observerplay)
             } else {
                 if (time != "") {
-
-                    musicpath(
-                        time,
-                        Cookie.getCookie()
-                    )
+                    musicpath(info, time, Cookie.getCookie())
                 } else {
-                    Observable.just(1).subscribeOn(AndroidSchedulers.mainThread()).subscribe(MusicPlayActivity.observerplay)
+                    Observable.just(1).subscribeOn(AndroidSchedulers.mainThread())
+                        .subscribe(observerplay)
                 }
-
             }
         } else if (style == 4) {
-
-            wlMusic.playNext(CipherUtil.decryptString(context, uri))
+            info.songUrl = CipherUtil.decryptString(context, info.songUrl)
+            StarrySky.with().playMusicByInfo(info)
         }
     }
 
-
-    fun musicpath(url: String, cookie: String) {
-        object : Thread() {
-            override fun run() {
-                OkGo.post<String>(url)
-                    .params("cookie", cookie)
-                    .execute(object : StringCallback() {
-                        override fun onSuccess(response: Response<String>) {
-                            /**
-                             * 成功回调
-                             */
-                            try {
-                                val ca = response.body().substring(7)
-                                val da = ca.substring(0, ca.lastIndexOf('<'))
-                                val bean =
-                                    Gson().fromJson(
-                                        da,
-                                        com.app.xiaobai.music.bean.musicpath::class.javaObjectType
-                                    )
-                                val uri = Dencry.dencryptString(bean.geturl)
-                                MusicPlayActivity.uri = uri
-                                prox(uri)
-                                /* val proxy: HttpProxyCacheServer = getProxy()
-                                 val proxyUrl = proxy.getProxyUrl(uri, true)
-                                 wlMedia.source = proxyUrl
-                                 wlMedia.next()*/
-
-                            } catch (e: Exception) {
-                            }
-                        }
-                    })
-            }
-        }.start()
-    }
-
-    private var broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
-        override fun onReceive(context: Context, intent: Intent) {
-            when (Objects.requireNonNull(intent.action)) {
-                "del" -> {
-                    stopForeground(true)
-                    //Notifications.deleteNotification()
-                }
-                "pre" ->
-                    musicpre()
-                "play" -> {
-                    if (MusicApp.getPlay()) {
-                        musicpause()
-                    } else {
-                        musicresume()
+    private fun musicpath(
+        info: SongInfo,
+        url: String,
+        cookie: String
+    ) {
+        OkGo.post<String>(url)
+            .params("cookie", cookie)
+            .execute(object : StringCallback() {
+                override fun onSuccess(response: Response<String>) {
+                    /**
+                     * 成功回调
+                     */
+                    try {
+                        val ca = response.body().substring(7)
+                        val da = ca.substring(0, ca.lastIndexOf('<'))
+                        val gson = Gson()
+                        val (_, _, geturl) = gson.fromJson(da, musicpath::class.java)
+                        val uri = Dencry.dencryptString(geturl)
+                        MusicPlayActivity.uri = uri
+                        info.songUrl = uri
+                        StarrySky.with().playMusicByInfo(info)
+                        //prox(uri);
+                    } catch (ignored: java.lang.Exception) {
                     }
                 }
-                "next" ->
-                    musicnext()
-                "uri" -> {
-                    music()
-                }
-                "error" -> {
-                    Observable.just(5).subscribeOn(AndroidSchedulers.mainThread()).subscribe(MusicPlayActivity.observerplay)
-                }
-                else -> {
-                }
-            }
-        }
+            })
     }
 
-
-    private fun getProxy(): HttpProxyCacheServer {
-        return MusicApp.getProxy(applicationContext)
-    }
-
-    fun musicresme() {
-        println("恢复")
-        Observable.just(true).subscribeOn(AndroidSchedulers.mainThread()).subscribe(MusicPlayActivity.observers)
-        if (MusicApp.getPlay()) {
-            Observable.just(wlMusic.duration.toLong()).subscribeOn(AndroidSchedulers.mainThread()).subscribe(MusicPlayActivity.observerui)
-        }
-
-    }
-
-    fun musicstart(ids: Int) {
-
-        println("切歌")
-        if (MusicApp.getPlay()) {
-            wlMusic.stop()
-        }
-        MusicApp.setPosition(ids)
-        id = ids
-        playingMusicList = MusicApp.getMusic()
-        uriseat(playingMusicList!![ids].uri, playingMusicList!![ids].publish_time, this)
-        mDisposable.dispose()
-        Observable.just(true).subscribeOn(AndroidSchedulers.mainThread()).subscribe(MusicPlayActivity.observers)
-    }
-
-    fun musicnext() {
-
-        println("下一首")
-        MusicPlayActivity.load = false
-        Observable.just(0).subscribeOn(AndroidSchedulers.mainThread()).subscribe(MusicPlayActivity.observerplay)
-        if (MusicApp.getPlay()) {
-            wlMusic.stop()
-        }
-        mDisposable.dispose()
-        musicplay(2, count)
-
-
-    }
-
-    fun musicpre() {
-
-        println("上一首")
-        MusicPlayActivity.load = false
-        Observable.just(0).subscribeOn(AndroidSchedulers.mainThread()).subscribe(MusicPlayActivity.observerplay)
-        if (MusicApp.getPlay()) {
-            wlMusic.stop()
-        }
-        mDisposable.dispose()
-        musicplay(1, count)
-
-    }
-
-    fun musicresume() {
-        println("继续")
-        wlMusic.resume()
-        interval(min,wlMusic.duration.toLong())
-        Notifications.init(1)
-        Observable.just(4).subscribeOn(AndroidSchedulers.mainThread()).subscribe(MusicPlayActivity.observerplay)
-    }
-
-    fun musicpause() {
-        println("暂停")
-        wlMusic.pause()
-        mDisposable.dispose()
-        Notifications.init(0)
-        Observable.just(3).subscribeOn(AndroidSchedulers.mainThread()).subscribe(MusicPlayActivity.observerplay)
-    }
-
-    /** 调用startService()启动服务时回调  */
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-
-        val types = intent!!.getIntExtra("type", 0)
-        val ids = intent.getIntExtra("id", 0)
-        count = intent.getIntExtra("count", 0)
-        style = intent.getIntExtra("style", 0)
-        val seek = intent.getIntExtra("seek", 0)
-        when (types) {
-            0 -> {
-                musicstart(ids)
-            }
-            1 -> {
-                musicpre()
-            }
-            2 -> {
-                musicnext()
-            }
-            3 -> {
-                musicpause()
-            }
-            4 -> {
-                musicresume()
-            }
-            5 -> {
-                wlMusic.seek(seek,false,false)
-            }
-            6 -> {
-                wlMusic.seek(seek,true,true)
-                mDisposable.dispose()
-
-                interval(seek.toLong(),wlMusic.duration.toLong())
-                if (MusicApp.getPlay()) {
-                    wlMusic.start()
+    private fun prox(uri: String) {
+        val path = this.cacheDir.absolutePath
+        val file = File(path)
+        if (file.isDirectory) {
+            val files = file.listFiles()
+            if (files.size > 20) {
+                for (f in files) {
+                    try {
+                        f.delete()
+                    } catch (ignored: java.lang.Exception) {
+                    }
                 }
             }
-            7 -> {
-                musicresme()
-            }
         }
-
-        return super.onStartCommand(intent, flags, startId)
-    }
-
-    /** 通过bindService()绑定到服务的客户端 */
-    override fun onBind(intent: Intent?): IBinder? {
-        return null
-    }
-
-    /** 通过unbindService()解除所有客户端绑定时调用  */
-    override fun onUnbind(intent: Intent?): Boolean {
-        return mAllowRebind
+        val request = OkGo.get<File>(uri)
+        OkDownload.request(uri, request)
+            .priority(0)
+            .folder(file.absolutePath)
+            .fileName(System.currentTimeMillis().toString())
+            .save()
+            .register(LogDownloadListeners())
+            .start()
     }
 
 
-    /** 通过bindService()将客户端绑定到服务时调用 */
-    override fun onRebind(intent: Intent?) {
-    }
-
-
-    /** 服务不再有用且将要被销毁时调用  */
     override fun onDestroy() {
-        if (MusicApp.getPlay()) {
-            wlMusic.stop()
-        }
-        mDisposable.dispose()
+        super.onDestroy()
+        mTimerTask.removeUpdateProgressTask()
         val lockservice = Intent(this, LockService::class.java)
         stopService(lockservice)
-
         Notifications.deleteNotification()
-
-        unregisterReceiver(broadcastReceiver)
     }
-
-
 }

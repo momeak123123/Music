@@ -37,6 +37,7 @@ import com.app.xiaobai.music.music.view.fragment.HomeFragment
 import com.app.xiaobai.music.music.view.fragment.MyFragment
 import com.app.xiaobai.music.music.view.fragment.ShareFragment
 import com.app.xiaobai.music.service.MusicService
+import com.app.xiaobai.music.service.PlayService
 import com.app.xiaobai.music.sql.bean.Playlist
 import com.app.xiaobai.music.sql.config.Initialization
 import com.app.xiaobai.music.sql.dao.mCollectDao
@@ -61,6 +62,7 @@ import kotlinx.android.synthetic.main.song_add.*
 import java.io.File
 import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.system.exitProcess
 
 class IndexActivity : AppCompatActivity() {
 
@@ -748,7 +750,7 @@ class IndexActivity : AppCompatActivity() {
 
     override fun onBackPressed() {
         if (exit) {
-            System.exit(0)
+            exitProcess(0)
         } else {
             exit = true
             Toast.makeText(context, getText(R.string.main_set), Toast.LENGTH_SHORT).show()

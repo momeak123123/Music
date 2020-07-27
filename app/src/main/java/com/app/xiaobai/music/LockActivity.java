@@ -65,6 +65,7 @@ public class LockActivity extends AppCompatActivity implements SlidingFinishLayo
         initView();
 
 
+
         IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_TIME_TICK);
         registerReceiver(receiver, filter);

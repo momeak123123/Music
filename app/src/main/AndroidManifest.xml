@@ -35,9 +35,17 @@
         tool:ignore="LockedOrientationActivity"
         tools:replace="android:allowBackup"
         tools:targetApi="n">
-        <activity android:name=".SearchIndexActivity"
-            android:screenOrientation="portrait"/>
-        <!-- region 适配全面屏 -->
+        <service
+            android:name=".service.MusicService"
+            android:enabled="false"
+            android:exported="true"></service>
+        <service
+            android:name=".service.PlayService"
+            android:enabled="true" />
+
+        <activity
+            android:name=".SearchIndexActivity"
+            android:screenOrientation="portrait" /> <!-- region 适配全面屏 -->
         <meta-data
             android:name="android.max_aspect"
             android:value="2.4" /> <!-- endregion -->
@@ -47,14 +55,6 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-
-        <service
-            android:name=".service.TimeService"
-            android:enabled="true" />
-        <service
-            android:name=".service.MusicService"
-            android:enabled="true" />
-
         <activity
             android:name=".StartsActivity"
             android:screenOrientation="portrait"

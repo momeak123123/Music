@@ -15,6 +15,7 @@ import android.widget.SeekBar
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.app.xiaobai.music.LockActivity
@@ -32,6 +33,7 @@ import com.app.xiaobai.music.music.view.fragment.CoverFragment
 import com.app.xiaobai.music.music.view.fragment.LyricFragment
 import com.app.xiaobai.music.service.LockService
 import com.app.xiaobai.music.service.MusicService
+import com.app.xiaobai.music.service.PlayService
 import com.app.xiaobai.music.sql.bean.Down
 import com.app.xiaobai.music.sql.bean.Playlist
 import com.app.xiaobai.music.sql.dao.mCollectDao
@@ -41,18 +43,22 @@ import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.reflect.TypeToken
 import com.jakewharton.rxbinding2.view.RxView
+import com.lzx.starrysky.StarrySky
+import com.lzx.starrysky.common.PlaybackStage
 import com.lzy.okgo.OkGo
 import com.lzy.okserver.OkDownload
 import com.xuexiang.xui.widget.dialog.materialdialog.DialogAction
 import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
 import io.reactivex.Observable
 import io.reactivex.Observer
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.frag_player_lrcview.*
 import kotlinx.android.synthetic.main.head.*
 import kotlinx.android.synthetic.main.music_play.*
 import kotlinx.android.synthetic.main.play_list.*
 import java.io.File
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 class MusicPlayActivity : AppCompatActivity() {
@@ -60,7 +66,7 @@ class MusicPlayActivity : AppCompatActivity() {
     companion object {
         var position: Int = 0
         var song_id: Long = 0
-        var load: Boolean = false
+        lateinit var load: String
         var id: Int = 0
         lateinit var observer: Observer<Boolean>
         lateinit var observers: Observer<Boolean>
@@ -69,6 +75,7 @@ class MusicPlayActivity : AppCompatActivity() {
         lateinit var observerset: Observer<Int>
         lateinit var observerseek: Observer<Long>
         lateinit var observerseeks: Observer<Long>
+        lateinit var observerly: Observer<Long>
         lateinit var observerplay: Observer<Int>
         lateinit var adapter: PlaySongAdapter
         lateinit var t1: String
@@ -110,8 +117,10 @@ class MusicPlayActivity : AppCompatActivity() {
         initData()
         m = "http://p1.music.126.net/6y-UleORITEDbvrOLV0Q8A==/5639395138885805.jpg"
         MusicApp.setBool(true)
-    }
 
+
+
+    }
 
     @SuppressLint("CheckResult", "ResourceAsColor")
     private fun initView() {
@@ -139,7 +148,7 @@ class MusicPlayActivity : AppCompatActivity() {
                     count++
                     if (count == 1) {
                         icon1.setImageResource(R.drawable.sui)
-
+                        musicplay(6, position, id)
                         Toast.makeText(
                             context,
                             getText(R.string.sui),
@@ -147,6 +156,7 @@ class MusicPlayActivity : AppCompatActivity() {
                         ).show()
                     } else {
                         icon1.setImageResource(R.drawable.xun)
+                        musicplay(6, position, id)
                         Toast.makeText(
                             context,
                             getText(R.string.lie),
@@ -157,6 +167,7 @@ class MusicPlayActivity : AppCompatActivity() {
                 } else {
                     count = 0
                     icon1.setImageResource(R.drawable.dan)
+                    musicplay(6, position, id)
                     Toast.makeText(
                         context,
                         getText(R.string.dan),
@@ -384,12 +395,12 @@ class MusicPlayActivity : AppCompatActivity() {
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar) {
-                musicplay(5, position, id)
+
             }
 
             override fun onStopTrackingTouch(seekBar: SeekBar) {
                 println("点击seek"+ position)
-                musicplay(6, position, id)
+                musicplay(5, position, id)
             }
         })
     }
@@ -439,12 +450,20 @@ class MusicPlayActivity : AppCompatActivity() {
                 if (song[pos].song_id == song_id && pos == id) {
                     musicplay(7, 0, pos)
                 } else {
-                    MusicApp.setAblumid(album_id)
-                    MusicApp.setMusic(song)
-                    playingMusicList = song
-                    MusicApp.setPosition(pos)
-                    playPauseIv.setLoading(true)
-                    musicplay(0, 0, pos)
+                    if(MusicApp.getAblumid()==album_id){
+                        MusicApp.setMusic(song)
+                        MusicApp.setPosition(pos)
+                        playPauseIv.setLoading(true)
+                        musicplay(0, 0, pos)
+                    }else{
+                        MusicApp.setAblumid(album_id)
+                        MusicApp.setMusic(song)
+                        playingMusicList = song
+                        MusicApp.setPosition(pos)
+                        playPauseIv.setLoading(true)
+                        musicplay(8, 0, pos)
+                    }
+
                 }
 
             }
@@ -458,12 +477,20 @@ class MusicPlayActivity : AppCompatActivity() {
                 if (song[pos].song_id == song_id && pos == id) {
                     musicplay(7, 0, pos)
                 } else {
-                    MusicApp.setAblumid(album_id)
-                    MusicApp.setMusic(song)
-                    playingMusicList = song
-                    MusicApp.setPosition(pos)
-                    playPauseIv.setLoading(true)
-                    musicplay(0, 0, pos)
+                    if(MusicApp.getAblumid()==album_id){
+                        MusicApp.setMusic(song)
+                        MusicApp.setPosition(pos)
+                        playPauseIv.setLoading(true)
+                        musicplay(0, 0, pos)
+                    }else{
+                        MusicApp.setAblumid(album_id)
+                        MusicApp.setMusic(song)
+                        playingMusicList = song
+                        MusicApp.setPosition(pos)
+                        playPauseIv.setLoading(true)
+                        musicplay(8, 0, pos)
+                    }
+
                 }
             }
         }
@@ -567,8 +594,8 @@ class MusicPlayActivity : AppCompatActivity() {
 
                 max = duration
                 progressSb.max = duration.toInt()
-                val f = duration / 60
-                val m = duration % 60
+                val f = duration / 60000
+                val m = duration % 60000
                 durationTv.text =
                     unitFormat(f.toInt()) + ":" + unitFormat(m.toInt())
             }
@@ -601,7 +628,7 @@ class MusicPlayActivity : AppCompatActivity() {
                             musicplay(2, 0, id)
                         }
                         3 -> {
-                            if (load) {
+                            if (load=="pause") {
                                 musicplay(4, 0, id)
                             } else {
                                 playPauseIv.setLoading(true)
@@ -630,11 +657,11 @@ class MusicPlayActivity : AppCompatActivity() {
             override fun onNext(bools: Long) {
                 try {
                     min = bools
-                    val fs = min / 60
-                    val ms = min % 60
+                    val fs = min / 60000
+                    val ms = min % 60000
                     progressTv.text = unitFormat(fs.toInt()) + ":" + unitFormat(ms.toInt())
                     progressSb.progress = min.toInt()
-                    lrcView.updateTime(min * 1000)
+                    lrcView.updateTime(min)
 
                 } catch (e: java.lang.Exception) {
                 }
@@ -651,7 +678,21 @@ class MusicPlayActivity : AppCompatActivity() {
 
             @SuppressLint("SetTextI18n")
             override fun onNext(bool: Long) {
-                musicplay(6, (bool / 1000).toInt(), id)
+                progressSb.secondaryProgress = bool.toInt()
+
+            }
+
+            override fun onError(e: Throwable) {}
+            override fun onComplete() {}
+
+        }
+
+        observerly = object : Observer<Long> {
+            override fun onSubscribe(d: Disposable) {}
+
+            @SuppressLint("SetTextI18n")
+            override fun onNext(bool: Long) {
+                musicplay(5, (bool).toInt(), id)
 
             }
 

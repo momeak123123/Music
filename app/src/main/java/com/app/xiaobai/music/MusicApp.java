@@ -1,15 +1,24 @@
 package com.app.xiaobai.music;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.text.TextUtils;
 
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.app.xiaobai.music.bean.Ads;
 import com.app.xiaobai.music.bean.Music;
 import com.app.xiaobai.music.utils.NetWorkUtils;
+import com.lzx.starrysky.StarrySky;
+import com.lzx.starrysky.StarrySkyConfig;
+import com.lzx.starrysky.intercept.InterceptorCallback;
+import com.lzx.starrysky.intercept.StarrySkyInterceptor;
+import com.lzx.starrysky.provider.SongInfo;
+import com.lzx.starrysky.utils.MainLooper;
+import com.lzx.starrysky.utils.SpUtil;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheEntity;
 import com.lzy.okgo.cache.CacheMode;
@@ -19,7 +28,13 @@ import com.lzy.okgo.https.HttpsUtils;
 import com.lzy.okgo.interceptor.HttpLoggingInterceptor;
 import com.xuexiang.xui.XUI;
 
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.security.Permissions;
+import java.security.acl.Permission;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
@@ -134,11 +149,16 @@ public class MusicApp extends Application {
         super.onCreate();
         sInstance = this;
         mContext = this;
-
+        StarrySkyConfig config = new StarrySkyConfig().newBuilder()
+                .isOpenCache(true)
+                .setCacheDestFileDir(Objects.requireNonNull(getExternalCacheDir()).getAbsolutePath())
+                .build();
+        StarrySky.init(MusicApp.this, config, null);
         new Thread(new Runnable() {
             @Override
             public void run() {
                 UpdateAppUtils.init(mContext);
+
                 XUI.init(MusicApp.this); //初始化UI框架
                 XUI.debug(false);  //开启UI框架调试日志
                 OkGo.getInstance().init(MusicApp.this);//网络请求
@@ -232,5 +252,6 @@ public class MusicApp extends Application {
                 .setCacheTime(CacheEntity.CACHE_NEVER_EXPIRE)   //全局统一缓存时间，默认永不过期，可以不传
                 .setRetryCount(3);                 //全局统一超时重连次数，默认为三次，那么最差的情况会请求4次(一次原始请求，三次重连请求)，不需要可以设置为0
     }
+
 
 }

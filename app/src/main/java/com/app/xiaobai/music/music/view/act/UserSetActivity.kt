@@ -54,7 +54,7 @@ class UserSetActivity : BaseMvpActivity<UserSetContract.IPresenter>(), UserSetCo
         context = this
         top_title.text = getText(R.string.set)
         sp = getSharedPreferences("User", Context.MODE_PRIVATE)
-        val path = context.externalCacheDir!!.absolutePath+"/video-cache"
+        val path = context.externalCacheDir!!.absolutePath
         file = File(path)
         val sizes = FilesUtils.getCurrentFolderSize(file)
         size.text = FormetFileSize(sizes)
