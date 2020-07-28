@@ -246,7 +246,7 @@ class MusicService : Service() {
         mDisposable = Flowable.intervalRange(mins, max+1000, 0, 100, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
             .doOnNext { t ->
-                min = t*100
+                min = t
                 Observable.just(t*100).subscribe(MusicPlayActivity.observerseek)
             }
             .doOnComplete {
@@ -455,6 +455,8 @@ class MusicService : Service() {
                 interval((seek/100), mp.duration.toLong())
                 if (!mp.isPlaying) {
                     mp.start()
+                    Notifications.init(1)
+                    Observable.just(4).subscribe(MusicPlayActivity.observerplay)
                 }
             }
             6 -> {

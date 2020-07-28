@@ -141,9 +141,6 @@
 -dontwarn okio.**
 -keep class okio.**{*;}
 
-#wlmedia
--keep class com.ywl5320.wlmedia.* {*;}
-
 #oss
 -keep class com.alibaba.sdk.android.oss.** { *; }
 
@@ -179,6 +176,7 @@ public static java.lang.String TABLENAME;
 -keep class com.idea.fifaalarmclock.entity.***
 -keep class com.google.gson.** { *; }
 
+-keep class wseemann.media.** { *; }
 
 -keep class * extends android.webkit.WebChromeClient { *; }
 -dontwarn im.delight.android.webview.**
