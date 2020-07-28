@@ -7,9 +7,9 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.app.xiaobai.music.R
 import com.app.xiaobai.music.bean.Searchs
+import com.bumptech.glide.Glide
 
 class SearchListAdapter(var datas: MutableList<Searchs>, val context: Context) : RecyclerView.Adapter<SearchListAdapter.InnerHolder>() {
 
@@ -84,8 +84,10 @@ class SearchListAdapter(var datas: MutableList<Searchs>, val context: Context) :
 
 
     fun add(item: MutableList<Searchs>) {
-        datas=item
-        notifyDataSetChanged()
+        for(it in item){
+            datas.add(it)
+            notifyItemInserted(datas.size)
+        }
     }
 
 }

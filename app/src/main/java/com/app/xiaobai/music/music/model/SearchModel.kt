@@ -32,7 +32,7 @@ class SearchModel {
                                 if (bean.code == 0) {
                                     val song = bean.data.getAsJsonObject("song")
                                     val list = song.getAsJsonArray("list")
-                                    Observable.just(list).subscribe(SearchIndexActivity.observer)
+                                    Observable.just(list).subscribe(SongFragment.observer)
 
                                 } else {
                                     Toast.makeText(
@@ -44,7 +44,7 @@ class SearchModel {
                             } catch (e: Exception) {
                             }
                         } else {
-                            Observable.just(true).subscribe(SearchIndexActivity.observers)
+                            Observable.just(true).subscribe(SongFragment.observers)
                         }
                     }
                 })
@@ -63,7 +63,7 @@ class SearchModel {
                                     Gson().fromJson(response.body(), kugoumusic::class.javaObjectType)
                                 if (bean.error_code == 0) {
                                     val list = bean.data.getAsJsonArray("lists")
-                                    Observable.just(list).subscribe(SearchIndexActivity.observer)
+                                    Observable.just(list).subscribe(SongFragment.observer)
 
                                 } else {
                                     Toast.makeText(
@@ -75,7 +75,7 @@ class SearchModel {
                             } catch (e: Exception) {
                             }
                         } else {
-                            Observable.just(true).subscribe(SearchIndexActivity.observers)
+                            Observable.just(true).subscribe(SongFragment.observers)
                         }
                     }
                 })
@@ -137,13 +137,13 @@ class SearchModel {
                                         )
                                     }
 
-                                    //Observable.just(musicall).subscribe(SearchIndexActivity.observer)
+                                    //Observable.just(musicall).subscribe(SongFragment.observer)
 
                                 }
                             } catch (e: Exception) {
                             }
                         } else {
-                            Observable.just(true).subscribe(SearchIndexActivity.observers)
+                            Observable.just(true).subscribe(SongFragment.observers)
                         }
                     }
                 })
@@ -216,13 +216,13 @@ class SearchModel {
                                         )
                                     }
 
-                                    //  Observable.just(musicall).subscribe(SearchIndexActivity.observer)
+                                    //  Observable.just(musicall).subscribe(SongFragment.observer)
 
                                 }
                             } catch (e: Exception) {
                             }
                         } else {
-                            Observable.just(true).subscribe(SearchIndexActivity.observers)
+                            Observable.just(true).subscribe(SongFragment.observers)
                         }
                     }
                 })
@@ -281,13 +281,13 @@ class SearchModel {
 
                                         )
                                     }
-                                    // Observable.just(musicall).subscribe(SearchIndexActivity.observer)
+                                    // Observable.just(musicall).subscribe(SongFragment.observer)
 
                                 }
                             } catch (e: Exception) {
                             }
                         } else {
-                            Observable.just(true).subscribe(SearchIndexActivity.observers)
+                            Observable.just(true).subscribe(SongFragment.observers)
                         }
                     }
                 })

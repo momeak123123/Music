@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.app.xiaobai.music.MusicApp
 import com.app.xiaobai.music.R
-import com.app.xiaobai.music.SearchIndexActivity
 import com.app.xiaobai.music.adapter.AlbumDetAdapter
 import com.app.xiaobai.music.adapter.PlaySongAdapter
 import com.app.xiaobai.music.bean.Music
@@ -37,14 +36,12 @@ import com.lzy.okgo.OkGo
 import com.lzy.okserver.OkDownload
 import com.xuexiang.xui.widget.dialog.materialdialog.DialogAction
 import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
-import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.album_index.*
 import kotlinx.android.synthetic.main.food.*
 import kotlinx.android.synthetic.main.play_list.*
 import kotlinx.android.synthetic.main.popule.*
-import kotlinx.android.synthetic.main.search_song_index.*
 import mvp.ljb.kt.act.BaseMvpActivity
 import java.io.File
 import java.util.concurrent.TimeUnit
@@ -89,38 +86,7 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
         super.init(savedInstanceState)
         context = this
 
-        observer = object : Observer<JsonArray> {
-            override fun onSubscribe(d: Disposable) {}
-            override fun onNext(data: JsonArray) {
 
-                val song: MutableList<Music> = Gson().fromJson(
-                    data,
-                    object : TypeToken<MutableList<Music>>() {}.type
-                )
-
-                if (song.isNotEmpty()) {
-                    songlist.clear()
-                    songlist = song
-                    val one = mutableListOf<artistlist>()
-                    val det = Music("", "", 0, 0, "", one, "", 0, "")
-                    songlist.add(0, det)
-                    initSongList(songlist)
-
-
-                } else {
-                    songlist.clear()
-                    val one = mutableListOf<artistlist>()
-                    val det = Music("", "", 0, 0, "", one, "", 0, "")
-                    songlist.add(0, det)
-                    initSongList(songlist)
-                }
-            }
-
-            override fun onError(e: Throwable) {}
-            override fun onComplete() {
-            }
-
-        }
 
 
     }
@@ -142,7 +108,47 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
         } catch (e: Exception) {
         }
 
+        initSongList(songlist)
 
+        observer = object : Observer<JsonArray> {
+            override fun onSubscribe(d: Disposable) {}
+            override fun onNext(data: JsonArray) {
+
+                val song: MutableList<Music> = Gson().fromJson(
+                    data,
+                    object : TypeToken<MutableList<Music>>() {}.type
+                )
+
+                if (song.isNotEmpty()) {
+                    if(nums==1L){
+                        songlist.clear()
+                        songlist = song
+                        val one = mutableListOf<artistlist>()
+                        val det = Music("", "", 0, 0, "", one, "", 0, "")
+                        songlist.add(0, det)
+                        adapter.add(songlist)
+                    }else{
+                        songlist.clear()
+                        songlist = song
+                        adapter.add(songlist)
+                    }
+
+
+
+                } else {
+                    songlist.clear()
+                    val one = mutableListOf<artistlist>()
+                    val det = Music("", "", 0, 0, "", one, "", 0, "")
+                    songlist.add(0, det)
+                    adapter.add(songlist)
+                }
+            }
+
+            override fun onError(e: Throwable) {}
+            override fun onComplete() {
+            }
+
+        }
     }
 
 
