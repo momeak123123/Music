@@ -23,7 +23,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.bumptech.glide.Glide
 import com.app.xiaobai.music.adapter.PlaySongAdapter
 import com.app.xiaobai.music.bean.Music
 import com.app.xiaobai.music.config.Constants
@@ -37,13 +36,13 @@ import com.app.xiaobai.music.music.view.fragment.HomeFragment
 import com.app.xiaobai.music.music.view.fragment.MyFragment
 import com.app.xiaobai.music.music.view.fragment.ShareFragment
 import com.app.xiaobai.music.service.MusicService
-import com.app.xiaobai.music.service.PlayService
 import com.app.xiaobai.music.sql.bean.Playlist
 import com.app.xiaobai.music.sql.config.Initialization
 import com.app.xiaobai.music.sql.dao.mCollectDao
 import com.app.xiaobai.music.sql.dao.mDownDao
 import com.app.xiaobai.music.sql.dao.mPlaylistDao
 import com.app.xiaobai.music.utils.FilesUtils
+import com.bumptech.glide.Glide
 import com.jakewharton.rxbinding2.view.RxView
 import com.lzy.okgo.OkGo
 import com.lzy.okserver.OkDownload

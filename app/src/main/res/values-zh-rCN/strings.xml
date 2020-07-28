@@ -84,7 +84,7 @@
     <string name="error_playing_tracks">播放失败</string>
     <string name="error_playing_trackt">出错啦</string>
     <string name="lyric_default_hint">暂无歌词</string>
-    <string name="folders">文件夹</string>
+    <string name="folders">暂无数据</string>
     <string name="play_time">00:00</string>
     <string name="play_no_resource">无音乐播放</string>
     <string name="play_mode">歌曲已存在</string>

@@ -5,13 +5,16 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.app.xiaobai.music.MusicApp
 import com.app.xiaobai.music.R
+import com.app.xiaobai.music.SearchIndexActivity
 import com.app.xiaobai.music.adapter.AlbumDetAdapter
 import com.app.xiaobai.music.adapter.PlaySongAdapter
 import com.app.xiaobai.music.bean.Music
@@ -34,12 +37,14 @@ import com.lzy.okgo.OkGo
 import com.lzy.okserver.OkDownload
 import com.xuexiang.xui.widget.dialog.materialdialog.DialogAction
 import com.xuexiang.xui.widget.dialog.materialdialog.MaterialDialog
+import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.album_index.*
 import kotlinx.android.synthetic.main.food.*
 import kotlinx.android.synthetic.main.play_list.*
 import kotlinx.android.synthetic.main.popule.*
+import kotlinx.android.synthetic.main.search_song_index.*
 import mvp.ljb.kt.act.BaseMvpActivity
 import java.io.File
 import java.util.concurrent.TimeUnit
@@ -73,6 +78,7 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
     var songlist = mutableListOf<Music>()
     private var activity_type: Int = 0
     private lateinit var context: Context
+    private var nums :Long = 1
     override fun registerPresenter() = AlbumDetPresenter::class.java
 
     override fun getLayoutId(): Int {
@@ -82,6 +88,7 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
     override fun init(savedInstanceState: Bundle?) {
         super.init(savedInstanceState)
         context = this
+
         observer = object : Observer<JsonArray> {
             override fun onSubscribe(d: Disposable) {}
             override fun onNext(data: JsonArray) {
@@ -98,6 +105,8 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
                     val det = Music("", "", 0, 0, "", one, "", 0, "")
                     songlist.add(0, det)
                     initSongList(songlist)
+
+
                 } else {
                     songlist.clear()
                     val one = mutableListOf<artistlist>()
@@ -140,7 +149,7 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
     fun loadData() {
         if (MusicApp.network() != -1) {
             if (activity_type == 1) {
-                getPresenter().songdatas(album_id, album_type, album_time, context)
+                getPresenter().songdatas(album_id, album_type, nums, context)
             } else {
                 getPresenter().songdata(album_id, album_type, context)
             }
@@ -543,6 +552,29 @@ class AlbumDetActivity : BaseMvpActivity<AlbumDetContract.IPresenter>(), AlbumDe
 
             }
         })
+        if (activity_type == 1) {
+            recyc_item.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                    super.onScrollStateChanged(recyclerView, newState)
+                    //managerrecycler的布局管理器
+                    val lastVisibleItemPosition: Int = layoutManager.findLastVisibleItemPosition()
+                    if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItemPosition == adapter.itemCount - 1) {
+                        Log.d("MainActivity===", "=============最后一条")
+                        nums++
+                        if(nums > MusicApp.getTotal()){
+                            Toast.makeText(
+                                context,
+                                getText(R.string.folders),
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }else{
+                            getPresenter().songdatas(album_id, album_type, nums, context)
+                        }
+
+                    }
+                }
+            })
+        }
 
         if (swipe_refresh_layout != null) {
             swipe_refresh_layout.isRefreshing = false

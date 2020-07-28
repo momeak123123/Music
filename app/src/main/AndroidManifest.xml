@@ -35,12 +35,9 @@
         tool:ignore="LockedOrientationActivity"
         tools:replace="android:allowBackup"
         tools:targetApi="n">
+
         <service
             android:name=".service.MusicService"
-            android:enabled="false"
-            android:exported="true"></service>
-        <service
-            android:name=".service.PlayService"
             android:enabled="true" />
 
         <activity

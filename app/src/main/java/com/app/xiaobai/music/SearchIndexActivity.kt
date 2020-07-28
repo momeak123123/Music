@@ -3,10 +3,12 @@ package com.app.xiaobai.music
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Color
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.animation.AccelerateInterpolator
 import android.view.animation.DecelerateInterpolator
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.app.xiaobai.music.bean.Music
@@ -50,6 +52,7 @@ class SearchIndexActivity : AppCompatActivity() {
     private val mDataList = mutableListOf<String>()
     private lateinit var context: Context
 
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_search_index)
@@ -74,6 +77,7 @@ class SearchIndexActivity : AppCompatActivity() {
         swipe_refresh_layout.isRefreshing = true
     }
 
+    @RequiresApi(Build.VERSION_CODES.M)
     fun initView(){
         mDataList.add(resources.getText(R.string.songs).toString())
         val list: MutableList<Fragment> = ArrayList()

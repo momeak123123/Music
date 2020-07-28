@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide
 import com.app.xiaobai.music.MusicApp
 import com.app.xiaobai.music.R
 import com.app.xiaobai.music.bean.Music
+import com.app.xiaobai.music.bean.Searchs
 import com.app.xiaobai.music.bean.SongDet
 import com.app.xiaobai.music.music.view.act.AlbumDetActivity
 import com.app.xiaobai.music.music.view.act.MusicPlayActivity
@@ -22,7 +23,7 @@ import java.util.concurrent.TimeUnit
 
 
 class AlbumDetAdapter(
-    val datas: MutableList<Music>,
+    var datas: MutableList<Music>,
     val context: Context,
     val id: Long,
     val txts: String,
@@ -296,6 +297,11 @@ class AlbumDetAdapter(
 
     fun setOnItemClickListener(itemClickListener: ItemClickListener) {
         this.mItemClickListener = itemClickListener
+    }
+
+    fun add(item: MutableList<Music>) {
+        datas.addAll(item)
+        notifyDataSetChanged()
     }
 }
 

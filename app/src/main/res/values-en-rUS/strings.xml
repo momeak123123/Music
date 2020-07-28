@@ -83,7 +83,7 @@
     <string name="error_playing_tracks">playback failure</string>
     <string name="error_playing_trackt">something went wrong</string>
     <string name="lyric_default_hint">No lyrics at the moment</string>
-    <string name="folders">folder</string>
+    <string name="folders">No data</string>
     <string name="play_time">00:00</string>
     <string name="play_no_resource">no music playback</string>
     <string name="play_mode">the song already exists</string>

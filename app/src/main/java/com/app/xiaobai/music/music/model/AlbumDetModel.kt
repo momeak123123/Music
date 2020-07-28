@@ -2,7 +2,9 @@ package  com.app.xiaobai.music.music.model
 
 import android.content.Context
 import android.widget.Toast
+import com.app.xiaobai.music.MusicApp
 import com.app.xiaobai.music.R
+import com.app.xiaobai.music.bean.ResultBeand
 import com.app.xiaobai.music.bean.ResultBeans
 import com.app.xiaobai.music.config.Constants
 import com.app.xiaobai.music.music.contract.AlbumDetContract
@@ -69,7 +71,7 @@ class AlbumDetModel : BaseModel(), AlbumDetContract.IModel {
         OkGo.get<String>(Constants.URL + "ranking/rankList")
             .params("from_id", id)
             .params("from", type)
-            .params("update_time", time)
+            .params("page", time)
             .execute(object : StringCallback() {
                 override fun onSuccess(response: Response<String>) {
                     if (response.code() == 200) {
@@ -78,8 +80,9 @@ class AlbumDetModel : BaseModel(), AlbumDetContract.IModel {
                          */
                         try {
                             val bean =
-                                Gson().fromJson(response.body(), ResultBeans::class.javaObjectType)
+                                Gson().fromJson(response.body(), ResultBeand::class.javaObjectType)
                             if (bean.code == 200) {
+                                MusicApp.setTotal(bean.total)
                                 Observable.just(bean.data).subscribe(AlbumDetActivity.observer)
                             } else {
                                 Toast.makeText(

@@ -1,24 +1,13 @@
 package com.app.xiaobai.music;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
-import android.text.TextUtils;
 
-import com.danikula.videocache.HttpProxyCacheServer;
 import com.app.xiaobai.music.bean.Ads;
 import com.app.xiaobai.music.bean.Music;
 import com.app.xiaobai.music.utils.NetWorkUtils;
-import com.lzx.starrysky.StarrySky;
-import com.lzx.starrysky.StarrySkyConfig;
-import com.lzx.starrysky.intercept.InterceptorCallback;
-import com.lzx.starrysky.intercept.StarrySkyInterceptor;
-import com.lzx.starrysky.provider.SongInfo;
-import com.lzx.starrysky.utils.MainLooper;
-import com.lzx.starrysky.utils.SpUtil;
 import com.lzy.okgo.OkGo;
 import com.lzy.okgo.cache.CacheEntity;
 import com.lzy.okgo.cache.CacheMode;
@@ -28,13 +17,7 @@ import com.lzy.okgo.https.HttpsUtils;
 import com.lzy.okgo.interceptor.HttpLoggingInterceptor;
 import com.xuexiang.xui.XUI;
 
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.security.Permissions;
-import java.security.acl.Permission;
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 
@@ -66,6 +49,18 @@ public class MusicApp extends Application {
 
     public static String uri ;
 
+    public static int total ;
+
+    public static int getTotal() {
+        return total;
+    }
+
+    public static void setTotal(int total) {
+        MusicApp.total = total;
+    }
+
+    public static Ads ads = new Ads("","",3);
+
 
     public static String getUri() {
         return uri;
@@ -74,9 +69,6 @@ public class MusicApp extends Application {
     public static void setUri(String uri) {
         MusicApp.uri = uri;
     }
-
-    public static Ads ads = new Ads("","",3);
-
 
     public static Ads getAds() {
         return ads;
@@ -149,11 +141,7 @@ public class MusicApp extends Application {
         super.onCreate();
         sInstance = this;
         mContext = this;
-        StarrySkyConfig config = new StarrySkyConfig().newBuilder()
-                .isOpenCache(true)
-                .setCacheDestFileDir(Objects.requireNonNull(getExternalCacheDir()).getAbsolutePath())
-                .build();
-        StarrySky.init(MusicApp.this, config, null);
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -176,22 +164,6 @@ public class MusicApp extends Application {
         });
 
 
-    }
-
-    private HttpProxyCacheServer proxy;
-
-    public static HttpProxyCacheServer getProxy(Context context) {
-        MusicApp app = (MusicApp) context.getApplicationContext();
-        return app.proxy == null ? (app.proxy = app.newProxy()) : app.proxy;
-    }
-
-
-
-    private HttpProxyCacheServer newProxy() {
-        return new HttpProxyCacheServer.Builder(this)
-                .maxCacheFilesCount(100)//最大缓存文件数量
-                .maxCacheSize(500 * 1024 * 1024)//最大缓存大小
-                .build();
     }
 
     public static Boolean userlogin() {

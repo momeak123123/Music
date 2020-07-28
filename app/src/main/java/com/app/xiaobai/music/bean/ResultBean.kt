@@ -15,6 +15,13 @@ data class ResultBeans (
     val data: JsonArray
 )
 
+data class ResultBeand (
+    val code: Int,
+    val msg: String,
+    val total: Int,
+    val data: JsonArray
+)
+
 data class ResultBeant (
     val code: Int,
     val msg: String
