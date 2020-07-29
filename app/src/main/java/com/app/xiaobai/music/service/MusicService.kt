@@ -46,7 +46,7 @@ class MusicService : Service() {
 
     private var min: Long =0
     private lateinit var mDisposable: Disposable
-    private lateinit var mp: FFmpegMediaPlayer
+    private  var mp: FFmpegMediaPlayer = FFmpegMediaPlayer()
     private lateinit var notification: Notification
     private var style: Int = 0
     private var count: Int = 2
@@ -190,19 +190,19 @@ class MusicService : Service() {
                     LogDownloadListeners()
                 )
                 .start()
+
         }catch (e:java.lang.Exception){}
 
     }
 
     fun music(uri :String ) {
 
-        mp = FFmpegMediaPlayer()
         mp.setOnPreparedListener { mp ->
+            mDisposable.dispose()
             if (mp.duration > 0) {
-                MusicPlayActivity.load = true
+
                 Observable.just(mp.duration.toLong()).subscribe(MusicPlayActivity.observerui)
                 mp.start()
-                println("时间"+mp.duration)
                 interval(0L, mp.duration.toLong())
             } else {
                 Toast.makeText(
@@ -210,28 +210,22 @@ class MusicService : Service() {
                     getText(R.string.error_playing_track),
                     Toast.LENGTH_SHORT
                 ).show()
-                MusicPlayActivity.load = false
-                min=0
-                mDisposable.dispose()
+
                 Observable.just(1).subscribe(MusicPlayActivity.observerplay)
             }
         }
         mp.setOnErrorListener { mp, what, extra ->
             mp.release()
-            MusicPlayActivity.load = false
             mDisposable.dispose()
-            min=0
             Observable.just(5).subscribe(MusicPlayActivity.observerplay)
-            musicnext()
             false
         }
         mp.setOnCompletionListener {
-            Observable.just(2).subscribe(MusicPlayActivity.observerplay)
+            Observable.just(0).subscribe(MusicPlayActivity.observerplay)
             mDisposable.dispose()
-            min=0
             musicnext()
+            println("这里1")
         }
-
 
         try {
             mp.reset()
@@ -260,9 +254,9 @@ class MusicService : Service() {
             }
             .doOnComplete {
                 if(max>0){
-                    mp.stop()
-                    Observable.just(2).subscribeOn(AndroidSchedulers.mainThread()).subscribe(MusicPlayActivity.observerplay)
+                    Observable.just(0).subscribe(MusicPlayActivity.observerplay)
                     musicnext()
+                    println("这里2")
                 }
 
             }
@@ -277,9 +271,10 @@ class MusicService : Service() {
                     getText(R.string.error_connection),
                     Toast.LENGTH_SHORT
                 ).show()
-                Observable.just(2).subscribe(MusicPlayActivity.observerplay)
+                Observable.just(0).subscribe(MusicPlayActivity.observerplay)
             } else {
                 MusicPlayActivity.uri = uri
+                println("地址"+uri)
                 prox(uri)
 
             }
@@ -400,8 +395,10 @@ class MusicService : Service() {
                         musicresume()
                     }
                 }
-                "next" ->
+                "next" ->{
                     musicnext()
+                    println("这里3")
+                }
                 "uri" -> {
                     music(MusicApp.getUri())
                 }
@@ -415,71 +412,86 @@ class MusicService : Service() {
     }
 
     fun musicresme() {
-        println("恢复")
-        Observable.just(true).subscribe(MusicPlayActivity.observers)
-        if (MusicApp.getPlay()) {
-            Observable.just(mp.duration.toLong()).subscribe(MusicPlayActivity.observerui)
-        }
+        try {
+            println("恢复")
+            Observable.just(true).subscribe(MusicPlayActivity.observers)
+            if (MusicApp.getPlay()) {
+                Observable.just(mp.duration.toLong()).subscribe(MusicPlayActivity.observerui)
+            }
+        }catch (e:java.lang.Exception){}
+
 
     }
 
     fun musicstart(ids: Int) {
+        try {
+            println("播放")
+            MusicApp.setPosition(ids)
+            id = ids
+            mDisposable.dispose()
+            playingMusicList = MusicApp.getMusic()
+            uriseat(playingMusicList!![ids].uri, playingMusicList!![ids].publish_time, this)
+            Observable.just(true).subscribe(MusicPlayActivity.observers)
+        }catch (e:java.lang.Exception){}
 
-        println("播放")
-        if (MusicApp.getPlay()) {
-            mp.release()
-        }
-        min=0
-        mDisposable.dispose()
-        MusicApp.setPosition(ids)
-        id = ids
-        playingMusicList = MusicApp.getMusic()
-        uriseat(playingMusicList!![ids].uri, playingMusicList!![ids].publish_time, this)
-        Observable.just(true).subscribe(MusicPlayActivity.observers)
     }
 
     fun musicnext() {
+        try {
+            if(MusicApp.getPlay()){
+                mp.stop()
+            }
+            if(MusicPlayActivity.load){
+                val request = OkGo.get<File>(MusicPlayActivity.uri)
+                OkDownload.request( MusicPlayActivity.uri,
+                    request).remove()
+            }
+            println("下一首")
+            mDisposable.dispose()
+            Observable.just(0).subscribe(MusicPlayActivity.observerplay)
+            musicplay(2, count)
+        }catch (e:java.lang.Exception){}
 
-        println("下一首")
-        min=0
-        mDisposable.dispose()
-        MusicPlayActivity.load = false
-        Observable.just(0).subscribe(MusicPlayActivity.observerplay)
-        if (MusicApp.getPlay()) {
-            mp.stop()
-        }
-        musicplay(2, count)
     }
 
     fun musicpre() {
+        try {
+            if(MusicApp.getPlay()){
+                mp.stop()
+            }
+            if(MusicPlayActivity.load){
+                val request = OkGo.get<File>(MusicPlayActivity.uri)
+                OkDownload.request( MusicPlayActivity.uri,
+                    request).remove()
+            }
+            println("上一首")
+            mDisposable.dispose()
+            Observable.just(0).subscribe(MusicPlayActivity.observerplay)
+            musicplay(1, count)
+        }catch (e:java.lang.Exception){}
 
-        println("上一首")
-        min=0
-        mDisposable.dispose()
-        MusicPlayActivity.load = false
-        Observable.just(0).subscribe(MusicPlayActivity.observerplay)
-        if (MusicApp.getPlay()) {
-            mp.stop()
-        }
-        musicplay(1, count)
     }
 
     fun musicresume() {
-        println("继续")
-        mp.start()
-        interval(min, mp.duration.toLong())
-        Notifications.init(1)
-        Observable.just(4).subscribe(MusicPlayActivity.observerplay)
+        try {
+            println("继续")
+            mp.start()
+            interval(min, mp.duration.toLong())
+            Notifications.init(1)
+            Observable.just(4).subscribe(MusicPlayActivity.observerplay)
+        }catch (e:java.lang.Exception){}
+
     }
 
     fun musicpause() {
-        println("暂停")
-        if (MusicApp.getPlay()) {
+        try {
+            println("暂停")
             mp.pause()
-        }
-        Notifications.init(0)
-        Observable.just(3).subscribe(MusicPlayActivity.observerplay)
-        mDisposable.dispose()
+            Notifications.init(0)
+            Observable.just(3).subscribe(MusicPlayActivity.observerplay)
+            mDisposable.dispose()
+        }catch (e:java.lang.Exception){}
+
     }
 
     /** 调用startService()启动服务时回调  */
@@ -499,6 +511,7 @@ class MusicService : Service() {
             }
             2 -> {
                 musicnext()
+                println("这里4")
             }
             3 -> {
                 musicpause()
@@ -518,12 +531,6 @@ class MusicService : Service() {
             }
             6 -> {
                 musicresme()
-            }
-            7->{
-                mp.release()
-                mDisposable.dispose()
-                min=0
-                musicnext()
             }
 
 

@@ -73,12 +73,13 @@ class ArtistModel : BaseModel(), ArtistContract.IModel {
 
     }
 
-    override fun listdata(context: Context, varieties: Int, letter: Int) {
+    override fun listdata(context: Context, varieties: Int, letter: Int,page :Int) {
 
 
         OkGo.get<String>(Constants.URL + "artist/get_artist_list")
             .params("varieties", varieties)
             .params("letter", letter)
+            .params("page", page)
             .execute(object : StringCallback() {
                 override fun onSuccess(response: Response<String>) {
                     /**

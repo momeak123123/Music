@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -193,17 +194,19 @@ class HomeDetAdapter(
 
         var title: TextView
         var more: TextView
-
+        var moreview: LinearLayout
         init {
             title = itemView.findViewById(R.id.title)
             more = itemView.findViewById(R.id.more)
+            moreview = itemView.findViewById(R.id.moreview)
+
         }
 
         @SuppressLint("CheckResult")
         fun bindData() {
             title.text = context.getText(R.string.item1)
 
-            RxView.clicks(more)
+            RxView.clicks(moreview)
                 .throttleFirst(3, TimeUnit.SECONDS)
                 .subscribe {
                     val intent = Intent()
@@ -411,16 +414,18 @@ class HomeDetAdapter(
 
         var more: TextView
         var title: TextView
-
+        var moreview: LinearLayout
         init {
             title = itemView.findViewById(R.id.title)
             more = itemView.findViewById(R.id.more)
+            moreview = itemView.findViewById(R.id.moreview)
+
         }
 
         @SuppressLint("CheckResult")
         fun bindData() {
             title.text = context.getText(R.string.item2)
-            RxView.clicks(more)
+            RxView.clicks(moreview)
                 .throttleFirst(3, TimeUnit.SECONDS)
                 .subscribe {
                     val intent = Intent()
@@ -627,16 +632,18 @@ class HomeDetAdapter(
 
         var more: TextView
         var title: TextView
-
+        var moreview: LinearLayout
         init {
             title = itemView.findViewById(R.id.title)
             more = itemView.findViewById(R.id.more)
+            moreview = itemView.findViewById(R.id.moreview)
+
         }
 
         @SuppressLint("CheckResult")
         fun bindData() {
             title.text = context.getText(R.string.item3)
-            RxView.clicks(more)
+            RxView.clicks(moreview)
                 .throttleFirst(3, TimeUnit.SECONDS)
                 .subscribe {
                     val intent = Intent()

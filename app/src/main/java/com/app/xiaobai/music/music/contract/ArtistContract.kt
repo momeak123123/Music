@@ -16,12 +16,12 @@ interface ArtistContract {
 
     interface IPresenter : IPresenterContract {
         fun taglist(context: Context,bool: Boolean)
-        fun listdata(context:Context,varieties: Int, letter: Int)
+        fun listdata(context:Context,varieties: Int, letter: Int,page :Int)
 
     }
 
     interface IModel : IModelContract {
         fun taglist(context:Context,bool: Boolean)
-        fun listdata(context:Context,varieties: Int, letter: Int)
+        fun listdata(context:Context,varieties: Int, letter: Int,page :Int)
     }
 }

@@ -17,8 +17,8 @@ class ArtistPresenter : BaseMvpPresenter<ArtistContract.IView, ArtistContract.IM
        return getModel().taglist(context,bool)
     }
 
-    override fun listdata(context:Context,varieties: Int, letter: Int) {
-        getModel().listdata(context,varieties,letter)
+    override fun listdata(context:Context,varieties: Int, letter: Int,page :Int) {
+        getModel().listdata(context,varieties,letter,page)
     }
 
 }

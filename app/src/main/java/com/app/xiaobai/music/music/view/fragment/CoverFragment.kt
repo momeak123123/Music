@@ -69,27 +69,36 @@ class CoverFragment : BaseMvpFragment<CoverContract.IPresenter>(), CoverContract
      * 切换歌曲，开始旋转动画
      */
     fun startRotateAnimation(isPlaying: Boolean = false) {
-        if (isPlaying) {
-            mAnimator.start()
-            Observable.just(0).subscribe(IndexActivity.observers)
-        }
+        try{
+            if (isPlaying) {
+                mAnimator.start()
+                Observable.just(0).subscribe(IndexActivity.observers)
+            }
+
+        }catch (e:Exception){}
+
     }
 
     /**
      * 停止旋转
      */
     fun stopRotateAnimation() {
+        try{
+            mAnimator.pause()
+            Observable.just(1).subscribe(IndexActivity.observers)
+        }catch (e:Exception){}
 
-        mAnimator.pause()
-        Observable.just(1).subscribe(IndexActivity.observers)
     }
 
     /**
      * 继续旋转
      */
     fun resumeRotateAnimation() {
-        mAnimator.resume()
-        Observable.just(2).subscribe(IndexActivity.observers)
+        try{
+            mAnimator.resume()
+            Observable.just(2).subscribe(IndexActivity.observers)
+        }catch (e:Exception){}
+
     }
 
     override fun onResume() {

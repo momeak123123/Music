@@ -312,7 +312,7 @@ public class PlayPauseView extends View {
         }
         getLoadingAnim().start();
 
-        mdDisposable = Flowable.intervalRange(0, 21, 0, 1, TimeUnit.SECONDS)
+        mdDisposable = Flowable.intervalRange(0, 30, 0, 1, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(new Consumer<Long>() {
                     @Override

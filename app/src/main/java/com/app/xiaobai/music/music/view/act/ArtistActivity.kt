@@ -5,18 +5,22 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.app.xiaobai.music.MusicApp
 import com.app.xiaobai.music.R
+import com.app.xiaobai.music.SearchIndexActivity
 import com.app.xiaobai.music.adapter.ArtistListAdapter
 import com.app.xiaobai.music.adapter.ArtistTagAdapter
 import com.app.xiaobai.music.bean.Artists
 import com.app.xiaobai.music.bean.Hierarchy
 import com.app.xiaobai.music.config.ItemClickListener
 import com.app.xiaobai.music.music.contract.ArtistContract
+import com.app.xiaobai.music.music.model.SearchModel
 import com.app.xiaobai.music.music.presenter.ArtistPresenter
 import com.google.gson.Gson
 import com.google.gson.JsonArray
@@ -25,8 +29,10 @@ import com.google.gson.reflect.TypeToken
 import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.artist_index.*
 import kotlinx.android.synthetic.main.head.*
 import kotlinx.android.synthetic.main.music_artist.*
+import kotlinx.android.synthetic.main.music_artist.swipe_refresh_layout
 import mvp.ljb.kt.act.BaseMvpActivity
 import java.util.concurrent.TimeUnit
 
@@ -44,6 +50,7 @@ class ArtistActivity : BaseMvpActivity<ArtistContract.IPresenter>(), ArtistContr
 
     private lateinit var adapter: ArtistListAdapter
     var liatdata = mutableListOf<Artists>()
+    private var add :Int = 1
     override fun registerPresenter() = ArtistPresenter::class.java
 
     override fun getLayoutId(): Int {
@@ -62,6 +69,9 @@ class ArtistActivity : BaseMvpActivity<ArtistContract.IPresenter>(), ArtistContr
 
     override fun initData() {
         super.initData()
+
+
+
         top_title.text =getString(R.string.item3s)
         swipe_refresh_layout.isRefreshing = true
         val sp: SharedPreferences =
@@ -110,7 +120,8 @@ class ArtistActivity : BaseMvpActivity<ArtistContract.IPresenter>(), ArtistContr
 
     fun loaddata(){
         if (MusicApp.network()!=-1) {
-            getPresenter().listdata(context, varieties, letter)
+            getPresenter().listdata(context, varieties, letter,add)
+            initSingerList(liatdata)
         } else {
             if (swipe_refresh_layout != null) {
                 swipe_refresh_layout.isRefreshing = false
@@ -166,7 +177,8 @@ class ArtistActivity : BaseMvpActivity<ArtistContract.IPresenter>(), ArtistContr
                 hierarchy2[0].cat_hierarchy = 0
                 varieties = hierarchy1[0].cat_id
                 letter = hierarchy2[0].cat_id
-                getPresenter().listdata(context, varieties, letter)
+                add=1
+                getPresenter().listdata(context, varieties, letter,1)
             }
 
             override fun onError(e: Throwable) {}
@@ -182,10 +194,10 @@ class ArtistActivity : BaseMvpActivity<ArtistContract.IPresenter>(), ArtistContr
                     object : TypeToken<MutableList<Artists>>() {}.type
                 )
                 if (artist.isNotEmpty()) {
-                    if (bool) {
-                        initSingerListup(artist)
-                    }else{
+                    if (add == 1) {
                         initSingerList(artist)
+                    } else {
+                        adapter.add(artist)
                     }
 
                 }
@@ -212,7 +224,8 @@ class ArtistActivity : BaseMvpActivity<ArtistContract.IPresenter>(), ArtistContr
                     override fun onItemClick(view: View?, position: Int) {
                         bool = true
                         varieties = list[position].cat_id
-                        getPresenter().listdata(context, varieties, letter)
+                        add=1
+                        getPresenter().listdata(context, varieties, letter,1)
                     }
 
                     override fun onItemLongClick(view: View?, position: Int) {
@@ -236,7 +249,8 @@ class ArtistActivity : BaseMvpActivity<ArtistContract.IPresenter>(), ArtistContr
                     override fun onItemClick(view: View?, position: Int) {
                         bool = true
                         letter = album[position].cat_id
-                        getPresenter().listdata(context, varieties, letter)
+                        add=1
+                        getPresenter().listdata(context, varieties, letter,1)
                     }
 
                     override fun onItemLongClick(view: View?, position: Int) {
@@ -245,10 +259,13 @@ class ArtistActivity : BaseMvpActivity<ArtistContract.IPresenter>(), ArtistContr
                 })
         )
 
+
+
     }
 
     private fun initSingerList(artists: MutableList<Artists>) {
-        recyc_list.layoutManager = LinearLayoutManager(context)
+        val manager = LinearLayoutManager(context)
+        recyc_list.layoutManager = manager
         recyc_list.itemAnimator = DefaultItemAnimator()
         adapter = ArtistListAdapter(artists, context)
         recyc_list.adapter = adapter
@@ -269,13 +286,22 @@ class ArtistActivity : BaseMvpActivity<ArtistContract.IPresenter>(), ArtistContr
                 })
         )
 
+        recyc_list.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                //managerrecycler的布局管理器
+                val lastVisibleItemPosition: Int = manager.findLastVisibleItemPosition()
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItemPosition == adapter.itemCount - 1) {
+                    Log.d("MainActivity===", "=============最后一条")
+                    add++
+                    getPresenter().listdata(context, varieties, letter,add)
+                }
+            }
+        })
+
     }
 
-    fun initSingerListup(artists: MutableList<Artists>) {
-        adapter.removeAll()
-        adapter.addAll(artists)
-        adapter.notifyDataSetChanged()
-    }
+
 
 
     override fun onDestroy() {

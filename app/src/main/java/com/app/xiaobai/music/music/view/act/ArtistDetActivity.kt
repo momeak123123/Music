@@ -5,16 +5,20 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.app.xiaobai.music.MusicApp
 import com.app.xiaobai.music.R
+import com.app.xiaobai.music.SearchIndexActivity
 import com.app.xiaobai.music.adapter.ArtistDetAdapter
 import com.app.xiaobai.music.bean.Album
 import com.app.xiaobai.music.music.contract.ArtistDetContract
+import com.app.xiaobai.music.music.model.SearchModel
 import com.app.xiaobai.music.music.presenter.ArtistDetPresenter
 import com.google.gson.Gson
 import com.google.gson.JsonObject
@@ -22,6 +26,8 @@ import com.google.gson.reflect.TypeToken
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.artist_index.*
+import kotlinx.android.synthetic.main.artist_index.swipe_refresh_layout
+import kotlinx.android.synthetic.main.search_song_index.*
 import mvp.ljb.kt.act.BaseMvpActivity
 
 /**
@@ -165,6 +171,7 @@ class ArtistDetActivity : BaseMvpActivity<ArtistDetContract.IPresenter>() , Arti
 
             }
         })
+
 
     }
 

@@ -110,10 +110,7 @@ class MusicPlayActivity : AppCompatActivity() {
         MusicApp.setBool(true)
 
 
-
     }
-
-
 
 
     @SuppressLint("CheckResult", "ResourceAsColor")
@@ -201,11 +198,11 @@ class MusicPlayActivity : AppCompatActivity() {
 
                             } else {
                                 if (uri != "") {
-                                    if(Constants.Downnum()){
+                                    if (Constants.Downnum()) {
                                         val request = OkGo.get<File>(uri)
                                         OkDownload.request(uri, request) //
                                             .priority(0)
-                                            .folder(context.getExternalFilesDir("")!!.absolutePath+"/download")
+                                            .folder(context.getExternalFilesDir("")!!.absolutePath + "/download")
                                             .fileName("music$song_id") //
                                             .save() //
                                             .register(
@@ -218,7 +215,7 @@ class MusicPlayActivity : AppCompatActivity() {
                                             ) //
                                             .start()
                                         icon2.setImageResource(R.drawable.xiazais)
-                                    }else{
+                                    } else {
                                         Toast.makeText(
                                             context,
                                             getText(R.string.download_num),
@@ -441,12 +438,13 @@ class MusicPlayActivity : AppCompatActivity() {
                     musicplay(6, 0, pos)
                 } else {
 
-                        MusicApp.setAblumid(album_id)
-                        MusicApp.setMusic(song)
-                        playingMusicList = song
-                        MusicApp.setPosition(pos)
-                        playPauseIv.setLoading(true)
-                        musicplay(0, 0, pos)
+                    MusicApp.setAblumid(album_id)
+                    MusicApp.setMusic(song)
+                    playingMusicList = song
+                    MusicApp.setPosition(pos)
+                    playPauseIv.setLoading(true)
+                    load = true
+                    musicplay(0, 0, pos)
 
                 }
 
@@ -462,12 +460,13 @@ class MusicPlayActivity : AppCompatActivity() {
                     musicplay(6, 0, pos)
                 } else {
 
-                        MusicApp.setAblumid(album_id)
-                        MusicApp.setMusic(song)
-                        playingMusicList = song
-                        MusicApp.setPosition(pos)
-                        playPauseIv.setLoading(true)
-                        musicplay(0, 0, pos)
+                    MusicApp.setAblumid(album_id)
+                    MusicApp.setMusic(song)
+                    playingMusicList = song
+                    MusicApp.setPosition(pos)
+                    playPauseIv.setLoading(true)
+                    load = true
+                    musicplay(0, 0, pos)
 
                 }
             }
@@ -522,7 +521,7 @@ class MusicPlayActivity : AppCompatActivity() {
                         } else {
                             icon2.setImageResource(R.drawable.xiazai)
                         }
-                    }catch (e:java.lang.Exception){
+                    } catch (e: java.lang.Exception) {
                         icon2.setImageResource(R.drawable.xiazai)
                     }
 
@@ -572,7 +571,7 @@ class MusicPlayActivity : AppCompatActivity() {
 
                 progressSb.max = duration.toInt()
 
-                val max = (duration/1000)-5
+                val max = (duration / 1000) - 5
                 val f = max / 60
                 val m = max % 60
                 durationTv.text =
@@ -582,6 +581,7 @@ class MusicPlayActivity : AppCompatActivity() {
             override fun onError(e: Throwable) {}
             override fun onComplete() {
                 playPauseIv.setLoading(false)
+                load=false
                 playPauseIv.play()
                 MusicApp.setPlay(true)
                 coverFragment.startRotateAnimation(true)
@@ -607,11 +607,14 @@ class MusicPlayActivity : AppCompatActivity() {
                             musicplay(2, 0, id)
                         }
                         3 -> {
-                            if (load) {
+                            if (!load) {
                                 musicplay(4, 0, id)
                             } else {
-                                playPauseIv.setLoading(true)
-                                musicplay(0, 0, id)
+                                Toast.makeText(
+                                    context,
+                                    getText(R.string.secret_num),
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
 
                         }
@@ -639,7 +642,7 @@ class MusicPlayActivity : AppCompatActivity() {
                     progressSb.progress = bools.toInt()
                     lrcView.updateTime(bools)
 
-                    val min = bools/1000
+                    val min = bools / 1000
 
                     val fs = min / 60
                     val ms = min % 60
@@ -678,12 +681,22 @@ class MusicPlayActivity : AppCompatActivity() {
             override fun onNext(bool: Int) {
                 when (bool) {
                     0 -> {
-                        progressSb.progress = 0
-                        progressTv.text = "00:00"
-                        playPauseIv.setLoading(true)
+                        try {
+                            progressSb.progress = 0
+                            progressTv.text = "00:00"
+                            playPauseIv.setLoading(true)
+                            load = true
+                            MusicApp.setPlay(false)
+                            if (playPauseIv.isPlaying) {
+                                playPauseIv.pause()
+                                coverFragment.stopRotateAnimation()
+                            }
+                        } catch (e: java.lang.Exception) {
+                        }
                     }
                     1 -> {
                         playPauseIv.setLoading(false)
+                        load=false
                     }
                     2 -> {
                         try {
@@ -709,6 +722,7 @@ class MusicPlayActivity : AppCompatActivity() {
                     4 -> {
                         try {
                             playPauseIv.setLoading(false)
+                            load=false
                             MusicApp.setPlay(true)
                             if (!playPauseIv.isPlaying) {
                                 playPauseIv.play()
@@ -719,20 +733,28 @@ class MusicPlayActivity : AppCompatActivity() {
                     }
                     5 -> {
                         try {
-                            progressSb.progress = 0
-                            progressTv.text = "00:00"
-                            MusicApp.setPlay(false)
-                            playPauseIv.setLoading(false)
-                            if (playPauseIv.isPlaying) {
-                                playPauseIv.pause()
-                                coverFragment.stopRotateAnimation()
+
+                            if(load){
+                                playPauseIv.setLoading(false)
+                                load=false
+                                musicplay(2, 0, id)
+                                println("错误")
+                                progressSb.progress = 0
+                                progressTv.text = "00:00"
+                                MusicApp.setPlay(false)
+
+                                if (playPauseIv.isPlaying) {
+                                    playPauseIv.pause()
+                                    coverFragment.stopRotateAnimation()
+                                }
+                                Toast.makeText(
+                                    context,
+                                    getText(R.string.error_playing_trackt),
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
-                            Toast.makeText(
-                                context,
-                                getText(R.string.error_playing_trackt),
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            musicplay(7, 0, id)
+
+
                         } catch (e: java.lang.Exception) {
                         }
                     }
@@ -774,6 +796,7 @@ class MusicPlayActivity : AppCompatActivity() {
                     id = position
                     adaptert!!.notifyDataSetChanged()
                     playPauseIv.setLoading(true)
+                    load = true
                     musicplay(0, 0, position)
                 }
             }

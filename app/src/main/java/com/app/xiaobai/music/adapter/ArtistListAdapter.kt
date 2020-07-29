@@ -63,6 +63,13 @@ class ArtistListAdapter (var datas:MutableList<Artists>, val context: Context) :
 
     }
 
+    fun add(data: MutableList<Artists>){
+        for(it in data){
+            datas.add(it)
+            notifyItemInserted(datas.size)
+        }
+    }
+
     fun addAll(data: MutableList<Artists>){
         datas.addAll(data)
     }

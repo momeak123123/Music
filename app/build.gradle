@@ -9,8 +9,8 @@ android {
         applicationId "com.app.xiaobai.music"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 116
-        versionName "1.1.6"
+        versionCode 118
+        versionName "1.1.8"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         ndk {
             abiFilter("armeabi-v7a")
@@ -19,6 +19,7 @@ android {
     }
 
     buildTypes {
+
         release {
             // 移除无用文件
             shrinkResources true
