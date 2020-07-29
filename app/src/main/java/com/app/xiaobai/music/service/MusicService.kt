@@ -15,7 +15,10 @@ import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.app.xiaobai.music.MusicApp
 import com.app.xiaobai.music.R
+import com.app.xiaobai.music.SearchIndexActivity
 import com.app.xiaobai.music.bean.Music
+import com.app.xiaobai.music.bean.kugoumusic
+import com.app.xiaobai.music.bean.kugousearchs
 import com.app.xiaobai.music.config.Cookie
 import com.app.xiaobai.music.config.Dencry
 import com.app.xiaobai.music.config.LogDownloadListeners
@@ -158,34 +161,37 @@ class MusicService : Service() {
     }
 
     fun prox(uri: String) {
-        val path = cacheDir.absolutePath
-        val file = File(path)
-        if (file.isDirectory) {
-            val files: Array<File> = file.listFiles()
-            if(files.size>20){
-                for (i in files.indices) {
-                    val f = files[i]
-                    try {
-                        f.delete()
-                    } catch (e: Exception) {
+        try {
+            val path = cacheDir.absolutePath
+            val file = File(path)
+            if (file.isDirectory) {
+                val files: Array<File> = file.listFiles()
+                if(files.size>20){
+                    for (i in files.indices) {
+                        val f = files[i]
+                        try {
+                            f.delete()
+                        } catch (e: Exception) {
+                        }
                     }
                 }
             }
-        }
-        val request = OkGo.get<File>(uri)
+            val request = OkGo.get<File>(uri)
 
-        OkDownload.request(
-            uri,
-            request
-        )
-            .priority(0)
-            .folder(cacheDir.absolutePath)
-            .fileName(System.currentTimeMillis().toString()) //
-            .save() //
-            .register(
-                LogDownloadListeners()
+            OkDownload.request(
+                uri,
+                request
             )
-            .start()
+                .priority(0)
+                .folder(cacheDir.absolutePath)
+                .fileName(System.currentTimeMillis().toString()) //
+                .save() //
+                .register(
+                    LogDownloadListeners()
+                )
+                .start()
+        }catch (e:java.lang.Exception){}
+
     }
 
     fun music(uri :String ) {
@@ -205,6 +211,7 @@ class MusicService : Service() {
                     Toast.LENGTH_SHORT
                 ).show()
                 MusicPlayActivity.load = false
+                min=0
                 mDisposable.dispose()
                 Observable.just(1).subscribe(MusicPlayActivity.observerplay)
             }
@@ -213,6 +220,7 @@ class MusicService : Service() {
             mp.release()
             MusicPlayActivity.load = false
             mDisposable.dispose()
+            min=0
             Observable.just(5).subscribe(MusicPlayActivity.observerplay)
             musicnext()
             false
@@ -220,6 +228,7 @@ class MusicService : Service() {
         mp.setOnCompletionListener {
             Observable.just(2).subscribe(MusicPlayActivity.observerplay)
             mDisposable.dispose()
+            min=0
             musicnext()
         }
 
@@ -285,11 +294,17 @@ class MusicService : Service() {
                 Observable.just(2).subscribe(MusicPlayActivity.observerplay)
             } else {
                 if (time != "") {
+                    if(SearchIndexActivity.type==0){
+                        musicpath(
+                            time,
+                            Cookie.getCookie()
+                        )
+                    }else{
+                        musicpaths(
+                            time
+                        )
+                    }
 
-                    musicpath(
-                        time,
-                        Cookie.getCookie()
-                    )
                 } else {
                     Observable.just(1).subscribe(MusicPlayActivity.observerplay)
                 }
@@ -301,10 +316,10 @@ class MusicService : Service() {
     }
 
 
-    fun musicpath(url: String, cookie: String) {
+    fun musicpath(mid: String, cookie: String) {
         object : Thread() {
             override fun run() {
-                OkGo.post<String>(url)
+                OkGo.get<String>( "http://symusic.top/music.php?source=tencent&types=url&mid=$mid&br=hq")
                     .params("cookie", cookie)
                     .execute(object : StringCallback() {
                         override fun onSuccess(response: Response<String>) {
@@ -320,8 +335,11 @@ class MusicService : Service() {
                                         com.app.xiaobai.music.bean.musicpath::class.javaObjectType
                                     )
                                 val uri = Dencry.dencryptString(bean.geturl)
-                                MusicPlayActivity.uri = uri
-                                prox(uri)
+                                val deyuri = uri.substring(0,4)
+                                if(deyuri=="http"){
+                                    MusicPlayActivity.uri = uri
+                                    prox(uri)
+                                }
 
                             } catch (e: Exception) {
                             }
@@ -330,6 +348,41 @@ class MusicService : Service() {
             }
         }.start()
     }
+
+
+    fun musicpaths(hash: String) {
+        object : Thread() {
+            override fun run() {
+                OkGo.post<String>("https://wwwapi.kugou.com/yy/index.php?r=play/getdata&hash=$hash&mid=de0201ff944d568d0cd157105909b990")
+                    .headers("cookie", "kg_mid=de0201ff944d568d0cd157105909b990; kg_dfid=334ira2OkIpb107Swn2akQ7E; KuGooRandom=66541594367253652; Hm_lvt_aedee6983d4cfc62f509129360d6bb3d=1594363925,1594625008,1594966568,1595644242; ACK_SERVER_10015=%7B%22list%22%3A%5B%5B%22bjlogin-user.kugou.com%22%5D%5D%7D; kg_dfid_collect=d41d8cd98f00b204e9800998ecf8427e; kg_mid_temp=de0201ff944d568d0cd157105909b990; ACK_SERVER_10016=%7B%22list%22%3A%5B%5B%22bjreg-user.kugou.com%22%5D%5D%7D; ACK_SERVER_10017=%7B%22list%22%3A%5B%5B%22bjverifycode.service.kugou.com%22%5D%5D%7D; KuGoo=KugooID=1731378128&KugooPwd=25E317DED4B6894FADC70DCEED1053B0&NickName=%u6ed1%u843d%u4e4b%u540e&Pic=http://imge.kugou.com/kugouicon/165/20200728/20200728175658385542.jpg&RegState=1&RegFrom=&t=afa795b7f206723df3b2fdb31811517ef421b7d0421290119b2676174b5c77e4&a_id=1014&ct=1595930326&UserName=%u006b%u0067%u006f%u0070%u0065%u006e%u0031%u0037%u0033%u0031%u0033%u0037%u0038%u0031%u0032%u0038; KugooID=1731378128; t=afa795b7f206723df3b2fdb31811517ef421b7d0421290119b2676174b5c77e4; a_id=1014; UserName=%u006b%u0067%u006f%u0070%u0065%u006e%u0031%u0037%u0033%u0031%u0033%u0037%u0038%u0031%u0032%u0038; mid=de0201ff944d568d0cd157105909b990; dfid=334ira2OkIpb107Swn2akQ7E; Hm_lpvt_aedee6983d4cfc62f509129360d6bb3d=1595930330")
+                    .execute(object : StringCallback() {
+                        override fun onSuccess(response: Response<String>) {
+                            /**
+                             * 成功回调
+                             */
+                            try {
+                                val bean =
+                                    Gson().fromJson(response.body(), kugousearchs::class.javaObjectType)
+                                if (bean.err_code == 0) {
+                                    println("测试"+bean.data)
+                                    val music = MusicPlayActivity.playingMusicList[MusicPlayActivity.id]
+                                    music.pic_url = bean.data.get("img").asString
+                                    MusicPlayActivity.playingMusicList[MusicPlayActivity.id] = music
+                                    val uri = bean.data.get("play_url").asString
+                                    if(uri!=""){
+                                        MusicPlayActivity.uri = uri
+                                        prox(uri)
+                                    }
+                                }
+
+                            } catch (e: Exception) {
+                            }
+                        }
+                    })
+            }
+        }.start()
+    }
+
 
     private var broadcastReceiver: BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
@@ -374,39 +427,41 @@ class MusicService : Service() {
 
         println("播放")
         if (MusicApp.getPlay()) {
-            mp.stop()
+            mp.release()
         }
+        min=0
+        mDisposable.dispose()
         MusicApp.setPosition(ids)
         id = ids
         playingMusicList = MusicApp.getMusic()
         uriseat(playingMusicList!![ids].uri, playingMusicList!![ids].publish_time, this)
-        mDisposable.dispose()
         Observable.just(true).subscribe(MusicPlayActivity.observers)
     }
 
     fun musicnext() {
 
         println("下一首")
+        min=0
+        mDisposable.dispose()
         MusicPlayActivity.load = false
         Observable.just(0).subscribe(MusicPlayActivity.observerplay)
         if (MusicApp.getPlay()) {
             mp.stop()
         }
         musicplay(2, count)
-        mDisposable.dispose()
-
     }
 
     fun musicpre() {
 
         println("上一首")
+        min=0
+        mDisposable.dispose()
         MusicPlayActivity.load = false
         Observable.just(0).subscribe(MusicPlayActivity.observerplay)
         if (MusicApp.getPlay()) {
             mp.stop()
         }
         musicplay(1, count)
-        mDisposable.dispose()
     }
 
     fun musicresume() {
@@ -419,7 +474,9 @@ class MusicService : Service() {
 
     fun musicpause() {
         println("暂停")
-        mp.pause()
+        if (MusicApp.getPlay()) {
+            mp.pause()
+        }
         Notifications.init(0)
         Observable.just(3).subscribe(MusicPlayActivity.observerplay)
         mDisposable.dispose()
@@ -462,6 +519,13 @@ class MusicService : Service() {
             6 -> {
                 musicresme()
             }
+            7->{
+                mp.release()
+                mDisposable.dispose()
+                min=0
+                musicnext()
+            }
+
 
         }
 

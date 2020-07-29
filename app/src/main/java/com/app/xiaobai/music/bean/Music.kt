@@ -15,7 +15,7 @@ data class Music(
     val song_id: Long,
     val uri: String,
     val all_artist: List<artistlist>,
-    val pic_url: String,
+    var pic_url: String,
     val song_list_id: Long,
     val publish_time: String
 ) : Serializable

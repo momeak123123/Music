@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Application;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Trace;
 
 import com.app.xiaobai.music.bean.Ads;
 import com.app.xiaobai.music.bean.Music;
@@ -156,14 +157,17 @@ public class MusicApp extends Application {
 
 
         // 捕捉RxJava全局异常
-        RxJavaPlugins.setErrorHandler(new Consumer<Throwable>() {
+       /* RxJavaPlugins.setErrorHandler(new Consumer<Throwable>() {
             @Override
             public void accept(Throwable throwable) throws Exception {
                 System.out.println("异常处理" + throwable.getMessage());
             }
+        });*/
+
+        RxJavaPlugins.setErrorHandler(throwable -> {
+            throwable.printStackTrace();
+            System.out.println("异常处理" + throwable.getMessage());
         });
-
-
     }
 
     public static Boolean userlogin() {

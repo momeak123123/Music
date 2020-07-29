@@ -3,6 +3,7 @@ package com.app.xiaobai.music.music.view.act
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
@@ -13,9 +14,12 @@ import com.app.xiaobai.music.IndexActivity
 import com.app.xiaobai.music.MusicApp
 import com.app.xiaobai.music.R
 import com.app.xiaobai.music.music.contract.StartPageContract
+import com.app.xiaobai.music.music.model.MusicPlayModel
 import com.app.xiaobai.music.music.presenter.StartPagePresenter
 import com.jakewharton.rxbinding2.view.RxView
 import io.reactivex.Flowable
+import io.reactivex.Observable
+import io.reactivex.Observer
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import kotlinx.android.synthetic.main.start_page.*
@@ -54,6 +58,34 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>(), Start
         IndexActivity.bool = false
         Glide.with(this).load(MusicApp.getAds().img).placeholder(R.drawable.play_page_default_bg).into(adss)
 
+
+        Observable.timer(5, TimeUnit.SECONDS)
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(object : Observer<Long> {
+                override fun onSubscribe(disposable: Disposable) {}
+                override fun onNext(number: Long) {
+                    MusicPlayModel.updateapp(getVersionName())
+                }
+
+                override fun onError(e: Throwable) {}
+                override fun onComplete() {}
+            })
+    }
+
+    private fun getVersionName(): String {
+        // 包管理器 可以获取清单文件信息
+        val packageManager = packageManager
+        try {
+            // 获取包信息
+            // 参1 包名 参2 获取额外信息的flag 不需要的话 写0
+            val packageInfo = packageManager.getPackageInfo(
+                packageName, 0
+            )
+            return packageInfo.versionName
+        } catch (e: PackageManager.NameNotFoundException) {
+            e.printStackTrace()
+        }
+        return ""
     }
 
     @SuppressLint("CheckResult")
@@ -86,6 +118,7 @@ class StartPageActivity : BaseMvpActivity<StartPageContract.IPresenter>(), Start
 
     override fun onResume() {
         super.onResume()
+
         num =  MusicApp.getAds().seconds
         mDisposable = Flowable.intervalRange(0, num, 0, 1, TimeUnit.SECONDS)
             .observeOn(AndroidSchedulers.mainThread())

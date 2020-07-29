@@ -59,7 +59,7 @@ class MusicPlayActivity : AppCompatActivity() {
 
     companion object {
         var position: Int = 0
-        var song_id: Long = 0
+        var song_id: Long = -1
         var load: Boolean = false
         var id: Int = 0
         lateinit var observer: Observer<Boolean>
@@ -568,6 +568,7 @@ class MusicPlayActivity : AppCompatActivity() {
             @SuppressLint("SetTextI18n")
             override fun onNext(duration: Long) {
                 coverFragment.setImagePath(playingMusic.pic_url)
+                m = playingMusic.pic_url
 
                 progressSb.max = duration.toInt()
 
@@ -731,7 +732,7 @@ class MusicPlayActivity : AppCompatActivity() {
                                 getText(R.string.error_playing_trackt),
                                 Toast.LENGTH_SHORT
                             ).show()
-                            musicplay(2, 0, id)
+                            musicplay(7, 0, id)
                         } catch (e: java.lang.Exception) {
                         }
                     }

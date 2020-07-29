@@ -30,36 +30,10 @@ class StartsActivity : Activity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        Observable.timer(8, TimeUnit.SECONDS)
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(object : Observer<Long> {
-                override fun onSubscribe(disposable: Disposable) {}
-                override fun onNext(number: Long) {
-                    updateapp(getVersionName())
-                }
-
-                override fun onError(e: Throwable) {}
-                override fun onComplete() {}
-            })
-
 
     }
 
-    private fun getVersionName(): String {
-        // 包管理器 可以获取清单文件信息
-        val packageManager = packageManager
-        try {
-            // 获取包信息
-            // 参1 包名 参2 获取额外信息的flag 不需要的话 写0
-            val packageInfo = packageManager.getPackageInfo(
-                packageName, 0
-            )
-            return packageInfo.versionName
-        } catch (e: PackageManager.NameNotFoundException) {
-            e.printStackTrace()
-        }
-        return ""
-    }
+
 
     override fun onResume() {
         super.onResume()

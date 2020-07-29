@@ -17,8 +17,8 @@ data class qqmusic(
 
 data class kugoumusic(
 
-    val error_code: Int,
-    val error_msg: String,
+    val errcode: Int,
+    val error: String,
     val status: Int,
     val data: JsonObject
 
@@ -31,6 +31,13 @@ data class kugousearch(
     val status: Int,
     val errcode: Int,
     val data: JsonArray
+
+)
+
+data class kugousearchs(
+    val status: Int,
+    val err_code: Int,
+    val data: JsonObject
 
 )
 
