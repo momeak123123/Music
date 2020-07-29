@@ -440,19 +440,13 @@ class MusicPlayActivity : AppCompatActivity() {
                 if (song[pos].song_id == song_id && pos == id) {
                     musicplay(6, 0, pos)
                 } else {
-                    if(MusicApp.getAblumid()==album_id){
-                        MusicApp.setMusic(song)
-                        MusicApp.setPosition(pos)
-                        playPauseIv.setLoading(true)
-                        musicplay(0, 0, pos)
-                    }else{
+
                         MusicApp.setAblumid(album_id)
                         MusicApp.setMusic(song)
                         playingMusicList = song
                         MusicApp.setPosition(pos)
                         playPauseIv.setLoading(true)
                         musicplay(0, 0, pos)
-                    }
 
                 }
 
@@ -467,19 +461,13 @@ class MusicPlayActivity : AppCompatActivity() {
                 if (song[pos].song_id == song_id && pos == id) {
                     musicplay(6, 0, pos)
                 } else {
-                    if(MusicApp.getAblumid()==album_id){
-                        MusicApp.setMusic(song)
-                        MusicApp.setPosition(pos)
-                        playPauseIv.setLoading(true)
-                        musicplay(0, 0, pos)
-                    }else{
+
                         MusicApp.setAblumid(album_id)
                         MusicApp.setMusic(song)
                         playingMusicList = song
                         MusicApp.setPosition(pos)
                         playPauseIv.setLoading(true)
                         musicplay(0, 0, pos)
-                    }
 
                 }
             }
