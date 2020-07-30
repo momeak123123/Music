@@ -737,7 +737,7 @@ class MusicPlayActivity : AppCompatActivity() {
                             if(load){
                                 playPauseIv.setLoading(false)
                                 load=false
-                                musicplay(2, 0, id)
+                                //musicplay(2, 0, id)
                                 println("错误")
                                 progressSb.progress = 0
                                 progressTv.text = "00:00"

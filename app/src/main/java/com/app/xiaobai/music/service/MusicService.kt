@@ -17,7 +17,6 @@ import com.app.xiaobai.music.MusicApp
 import com.app.xiaobai.music.R
 import com.app.xiaobai.music.SearchIndexActivity
 import com.app.xiaobai.music.bean.Music
-import com.app.xiaobai.music.bean.kugoumusic
 import com.app.xiaobai.music.bean.kugousearchs
 import com.app.xiaobai.music.config.Cookie
 import com.app.xiaobai.music.config.Dencry
@@ -30,6 +29,7 @@ import com.lzy.okgo.OkGo
 import com.lzy.okgo.callback.StringCallback
 import com.lzy.okgo.model.Response
 import com.lzy.okserver.OkDownload
+import com.lzy.okserver.download.DownloadTask
 import io.reactivex.Flowable
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -44,6 +44,7 @@ import java.util.concurrent.TimeUnit
 class MusicService : Service() {
 
 
+    private lateinit var task: DownloadTask
     private var min: Long =0
     private lateinit var mDisposable: Disposable
     private  var mp: FFmpegMediaPlayer = FFmpegMediaPlayer()
@@ -178,7 +179,7 @@ class MusicService : Service() {
             }
             val request = OkGo.get<File>(uri)
 
-            OkDownload.request(
+            task = OkDownload.request(
                 uri,
                 request
             )
@@ -189,8 +190,8 @@ class MusicService : Service() {
                 .register(
                     LogDownloadListeners()
                 )
-                .start()
 
+            task.start()
         }catch (e:java.lang.Exception){}
 
     }
@@ -275,7 +276,7 @@ class MusicService : Service() {
             } else {
                 MusicPlayActivity.uri = uri
                 println("地址"+uri)
-                prox(uri)
+                music(uri)
 
             }
 
@@ -359,7 +360,6 @@ class MusicService : Service() {
                                 val bean =
                                     Gson().fromJson(response.body(), kugousearchs::class.javaObjectType)
                                 if (bean.err_code == 0) {
-                                    println("测试"+bean.data)
                                     val music = MusicPlayActivity.playingMusicList[MusicPlayActivity.id]
                                     music.pic_url = bean.data.get("img").asString
                                     MusicPlayActivity.playingMusicList[MusicPlayActivity.id] = music
@@ -397,7 +397,6 @@ class MusicService : Service() {
                 }
                 "next" ->{
                     musicnext()
-                    println("这里3")
                 }
                 "uri" -> {
                     music(MusicApp.getUri())
@@ -442,9 +441,7 @@ class MusicService : Service() {
                 mp.stop()
             }
             if(MusicPlayActivity.load){
-                val request = OkGo.get<File>(MusicPlayActivity.uri)
-                OkDownload.request( MusicPlayActivity.uri,
-                    request).remove()
+                task.remove()
             }
             println("下一首")
             mDisposable.dispose()
@@ -460,9 +457,7 @@ class MusicService : Service() {
                 mp.stop()
             }
             if(MusicPlayActivity.load){
-                val request = OkGo.get<File>(MusicPlayActivity.uri)
-                OkDownload.request( MusicPlayActivity.uri,
-                    request).remove()
+                task.remove()
             }
             println("上一首")
             mDisposable.dispose()
